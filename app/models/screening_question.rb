@@ -1,0 +1,2 @@
+class ScreeningQuestion < ApplicationRecord
+end

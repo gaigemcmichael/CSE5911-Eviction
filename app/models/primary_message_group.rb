@@ -1,0 +1,2 @@
+class PrimaryMessageGroup < ApplicationRecord
+end

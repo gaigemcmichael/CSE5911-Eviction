@@ -1,0 +1,2 @@
+class ConversationMediator < ApplicationRecord
+end
