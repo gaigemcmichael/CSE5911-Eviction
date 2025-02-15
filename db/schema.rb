@@ -42,7 +42,7 @@ ActiveRecord::Schema[8.0].define(version: 0) do
     t.datetime "CreatedAt", precision: nil, default: -> { "getdate()" }
     t.datetime "LastMessageSentDate", precision: nil
     t.varchar "Role", limit: 20
-    t.check_constraint "[Role]='Side' OR [Role]='Primary'", name: "CK__MessageStr__Role__403A8C7D"
+    t.check_constraint "[Role]='Side' OR [Role]='Primary'", name: "CK__MessageStr__Role__36470DEF"
   end
 
   create_table "Messages", primary_key: "MessageID", id: :integer, force: :cascade do |t|
@@ -106,28 +106,28 @@ ActiveRecord::Schema[8.0].define(version: 0) do
     t.datetime "CreatedAt", precision: nil, default: -> { "getdate()" }
     t.string "CompanyName", limit: 255
     t.string "TenantAddress", limit: 255
-    t.index ["Email"], name: "UQ__Users__A9D10534EF19B356", unique: true
-    t.check_constraint "[Role]='Landlord' OR [Role]='Tenant' OR [Role]='Mediator' OR [Role]='Admin'", name: "CK__Users__Role__38996AB5"
+    t.index ["Email"], name: "UQ__Users__A9D105341E486B7A", unique: true
+    t.check_constraint "[Role]='Landlord' OR [Role]='Tenant' OR [Role]='Mediator' OR [Role]='Admin'", name: "CK__Users__Role__2EA5EC27"
   end
 
-  add_foreign_key "ConversationMediators", "MessageStrings", column: "ConversationID", primary_key: "ConversationID", name: "FK__Conversat__Conve__47DBAE45", on_delete: :cascade
-  add_foreign_key "ConversationMediators", "Users", column: "AssignedByAdminID", primary_key: "UserID", name: "FK__Conversat__Assig__48CFD27E"
-  add_foreign_key "ConversationMediators", "Users", column: "MediatorID", primary_key: "UserID", name: "FK__Conversat__Media__46E78A0C"
-  add_foreign_key "FileAttachments", "FileDrafts", column: "FileID", primary_key: "FileID", name: "FK__FileAttac__FileI__68487DD7"
-  add_foreign_key "FileAttachments", "Messages", column: "MessageID", primary_key: "MessageID", name: "FK__FileAttac__Messa__693CA210"
-  add_foreign_key "FileDrafts", "Users", column: "CreatorID", primary_key: "UserID", name: "FK__FileDraft__Creat__6477ECF3", on_delete: :cascade
-  add_foreign_key "Mediators", "Users", column: "UserID", primary_key: "UserID", name: "FK__Mediators__UserI__4316F928", on_delete: :cascade
-  add_foreign_key "Messages", "MessageStrings", column: "ConversationID", primary_key: "ConversationID", name: "FK__Messages__Conver__5EBF139D", on_delete: :cascade
-  add_foreign_key "Messages", "Users", column: "SenderID", primary_key: "UserID", name: "FK__Messages__Sender__5FB337D6", on_delete: :cascade
-  add_foreign_key "PrimaryMessageGroups", "MessageStrings", column: "ConversationID", primary_key: "ConversationID", name: "FK__PrimaryMe__Conve__5165187F", on_delete: :cascade
-  add_foreign_key "PrimaryMessageGroups", "ScreeningQuestions", column: "LandlordScreeningID", primary_key: "ScreeningID", name: "FK__PrimaryMe__Landl__5535A963"
-  add_foreign_key "PrimaryMessageGroups", "ScreeningQuestions", column: "TenantScreeningID", primary_key: "ScreeningID", name: "FK__PrimaryMe__Tenan__5629CD9C"
-  add_foreign_key "PrimaryMessageGroups", "Users", column: "LandlordID", primary_key: "UserID", name: "FK__PrimaryMe__Landl__534D60F1"
-  add_foreign_key "PrimaryMessageGroups", "Users", column: "MediatorID", primary_key: "UserID", name: "FK__PrimaryMe__Media__59FA5E80", on_delete: :nullify
-  add_foreign_key "PrimaryMessageGroups", "Users", column: "TenantID", primary_key: "UserID", name: "FK__PrimaryMe__Tenan__52593CB8"
-  add_foreign_key "ScreeningQuestions", "Users", column: "UserID", primary_key: "UserID", name: "FK__Screening__UserI__3C69FB99", on_delete: :cascade
-  add_foreign_key "SideMessageGroups", "MessageStrings", column: "ConversationID", primary_key: "ConversationID", name: "FK__SideMessa__Conve__4E88ABD4", on_delete: :cascade
-  add_foreign_key "SideMessageGroups", "Users", column: "MediatorID", primary_key: "UserID", name: "FK__SideMessa__Media__4D94879B"
-  add_foreign_key "SideMessageGroups", "Users", column: "UserID", primary_key: "UserID", name: "FK__SideMessa__UserI__4CA06362"
-  add_foreign_key "UserActivityLogs", "Users", column: "UserID", primary_key: "UserID", name: "FK__UserActiv__UserI__6C190EBB", on_delete: :cascade
+  add_foreign_key "ConversationMediators", "MessageStrings", column: "ConversationID", primary_key: "ConversationID", name: "FK__Conversat__Conve__3DE82FB7", on_delete: :cascade
+  add_foreign_key "ConversationMediators", "Users", column: "AssignedByAdminID", primary_key: "UserID", name: "FK__Conversat__Assig__3EDC53F0"
+  add_foreign_key "ConversationMediators", "Users", column: "MediatorID", primary_key: "UserID", name: "FK__Conversat__Media__3CF40B7E"
+  add_foreign_key "FileAttachments", "FileDrafts", column: "FileID", primary_key: "FileID", name: "FK__FileAttac__FileI__5E54FF49"
+  add_foreign_key "FileAttachments", "Messages", column: "MessageID", primary_key: "MessageID", name: "FK__FileAttac__Messa__5F492382"
+  add_foreign_key "FileDrafts", "Users", column: "CreatorID", primary_key: "UserID", name: "FK__FileDraft__Creat__5A846E65", on_delete: :cascade
+  add_foreign_key "Mediators", "Users", column: "UserID", primary_key: "UserID", name: "FK__Mediators__UserI__39237A9A", on_delete: :cascade
+  add_foreign_key "Messages", "MessageStrings", column: "ConversationID", primary_key: "ConversationID", name: "FK__Messages__Conver__54CB950F", on_delete: :cascade
+  add_foreign_key "Messages", "Users", column: "SenderID", primary_key: "UserID", name: "FK__Messages__Sender__55BFB948", on_delete: :cascade
+  add_foreign_key "PrimaryMessageGroups", "MessageStrings", column: "ConversationID", primary_key: "ConversationID", name: "FK__PrimaryMe__Conve__477199F1", on_delete: :cascade
+  add_foreign_key "PrimaryMessageGroups", "ScreeningQuestions", column: "LandlordScreeningID", primary_key: "ScreeningID", name: "FK__PrimaryMe__Landl__4B422AD5"
+  add_foreign_key "PrimaryMessageGroups", "ScreeningQuestions", column: "TenantScreeningID", primary_key: "ScreeningID", name: "FK__PrimaryMe__Tenan__4C364F0E"
+  add_foreign_key "PrimaryMessageGroups", "Users", column: "LandlordID", primary_key: "UserID", name: "FK__PrimaryMe__Landl__4959E263"
+  add_foreign_key "PrimaryMessageGroups", "Users", column: "MediatorID", primary_key: "UserID", name: "FK__PrimaryMe__Media__5006DFF2", on_delete: :nullify
+  add_foreign_key "PrimaryMessageGroups", "Users", column: "TenantID", primary_key: "UserID", name: "FK__PrimaryMe__Tenan__4865BE2A"
+  add_foreign_key "ScreeningQuestions", "Users", column: "UserID", primary_key: "UserID", name: "FK__Screening__UserI__32767D0B", on_delete: :cascade
+  add_foreign_key "SideMessageGroups", "MessageStrings", column: "ConversationID", primary_key: "ConversationID", name: "FK__SideMessa__Conve__44952D46", on_delete: :cascade
+  add_foreign_key "SideMessageGroups", "Users", column: "MediatorID", primary_key: "UserID", name: "FK__SideMessa__Media__43A1090D"
+  add_foreign_key "SideMessageGroups", "Users", column: "UserID", primary_key: "UserID", name: "FK__SideMessa__UserI__42ACE4D4"
+  add_foreign_key "UserActivityLogs", "Users", column: "UserID", primary_key: "UserID", name: "FK__UserActiv__UserI__6225902D", on_delete: :cascade
 end

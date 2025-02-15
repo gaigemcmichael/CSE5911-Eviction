@@ -37,3 +37,5 @@
 # Ignore database.yml and db init
 app/DBInitTest.sql
 config/database.yml
+
+db/schema.rb
