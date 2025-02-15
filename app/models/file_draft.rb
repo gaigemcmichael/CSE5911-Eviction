@@ -1,0 +1,2 @@
+class FileDraft < ApplicationRecord
+end

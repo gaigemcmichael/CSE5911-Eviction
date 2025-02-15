@@ -1,0 +1,2 @@
+class SideMessageGroup < ApplicationRecord
+end
