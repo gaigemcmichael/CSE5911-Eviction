@@ -21,7 +21,7 @@ Rails.application.routes.draw do
   resources :documents, only: [:index, :show, :create, :destroy]
   resources :resources, only: [:index]
   resources :mediations, only: [:index, :show, :create, :destroy]
-  resources :accounts, only: [:index, :show, :create, :destroy]
+  resources :accounts, only: [:index, :show, :create, :destroy], as: "admin_accounts"
   resource :system_data, only: [:show]
   resource :account, only: [:show, :edit, :update]
 
