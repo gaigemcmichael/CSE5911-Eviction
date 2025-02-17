@@ -6,7 +6,7 @@ Rails.application.routes.draw do
   delete "/logout", to: "sessions#destroy"  # This one wont work and I want it to, unsure why
   get "/logout", to: "sessions#destroy"  # This fixes the above one
  
-  get "/dashboard", to: "dashboard#index"  # Dashboard Page
+  get "/dashboard", to: "dashboard#index", as: "dashboard" # Dashboard Page
 
   # Signup route ideas - not implemented
   get "/signup", to: "users#new"
