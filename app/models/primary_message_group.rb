@@ -1,3 +1,3 @@
 class PrimaryMessageGroup < ApplicationRecord
-    PrimaryMessageGroups
+    self.table_name = "PrimaryMessageGroups"
 end
