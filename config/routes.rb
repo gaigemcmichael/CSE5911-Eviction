@@ -1,4 +1,5 @@
 Rails.application.routes.draw do
+  get "messages/index"
   root "sessions#new"  # Home Page
   get "/login", to: "sessions#new"
   post "/login", to: "sessions#create"
@@ -22,6 +23,7 @@ Rails.application.routes.draw do
   resources :resources, only: [:index]
   resources :mediations, only: [:index, :show, :create, :destroy]
   resources :accounts, only: [:index, :show, :create, :destroy], as: "admin_accounts"
+  resources :messages, only: [:index]
   resource :system_data, only: [:show]
   resource :account, only: [:show, :edit, :update]
 

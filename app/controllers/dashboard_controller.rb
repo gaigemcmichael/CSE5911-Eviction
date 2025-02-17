@@ -3,7 +3,6 @@ class DashboardController < ApplicationController
     before_action :set_user
 
     def index
-      @user = User.find(session[:user_id])
       case @user.Role
       when "Landlord"
         render "dashboard/index"
