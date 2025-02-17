@@ -1,0 +1,12 @@
+<% case @user.Role %>
+  <% when "Landlord" %>
+    <%= render "navbars/landlord_navbar" %>
+  <% when "Tenant" %>
+    <%= render "navbars/tenant_navbar" %>
+  <% when "Admin" %>
+    <%= render "navbars/admin_navbar" %>
+  <% when "Mediator" %>
+    <%= render "navbars/mediator_navbar" %>
+  <% else %>
+    <p>Error: Invalid Role.</p>
+<% end %>
