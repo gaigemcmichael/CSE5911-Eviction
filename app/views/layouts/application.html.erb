@@ -23,6 +23,9 @@
   </head>
 
   <body>
+    <% unless (controller_name == "sessions" && action_name == "new")  || (controller_name == "users" && action_name == "new") %>
+      <%= render "shared/navbar" if @user %>
+    <% end %>
     <%= yield %>
   </body>
 </html>
