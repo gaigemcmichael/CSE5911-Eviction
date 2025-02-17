@@ -1,4 +1,9 @@
 Rails.application.routes.draw do
+  get "account/show"
+  get "account/edit"
+  get "account/update"
+  get "account/index"
+  get "accounts/index"
   get "documents/index"
   get "messages/index"
   root "sessions#new"  # Home Page
@@ -19,6 +24,11 @@ Rails.application.routes.draw do
   get 'dashboard/admin', to: 'dashboard#admin', as: 'admin_dashboard'
   get 'dashboard/mediator', to: 'dashboard#mediator', as: 'mediator_dashboard'
 
+  # User account management
+  get '/account', to: 'account#show'
+  get '/account/edit', to: 'account#edit'
+  patch '/account', to: 'account#update'
+
   resources :messages, only: [:index, :show, :create, :destroy]
   resources :documents, only: [:index, :show, :create, :destroy]
   resources :resources, only: [:index]
@@ -27,6 +37,5 @@ Rails.application.routes.draw do
   resources :messages, only: [:index]
   resources :documents, only: [:index]
   resource :system_data, only: [:show]
-  resource :account, only: [:show, :edit, :update]
-
+  #resource :account, only: [:show, :edit, :update]
 end
