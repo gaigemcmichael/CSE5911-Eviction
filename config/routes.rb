@@ -1,4 +1,5 @@
 Rails.application.routes.draw do
+  get "documents/index"
   get "messages/index"
   root "sessions#new"  # Home Page
   get "/login", to: "sessions#new"
@@ -24,6 +25,7 @@ Rails.application.routes.draw do
   resources :mediations, only: [:index, :show, :create, :destroy]
   resources :accounts, only: [:index, :show, :create, :destroy], as: "admin_accounts"
   resources :messages, only: [:index]
+  resources :documents, only: [:index]
   resource :system_data, only: [:show]
   resource :account, only: [:show, :edit, :update]
 
