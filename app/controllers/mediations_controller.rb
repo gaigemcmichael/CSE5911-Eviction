@@ -14,6 +14,7 @@ class MediationsController < ApplicationController
   end
 
   def create
+
   end
 
   def respond
@@ -32,7 +33,7 @@ class MediationsController < ApplicationController
   end
 
   def require_tenant_or_landlord_role
-    unless ["Tenant", "Landlord"].include?(current_user.Role)
+    unless ["Tenant", "Landlord"].include?(@user.Role)
       flash[:alert] = "You are not authorized to access this page."
       redirect_to root_path
     end

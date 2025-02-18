@@ -1,0 +1,5 @@
+<%= form_with url: mediations_path, method: :post do |form| %>
+  <%= form.label :landlord_email, "Landlord Email" %>
+  <%= form.text_field :landlord_email, required: true, placeholder: "Enter landlord's email" %>
+  <%= form.submit "Request Mediation" %>
+<% end %>
