@@ -37,5 +37,8 @@ Rails.application.routes.draw do
   resources :messages, only: [:index]
   resources :documents, only: [:index]
   resource :system_data, only: [:show]
+  resources :mediations, only: [:index, :create] do
+    post :respond, on: :member
+  end
   #resource :account, only: [:show, :edit, :update]
 end
