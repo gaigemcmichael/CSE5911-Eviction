@@ -1,2 +1,8 @@
-<h1>Tenant Mediation Messages</h1>
+<h1>Tenant Mediation/Messages</h1>
 <p>Welcome, <%= @user.FName %>! This is the tenant messages/mediations page.</p>
+
+<% if @show_mediation_view %>
+    <p>This indicates a mediation is already in progress </p>
+<% else %>
+    <p>This indicates a mediation needs to be created</p> 
+<% end %>
