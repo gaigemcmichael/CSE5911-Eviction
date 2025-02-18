@@ -9,6 +9,9 @@ class UsersController < ApplicationController
       if @user.save
         # Automatically log the user in after signup
         session[:user_id] = @user.UserID
+
+        UserMailer.welcome_email(@user).deliver_later
+
         redirect_to dashboard_path, notice: "Account created successfully!"
       else
         flash.now[:alert] = "There was a problem creating your account."

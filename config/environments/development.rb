@@ -31,11 +31,28 @@ Rails.application.configure do
   # Store uploaded files on the local file system (see config/storage.yml for options).
   config.active_storage.service = :local
 
-  # Don't care if the mailer can't send.
-  config.action_mailer.raise_delivery_errors = false
+  # Use smtp for mailing
+  config.action_mailer.delivery_method = :smtp
+
+  # Configuring smpt settings, will need changed to proper MSA.
+  config.action_mailer.smtp_settings = {
+    address: "smtp.gmail.com",  
+    port: 587,
+    domain: "gmail.com",
+    authentication: "plain",
+    enable_starttls_auto: true,
+    user_name: ENV["GMAIL_USERNAME"], # Use environment variables for security
+    password: ENV["GMAIL_PASSWORD"]   # Use environment variables for security
+  }
+
+  # Show error if mailer can't send
+  config.action_mailer.raise_delivery_errors = true
 
   # Make template changes take effect immediately.
   config.action_mailer.perform_caching = false
+
+  # Mailer performs deliveries
+  config.action_mailer.perform_deliveries = true
 
   # Set localhost to be used by links generated in mailer templates.
   config.action_mailer.default_url_options = { host: "localhost", port: 3000 }
