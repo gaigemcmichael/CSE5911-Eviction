@@ -4,5 +4,8 @@
 <% if @show_mediation_view %>
     <p>This indicates a mediation is already in progress </p>
 <% else %>
-    <p>This indicates a mediation needs to be created</p> 
+    <p>This indicates no mediations exist and a mediation needs to be created</p> 
+
+    <%= render "mediations/tenant_create_mediation_form" %>
+
 <% end %>
