@@ -5,9 +5,12 @@ class MessagesController < ApplicationController
   def index
     case @user.Role
     when "Tenant"
-      @landlords = User.where(Role: 'Landlord').order(:CompanyName)
+      @mediation = PrimaryMessageGroup.find_by(TenantID: @user.UserID) 
+      @show_mediation_view = @mediation.present?
+      @landlords = User.where(Role: 'Landlord').order(:CompanyName) unless @mediation
       render "messages/tenant_index"
     when "Landlord"
+      @mediation = PrimaryMessageGroup.where(LandlordID: @user.UserID)
       render "messages/landlord_index"
     else
       render plain: "Access Denied", status: :forbidden

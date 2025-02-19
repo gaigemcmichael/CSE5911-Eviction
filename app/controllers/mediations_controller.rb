@@ -5,17 +5,6 @@ class MediationsController < ApplicationController
   
 
   def index
-    if @user.Role == "Tenant"
-      @mediation = PrimaryMessageGroups.find_by(TenantID: @user.UserID) # Find the single mediation the tenant is involved in.
-      # If no mediation exists, load available landlords
-      @landlords = User.where(Role: "Landlord").order(:CompanyName) unless @mediation
-    elsif @user.Role == "Landlord"
-      @mediation = PrimaryMessageGroups.where(LandlordID: @user.UserID) # Find the possibly multiple mediations the landlord is involve in.
-    end 
-
-    # Something to consider is that there are the side message groups between the user and the mediator (private 2-person message channgel) so we probably need to show this too - Matt
-
-    @show_mediation_view = @mediation.present? # this is used by the view to determine if we show current mediations or if we need to show create mediations
   end
 
  # Create a new mediation using the selected landlord
