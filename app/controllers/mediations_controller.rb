@@ -1,25 +1,91 @@
 class MediationsController < ApplicationController
   before_action :require_login
-  before_action :require_tenant_or_landlord_role, only: [:index, :create, :respond]
   before_action :set_user
+  before_action :require_tenant_or_landlord_role, only: [:index, :create, :respond]
+  
 
   def index
     if @user.Role == "Tenant"
       @mediation = PrimaryMessageGroups.find_by(TenantID: @user.UserID) # Find the single mediation the tenant is involved in.
+      # If no mediation exists, load available landlords
+      @landlords = User.where(Role: "Landlord").order(:CompanyName) unless @mediation
     elsif @user.Role == "Landlord"
       @mediation = PrimaryMessageGroups.where(LandlordID: @user.UserID) # Find the possibly multiple mediations the landlord is involve in.
     end 
 
+    # Something to consider is that there are the side message groups between the user and the mediator (private 2-person message channgel) so we probably need to show this too - Matt
+
     @show_mediation_view = @mediation.present? # this is used by the view to determine if we show current mediations or if we need to show create mediations
   end
 
+ # Create a new mediation using the selected landlord
   def create
+    unless @user.Role == "Tenant"
+      redirect_to mediations_path, alert: "Only tenants can start a mediation." and return
+    end
 
+    #filling out landlord form
+    landlord = nil
+    if params[:landlord_id].present?
+      landlord = User.find_by(UserID: params[:landlord_id])
+    elsif params[:landlord_email].present?
+      landlord = User.find_by(Email: params[:landlord_email])
+    else
+      flash.now[:alert] = "Please select a landlord from the list or enter a landlord's email."
+      @landlords = User.where(Role: "Landlord").order(:CompanyName)
+      render :index and return
+    end
+
+    #make sure they fill in a proper land lord (probably unnecesary?)
+    unless landlord && landlord.Role == "Landlord"
+      flash.now[:alert] = "Invalid landlord selected."
+      @landlords = User.where(Role: "Landlord").order(:CompanyName)
+      render :index and return
+    end
+
+    #update DB
+    ActiveRecord::Base.transaction do
+      # Create a new conversation
+      message_string = MessageString.create!(Role: 'Primary')
+      Rails.logger.debug "Created MessageString: #{message_string.inspect}"
+
+      conversation_id = message_string.ConversationID
+      Rails.logger.debug "Extracted ConversationID: #{conversation_id.inspect}"
+
+
+      # Create the mediation record linking tenant and landlord, maybe these flags should be nil not false?
+      mediation = PrimaryMessageGroup.create!(
+        ConversationID: conversation_id,
+        TenantID: @user.UserID,
+        LandlordID: landlord.UserID,
+        CreatedAt: Time.current,
+        GoodFaith: false,
+        MediatorRequested: false,
+        MediatorAssigned: false,
+        EndOfConversationGoodFaithLandlord: false,
+        EndOfConversationGoodFaithTenant: false
+      )
+
+      #I dont think this works yet, but I want to fix the recognition of active mediations first before working more on this portion (since it is currently very hard/impossible to test without that)
+      Rails.logger.debug "Created Mediation: #{mediation.inspect}"
+
+      redirect_to mediation_path(mediation), notice: "Mediation started with #{landlord.CompanyName}."
+    end
+  end 
+
+  # Display the form to start a new mediation (only tenants can start)
+  def new
+    if @user.Role != "Tenant"
+      redirect_to mediations_path, alert: "Only tenants can start a mediation." and return
+    end
+
+    # Load all landlords ordered by CompanyName
+    @landlords = User.where(Role: "Landlord").order(:CompanyName)
   end
 
   def respond
   end
-
+  
   private 
 
   def set_user

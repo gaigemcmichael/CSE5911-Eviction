@@ -8,4 +8,14 @@
 
     <%= render "mediations/tenant_create_mediation_form" %>
 
+    <%= form_with url: mediations_path, method: :post, local: true do |f| %>
+    <div>
+        <%= f.label :landlord_id, "Select a Landlord:" %>
+        <%= f.select :landlord_id, options_from_collection_for_select(@landlords, "UserID", "CompanyName"), prompt: "Choose a Landlord" %>
+    </div>
+    <p>
+    <div>
+        <%= f.submit "Start Mediation" %>
+    </div>
+  <% end %>
 <% end %>
