@@ -32,7 +32,7 @@ Rails.application.routes.draw do
   resources :messages, only: [:index, :show, :create, :destroy]
   resources :documents, only: [:index, :show, :create, :destroy]
   resources :resources, only: [:index]
-  resources :mediations, only: [:index, :show, :create, :destroy]
+  resources :mediations, only: [:index, :new, :create, :show]
   resources :accounts, only: [:index, :show, :create, :destroy], as: "admin_accounts"
   resources :messages, only: [:index]
   resources :documents, only: [:index]

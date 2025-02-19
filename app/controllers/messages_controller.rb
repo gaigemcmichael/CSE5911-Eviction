@@ -5,6 +5,7 @@ class MessagesController < ApplicationController
   def index
     case @user.Role
     when "Tenant"
+      @landlords = User.where(Role: 'Landlord').order(:CompanyName)
       render "messages/tenant_index"
     when "Landlord"
       render "messages/landlord_index"
