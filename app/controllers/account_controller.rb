@@ -12,7 +12,7 @@ class AccountController < ApplicationController
   end
 
   private
-  
+
   def require_login
     unless session[:user_id]
       redirect_to login_path, alert: "You must be logged in to access the dashboard."
