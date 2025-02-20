@@ -77,7 +77,7 @@ jobs:
         ports:
           - 1433:1433
         options: > 
-          --health-cmd "bash -c 'echo > /dev/tcp/localhost/1433'"
+          --health-cmd="bash -c 'echo > /dev/tcp/localhost/1433'"
           --health-interval=10s
           --health-timeout=5s
           --health-retries=5
