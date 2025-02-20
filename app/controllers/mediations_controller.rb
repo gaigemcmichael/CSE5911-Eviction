@@ -1,19 +1,19 @@
 class MediationsController < ApplicationController
   before_action :require_login
   before_action :set_user
-  before_action :require_tenant_or_landlord_role, only: [:index, :create, :respond]
-  
+  before_action :require_tenant_or_landlord_role, only: [ :index, :create, :respond ]
+
 
   def index
   end
 
- # Create a new mediation using the selected landlord
+  # Create a new mediation using the selected landlord
   def create
     unless @user.Role == "Tenant"
       redirect_to mediations_path, alert: "Only tenants can start a mediation." and return
     end
 
-    #filling out landlord form
+    # filling out landlord form
     landlord = nil
     if params[:landlord_id].present?
       landlord = User.find_by(UserID: params[:landlord_id])
@@ -25,17 +25,17 @@ class MediationsController < ApplicationController
       render :index and return
     end
 
-    #make sure they fill in a proper land lord (probably unnecesary?)
+    # make sure they fill in a proper land lord (probably unnecesary?)
     unless landlord && landlord.Role == "Landlord"
       flash.now[:alert] = "Invalid landlord selected."
       @landlords = User.where(Role: "Landlord").order(:CompanyName)
       render :index and return
     end
 
-    #update DB
+    # update DB
     ActiveRecord::Base.transaction do
       # Create a new conversation
-      message_string = MessageString.create!(Role: 'Primary')
+      message_string = MessageString.create!(Role: "Primary")
       Rails.logger.debug "Created MessageString: #{message_string.inspect}"
 
       conversation_id = message_string.ConversationID
@@ -55,12 +55,12 @@ class MediationsController < ApplicationController
         EndOfConversationGoodFaithTenant: false
       )
 
-      #I dont think this works yet, but I want to fix the recognition of active mediations first before working more on this portion (since it is currently very hard/impossible to test without that)
+      # I dont think this works yet, but I want to fix the recognition of active mediations first before working more on this portion (since it is currently very hard/impossible to test without that)
       Rails.logger.debug "Created Mediation: #{mediation.inspect}"
 
       redirect_to mediation_path(mediation), notice: "Mediation started with #{landlord.CompanyName}."
     end
-  end 
+  end
 
   # Display the form to start a new mediation (only tenants can start)
   def new
@@ -74,8 +74,8 @@ class MediationsController < ApplicationController
 
   def respond
   end
-  
-  private 
+
+  private
 
   def set_user
     @user = User.find(session[:user_id])
@@ -88,7 +88,7 @@ class MediationsController < ApplicationController
   end
 
   def require_tenant_or_landlord_role
-    unless ["Tenant", "Landlord"].include?(@user.Role)
+    unless [ "Tenant", "Landlord" ].include?(@user.Role)
       flash[:alert] = "You are not authorized to access this page."
       redirect_to root_path
     end
