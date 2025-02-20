@@ -1,35 +1,43 @@
-<h2>Sign Up</h2>
+<div class="signup-container">
+  <div class="signup-card">
+    <h2>Sign Up</h2>
 
-<%= form_with model: @user, url: signup_path, local: true do |f| %>
-  <div>
-    <%= f.label :FName, "First Name" %><br>
-    <%= f.text_field :FName, required: true %>
-  </div>
+    <%= form_with model: @user, url: signup_path, local: true, class: "signup-form" do |f| %>
+      <div class="input-group">
+        <%= f.label :FName, "First Name" %>
+        <%= f.text_field :FName, required: true, class: "signup-input" %>
+      </div>
 
-  <div>
-    <%= f.label :LName, "Last Name" %><br>
-    <%= f.text_field :LName, required: true %>
-  </div>
+      <div class="input-group">
+        <%= f.label :LName, "Last Name" %>
+        <%= f.text_field :LName, required: true, class: "signup-input" %>
+      </div>
 
-  <div>
-    <%= f.label :Email, "Email" %><br>
-    <%= f.email_field :Email, required: true %>
-  </div>
+      <div class="input-group">
+        <%= f.label :Email, "Email" %>
+        <%= f.email_field :Email, required: true, class: "signup-input" %>
+      </div>
 
-  <div>
-    <%= f.label :Password, "Password" %><br>
-    <%= f.password_field :Password, required: true %>
-  </div>
+      <div class="input-group">
+        <%= f.label :Password, "Password" %>
+        <%= f.password_field :Password, required: true, class: "signup-input" %>
+      </div>
 
-  <div>
-    <p>Please select your role:</p>
-    <%= f.radio_button :Role, "Tenant", checked: true %>
-    <%= f.label :Role, "Tenant", value: "Tenant" %><br>
-    <%= f.radio_button :Role, "Landlord" %>
-    <%= f.label :Role, "Landlord", value: "Landlord" %>
-  </div>
+      <div class="role-selection">
+        <p>Please select your role:</p>
+        <label class="role-option">
+          <%= f.radio_button :Role, "Tenant", checked: true, class: "signup-radio" %>
+          Tenant
+        </label>
+        <label class="role-option">
+          <%= f.radio_button :Role, "Landlord", class: "signup-radio" %>
+          Landlord
+        </label>
+      </div>
 
-  <div>
-    <%= f.submit "Sign Up" %>
+      <div>
+        <%= f.submit "Sign Up", class: "signup-btn" %>
+      </div>
+    <% end %>
   </div>
-<% end %>
+</div>
