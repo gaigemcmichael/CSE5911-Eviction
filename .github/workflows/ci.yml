@@ -76,7 +76,7 @@ jobs:
           SA_PASSWORD: YourStrong@Passw0rd
         ports:
           - 1433:1433
-        options: "--health-cmd=\"exit 0\" --health-interval=10s --health-timeout=5s --health-retries=5"
+        options: "--memory=2g --health-cmd=\"exit 0\" --health-interval=10s --health-timeout=5s --health-retries=5"
 
     steps:
       - name: Install packages
@@ -97,12 +97,21 @@ jobs:
       - name: Ensure all bin scripts are executable
         run: chmod +x bin/*
 
+      - name: Check SQL Server container status
+        run: docker ps -a
+
+      - name: Check SQL Server logs
+        run: docker logs mssql
+
       - name: Wait for SQL Server to be ready
         run: |
-          until /opt/mssql-tools/bin/sqlcmd -S localhost -U sa -P 'YourStrong@Passw0rd' -Q 'SELECT 1'; do
-            echo "Waiting for SQL Server to start..."
-            sleep 5
+          for i in {1..30}; do
+            /opt/mssql-tools/bin/sqlcmd -S mssql -U sa -P 'YourStrong@Passw0rd' -Q 'SELECT 1' && echo "SQL Server is ready!" && exit 0
+            echo "Waiting for SQL Server to start... attempt $i"
+            docker logs mssql
+            sleep 15
           done
+          echo "SQL Server failed to start in time" && exit 1
 
       - name: Create test database
         run: /opt/mssql-tools/bin/sqlcmd -S localhost -U sa -P 'YourStrong@Passw0rd' -Q "CREATE DATABASE test_db"
