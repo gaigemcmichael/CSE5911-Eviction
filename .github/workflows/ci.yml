@@ -41,6 +41,9 @@ jobs:
           ruby-version: .ruby-version
           bundler-cache: true
 
+      - name: Ensure all bin scripts are executable
+        run: chmod +x bin/*
+
       - name: Scan for security vulnerabilities in JavaScript dependencies
         run: bin/importmap audit
 
@@ -65,12 +68,20 @@ jobs:
   test:
     runs-on: ubuntu-latest
 
-    # services:
-    #  redis:
-    #    image: redis
-    #    ports:
-    #      - 6379:6379
-    #    options: --health-cmd "redis-cli ping" --health-interval 10s --health-timeout 5s --health-retries 5
+    services:
+      mssql:
+        image: mcr.microsoft.com/mssql/server:2019-latest
+        env:
+          ACCEPT_EULA: Y
+          SA_PASSWORD: YourStrong@Passw0rd
+        ports:
+          - 1433:1433
+        options: > 
+          --health-cmd "bash -c 'echo > /dev/tcp/localhost/1433'" 
+          --health-interval 10s 
+          --health-timeout 5s 
+          --health-retries 5
+
     steps:
       - name: Install packages
         run: sudo apt-get update && sudo apt-get install --no-install-recommends -y build-essential git pkg-config google-chrome-stable
@@ -83,10 +94,23 @@ jobs:
         with:
           ruby-version: .ruby-version
           bundler-cache: true
+      
+      - name: Prepare Database Configuration
+        run: cp config/database.yml.ci config/database.yml
 
       - name: Ensure all bin scripts are executable
         run: chmod +x bin/*
-        
+
+      - name: Wait for SQL Server to be ready
+        run: |
+          until /opt/mssql-tools/bin/sqlcmd -S localhost -U sa -P 'YourStrong@Passw0rd' -Q 'SELECT 1'; do
+            echo "Waiting for SQL Server to start..."
+            sleep 5
+          done
+
+      - name: Create test database
+        run: /opt/mssql-tools/bin/sqlcmd -S localhost -U sa -P 'YourStrong@Passw0rd' -Q "CREATE DATABASE test_db"
+
       - name: Run tests
         env:
           RAILS_ENV: test
