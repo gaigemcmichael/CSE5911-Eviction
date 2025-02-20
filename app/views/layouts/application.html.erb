@@ -8,6 +8,10 @@
     <%= csrf_meta_tags %>
     <%= csp_meta_tag %>
 
+    <%# Load Global Stylesheets %>
+    <%= stylesheet_link_tag "base.css", media: "all" %>
+    <%= stylesheet_link_tag "navbar.css", media: "all" %>
+
     <%= yield :head %>
 
     <%# Enable PWA manifest for installable apps (make sure to enable in config/routes.rb too!) %>

@@ -8,3 +8,8 @@
  *
  * Consider organizing styles into separate files for maintainability.
  */
+
+ @import "base";
+ @import "login";
+ @import "signup";
+ @import "navbar"; 
