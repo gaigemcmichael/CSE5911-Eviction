@@ -36,7 +36,7 @@ Rails.application.configure do
 
   # Configuring smpt settings, will need changed to proper MSA.
   config.action_mailer.smtp_settings = {
-    address: "smtp.gmail.com",  
+    address: "smtp.gmail.com",
     port: 587,
     domain: "gmail.com",
     authentication: "plain",

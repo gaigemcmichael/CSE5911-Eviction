@@ -2,7 +2,7 @@ class UsersController < ApplicationController
     def new
       @user = User.new
     end
-  
+
     def create
       # Create a new user using strong parameters.
       @user = User.new(user_params)
@@ -18,11 +18,11 @@ class UsersController < ApplicationController
         render :new
       end
     end
-  
+
     private
-  
+
     # Adjust the permitted parameters to match your Users table column names.
     def user_params
       params.require(:user).permit(:Email, :Password, :FName, :LName, :Role, :CompanyName, :TenantAddress)
     end
-  end
+end
