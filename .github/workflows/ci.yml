@@ -56,6 +56,9 @@ jobs:
           ruby-version: .ruby-version
           bundler-cache: true
 
+      - name: Ensure RuboCop is executable
+        run: chmod +x bin/rubocop
+
       - name: Lint code for consistent style
         run: bin/rubocop -f github
 
@@ -81,6 +84,9 @@ jobs:
           ruby-version: .ruby-version
           bundler-cache: true
 
+      - name: Ensure all bin scripts are executable
+        run: chmod +x bin/*
+        
       - name: Run tests
         env:
           RAILS_ENV: test
