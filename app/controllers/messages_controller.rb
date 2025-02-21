@@ -3,6 +3,8 @@ class MessagesController < ApplicationController
   before_action :set_user
 
   def index
+    Rails.logger.debug "DEBUG: Entered MessagesController#index with params: #{params.inspect}"
+
     case @user.Role
     when "Tenant"
       @mediation = PrimaryMessageGroup.find_by(TenantID: @user.UserID)
@@ -10,8 +12,8 @@ class MessagesController < ApplicationController
       @landlords = User.where(Role: "Landlord").order(:CompanyName) unless @mediation
       render "messages/tenant_index"
     when "Landlord"
-      @mediation = PrimaryMessageGroup.where(LandlordID: @user.UserID)
-      @show_mediation_view = @mediation.present?
+      @mediation = PrimaryMessageGroup.where(LandlordID: @user.UserID).includes(:tenant)
+      @show_mediation_view = @mediation.any?
       render "messages/landlord_index"
     else
       render plain: "Access Denied", status: :forbidden

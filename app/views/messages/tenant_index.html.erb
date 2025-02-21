@@ -2,20 +2,12 @@
 <p>Welcome, <%= @user.FName %>! This is the tenant messages/mediations page.</p>
 
 <% if @show_mediation_view %>
-    <p>This indicates a mediation is already in progress, Text chat room should show up here </p>
-<% else %>
-    <p>This indicates no mediations exist and a mediation needs to be created</p> 
-
-    <%= render "mediations/tenant_create_mediation_form" %>
-
-    <%= form_with url: mediations_path, method: :post, local: true do |f| %>
-    <div>
-        <%= f.label :landlord_id, "Select a Landlord:" %>
-        <%= f.select :landlord_id, options_from_collection_for_select(@landlords, "UserID", "CompanyName"), prompt: "Choose a Landlord" %>
-    </div>
-    <p>
-    <div>
-        <%= f.submit "Start Mediation" %>
-    </div>
+  <% if @mediation.accepted_by_landlord %>
+      <p>Mediation was accepted and is in progress.</p>
+  <% else %>
+      <p>Mediation requested. Waiting for the landlord to accept.</p>
   <% end %>
+<% else %>
+  <p>No mediations exist. Create a new mediation request below:</p>
+  <%= render "mediations/tenant_create_mediation_form" %>
 <% end %>
