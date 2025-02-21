@@ -33,7 +33,7 @@ Rails.application.routes.draw do
   resource :system_data, only: [:show]
 
   # Mediations and Related Actions
-  resources :mediations, only: [:index, :new, :create, :show, :edit, :update, :destroy] do
+  resources :mediations, only: [:new, :create, :show, :edit, :update, :destroy] do
     post :accept, on: :member
     post :respond, on: :member
   end
