@@ -11,6 +11,7 @@ class MessagesController < ApplicationController
       render "messages/tenant_index"
     when "Landlord"
       @mediation = PrimaryMessageGroup.where(LandlordID: @user.UserID)
+      @show_mediation_view = @mediation.present?
       render "messages/landlord_index"
     else
       render plain: "Access Denied", status: :forbidden
