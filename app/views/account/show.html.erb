@@ -1,4 +1,48 @@
-<h1>My Account</h1>
-<p><strong>Name:</strong> <%= @user.FName %> <%= @user.LName %></p>
-<p><strong>Email:</strong> <%= @user.Email %></p>
-<p><strong>Role:</strong> <%= @user.Role %></p>
+<div class = "account">
+    <!-- Sidebar -->
+    <div class="sidebar">
+            <ul class="nav-links">
+                <li><a href="#">Personal Details</a></li>
+                <li><a href="#">Password and security</a></li>
+            </ul>
+
+            <div class = "logout-container">
+                <%= link_to "Log Out", logout_path, method: :delete, class: "sidebar-logout" %>
+            </div>
+    </div> 
+
+    <!-- Main Content -->
+    <div class="account-content">
+        <div class="profile-section">
+            <h1>Personal Details</h1>
+            <table class = "personal-details-table">
+                <tr>
+                    <th>Name</th>
+                    <td> <%= @user.FName %> <%= @user.LName %> </td>
+                </tr>
+                <tr>
+                    <th>Email</th>
+                    <td> <%= @user.Email %> </td>
+                </tr>
+                <tr>
+                    <th>Role</th>
+                    <td> <%= @user.Role %> </td>
+                </tr>
+            </table>
+        </div>
+
+        <div class="security-section">
+            <h1>Password and Security</h1>
+            <table class = "pass-security-table">
+                <tr>
+                    <th>Password</th>
+                    <td> *********test </td>
+                </tr>
+                <tr>
+                    <th> ##### </th>
+                    <td> ##### </td>
+                </tr>
+            </table>
+        </div>
+    </div>
+</div>
