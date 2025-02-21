@@ -3,8 +3,6 @@ class MessagesController < ApplicationController
   before_action :set_user
 
   def index
-    Rails.logger.debug "DEBUG: Entered MessagesController#index with params: #{params.inspect}"
-
     case @user.Role
     when "Tenant"
       @mediation = PrimaryMessageGroup.find_by(TenantID: @user.UserID)

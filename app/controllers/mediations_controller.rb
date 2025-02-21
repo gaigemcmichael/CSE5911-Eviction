@@ -3,7 +3,11 @@ class MediationsController < ApplicationController
   before_action :set_user
   before_action :require_tenant_or_landlord_role, only: [ :create, :respond, :accept ]
 
+  def index
+    redirect_to messages_path, alert: "Mediation index is not available. Please use the messages page."
+  end
 
+  # lets a landlord accept a mediation request
   def accept
     mediation = PrimaryMessageGroup.find(params[:id])
     
@@ -18,27 +22,22 @@ class MediationsController < ApplicationController
 
   # Create a new mediation using the selected landlord
   def create
-    Rails.logger.debug "DEBUG: Entered MediationsController#create with params: #{params.inspect}"
 
     unless @user.Role == "Tenant"
-      Rails.logger.error "ERROR: Non-tenant user attempted to create mediation"
       redirect_to mediations_path, alert: "Only tenants can start a mediation." and return
     end
 
-    landlord = find_or_invite_landlord
-    Rails.logger.debug "DEBUG: Found landlord - #{landlord.inspect}"
+    landlord = find_existing_landlord
 
     unless landlord
-      Rails.logger.error "ERROR: No landlord found or invitation sent"
-      redirect_to mediations_path, alert: "Invalid landlord selected or email invitation sent." and return
+      send_landlord_invitation(params[:landlord_email])
+      return
     end
 
     if landlord.persisted?
-      Rails.logger.debug "DEBUG: Starting mediation with existing landlord..."
       start_mediation_with_existing_landlord(landlord)
     else
-      Rails.logger.debug "DEBUG: Sending landlord invitation email..."
-      send_landlord_invitation(params[:landlord_email])
+      redirect_to messages_path, alert: "An unexpected error occurred. Please try again."
     end
   end
 
@@ -57,19 +56,12 @@ class MediationsController < ApplicationController
 
   private
 
-  def find_or_invite_landlord
+  def find_existing_landlord
     if params[:landlord_id].present? && params[:landlord_id] != ""
       User.find_by(UserID: params[:landlord_id])
     elsif params[:landlord_email].present?
-      User.find_by(Email: params[:landlord_email]) || invite_new_landlord(params[:landlord_email])
+      User.find_by(Email: params[:landlord_email])
     end
-  end
-
-  def invite_new_landlord(email)
-    # Create a placeholder landlord record with limited permissions until signup is complete
-    User.create!(Email: email, Role: "Landlord", invited: true)
-  rescue ActiveRecord::RecordInvalid
-    nil
   end
 
   def start_mediation_with_existing_landlord(landlord)
@@ -95,10 +87,14 @@ class MediationsController < ApplicationController
   end
 
   def send_landlord_invitation(email)
-    # TODO: Implement email sending functionality here
-    # e.g., LandlordMailer.invitation_email(email).deliver_later
+    begin
+      LandlordMailer.invitation_email(email, @user).deliver_now
+      flash[:notice] = "No landlord found with that email. An invitation was sent to #{email}. Please check back later to see if they have joined."
+    rescue => e
+      flash[:alert] = "An error occurred while sending the invitation to #{email}."
+    end
 
-    redirect_to mediations_path, notice: "No landlord found with that email. An invitation was sent to #{email}."
+    redirect_to messages_path
   end
 
   def set_user
