@@ -1,0 +1,137 @@
+/* show account container */
+.account {
+    max-width: 1000px;
+    margin: 40px auto;
+    padding: 20px;
+    background: white;
+    border-radius: 10px;
+    /*text-align: center;*/
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.account-content {
+    margin-left: 270px;
+    padding: 20px;
+    background: white;
+    border-top-right-radius: 10px;
+    border-bottom-right-radius: 10px;
+}
+
+.account h1 {
+    color: #102a4d;
+    margin-bottom: 20px;
+    font-size: 1.8rem;
+}
+
+/* Sidebar Navbar */
+.sidebar {
+    width: 200px;
+    background: #102a4d;
+    padding: 20px;
+    text-align: left;
+    border-radius: 10px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    height: 100vh;
+    position: fixed;
+    left: 0;
+    top: 0;
+    margin-top: 20px;
+    color: white;
+    justify-content: space-between;
+}
+
+.sidebar .nav-links {
+    list-style: none;
+    padding: 0;
+    margin-bottom: auto;
+    width: 100%;
+}
+
+.sidebar .nav-links li {
+    width: 100%;
+    margin-bottom: 10px;
+}
+
+.sidebar .nav-links a {
+    color: white;
+    text-decoration: none;
+    font-size: 1rem;
+    padding: 12px 15px;
+    display: block;
+    text-align: left;
+    border-radius: 5px;
+    transition: background 0.3s ease;
+}
+
+.sidebar .nav-links a:hover {
+    background: #007bff;
+} 
+
+/* Logout button */
+.logout-container {
+    width: 100%;
+    margin-top: auto;
+    display: flex;
+    justify-content: center;
+}
+
+.sidebar-logout {
+    background: #d9534f;
+    padding: 12px 20px;
+    text-align: center;
+    font-size: 1rem;
+    color: white;
+    border-radius: 5px;
+    text-decoration: none;
+    transition: background 0.3s ease;
+    display: block;
+    width: 100%;
+    margin-top: 20px;
+    align-self: flex-start;
+    justify-content: space-between;
+}
+
+.sidebar-logout:hover {
+    background: #c9302c;
+}
+
+/* Profile & Security Sections */
+.profile-section, .security-section {
+    background: white;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    margin-bottom: 20px;
+}
+
+.profile-section h1, .security-section h1 {
+    font-size: 1.4rem;
+    color: #102a4d;
+    margin-bottom: 15px;
+}
+
+.personal-details-table, .pass-security-table {
+    width: 100%;
+    border-collapse: collapse;
+    table-layout: fixed;
+}
+
+.personal-details-table th, .pass-security-table th {
+    background: #f1f1f1;
+    font-weight: bold;
+    padding: 12px;
+    border-bottom: 1px solid #ddd;
+    text-align: left;
+    width: 200px;
+}
+
+.personal-details-table td, .pass-security-table td {
+    padding: 12px;
+    border-bottom: 1px solid #ddd;
+    text-align: left;
+}

@@ -18,6 +18,12 @@
       </div>
     <% end %>
 
+    <% if flash[:error] %>
+      <div class="login-error-msg-holder">
+        <p class="login-error-msg"><%= flash[:error] %></p>
+      </div>
+    <% end %>
+
     <p class="login-text">Don't have an account? <%= link_to "Sign up", signup_path, class: "login-link" %></p>
   </div>
 </div>

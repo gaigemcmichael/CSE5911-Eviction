@@ -13,3 +13,6 @@
  @import "login";
  @import "signup";
  @import "navbar"; 
+ 
+ @import "dashboard";
+ @import "account";
