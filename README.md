@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 # CSE5915_Eviction1
 =======
 # README
@@ -25,4 +24,3 @@ Things you may want to cover:
 * Deployment instructions
 
 * ...
->>>>>>> ce19d56 (initial app creation, DB not set to MSsql yet)
