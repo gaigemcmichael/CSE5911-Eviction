@@ -50,6 +50,7 @@
     padding: 0;
     margin-bottom: auto;
     width: 100%;
+    margin-right: 8px;
 }
 
 .sidebar .nav-links li {
@@ -124,6 +125,7 @@
 .personal-details-table th, .pass-security-table th {
     background: #f1f1f1;
     font-weight: bold;
+    vertical-align: middle;
     padding: 12px;
     border-bottom: 1px solid #ddd;
     text-align: left;
@@ -134,4 +136,17 @@
     padding: 12px;
     border-bottom: 1px solid #ddd;
     text-align: left;
+}
+
+/* Icons */
+.profile-section h1 i, .security-section h1 i {
+    margin-right: 8px;
+}
+
+/* Table Icons */
+.personal-details-table th i, .pass-security-table th i {
+    font-size: 14px;
+    margin-right: 5px;
+    position: relative;
+    color: #102a4d;
 }
