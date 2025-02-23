@@ -1,6 +1,3 @@
-<<<<<<< HEAD
-# CSE5915_Eviction1
-=======
 # README
 
 This README would normally document whatever steps are necessary to get the
@@ -25,4 +22,3 @@ Things you may want to cover:
 * Deployment instructions
 
 * ...
->>>>>>> ce19d56 (initial app creation, DB not set to MSsql yet)
