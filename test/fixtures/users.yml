@@ -1,15 +1,23 @@
 # Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
 
 one:
+  UserID: 1
   Email: MyString@email.com
   Password: MyString2
   FName: Jane
   LName: Doe
   Role: Admin
+  CreatedAt: 2025-01-01 00:00:00
+  CompanyName: company1
+  TenantAddress: 111 road, columbus oh
 
 two:
+  UserID: 2
   Email: MyStrings@email.com
   Password: MyString1
   FName: John
   LName: Doe
   Role: Tenant
+  CreatedAt: 2025-02-01 05:00:00
+  CompanyName: company2
+  TenantAddress: 121 road, columbus oh
