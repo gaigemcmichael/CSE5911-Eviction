@@ -1,26 +1,32 @@
-<h1>Landlord Mediation Messages</h1>
-<p>Welcome, <%= @user.FName %>! This is the landlord messages/mediations page.</p>
+<div class = "messages-container">
+    <h1>Landlord Mediation Messages</h1>
+    <p>Welcome, <%= @user.FName %>! This is the landlord messages/mediations page.</p>
 
-<% if @show_mediation_view %>
-    <p>Mediations in progress:</p>
-    <table>
-        <tr>
-            <th>Tenant</th>
-            <th>Actions</th>
-        </tr>
-        <% @mediation.each do |mediation| %>
-            <tr>
-                <td><%= mediation.tenant.FName %> <%= mediation.tenant.LName %></td>
-                <td>
-                    <% if mediation.accepted_by_landlord %>
-                        <%= link_to "View Mediation", mediation_path(mediation) %>
-                    <% else %>
-                        <%= button_to "Accept Mediation", accept_mediation_path(mediation), method: :post %>
-                    <% end %>
-                </td>
-            </tr>
-        <% end %>
-    </table>
-<% else %>
-    <p>No mediations currently exist. A mediation needs to be created.</p>
-<% end %>
+    <% if @show_mediation_view %>
+        <p>Mediations in progress:</p>
+        <table class="mediation-table">
+            <thead>
+                <tr>
+                    <th>Tenant</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                <% @mediation.each do |mediation| %>
+                    <tr>
+                        <td><%= mediation.tenant.FName %> <%= mediation.tenant.LName %></td>
+                        <td>
+                            <% if mediation.accepted_by_landlord %>
+                                <a href="<%= mediation_path(mediation) %>" class="view-btn">View Mediation</a>
+                            <% else %>
+                                <%= button_to "Accept Mediation", accept_mediation_path(mediation), method: :post, class: "accept-btn" %>
+                            <% end %>
+                        </td>
+                    </tr>
+                <% end %>
+            </tbody>
+        </table>
+    <% else %>
+        <p class="no-mediation-msg">No mediations currently exist. A mediation needs to be created.</p>
+    <% end %>
+</div>

@@ -4,7 +4,7 @@
     justify-content: center;
     align-items: center;
     height: 100vh;
-    background: #00539b;
+    background: #102a4d;
 }
 
 /* Signup form card */
@@ -12,13 +12,27 @@
     background: white;
     padding: 30px;
     border-radius: 10px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
     width: 100%;
     max-width: 400px;
+    font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     text-align: center;
 }
 
-/* Input fields */
+.signup-card h2 {
+    display: flex;
+    font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
+
+.signup-card h2 i {
+    position: static !important;
+    display: inline-block;
+}
+
+/* Input Group (Each Input Field) */
 .input-group {
     display: flex;
     flex-direction: column;
@@ -26,13 +40,32 @@
     margin-bottom: 15px;
 }
 
+/* Label Styling */
 .input-group label {
     font-weight: bold;
     margin-bottom: 5px;
+    font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
+/* Input Field Wrapper*/
+.input-field {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+/* Font Awesome Icon */
+.input-field i {
+    position: absolute;
+    left: 10px;
+    color: #555;
+    font-size: 16px;
+}
+
+/* Input Styling */
 .signup-input {
-    padding: 10px;
+    width: 100%;
+    padding: 10px 10px 10px 35px;
     border: 1px solid #ccc;
     border-radius: 5px;
     font-size: 1rem;
@@ -42,6 +75,13 @@
 .role-selection {
     text-align: left;
     margin-bottom: 15px;
+    font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.role-selection p {
+    font-weight: bold;
+    margin-bottom: 5px;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
 .role-option {
@@ -58,11 +98,18 @@
     border: none;
     padding: 12px;
     font-size: 1rem;
+    font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     border-radius: 5px;
     cursor: pointer;
     transition: background 0.3s ease;
+    width: 100%;
 }
 
 .signup-btn:hover {
     background: #0056b3;
+}
+
+.signup-container .fa-user-plus {
+    position: static !important;
+    display: inline-block;
 }

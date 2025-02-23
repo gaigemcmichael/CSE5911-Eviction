@@ -1,28 +1,47 @@
 <div class="signup-container">
   <div class="signup-card">
-    <h2>Sign Up</h2>
+    <h2> <i class="fa-solid fa-user-plus"></i> Sign Up</h2>
+    <p> Let's create your account. </p>
 
     <%= form_with model: @user, url: signup_path, local: true, class: "signup-form" do |f| %>
+      
+      <!-- First Name -->
       <div class="input-group">
-        <%= f.label :FName, "First Name" %>
-        <%= f.text_field :FName, required: true, class: "signup-input" %>
+        <label for="FName">First Name</label>
+        <div class="input-field">
+          <i class="fa-solid fa-user"></i>
+          <%= f.text_field :FName, placeholder: "Enter your first name", required: true, class: "signup-input" %>
+        </div>
       </div>
 
+      <!-- Last Name -->
       <div class="input-group">
-        <%= f.label :LName, "Last Name" %>
-        <%= f.text_field :LName, required: true, class: "signup-input" %>
+        <label for="LName">Last Name</label>
+        <div class="input-field">
+          <i class="fa-solid fa-user"></i>
+          <%= f.text_field :LName, placeholder: "Enter your last name", required: true, class: "signup-input" %>
+        </div>
       </div>
 
+      <!-- Email -->
       <div class="input-group">
-        <%= f.label :Email, "Email" %>
-        <%= f.email_field :Email, required: true, class: "signup-input" %>
+        <label for="Email">Email</label>
+        <div class="input-field">
+          <i class="fa-solid fa-envelope"></i>
+          <%= f.email_field :Email, placeholder: "youremail@example.com", required: true, class: "signup-input" %>
+        </div>
       </div>
 
+      <!-- Password -->
       <div class="input-group">
-        <%= f.label :Password, "Password" %>
-        <%= f.password_field :Password, required: true, class: "signup-input" %>
+        <label for="Password">Password</label>
+        <div class="input-field">
+          <i class="fa-solid fa-lock"></i>
+          <%= f.password_field :Password, placeholder: "Create a password", required: true, class: "signup-input" %>
+        </div>
       </div>
 
+      <!-- Role Selection -->
       <div class="role-selection">
         <p>Please select your role:</p>
         <label class="role-option">
@@ -33,11 +52,13 @@
           <%= f.radio_button :Role, "Landlord", class: "signup-radio" %>
           Landlord
         </label>
-      </div>
+      </div> 
 
+      <!-- Sign Up Button -->
       <div>
         <%= f.submit "Sign Up", class: "signup-btn" %>
       </div>
+
     <% end %>
   </div>
 </div>
