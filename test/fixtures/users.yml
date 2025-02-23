@@ -1,15 +1,15 @@
 # Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
 
 one:
-  email: MyString
-  password: MyString
-  fname: MyString
-  lname: MyString
-  role: MyString
+  Email: MyString@email.com
+  Password: MyString2
+  FName: Jane
+  LName: Doe
+  Role: Admin
 
 two:
-  email: MyString
-  password: MyString
-  fname: MyString
-  lname: MyString
-  role: MyString
+  Email: MyStrings@email.com
+  Password: MyString1
+  FName: John
+  LName: Doe
+  Role: Tenant
