@@ -2,20 +2,21 @@
   <h1>Mediation Conversation with Tenant</h1>
   <p>Welcome, <%= @user.FName %>! Here is the mediation conversation.</p>
 
-  <% if @messages.any? %>
-    <div class="message-list" 
-         id="messages" 
-         data-conversation-id="<%= @message_string.ConversationID %>"
-         data-current-user-id="<%= @user.UserID %>"
-         data-current-user-role="<%= @user.Role %>">
-      
+  <div class="message-list" 
+       id="messages" 
+       data-conversation-id="<%= @message_string.ConversationID %>"
+       data-current-user-id="<%= @user.UserID %>"
+       data-current-user-role="<%= @user.Role %>">
+
+    <% if @messages.any? %>
       <% @messages.each do |message| %>
         <%= render partial: "messages/message", locals: { message: message, user: @user } %>
       <% end %>
-    </div>
-  <% else %>
-    <p>No messages in this conversation yet.</p>
-  <% end %>
+    <% else %>
+      <!-- Placeholder when there are no messages -->
+      <p class="no-messages">No messages in this conversation yet.</p>
+    <% end %>
+  </div>
 
   <div id="new_message_form">
     <%= form_with url: messages_path, method: :post, data: { turbo: "false" } do |f| %>

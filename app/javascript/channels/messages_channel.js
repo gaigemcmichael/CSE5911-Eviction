@@ -18,6 +18,9 @@ document.addEventListener('turbo:load', () => {
 
       consumer.subscriptions.create({ channel: "MessagesChannel", conversation_id: conversationId }, {
         received(data) {
+          // Remove the placeholder message if present
+          const placeholder = messagesContainer.querySelector('.no-messages');
+          if (placeholder) placeholder.remove();
           // Construct the message HTML with dynamic sender context
           const isSender = data.sender_id.toString() === currentUserId;
           const senderLabel = isSender ? "You" : (currentUserRole === 'Tenant' ? 'Landlord' : 'Tenant');
