@@ -2,7 +2,7 @@
   <h1>Mediation Conversation with Landlord</h1>
   <p>Welcome, <%= @user.FName %>! Here is the mediation conversation.</p>
 
-  <% if @messages.any? %>
+  <% if @messages.present? %>
     <div class="message-list">
       <% @messages.each do |message| %>
         <div class="message <%= message.SenderID == @user.UserID ? 'sent' : 'received' %>">
