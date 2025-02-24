@@ -40,4 +40,7 @@ Rails.application.routes.draw do
     post :accept, on: :member
     post :respond, on: :member
   end
+
+  # Messages related ActionCable
+  mount ActionCable.server => '/cable'
 end
