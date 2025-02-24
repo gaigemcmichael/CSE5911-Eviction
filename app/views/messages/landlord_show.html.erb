@@ -1,0 +1,26 @@
+<div class="messages-container">
+  <h1>Mediation Conversation with Tenant</h1>
+  <p>Welcome, <%= @user.FName %>! Here is the mediation conversation.</p>
+
+  <% if @messages.any? %>
+    <div class="message-list">
+      <% @messages.each do |message| %>
+        <div class="message <%= message.SenderID == @user.UserID ? 'sent' : 'received' %>">
+          <p><strong><%= message.SenderID == @user.UserID ? 'You' : 'Tenant' %>:</strong></p>
+          <p><%= message.Contents %></p>
+          <small>Sent on <%= message.MessageDate.strftime("%B %d, %Y %I:%M %p") %></small>
+        </div>
+      <% end %>
+    </div>
+  <% else %>
+    <p>No messages in this conversation yet.</p>
+  <% end %>
+
+  <%= form_with url: messages_path, method: :post, local: true do |f| %>
+    <div class="message-input">
+      <%= f.hidden_field :ConversationID, value: @message_string.ConversationID %>
+      <%= f.text_area :Contents, placeholder: "Type your message..." %>
+      <%= f.submit "Send Message", class: "send-btn" %>
+    </div>
+  <% end %>
+</div>
