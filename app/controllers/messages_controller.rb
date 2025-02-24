@@ -19,7 +19,6 @@ class MessagesController < ApplicationController
   end
 
   def show
-
     @message_string = MessageString.find_by(ConversationID: params[:id])
 
     unless @message_string
@@ -43,7 +42,7 @@ class MessagesController < ApplicationController
   def create
     # Ensure the user is involved in the conversation
     conversation = MessageString.find_by(ConversationID: params[:ConversationID])
-    
+
     if conversation
       # Create a new message
       @message = Message.create!(
@@ -65,7 +64,7 @@ class MessagesController < ApplicationController
             sender_role: @user.Role
           }
         )
-  
+
         # Prevent page reload and avoid "Conversation not found" error
         render status: :no_content, body: nil
       else

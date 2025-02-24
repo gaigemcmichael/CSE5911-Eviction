@@ -10,7 +10,7 @@ class MediationsController < ApplicationController
   # lets a landlord accept a mediation request
   def accept
     mediation = PrimaryMessageGroup.find(params[:id])
-    
+
     if @user.Role == "Landlord" && mediation.LandlordID == @user.UserID
       mediation.update!(accepted_by_landlord: true)
       mediation.reload
@@ -22,7 +22,6 @@ class MediationsController < ApplicationController
 
   # Create a new mediation using the selected landlord
   def create
-
     unless @user.Role == "Tenant"
       redirect_to mediations_path, alert: "Only tenants can start a mediation." and return
     end
