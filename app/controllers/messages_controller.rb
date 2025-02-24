@@ -18,6 +18,53 @@ class MessagesController < ApplicationController
     end
   end
 
+  def show
+
+    @message_string = MessageString.find_by(ConversationID: params[:id])
+
+    unless @message_string
+      render plain: "Conversation not found", status: :not_found
+      return
+    end
+
+    #this gets all the messages of the convo, need to decipher which ones are from who when displaying
+    @messages = Message.where(ConversationID: @message_string.ConversationID).order(:MessageDate)
+
+    case @user.Role
+    when "Tenant"
+      render "messages/tenant_show"
+    when "Landlord"
+      render "messages/landlord_show"
+    else
+      render plain: "Access Denied", status: :forbidden
+    end
+  end
+
+  def create
+    # Ensure the user is involved in the conversation
+    conversation = MessageString.find_by(ConversationID: params[:ConversationID])
+    
+    if conversation
+      # Create a new message
+      message = Message.create!(
+        ConversationID: conversation.ConversationID,
+        SenderID: @user.UserID,
+        MessageDate: Time.current,
+        Contents: params[:Contents]
+      )
+
+      if @user.Role == "Tenant"
+        render "messages/tenant_show", notice: "Message sent successfully."
+      elsif @user.Role == "Landlord"
+        render "messages/landlord_show", notice: "Message sent successfully."
+      else
+        redirect_to messages_path, alert: "Your role is not authorized to send messages."
+      end
+    else
+      redirect_to messages_path, alert: "There was an error sending your message."
+    end
+  end
+
   private
 
   def require_login
