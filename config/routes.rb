@@ -21,6 +21,9 @@ Rails.application.routes.draw do
   get "/account/edit", to: "account#edit"
   patch "/account", to: "account#update"
 
+  get 'messages/tenant_show/:conversation_id', to: 'messages#show', as: 'tenant_show'
+  get 'messages/landlord_show/:conversation_id', to: 'messages#show', as: 'landlord_show'
+
   # Resources
   resources :messages, only: [:index, :show, :create, :destroy]
   resources :documents, only: [:index, :show, :create, :destroy]
@@ -33,7 +36,7 @@ Rails.application.routes.draw do
   resource :system_data, only: [:show]
 
   # Mediations and Related Actions
-  resources :mediations, only: [:new, :create, :show, :edit, :update, :destroy] do
+  resources :mediations, only: [:new, :create, :edit, :update, :destroy] do
     post :accept, on: :member
     post :respond, on: :member
   end

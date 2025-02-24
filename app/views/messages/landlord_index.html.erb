@@ -17,7 +17,7 @@
                         <td><%= mediation.tenant.FName %> <%= mediation.tenant.LName %></td>
                         <td>
                             <% if mediation.accepted_by_landlord %>
-                                <a href="<%= mediation_path(mediation) %>" class="view-btn">View Mediation</a>
+                                <a href="<%= message_path(mediation.ConversationID) %>" class="view-btn">View Mediation</a>
                             <% else %>
                                 <%= button_to "Accept Mediation", accept_mediation_path(mediation), method: :post, class: "accept-btn" %>
                             <% end %>
