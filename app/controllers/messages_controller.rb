@@ -54,9 +54,9 @@ class MessagesController < ApplicationController
       )
 
       if @user.Role == "Tenant"
-        render "messages/tenant_show", notice: "Message sent successfully."
+        redirect_to tenant_show_path(conversation_id: conversation.ConversationID), notice: "Message sent successfully."
       elsif @user.Role == "Landlord"
-        render "messages/landlord_show", notice: "Message sent successfully."
+        redirect_to landlord_show_path(conversation_id: conversation.ConversationID), notice: "Message sent successfully."
       else
         redirect_to messages_path, alert: "Your role is not authorized to send messages."
       end
