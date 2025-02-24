@@ -1,0 +1,17 @@
+<div class="message <%= message.SenderID == @user.UserID ? 'sent' : 'received' %>"
+     data-message-id="<%= message.id %>"
+     data-sender-id="<%= message.SenderID %>" 
+     data-current-user-id="<%= @user.UserID %>"
+     data-sender-role="<%= @user.Role %>">
+  
+  <p><strong>
+    <% if message.SenderID == @user.UserID %>
+      You:
+    <% else %>
+      <%= @user.Role == 'Tenant' ? 'Landlord' : 'Tenant' %>:
+    <% end %>
+  </strong></p>
+  
+  <p><%= message.Contents %></p>
+  <small>Sent on <%= message.MessageDate.strftime("%B %d, %Y %I:%M %p") %></small>
+</div>
