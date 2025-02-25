@@ -50,9 +50,56 @@
         </label>
         <label class="role-option">
           <%= f.radio_button :Role, "Landlord", class: "signup-radio" %>
-          Property Manager
+          Landlord
         </label>
       </div> 
+
+      <!-- Disclaimer -->
+      <div class="disclaimer">
+        <%= f.check_box :ProfileDisclaimer, {}, 'yes', 'no' %>
+        <%= f.label :ProfileDisclaimer, "I have read and agree to the ".html_safe + 
+            "<label for='toggleModal' class='disclaimer-link'>Terms and Conditions</label>".html_safe %>
+        
+        <% if @user.errors[:ProfileDisclaimer].any? %>
+          <div class="error-text"><%= @user.errors[:ProfileDisclaimer].first %></div>
+        <% end %>
+      </div>
+
+      <!-- Hidden Checkbox to Toggle Modal -->
+      <input type="checkbox" id="toggleModal" class="toggle-checkbox">
+
+      <!-- Modal Popup -->
+      <div class="modal-popup">
+        <div class="popup-content">
+          <!-- Clicking this label will uncheck the checkbox, closing the modal -->
+          <label for="toggleModal" class="close-popup">&times;</label>
+          <h4>Terms and Conditions</h4>
+          <p>Welcome to the Franklin County Municipal Court Self Help Center and Dispute Resolution Program&apos;s online mediation platform. 
+              Before creating a profile on this platform, please review the following statements. 
+              By clicking “I Agree” at the bottom, you acknowledge that you have read, understood, and accept the terms of this disclaimer.</p>
+          <p><strong>1. No Legal Advice or Attorney-Client Relationship</strong></p>
+          <p>This platform provides general information and mediation tools to help landlords and tenants communicate and potentially resolve disputes. 
+              <strong>It does not give legal advice or representation.</strong> The information available on this platform does not replace advice from a qualified attorney.
+              Use of this platform does <strong>not</strong> create an attorney-client relationship between you and any other person associated with this service. 
+              If you need legal advice, you should speak with a licensed attorney.</p>
+          <p><strong><a href="https://municipalcourt.franklincountyohio.gov/Departments-Services/Self-Help/Court-Basics#Lawyers-and-Legal-Help" target="_blank">CLICK HERE</a></strong> 
+              for resources to help find an attorney, if needed. </p>
+          <p><strong>2. User Responsibility and Reliance on Information</strong></p>
+          <p>You are responsible for providing accurate information when using this platform. You are also responsible for verifying the accuracy of any 
+              information provided through this platform. The platform is provided “as is” without warranties of any kind. Users assume full responsibility 
+              for their participation. </p>
+          <p><strong>3. Data Privacy</strong></p>
+          <p>This platform is operated by the Franklin County Municipal Court Self-Help Center and Dispute Resolution Department. If you have any questions 
+              about how your personal data is handled, you may contact them directly at &#40;614&#41; 645-7381 from Monday through Friday, 9 AM to 3 PM. </p>
+          <p>Personal data collected through this platform is used to facilitate dispute resolution services, including scheduling mediation, communicating with users, 
+              and documenting mediation outcomes. Additionally, your data may be used to help inform future policy decisions and ongoing refinements to the system to 
+              improve its effectiveness and accessibility. Your data will only be shared with the Dispute Resolution Department and any mediators assigned to your case. </p>
+          <p>Personal data will be kept for one year, as required by the record-keeping rules set by the Court. You can ask for access, correction, or deletion of your 
+              personal data at any time. Additionally, you may withdraw your consent for data processing at any time; however, doing so may impact your ability to use 
+              the mediation services provided. </p>
+          <p>We implement security protocols to protect user data. Regardless, users should exercise caution when sharing sensitive information.</p>
+        </div>
+      </div>
 
       <!-- Sign Up Button -->
       <div>
