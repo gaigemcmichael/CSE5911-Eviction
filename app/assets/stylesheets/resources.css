@@ -94,6 +94,11 @@ html, body {
     max-width: 90%;
 }
 
+.accordion-item {
+    border-bottom: 1px solid #ccc;
+    padding: 10px;
+}
+
 /* Hide the checkboxes */
 .accordion-toggle {
     display: none;
@@ -110,6 +115,7 @@ html, body {
     cursor: pointer;
     border-bottom: 1px solid #ddd;
     transition: background 0.3s ease;
+    text-align: justify;
 }
 
 .accordion-header:hover {
@@ -123,6 +129,7 @@ html, body {
     overflow: hidden;
     padding: 0 15px;
     transition: max-height 0.3s ease-in-out;
+    text-align: justify;
 }
 
 /* Show content when checkbox is checked */
@@ -131,17 +138,21 @@ html, body {
     padding: 10px 15px;
 }
 
-/* Sidebar - collapsible */
+/* Full-page layout with flex */
+.resources {
+    display: flex;
+    min-height: 100vh; /* Ensures the sidebar grows with the content */
+}
+
+/* Sidebar */
 .resources-sidebar {
     width: 200px;
-    height: 100vh;
     background-color: #102a4d;
     padding: 20px;
     display: flex;
     flex-direction: column;
     align-items: flex-start;
     justify-content: space-between;
-    transition: width 0.3s ease-in-out;
 }
 
 /* Collapsed Sidebar */
