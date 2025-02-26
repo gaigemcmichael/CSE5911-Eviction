@@ -9,6 +9,10 @@ class DashboardControllerTest < ActionDispatch::IntegrationTest
     @invalid_user = users(:invalid)
   end
 
+  def log_in_as(user)
+    post login_path, params: { session: { email: user.Email, password: user.Password } }
+  end
+
   test "should redirect to login if not logged in" do
     get dashboard_path
     assert_redirected_to login_path
@@ -56,12 +60,5 @@ class DashboardControllerTest < ActionDispatch::IntegrationTest
     assert_redirected_to root_path
     assert_nil session[:user_id]
     assert_equal "You have been logged out.", flash[:notice]
-  end
-
-  private
-
-  def log_in_as(user)
-    post login_path, params: { session: { email: user.email, password: "password" } }
-    follow_redirect!
   end
 end
