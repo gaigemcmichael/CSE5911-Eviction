@@ -3,8 +3,9 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    height: 100vh;
-    background: #102a4d;
+    min-height: 100vh; /* Allow flexibility */
+    background: linear-gradient(135deg, #102a4d 40%, #1c3b6f 100%);
+    padding: 20px;
 }
 
 /* Signup form card */
@@ -14,7 +15,7 @@
     border-radius: 10px;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
     width: 100%;
-    max-width: 400px;
+    max-width: 500px;
     font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     text-align: center;
 }
@@ -25,6 +26,7 @@
     align-items: center;
     justify-content: center;
     gap: 8px;
+    font-size: 1.8rem;
 }
 
 .signup-card h2 i {
@@ -43,6 +45,7 @@
 /* Label Styling */
 .input-group label {
     font-weight: bold;
+    color: black;
     margin-bottom: 5px;
     font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
@@ -54,7 +57,6 @@
     align-items: center;
 }
 
-/* Font Awesome Icon */
 .input-field i {
     position: absolute;
     left: 10px;
@@ -71,11 +73,22 @@
     font-size: 1rem;
 }
 
-/* Role selection */
-.role-selection, .disclaimer {
+/* Role selection: Tenant/Landlord */
+.role-selection{
     text-align: left;
     margin-bottom: 15px;
     font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+/* "I have agree Terms & Conditions text" */
+.disclaimer {
+    display: flex;
+    align-items: center;
+    text-align: left;
+    font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin-bottom: 10px;
 }
 
 .role-selection p, .disclaimer p {
@@ -84,25 +97,27 @@
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
-.role-option, .disclaimer-option {
+.role-option {
     display: flex;
     align-items: center;
     gap: 8px;
     margin-bottom: 5px;
+    color: black;
 }
 
 /* Signup button */
 .signup-btn {
-    background: #007bff;
-    color: white;
-    border: none;
+    width: 100%;
     padding: 12px;
     font-size: 1rem;
-    font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     border-radius: 5px;
     cursor: pointer;
     transition: background 0.3s ease;
-    width: 100%;
+    background: #007bff;
+    color: white;
+    border: none;
+    font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    margin-top: 0;
 }
 
 .signup-btn:hover {
@@ -119,61 +134,126 @@
     display: none;
 }
 
-/* Make the Terms and Conditions label look like a hyperlink */
+/* Custom Checkbox Styling */
+.custom-checkbox {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 1rem;
+    cursor: pointer;
+    user-select: none;
+}
+
+/* Hide default checkbox */
+.custom-checkbox input {
+    display: none;
+}
+
+/* Custom checkbox design */
+.checkmark {
+    width: 18px;
+    height: 18px;
+    border: 2px solid #007bff;
+    border-radius: 5px;
+    display: inline-block;
+    position: relative;
+}
+
+/* Show check when checked */
+.custom-checkbox input:checked + .checkmark {
+    background-color: #007bff;
+    border-color: #007bff;
+}
+
+/* Add checkmark icon */
+.custom-checkbox input:checked + .checkmark::after {
+    content: "✔";
+    font-size: 12px;
+    color: white;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-weight: bold;
+}
+
+/* 🔹 Disclaimer Text */
+.disclaimer-text {
+    color: black;
+    font-weight: normal;
+}
+
+/* Terms and Conditions Link */
 .disclaimer-link {
     color: #007bff;
     text-decoration: underline;
     cursor: pointer;
-    font-size: 1rem;
-    display: inline-block;
+    margin-left: 0;
 }
 
 .disclaimer-link:hover {
-    color: #0056b3; /* Darker shade for hover effect */
+    color: #0056b3; 
 }
 
-/* Modal Popup (Centered & Scrollable) */
+/* Show modal when checkbox is checked */
+.toggle-checkbox:checked + .modal-popup {
+    opacity: 1;
+    visibility: visible;
+}
+
+/* Modal Popup */
 .modal-popup {
     position: fixed;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    width: 80vw; /* Responsive width */
-    max-width: 600px; /* Prevents excessive width */
-    max-height: 80vh; /* Prevents it from exceeding screen height */
-    background: rgb(228, 228, 228);
+    width: 80vw;
+    max-width: 600px;
+    max-height: 80vh;
+    background: #fff;
     padding: 20px;
     border-radius: 10px;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     text-align: justify;
-    opacity: 0;
     visibility: hidden;
     transition: opacity 0.3s ease-in-out, visibility 0.3s ease-in-out;
     z-index: 1000;
-    overflow-y: auto; /* Enables scrolling if content is too long */
+    overflow-y: auto; /* Enables scrolling */
 }
 
 .popup-content h4 {
     text-align: center;
     font-weight: bold;
     font-size: 24px;
-}
-
-/* Show modal when the checkbox is checked */
-.toggle-checkbox:checked + .modal-popup {
-    opacity: 1;
-    visibility: visible;
+    margin-top: 5px;
+    margin-bottom: 5px;
 }
 
 /* Close Button */
 .close-popup {
-    position: absolute;
-    top: 10px;
-    right: 15px;
+    position: sticky;
+    top: 0;
+    right: 0;
+    padding: 10px;
     font-size: 24px;
     text-decoration: none;
     color: red;
     cursor: pointer;
+    background: white;
+    border-radius: 50%;
+    width: 35px;
+    height: 35px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-left: auto;
+    z-index: 1001; /* Ensures it's above the content */
+}
+
+/* Close Button Hover Effect */
+.close-popup:hover {
+    background: #f8d7da; /* Light red background */
+    color: darkred;
 }
 
 /* Ensure the modal adapts to smaller screens */

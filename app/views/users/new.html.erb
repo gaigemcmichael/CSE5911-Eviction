@@ -1,3 +1,4 @@
+<!-- Sign Up Page -->
 <div class="signup-container">
   <div class="signup-card">
     <h2> <i class="fa-solid fa-user-plus"></i> Sign Up</h2>
@@ -56,10 +57,14 @@
 
       <!-- Disclaimer -->
       <div class="disclaimer">
-        <%= f.check_box :ProfileDisclaimer, {}, 'yes', 'no' %>
-        <%= f.label :ProfileDisclaimer, "I have read and agree to the ".html_safe + 
-            "<label for='toggleModal' class='disclaimer-link'>Terms and Conditions</label>".html_safe %>
-        
+        <label class="custom-checkbox">
+            <%= f.check_box :ProfileDisclaimer, {}, 'yes', 'no' %>
+            <span class="checkmark"></span>
+            <span class="disclaimer-text">
+                I have read and agree to the <label for="toggleModal" class="disclaimer-link">Terms and Conditions</label>
+            </span>
+        </label>
+      
         <% if @user.errors[:ProfileDisclaimer].any? %>
           <div class="error-text"><%= @user.errors[:ProfileDisclaimer].first %></div>
         <% end %>
@@ -102,10 +107,7 @@
       </div>
 
       <!-- Sign Up Button -->
-      <div>
-        <%= f.submit "Sign Up", class: "signup-btn" %>
-      </div>
-
+      <%= f.submit "Sign Up", class: "signup-btn" %>
     <% end %>
   </div>
 </div>
