@@ -125,3 +125,36 @@ html, body {
     position: relative;
     color: #102a4d;
 }
+
+/* Hide the checkbox */
+.toggle-checkbox {
+    display: none;
+}
+
+/* Hide password with bullet dots */
+.password-field {
+    -webkit-text-security: disc;/* Hides text as dots */
+    border: none;
+    background: transparent;
+    max-width: max-content;
+    width: 100vw;
+    letter-spacing: 2px;
+    outline: none;
+}
+
+/* Toggle password visibility when checkbox is checked */
+.toggle-checkbox:checked + label + .password-field {
+    -webkit-text-security: none;
+}
+
+/* Style the eye icon */
+label {
+    cursor: pointer;
+    margin-left: 10px;
+    color: #6c757d; /* Gray */
+}
+
+/* Change eye icon color on hover */
+label:hover {
+    color: #007bff; /* Blue */
+}

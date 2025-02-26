@@ -1,5 +1,5 @@
 <div class = "account">
-    <!-- Sidebar -->
+    <!-- Sidebar 
     <div class="account-sidebar">
             <ul class="nav-links">
                 <li><a href="#">Personal Details</a></li>
@@ -7,7 +7,7 @@
             </ul>
 
             <%= link_to "Log Out", logout_path, method: :delete, class: "account-sidebar-logout" %>
-    </div> 
+    </div> -->
 
     <!-- Main Content -->
     <div class="account-content">
@@ -26,6 +26,17 @@
                     <th> <i class="fa-solid fa-user-tag"></i> Role</th>
                     <td> <%= @user.Role %> </td>
                 </tr>
+                <% if @user.Role == "Tenant" %>
+                    <tr>
+                        <th> <i class="fa-solid fa-location-dot"></i> Address</th>
+                        <td> <%= @user.TenantAddress %> </td>
+                    </tr>
+                <% elsif @user.Role == "Landlord"%>
+                    <tr>
+                        <th> <i class="fa-solid fa-building"></i> Company</th>
+                        <td> <%= @user.CompanyName %> </td>
+                    </tr>
+                <% end %>
             </table>
         </div>
 
@@ -34,11 +45,13 @@
             <table class = "pass-security-table">
                 <tr>
                     <th> <i class="fa-solid fa-key"></i> Password</th>
-                    <td> *********test </td>
-                </tr>
-                <tr>
-                    <th> ##### </th>
-                    <td> ##### </td>
+                    <td>
+                        <input type="checkbox" id="toggle-password" class="toggle-checkbox">
+                        <label for="toggle-password">
+                            <i class="fa-solid fa-eye"></i>
+                        </label>
+                        <input type="text" class="password-field" value="<%= @user.Password %>" readonly>
+                    </td>
                 </tr>
             </table>
         </div>
