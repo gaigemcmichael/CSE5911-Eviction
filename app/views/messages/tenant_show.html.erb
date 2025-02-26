@@ -6,7 +6,7 @@
   <%= button_to "Request a Mediator", request_mediator_message_path(@mediation.id),
               method: :patch, class: "btn btn-primary" %>
   <% else %>
-    <p class="mediator-status">Mediator already active or requested.</p>
+    <p class="mediator-status">Mediator active or requested.</p>
   <% end %>
 
   <div class="message-list-container">
