@@ -2,6 +2,13 @@
   <h1>Mediation Conversation with Tenant</h1>
   <p>Welcome, <%= @user.FName %>! Here is the mediation conversation.</p>
 
+<% if @mediation && !@mediation.MediatorRequested && !@mediation.MediatorAssigned %>
+  <%= button_to "Request a Mediator", request_mediator_message_path(@mediation.id),
+              method: :patch, class: "btn btn-primary" %>
+  <% else %>
+    <p class="mediator-status">Mediator already active or requested.</p>
+  <% end %>
+
   <div class="message-list-container">
     <div class="message-list" 
         id="messages" 
