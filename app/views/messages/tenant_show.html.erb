@@ -1,6 +1,6 @@
 <div class="mediation-container">
-  <h1>Mediation Conversation with Landlord</h1>
-  <p>Welcome, <%= @user.FName %>! Here is the mediation conversation.</p>
+  <h1>Negotiation Conversation with Landlord</h1>
+  <p>Welcome, <%= @user.FName %>! Here is the negotiation conversation.</p>
 
 <% if @mediation && !@mediation.MediatorRequested && !@mediation.MediatorAssigned %>
   <%= button_to "Request a Mediator", request_mediator_message_path(@mediation.id),
