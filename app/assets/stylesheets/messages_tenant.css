@@ -1,3 +1,32 @@
+
+/* Container Styling */
+.mediation-container {
+    width: 100vw; 
+    max-width: 100%;
+    margin: 0 auto; 
+    padding: 20px 0;
+    border-radius: 10px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+/* Header Styling */
+.mediation-container h1 {
+    color: #102a4d;
+    font-size: 1.8rem;
+    margin-bottom: 15px;
+}
+
+/* Welcome Message */
+.mediation-container p {
+    font-size: 1rem;
+    color: #333;
+    line-height: 1.5;
+}
+
 /* Flash Messages */
 .notice, .alert {
     padding: 12px;
