@@ -45,8 +45,9 @@ class MessagesController < ApplicationController
   def request_mediator
     @mediation = PrimaryMessageGroup.find(params[:id]) # Ensure we find the right mediation record
   
-    if @mediation.MediatorRequested == 0 && @mediation.MediatorAssigned == 0
+    if !@mediation.MediatorRequested && !@mediation.MediatorAssigned
       @mediation.update(MediatorRequested: 1)
+      #not sure on these redirects, they seem to work but also kinda hard to test obv
       redirect_back fallback_location: dashboard_path, notice: "Mediator requested successfully."
     else
       redirect_back fallback_location: dashboard_path, alert: "Failed to request a mediator."
