@@ -48,12 +48,12 @@
             <% if @user.Role == "Tenant" && @mediation.TenantScreeningID.nil? %>
               <p class="screening-alert">
                 You must complete your screening questions before proceeding with mediation. 
-                <a href="<%= complete_screening_path %>">Click here to complete screening.</a>
+                <%= link_to "Complete Screening Questions", complete_screening_path, class: "btn" %>
               </p>
             <% elsif @user.Role == "Landlord" && @mediation.LandlordScreeningID.nil? %>
               <p class="screening-alert">
                 You must complete your screening questions before proceeding with mediation.
-                <a href="<%= complete_screening_path %>">Click here to complete screening.</a>
+                <%= link_to "Complete Screening Questions", complete_screening_path, class: "btn" %>
               </p>
             <% end %>
         <% else %>

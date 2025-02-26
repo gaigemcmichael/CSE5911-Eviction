@@ -1,0 +1,22 @@
+<h1>Your Assigned Mediation Cases</h1>
+
+<table>
+  <thead>
+    <tr>
+      <th>Tenant Name</th>
+      <th>Landlord Name</th>
+      <th>Action</th>
+    </tr>
+  </thead>
+  <tbody>
+    <% @mediations.each do |mediation| %>
+      <tr>
+        <td><%= mediation.tenant.FName %> <%= mediation.tenant.LName %></td>
+        <td><%= mediation.landlord.FName %> <%= mediation.landlord.LName %></td>
+        <td>
+          <%= link_to "View Mediation", message_path(mediation.ConversationID), class: "btn btn-primary" %>
+        </td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
