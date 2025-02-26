@@ -1,24 +1,26 @@
-/* General Page Styling */
-.messages-container {
-    max-width: 800px;
-    margin: 40px auto;
-    padding: 20px;
-    background: white;
+/* Container Styling */
+.mediation-container {
+    width: 100vw; 
+    max-width: 100%;
+    margin: 0 auto; 
+    padding: 20px 0;
     border-radius: 10px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
     text-align: center;
-    font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
 /* Header Styling */
-h1 {
+.mediation-container h1 {
     color: #102a4d;
     font-size: 1.8rem;
     margin-bottom: 15px;
 }
 
 /* Welcome Message */
-p {
+.mediation-container p {
     font-size: 1rem;
     color: #333;
     line-height: 1.5;
