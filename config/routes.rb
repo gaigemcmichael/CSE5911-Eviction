@@ -1,4 +1,6 @@
 Rails.application.routes.draw do
+  get "third_party_mediations/index"
+  get "manage_cases/index"
   root "sessions#new"  # Home Page
 
   # Authentication
@@ -47,6 +49,9 @@ Rails.application.routes.draw do
     post :accept, on: :member
     post :respond, on: :member
   end
+
+  # Allow third party mediator to view cases
+  resources :third_party_mediations, only: [:index]
 
   # Messages related ActionCable
   mount ActionCable.server => "/cable"
