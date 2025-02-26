@@ -1,12 +1,12 @@
 import consumer from "channels/consumer"
 
 document.addEventListener('turbo:load', () => {
-  const messagesContainer = document.getElementById('messages');
+  const messagesContainer = document.querySelector('.message-list-container'); // Correctly target the scrollable container
+  const messagesList = document.getElementById('messages'); // Message list within the container
 
-  if (messagesContainer) {
-    const conversationId = messagesContainer.dataset.conversationId;
-    const currentUserId = messagesContainer.dataset.currentUserId;
-    const currentUserRole = messagesContainer.dataset.currentUserRole;
+  if (messagesContainer && messagesList) {
+    const conversationId = messagesList.dataset.conversationId;
+    const currentUserId = messagesList.dataset.currentUserId;
 
     if (conversationId) {
       console.log(`Subscribing to conversation ID: ${conversationId}`);
@@ -18,27 +18,35 @@ document.addEventListener('turbo:load', () => {
 
       consumer.subscriptions.create({ channel: "MessagesChannel", conversation_id: conversationId }, {
         received(data) {
-          // Remove the placeholder message if present
-          const placeholder = messagesContainer.querySelector('.no-messages');
-          if (placeholder) placeholder.remove();
-          // Construct the message HTML with dynamic sender context
           const isSender = data.sender_id.toString() === currentUserId;
-          const senderLabel = isSender ? "You" : (currentUserRole === 'Tenant' ? 'Landlord' : 'Tenant');
+          const messageClass = isSender ? 'sent' : 'received';
 
           const messageHtml = `
-            <div class="message ${isSender ? 'sent' : 'received'}" data-message-id="${data.message_id}">
-              <p><strong>${senderLabel}:</strong></p>
-              <p>${data.contents}</p>
-              <small>Sent on ${data.message_date}</small>
+            <div class="chat-message ${messageClass}" data-message-id="${data.message_id}">
+              <div class="message-bubble">
+                <p class="message-content">${data.contents}</p>
+                <small class="message-timestamp">${data.message_date}</small>
+              </div>
             </div>
           `;
 
-          messagesContainer.insertAdjacentHTML('beforeend', messageHtml);
-          messagesContainer.scrollTop = messagesContainer.scrollHeight;
+          messagesList.insertAdjacentHTML('beforeend', messageHtml);
+
+          // Automatically scroll to the bottom of the message list container
+          messagesContainer.scrollTo({
+            top: messagesContainer.scrollHeight,
+            behavior: 'smooth' // Smooth scrolling animation
+          });
         }
       });
+
+      // Initial scroll to bottom when the page loads
+      messagesContainer.scrollTo({
+        top: messagesContainer.scrollHeight,
+        behavior: 'auto' // Instantly jumps to bottom on load
+      });
     } else {
-      console.error("No conversation ID found in messages container!");
+      console.error("No conversation ID found in message list!");
     }
   }
 });
