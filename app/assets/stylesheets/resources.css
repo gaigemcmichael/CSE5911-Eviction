@@ -1,0 +1,196 @@
+html, body {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+}
+
+/* Overall Layout */
+.resources {
+    display: flex;
+    max-width: 100%;
+    height: 100vh;
+}
+
+.resources-content {
+    flex: 1;
+    padding: 30px;
+    height: 100vh;
+}
+
+
+.resources-content h1, .faq-content h1 {
+    font-size: 1.6rem;
+    color: #102a4d;
+    margin-bottom: 15px;
+}
+
+/* Main Content */
+.resources-content {
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    margin-bottom: 20px;
+}
+
+.resources-legal, .resources-finaid, .faq-content{
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    margin-bottom: 20px;
+}
+
+.resources-legal h1, .resources-finaid h1 {
+    font-size: 1.4rem;
+    color: #102a4d;
+    margin-bottom: 15px;
+}
+
+/* Table */
+.resources-table {
+    width: 100%;
+    border-collapse: collapse;
+    table-layout: fixed;
+}
+
+.resources-table th {
+    background: #f1f1f1;
+    font-weight: bold;
+    vertical-align: middle;
+    padding: 12px;
+    border-bottom: 1px solid #ddd;
+    text-align: left;
+    width: 200px;
+}
+
+.resources-table td {
+    padding: 12px;
+    border-bottom: 1px solid #ddd;
+    text-align: left;
+}
+
+/* Style for the clickable title */
+.resource-title {
+    color: #007bff; /* Standard link color */
+    text-decoration: none;
+    font-weight: bold;
+    font-size: 16px;
+    display: inline-flex;
+    align-items: center;
+}
+
+/* Add an external link icon */
+.resource-title i {
+    margin-left: 5px;
+    font-size: 12px;
+}
+
+/* Hover effect */
+.resource-title:hover {
+    text-decoration: underline;
+}
+
+/* Accordion container */
+.accordion {
+    width: 100%;
+    max-width: 90%;
+}
+
+.accordion-item {
+    border-bottom: 1px solid #ccc;
+    padding: 10px;
+}
+
+/* Hide the checkboxes */
+.accordion-toggle {
+    display: none;
+}
+
+/* Style for question (label) */
+.accordion-header {
+    display: block;
+    width: 100%;
+    background: #f8f9fa;
+    padding: 15px;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    border-bottom: 1px solid #ddd;
+    transition: background 0.3s ease;
+    text-align: justify;
+}
+
+.accordion-header:hover {
+    background: #e0e0e0;
+}
+
+/* Style for answer (hidden by default) */
+.accordion-content {
+    max-height: 0;
+    width: 100%;
+    overflow: hidden;
+    padding: 0 15px;
+    transition: max-height 0.3s ease-in-out;
+    text-align: justify;
+}
+
+/* Show content when checkbox is checked */
+.accordion-toggle:checked + .accordion-header + .accordion-content {
+    max-height: 100px;
+    padding: 10px 15px;
+}
+
+/* Full-page layout with flex */
+.resources {
+    display: flex;
+    min-height: 100vh; /* Ensures the sidebar grows with the content */
+}
+
+/* Sidebar */
+.resources-sidebar {
+    width: 200px;
+    background-color: #102a4d;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: space-between;
+}
+
+/* Collapsed Sidebar */
+.resources-sidebar.collapsed {
+    width: 60px;
+    overflow: hidden;
+}
+
+/* Sidebar Button */
+.toggle-btn {
+    background: none;
+    border: none;
+    color: white;
+    font-size: 20px;
+    cursor: pointer;
+    margin-bottom: 10px;
+}
+
+/* Sidebar Links */
+.resources-sidebar ul {
+    list-style: none;
+    padding: 0;
+}
+
+.resources-sidebar li {
+    margin-bottom: 15px;
+}
+
+.resources-sidebar a {
+    text-decoration: none;
+    color: white;
+    font-size: 16px;
+    display: block;
+    padding: 10px;
+    border-radius: 5px;
+    transition: background 0.3s ease-in-out;
+}
+
+.resources-sidebar a:hover, .resources-sidebar a.active {
+    background-color: #1d4e89; /* Highlights */
+}
