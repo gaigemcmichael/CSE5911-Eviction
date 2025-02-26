@@ -1,13 +1,14 @@
-<div class = "messages-container">
+<div class = "mediation-container">
     <h1>Landlord Mediation Messages</h1>
     <p>Welcome, <%= @user.FName %>! This is the landlord messages/mediations page.</p>
 
     <% if @show_mediation_view %>
-        <p>Mediations in progress:</p>
+        <p><strong>Mediations in progress:</strong></p>
         <table class="mediation-table">
             <thead>
                 <tr>
                     <th>Tenant</th>
+                    <th>Address</th>
                     <th>Actions</th>
                 </tr>
             </thead>
@@ -15,6 +16,7 @@
                 <% @mediation.each do |mediation| %>
                     <tr>
                         <td><%= mediation.tenant.FName %> <%= mediation.tenant.LName %></td>
+                        <td> Tenant's address </td>
                         <td>
                             <% if mediation.accepted_by_landlord %>
                                 <a href="<%= message_path(mediation.ConversationID) %>" class="view-btn">View Mediation</a>
