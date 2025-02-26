@@ -23,9 +23,13 @@ Rails.application.routes.draw do
 
   get "messages/tenant_show/:conversation_id", to: "messages#show", as: "tenant_show"
   get "messages/landlord_show/:conversation_id", to: "messages#show", as: "landlord_show"
-
+  
   # Resources
-  resources :messages, only: [ :index, :show, :create, :destroy ]
+  resources :messages, only: [:index, :show, :create, :destroy] do
+    patch :request_mediator, on: :member  # Custom action inside messages
+  end
+ 
+
   resources :documents, only: [ :index, :show, :create, :destroy ]
   resources :resources, only: [ :index ]
 

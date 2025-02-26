@@ -1,6 +1,7 @@
 class MessagesController < ApplicationController
   before_action :require_login
   before_action :set_user
+  before_action :set_message, only: [:request_mediator]
 
   def index
     case @user.Role
@@ -29,6 +30,8 @@ class MessagesController < ApplicationController
     # this gets all the messages of the convo, need to decipher which ones are from who when displaying
     @messages = Message.where(ConversationID: @message_string.ConversationID).order(:MessageDate)
 
+    @mediation = PrimaryMessageGroup.find_by(ConversationID: params[:id]) 
+
     case @user.Role
     when "Tenant"
       render "messages/tenant_show"
@@ -38,6 +41,18 @@ class MessagesController < ApplicationController
       render plain: "Access Denied", status: :forbidden
     end
   end
+
+  def request_mediator
+    @mediation = PrimaryMessageGroup.find(params[:id]) # Ensure we find the right mediation record
+  
+    if @mediation.MediatorRequested == 0 && @mediation.MediatorAssigned == 0
+      @mediation.update(MediatorRequested: 1)
+      redirect_back fallback_location: dashboard_path, notice: "Mediator requested successfully."
+    else
+      redirect_back fallback_location: dashboard_path, alert: "Failed to request a mediator."
+    end
+  end
+
 
   def create
     # Ensure the user is involved in the conversation
@@ -86,5 +101,8 @@ class MessagesController < ApplicationController
 
   def set_user
     @user = User.find(session[:user_id])
+  end
+  def set_message
+    @message = Message.find(params[:id])
   end
 end
