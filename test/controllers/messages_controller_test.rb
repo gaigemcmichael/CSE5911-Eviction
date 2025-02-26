@@ -7,6 +7,10 @@ class MessagesControllerTest < ActionDispatch::IntegrationTest
     @mediation = primary_message_groups(:one) # Assume a fixture for mediation
   end
 
+  def log_in_as(user)
+    post login_path, params: { session: { email: user.Email, password: user.Password } }
+  end
+
   test "should redirect to login if not logged in" do
     get messages_path
     assert_redirected_to login_path
