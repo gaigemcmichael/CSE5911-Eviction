@@ -1,5 +1,5 @@
 /* Container Styling */
-.messages-container {
+.mediation-container {
     width: 100vw; 
     max-width: 100%;
     margin: 0 auto; 
@@ -13,14 +13,14 @@
 }
 
 /* Header Styling */
-h1 {
+.mediation-container h1 {
     color: #102a4d;
     font-size: 1.8rem;
     margin-bottom: 15px;
 }
 
 /* Welcome Message */
-p {
+.mediation-container p {
     font-size: 1rem;
     color: #333;
     line-height: 1.5;
