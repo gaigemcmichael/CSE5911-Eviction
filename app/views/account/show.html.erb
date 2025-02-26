@@ -1,14 +1,12 @@
 <div class = "account">
     <!-- Sidebar -->
-    <div class="sidebar">
+    <div class="account-sidebar">
             <ul class="nav-links">
                 <li><a href="#">Personal Details</a></li>
                 <li><a href="#">Password and security</a></li>
             </ul>
 
-            <div class = "logout-container">
-                <%= link_to "Log Out", logout_path, method: :delete, class: "sidebar-logout" %>
-            </div>
+            <%= link_to "Log Out", logout_path, method: :delete, class: "account-sidebar-logout" %>
     </div> 
 
     <!-- Main Content -->
