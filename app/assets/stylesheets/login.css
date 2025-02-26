@@ -7,6 +7,78 @@
     background: #102a4d;
 }
 
+/* Banner (just added) */
+.login-banner {
+    background: #102a4d;
+    text-align: center;
+    padding: 30px;
+    width: 100%;
+    max-width: 900px;
+    margin-bottom: 0;
+    animation: slideUp 3s ease-in;
+}
+
+.login-banner h1 {
+    font-size: 65px;
+    letter-spacing: 2px;
+    color: #FFFFFF;
+    font-family: 'Monteserrat', sans-serif;
+    font-weight: 700;
+    margin-top: 0;
+    margin-bottom: 0;
+}
+
+.login-banner p {
+    font-size: 22px;
+    letter-spacing: 3px;
+    font-family: 'Lato', sans-serif;
+    font-weight: 400;
+    color: #E5E7EB;
+    margin-top: 25px;
+    margin-bottom: 40px;
+}
+
+/* Feature Icons Grid */
+.features-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr); /* 2 equal columns */
+    grid-template-rows: repeat(2, auto); /* 2 rows */
+    gap: 25px 30px; /* Adjusted spacing for alignment */
+    max-width: 600px;
+    margin: 0 auto;
+    text-align: center;
+}
+
+.feature {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    font-weight: bold;
+    color: white;
+    transition: transform 0.3s ease-in-out;
+}
+
+/* Feature Titles */
+.feature p {
+    font-family: 'Lato', sans-serif;
+    font-size: 18px;
+    font-weight: 600;
+    color: #E5E7EB;
+}
+
+.feature i {
+    font-size: 2.5rem;
+    color: #FFFFFF;
+    margin-bottom: 5px;
+}
+
+/* Hover Effect on Icons */
+.feature:hover {
+    transform: scale(1.1);
+}
+
 /* Login form card */
 .login-card {
     background: white;
@@ -17,6 +89,7 @@
     max-width: 400px;
     font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     text-align: center;
+    margin-right: 60px;
 }
 
 /* Input Group (Each Input Field) */
@@ -30,6 +103,7 @@
 /* Label Styling */
 .input-group label {
     font-weight: bold;
+    color: black;
     margin-bottom: 5px;
 }
 
@@ -89,7 +163,7 @@
 
 .login-link:hover {
     text-decoration: underline;
-}
+} 
 
 /* Log in error message */
 .login-error-msg-holder {

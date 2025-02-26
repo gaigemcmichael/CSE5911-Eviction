@@ -1,4 +1,32 @@
+<!-- Log In Page -->
 <div class="login-container">
+  <!-- Banner -->
+  <div class="login-banner">
+    <h1>Resolve rental </h1>
+    <h1> disputes easily.</h1>
+    <p>Communicate early. Avoid court. Find fair solutions.</p>
+      
+    <div class="features-grid">
+      <div class="feature">
+        <i class="fa-solid fa-scale-balanced"></i>
+        <p>Early Mediation</p>
+      </div>
+      <div class="feature">
+        <i class="fa-solid fa-comments"></i>
+        <p>Text-Based Communication</p>
+      </div>
+      <div class="feature">
+        <i class="fa-solid fa-file-signature"></i>
+        <p>Digital Agreements</p>
+      </div>
+      <div class="feature">
+        <i class="fa-solid fa-calculator"></i>
+        <p>Payment Planning</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Login Form -->
   <div class="login-card">
     <h2> <i class="fa-solid fa-right-to-bracket"></i> Log In</h2>
     <p class="login-text"> Welcome back! Please enter your details </p>
@@ -9,7 +37,8 @@
         <label for="email">Email</label>
         <div class="input-field">
             <i class="fa-solid fa-envelope"></i>
-            <%= form.email_field :email, placeholder: "youremail@example.com", required: true, class: "login-input" %>
+            <%= form.email_field :email, placeholder: "youremail@example.com", 
+              required: true, class: "login-input" %>
         </div>
       </div>
 
@@ -18,7 +47,8 @@
         <label for="password">Password</label>
         <div class="input-field">
             <i class="fa-solid fa-lock"></i>
-            <%= form.password_field :password, placeholder: "Your password", required: true, class: "login-input" %>
+            <%= form.password_field :password, placeholder: "Your password", 
+              required: true, class: "login-input" %>
         </div>
       </div>
 
@@ -37,6 +67,7 @@
       </div>
     <% end %>
 
-    <p class="login-text">Don't have an account? <%= link_to "Sign up", signup_path, class: "login-link" %></p>
+    <p class="login-text">Don't have an account? 
+       <%= link_to "Sign up", signup_path, class: "login-link" %></p>
   </div>
 </div>
