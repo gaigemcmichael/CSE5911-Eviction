@@ -1,6 +1,6 @@
 <div class = "mediation-container">
-  <h1>Tenant Mediation/Messages</h1>
-  <p>Welcome, <%= @user.FName %>! This is the tenant messages/mediations page.</p>
+  <h1>Tenant Negotiation & Messages</h1>
+  <p>Welcome, <%= @user.FName %>! This is the tenant negotiations page.</p>
 
   <% if flash[:notice].present? %>
     <p class="notice"><%= flash[:notice] %></p>
@@ -12,13 +12,13 @@
 
   <% if @show_mediation_view %>
     <% if @mediation.accepted_by_landlord %>
-      <p>Mediation with <%= @mediation.landlord.CompanyName %> is accepted and in progress.</p>
-      <%= link_to "Access Mediation", message_path(@mediation.ConversationID), class: "view-btn" %>
+      <p>Negotiation with <%= @mediation.landlord.CompanyName || @mediation.landlord.Email %> is accepted and in progress.</p>
+      <%= link_to "Access Negotiation", message_path(@mediation.ConversationID), class: "view-btn" %>
     <% else %>
-      <p>Mediation requested. Waiting for the landlord to accept.</p>
+      <p>Negotiation requested. Waiting for the landlord to accept.</p>
     <% end %>
   <% else %>
-    <p class="mediation-status">No mediations exist. Create a new mediation request below:</p>
+    <p class="mediation-status">No negotiations exist. Create a new negotiation request below:</p>
     <div class="mediation-form">
       <%= render "mediations/tenant_create_mediation_form" %>
     </div>

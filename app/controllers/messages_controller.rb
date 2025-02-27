@@ -46,11 +46,27 @@ class MessagesController < ApplicationController
     @mediation = PrimaryMessageGroup.find(params[:id]) # Ensure we find the right mediation record
   
     if !@mediation.MediatorRequested && !@mediation.MediatorAssigned
-      @mediation.update(MediatorRequested: 1)
-      #not sure on these redirects, they seem to work but also kinda hard to test obv
-      redirect_back fallback_location: dashboard_path, notice: "Mediator requested successfully."
+      mediator = Mediator
+        .where(Available: true)
+        .where("ActiveMediations < MediationCap")
+        .order("ActiveMediations ASC")
+        .first
+
+      if mediator
+        # Assign the mediator to the mediation
+        @mediation.update!(
+          MediatorRequested: true,
+          MediatorAssigned: true,
+          MediatorID: mediator.UserID
+        )
+        mediator.increment!(:ActiveMediations)  
+      # not sure on these redirects, they seem to work but also kinda hard to test obv
+        redirect_back fallback_location: messages_path, notice: "Mediator requested successfully."
+      else
+        redirect_back fallback_location: messages_path, alert: "No available mediators at this time. Please try again later."
+      end
     else
-      redirect_back fallback_location: dashboard_path, alert: "Failed to request a mediator."
+      redirect_back fallback_location: messages_path, alert: "Failed to request a mediator."
     end
   end
 
@@ -103,6 +119,7 @@ class MessagesController < ApplicationController
   def set_user
     @user = User.find(session[:user_id])
   end
+
   def set_message
     @message = Message.find(params[:id])
   end
