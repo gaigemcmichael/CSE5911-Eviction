@@ -29,8 +29,8 @@ class MediationsControllerTest < ActionDispatch::IntegrationTest
   test "non-tenant cannot create mediation" do
     log_in_as(@landlord)
     post mediations_path, params: { landlord_id: @landlord.UserID }
-    assert_redirected_to mediations_path
-    assert_equal "Only tenants can start a mediation.", flash[:alert]
+    assert_redirected_to login_path
+    assert_equal "You must be logged in to access the mediations.", flash[:alert]
   end
 
   test "landlord can accept mediation" do
