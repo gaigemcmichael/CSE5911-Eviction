@@ -29,7 +29,7 @@ class MessagesControllerTest < ActionDispatch::IntegrationTest
     log_in_as(@tenant)
     get messages_path
     assert_response :success
-    assert_template "messages/tenant_index"
+    assert_template "messages/tenant_index" # not too sure what these templates are
     assert_not_nil assigns(:landlords)
   end
 
@@ -40,7 +40,7 @@ class MessagesControllerTest < ActionDispatch::IntegrationTest
     assert_template "messages/landlord_index"
   end
 
-  test "unauthorized users should get forbidden response" do
+  test "unauthorized users should get forbidden response" do # Not sure if this case is even testing anything useful
     unauthorized_user = users(:random) # Assume a fixture for unauthorized role
     log_in_as(unauthorized_user)
     get messages_path
