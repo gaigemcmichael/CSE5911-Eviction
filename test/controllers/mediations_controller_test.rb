@@ -11,17 +11,17 @@ class MediationsControllerTest < ActionDispatch::IntegrationTest
     post login_path, params: { session: { email: user.Email, password: user.Password } }
   end
 
-  test "should redirect to messages path on index access" do
+  test "should redirect to messages path on index access" do # chatGPT made this idk what it does
     log_in_as(@tenant)
     get mediations_path
     assert_redirected_to messages_path
     assert_equal "Mediation index is not available. Please use the messages page.", flash[:alert]
   end
 
-  test "tenant can create mediation" do
+  test "tenant can create mediation" do # Ask about in meeting
     log_in_as(@tenant)
     assert_difference("PrimaryMessageGroup.count") do
-      post mediations_path, params: { landlord_id: @landlord.UserID }
+    post mediations_path, params: { mediation: { LandlordID: @landlord.UserID, TenantID: @tenant.UserID } }
     end
     assert_redirected_to mediation_path(PrimaryMessageGroup.last)
   end
@@ -49,7 +49,7 @@ class MediationsControllerTest < ActionDispatch::IntegrationTest
     assert_equal "You are not authorized to accept this mediation.", flash[:alert]
   end
 
-  test "require login to access mediations" do #Functionality needs implemented still
+  test "require login to access mediations" do
     get mediations_path
     assert_redirected_to login_path
     assert_equal "You must be logged in to access the mediations.", flash[:alert]
