@@ -4,13 +4,13 @@
 # model remove the "{}" from the fixture names and add the columns immediately
 # below each fixture, per the syntax in the comments below
 #
-one:
-  UserID: 1
+mediator1:
+  UserID: 4
   Available: 1
   ActiveMediations: 3
   MediationCap: 5
-two:
-  UserID: 2
+mediator2:
+  UserID: 8
   Available: 0
   ActiveMediations: 1
   MediationCap: 3

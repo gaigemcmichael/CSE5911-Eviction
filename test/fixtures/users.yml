@@ -1,9 +1,9 @@
 # Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
-
+# TODO: Will add more of everything. Will also add several more invalid cases w/ duplicate emails, passwords, improper use of fields etc.
 landlord:
   UserID: 1
   Email: MyString1@email.com
-  Password: MyString2
+  Password: MyString1
   FName: Jane
   LName: Doe
   Role: Landlord
@@ -22,10 +22,10 @@ landlord_two:
   CompanyName: company3
   TenantAddress:
 
-tenant:
+tenant1:
   UserID: 2
   Email: MyString2@email.com
-  Password: MyString1
+  Password: MyString2
   FName: John
   LName: Doe
   Role: Tenant
@@ -33,7 +33,40 @@ tenant:
   CompanyName:
   TenantAddress: 121 road, columbus oh
 
-mediator:
+  tenant3:
+  UserID: 10
+  Email: MyString10@email.com
+  Password: MyString10
+  FName: Rick
+  LName: Doe
+  Role: Tenant
+  CreatedAt: 2025-02-01 05:00:00
+  CompanyName:
+  TenantAddress: 121 road, columbus oh
+
+  tenant4:
+  UserID: 11
+  Email: MyString11@email.com
+  Password: MyString11
+  FName: Kyle
+  LName: Doe
+  Role: Tenant
+  CreatedAt: 2025-02-01 05:00:00
+  CompanyName:
+  TenantAddress: 121 road, columbus oh
+
+  tenant2:
+  UserID: 9
+  Email: MyString9@email.com
+  Password: MyString9
+  FName: Mike
+  LName: Doe
+  Role: Tenant
+  CreatedAt: 2025-02-01 05:00:00
+  CompanyName:
+  TenantAddress: 121 road, columbus oh
+
+mediator1:
   UserID: 4
   Email: MyString4@email.com
   Password: MyString4
@@ -41,6 +74,17 @@ mediator:
   LName: Doe
   Role: Mediator
   CreatedAt: 2025-02-01 16:20:00
+  CompanyName:
+  TenantAddress:
+
+mediator2:
+  UserID: 8
+  Email: MyString8@email.com
+  Password: MyString8
+  FName: Jill
+  LName: Doe
+  Role: Mediator
+  CreatedAt: 2025-01-01 16:24:00
   CompanyName:
   TenantAddress:
 

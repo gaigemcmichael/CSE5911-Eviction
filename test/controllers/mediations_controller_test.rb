@@ -23,7 +23,7 @@ class MediationsControllerTest < ActionDispatch::IntegrationTest
     assert_difference("PrimaryMessageGroup.count") do
     post mediations_path, params: { mediation: { LandlordID: @landlord.UserID, TenantID: @tenant.UserID } }
     end
-    assert_redirected_to mediation_path(PrimaryMessageGroup.last)
+    assert_redirected_to mediation_path(@mediation)
   end
 
   test "non-tenant cannot create mediation" do
