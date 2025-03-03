@@ -6,7 +6,7 @@
 #
 one: 
   ConversationID: 1
-  TenantID: 1
+  TenantID: 2
   LandlordID: 1
   CreatedAt: 2025-01-01 00:00:00
   LandlordScreeningID: 1
@@ -14,22 +14,22 @@ one:
   GoodFaith: 1
   MediatorRequested: 1
   MediatorAssigned: 1
-  MediatorID: 1
+  MediatorID: 4
   EndOfConversationGoodFaithLandlord: 1
   EndOfConversationGoodFaithTenant: 1
   accepted_by_landlord: 1
 
 two:
   ConversationID: 2
-  TenantID: 2
-  LandlordID: 2
+  TenantID: 9
+  LandlordID: 3
   CreatedAt: 2025-01-01 00:00:00
   LandlordScreeningID: 2
   TenantScreeningID: 2
   GoodFaith: 0
-  MediatorRequested: 0
-  MediatorAssigned: 0
-  MediatorID: 2
+  MediatorRequested: 1
+  MediatorAssigned: 1
+  MediatorID: 8
   EndOfConversationGoodFaithLandlord: 0
   EndOfConversationGoodFaithTenant: 0
   accepted_by_landlord: 0
