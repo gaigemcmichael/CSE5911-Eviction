@@ -7,11 +7,10 @@ class LandlordMailer < ApplicationMailer
   default from: ENV["GMAIL_USERNAME"]
 
   def invitation_email(email, invited_by)
-
     @invited_by = invited_by
-    @signup_url = signup_url(role: 'Landlord', email: email)
-    
-    mail(to: email, subject: 'You are invited to join the Mediation Platform')
+    @signup_url = signup_url(role: "Landlord", email: email)
+
+    mail(to: email, subject: "You are invited to join the Mediation Platform")
   end
 
   def signup_url(role:, email:)

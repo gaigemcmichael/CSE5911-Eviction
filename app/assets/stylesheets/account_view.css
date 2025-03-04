@@ -1,63 +1,48 @@
-/* show account container */
+html, body {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+}
+
+/* Overall Layout */
 .account {
-    max-width: 1000px;
-    margin: 40px auto;
-    padding: 20px;
-    background: white;
-    border-radius: 10px;
-    /*text-align: center;*/
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     display: flex;
-    flex-direction: column;
-    gap: 20px;
+    max-width: 100%;
+    height: 100vh;
 }
 
 .account-content {
-    margin-left: 270px;
-    padding: 20px;
-    background: white;
-    border-top-right-radius: 10px;
-    border-bottom-right-radius: 10px;
-}
-
-.account h1 {
-    color: #102a4d;
-    margin-bottom: 20px;
-    font-size: 1.8rem;
+    flex: 1;
+    padding: 30px;
+    height: 100vh;
 }
 
 /* Sidebar Navbar */
-.sidebar {
+.account-sidebar {
     width: 200px;
+    height: 100vh;
     background: #102a4d;
     padding: 20px;
-    text-align: left;
-    border-radius: 10px;
     display: flex;
     flex-direction: column;
     align-items: flex-start;
-    height: 100vh;
-    position: fixed;
-    left: 0;
-    top: 0;
-    margin-top: 20px;
-    color: white;
     justify-content: space-between;
 }
 
-.sidebar .nav-links {
+.account-sidebar .nav-links {
     list-style: none;
     padding: 0;
     margin-bottom: auto;
     width: 100%;
+    margin-right: 8px;
 }
 
-.sidebar .nav-links li {
+.account-sidebar .nav-links li {
     width: 100%;
     margin-bottom: 10px;
 }
 
-.sidebar .nav-links a {
+.account-sidebar .nav-links a {
     color: white;
     text-decoration: none;
     font-size: 1rem;
@@ -68,19 +53,12 @@
     transition: background 0.3s ease;
 }
 
-.sidebar .nav-links a:hover {
+.account-sidebar .nav-links a:hover {
     background: #007bff;
 } 
 
 /* Logout button */
-.logout-container {
-    width: 100%;
-    margin-top: auto;
-    display: flex;
-    justify-content: center;
-}
-
-.sidebar-logout {
+.account-sidebar-logout {
     background: #d9534f;
     padding: 12px 20px;
     text-align: center;
@@ -90,19 +68,17 @@
     text-decoration: none;
     transition: background 0.3s ease;
     display: block;
-    width: 100%;
-    margin-top: 20px;
+    margin: 20px auto 0;
     align-self: flex-start;
     justify-content: space-between;
 }
 
-.sidebar-logout:hover {
+.account-sidebar-logout:hover {
     background: #c9302c;
 }
 
 /* Profile & Security Sections */
 .profile-section, .security-section {
-    background: white;
     padding: 20px;
     border-radius: 8px;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
@@ -124,6 +100,7 @@
 .personal-details-table th, .pass-security-table th {
     background: #f1f1f1;
     font-weight: bold;
+    vertical-align: middle;
     padding: 12px;
     border-bottom: 1px solid #ddd;
     text-align: left;
@@ -134,4 +111,50 @@
     padding: 12px;
     border-bottom: 1px solid #ddd;
     text-align: left;
+}
+
+/* Icons */
+.profile-section h1 i, .security-section h1 i {
+    margin-right: 8px;
+}
+
+/* Table Icons */
+.personal-details-table th i, .pass-security-table th i {
+    font-size: 14px;
+    margin-right: 5px;
+    position: relative;
+    color: #102a4d;
+}
+
+/* Hide the checkbox */
+.toggle-checkbox {
+    display: none;
+}
+
+/* Hide password with bullet dots */
+.password-field {
+    -webkit-text-security: disc;/* Hides text as dots */
+    border: none;
+    background: transparent;
+    max-width: max-content;
+    width: 100vw;
+    letter-spacing: 2px;
+    outline: none;
+}
+
+/* Toggle password visibility when checkbox is checked */
+.toggle-checkbox:checked + label + .password-field {
+    -webkit-text-security: none;
+}
+
+/* Style the eye icon */
+label {
+    cursor: pointer;
+    margin-left: 10px;
+    color: #6c757d; /* Gray */
+}
+
+/* Change eye icon color on hover */
+label:hover {
+    color: #007bff; /* Blue */
 }

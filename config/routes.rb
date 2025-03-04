@@ -1,4 +1,6 @@
 Rails.application.routes.draw do
+  get "third_party_mediations/index"
+  get "manage_cases/index"
   root "sessions#new"  # Home Page
 
   # Authentication
@@ -21,20 +23,36 @@ Rails.application.routes.draw do
   get "/account/edit", to: "account#edit"
   patch "/account", to: "account#update"
 
+  get "messages/tenant_show/:conversation_id", to: "messages#show", as: "tenant_show"
+  get "messages/landlord_show/:conversation_id", to: "messages#show", as: "landlord_show"
+  
+  get '/complete_screening', to: 'screenings#complete_screening'
+
+
   # Resources
-  resources :messages, only: [:index, :show, :create, :destroy]
-  resources :documents, only: [:index, :show, :create, :destroy]
-  resources :resources, only: [:index]
+  resources :messages, only: [:index, :show, :create, :destroy] do
+    patch :request_mediator, on: :member  # Custom action inside messages
+  end
+ 
+
+  resources :documents, only: [ :index, :show, :create, :destroy ]
+  resources :resources, only: [ :index ]
 
   # Admin Account Management
-  resources :accounts, only: [:index, :show, :create, :destroy], as: "admin_accounts"
+  resources :accounts, only: [ :index, :show, :create, :destroy ], as: "admin_accounts"
 
   # System Data
-  resource :system_data, only: [:show]
+  resource :system_data, only: [ :show ]
 
   # Mediations and Related Actions
-  resources :mediations, only: [:new, :create, :show, :edit, :update, :destroy] do
+  resources :mediations, only: [ :new, :create, :edit, :update, :destroy ] do
     post :accept, on: :member
     post :respond, on: :member
   end
+
+  # Allow third party mediator to view cases
+  resources :third_party_mediations, only: [:index]
+
+  # Messages related ActionCable
+  mount ActionCable.server => "/cable"
 end

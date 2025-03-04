@@ -4,27 +4,26 @@ class MediationsController < ApplicationController
   before_action :require_tenant_or_landlord_role, only: [ :create, :respond, :accept ]
 
   def index
-    redirect_to messages_path, alert: "Mediation index is not available. Please use the messages page."
+    redirect_to messages_path, alert: "Negotiation index is not available. Please use the messages page."
   end
 
   # lets a landlord accept a mediation request
   def accept
     mediation = PrimaryMessageGroup.find(params[:id])
-    
+
     if @user.Role == "Landlord" && mediation.LandlordID == @user.UserID
       mediation.update!(accepted_by_landlord: true)
       mediation.reload
-      redirect_to mediations_path, notice: "Mediation accepted. You can now view and respond to the mediation."
+      redirect_to mediations_path, notice: "Negotiation accepted. You can now view and respond to the negotiation."
     else
-      redirect_to mediations_path, alert: "You are not authorized to accept this mediation."
+      redirect_to mediations_path, alert: "You are not authorized to accept this negotiation."
     end
   end
 
   # Create a new mediation using the selected landlord
   def create
-
     unless @user.Role == "Tenant"
-      redirect_to mediations_path, alert: "Only tenants can start a mediation." and return
+      redirect_to mediations_path, alert: "Only tenants can start a negotiation." and return
     end
 
     landlord = find_existing_landlord
@@ -44,7 +43,7 @@ class MediationsController < ApplicationController
   # Display the form to start a new mediation (only tenants can start)
   def new
     if @user.Role != "Tenant"
-      redirect_to mediations_path, alert: "Only tenants can start a mediation." and return
+      redirect_to mediations_path, alert: "Only tenants can start a negotiation." and return
     end
 
     # Load all landlords ordered by CompanyName
