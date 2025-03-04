@@ -4,7 +4,6 @@ title:  "Developer Manual"
 date:   2025-03-04 17:59:43 -0500
 categories: documentation
 ---
-
 ## Introduction
 
 This Developer Manual provides future developers with essential documentation to understand, modify, and maintain the Eviction Mediation Platform. This document outlines the system architecture, installation procedures, key source files, best practices for testing and debugging, and anticipated improvements for future iterations. By using this guide, developers can efficiently contribute to the project’s success.
