@@ -9,10 +9,15 @@
  * Consider organizing styles into separate files for maintainability.
  */
 
+ @import 'font-awesome-sprockets';
+ @import 'font-awesome';
+
  @import "base";
  @import "login";
  @import "signup";
  @import "navbar"; 
  
  @import "dashboard";
- @import "account";
+ @import "account_view";
+ @import "messages_tenant";
+ @import "messages_landlord";
