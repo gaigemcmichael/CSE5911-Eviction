@@ -1,4 +1,9 @@
-## layout: post title: "Developer Manual" date: 2025-03-4 13:57:43 -0500 categories: documentation
+---
+layout: post
+title:  "Developer Manual"
+date:   2025-03-04 17:59:43 -0500
+categories: documentation
+---
 
 ## Introduction
 
