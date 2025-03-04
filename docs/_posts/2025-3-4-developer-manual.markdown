@@ -1,4 +1,4 @@
-# Developer Manual
+## layout: post title: "Developer Manual" date: 2025-03-4 13:57:43 -0500 categories: documentation
 
 ## Introduction
 
@@ -65,6 +65,7 @@ b. Open a new VS Code window with the command:
 
 ```!whitespace-pre
 sh
+
 ```
 
 CopyEdit
@@ -77,6 +78,7 @@ a. In the WSL or Ubuntu terminal, run:
 
 ```!whitespace-pre
 sh
+
 ```
 
 CopyEdit
@@ -89,6 +91,7 @@ b. Navigate to the desired folder and run:
 
 ```!whitespace-pre
 sh
+
 ```
 
 CopyEdit
@@ -99,6 +102,7 @@ CopyEdit
 
 ```!whitespace-pre
 sh
+
 ```
 
 CopyEdit
@@ -109,6 +113,7 @@ CopyEdit
 
 ```!whitespace-pre
 sh
+
 ```
 
 CopyEdit
@@ -119,6 +124,7 @@ After this, open Windows PowerShell and execute:
 
 ```!whitespace-pre
 sh
+
 ```
 
 CopyEdit
@@ -133,6 +139,7 @@ a. In the WSL or Ubuntu terminal, run:
 
 ```!whitespace-pre
 sh
+
 ```
 
 CopyEdit
@@ -154,6 +161,7 @@ a. Open PowerShell as an administrator and run:
 
 ```!whitespace-pre
 sh
+
 ```
 
 CopyEdit
@@ -166,6 +174,7 @@ a. In the terminal, run:
 
 ```!whitespace-pre
 sh
+
 ```
 
 CopyEdit
@@ -176,6 +185,7 @@ b. Add proper dependencies for SQL Server by running:
 
 ```!whitespace-pre
 sh
+
 ```
 
 CopyEdit
@@ -188,6 +198,7 @@ c. Ensure the SQL Browser service is installed and running:
     
     ```!whitespace-pre
     sh
+    
     ```
     
     CopyEdit
@@ -198,6 +209,7 @@ c. Ensure the SQL Browser service is installed and running:
     
     ```!whitespace-pre
     sh
+    
     ```
     
     CopyEdit
@@ -211,6 +223,7 @@ d. Check for a connection to the database (replace IP, username, and password as
 
 ```!whitespace-pre
 sh
+
 ```
 
 CopyEdit
@@ -221,6 +234,7 @@ If successfully connected, you should see a prompt similar to:
 
 ```!whitespace-pre
 sh
+
 ```
 
 CopyEdit
@@ -231,6 +245,7 @@ Then, to check for existing databases, type:
 
 ```!whitespace-pre
 sh
+
 ```
 
 CopyEdit
@@ -243,6 +258,7 @@ If the desired database is not present, create it:
     
     ```!whitespace-pre
     sh
+    
     ```
     
     CopyEdit
@@ -253,6 +269,7 @@ If the desired database is not present, create it:
     
     ```!whitespace-pre
     sh
+    
     ```
     
     CopyEdit
@@ -264,6 +281,7 @@ e. To initialize from the `DBInitTest.sql` file (replace username, password, IP,
 
 ```!whitespace-pre
 sh
+
 ```
 
 CopyEdit
@@ -274,6 +292,7 @@ f. Run the migrations:
 
 ```!whitespace-pre
 sh
+
 ```
 
 CopyEdit
@@ -288,6 +307,7 @@ a. Install **Homebrew**:
 
 ```!whitespace-pre
 sh
+
 ```
 
 CopyEdit
@@ -309,6 +329,7 @@ b. Start the SQL Server container by running:
 
 ```!whitespace-pre
 sh
+
 ```
 
 CopyEdit
@@ -323,6 +344,7 @@ c. Run the following commands:
 
 ```!whitespace-pre
 sh
+
 ```
 
 CopyEdit
@@ -338,6 +360,7 @@ b. Open the **Docker** terminal and run:
 
 ```!whitespace-pre
 sh
+
 ```
 
 CopyEdit
@@ -357,6 +380,7 @@ c. In VS Code, run:
 
 ```!whitespace-pre
 sh
+
 ```
 
 CopyEdit
@@ -374,6 +398,7 @@ ii. To install and test, run:
 
 ```!whitespace-pre
 sh
+
 ```
 
 CopyEdit
@@ -405,6 +430,7 @@ a. **config/database.yml** (modify according to your specific setup):
 
 ```!whitespace-pre
 yaml
+
 ```
 
 CopyEdit
@@ -415,6 +441,7 @@ b. **freetds.conf** (modify for your specific SQL Server name and host IP):
 
 ```!whitespace-pre
 conf
+
 ```
 
 CopyEdit
@@ -436,6 +463,7 @@ In **config/environments/development.rb** (for development) and **config/environ
 
 ```!whitespace-pre
 rb
+
 ```
 
 CopyEdit
@@ -481,6 +509,7 @@ To start the server, run either:
 
 ```!whitespace-pre
 sh
+
 ```
 
 CopyEdit
@@ -491,6 +520,7 @@ or
 
 ```!whitespace-pre
 sh
+
 ```
 
 CopyEdit
@@ -503,7 +533,8 @@ A message should confirm that the server is online. In VS Code, you may also be 
 
 The pages can be navigated via the top navigation bar:
 
-<table> <thead> <tr> <th>Home</th> <th>Messages</th> <th>Documents</th> <th>Account</th> </tr> </thead> </table>
+| Home | Messages | Documents | Account |
+| --- | --- | --- | --- |
 
 Different account types have access to different pages. For example, a landlord account may manage multiple mediations simultaneously, while a tenant is limited to one active mediation. **More details will be added as functionality (e.g., admin roles) is implemented.**
 
@@ -519,6 +550,7 @@ Rails’ built-in testing framework executes tests located under the `test/` fol
 
 ```!whitespace-pre
 sh
+
 ```
 
 CopyEdit
@@ -529,6 +561,7 @@ to execute all tests. To run tests for a specific component (for example, contro
 
 ```!whitespace-pre
 sh
+
 ```
 
 CopyEdit
