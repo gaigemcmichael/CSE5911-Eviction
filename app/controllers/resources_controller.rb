@@ -3,7 +3,7 @@ class ResourcesController < ApplicationController
     @active_tab = params[:tab] || "resources"
 
     # Load FAQs from a text file
-    faq_file_path = Rails.root.join('db', 'faq.txt')
+    faq_file_path = Rails.root.join("db", "faq.txt")
 
     if File.exist?(faq_file_path)
       raw_faqs = File.read(faq_file_path).strip.split("\n")

@@ -1,7 +1,7 @@
 class MessagesController < ApplicationController
   before_action :require_login
   before_action :set_user
-  before_action :set_message, only: [:request_mediator]
+  before_action :set_message, only: [ :request_mediator ]
 
   def index
     case @user.Role
@@ -30,7 +30,7 @@ class MessagesController < ApplicationController
     # this gets all the messages of the convo, need to decipher which ones are from who when displaying
     @messages = Message.where(ConversationID: @message_string.ConversationID).order(:MessageDate)
 
-    @mediation = PrimaryMessageGroup.find_by(ConversationID: params[:id]) 
+    @mediation = PrimaryMessageGroup.find_by(ConversationID: params[:id])
 
     case @user.Role
     when "Tenant"
@@ -44,7 +44,7 @@ class MessagesController < ApplicationController
 
   def request_mediator
     @mediation = PrimaryMessageGroup.find(params[:id]) # Ensure we find the right mediation record
-  
+
     if !@mediation.MediatorRequested && !@mediation.MediatorAssigned
       mediator = Mediator
         .where(Available: true)
@@ -59,8 +59,8 @@ class MessagesController < ApplicationController
           MediatorAssigned: true,
           MediatorID: mediator.UserID
         )
-        mediator.increment!(:ActiveMediations)  
-      # not sure on these redirects, they seem to work but also kinda hard to test obv
+        mediator.increment!(:ActiveMediations)
+        # not sure on these redirects, they seem to work but also kinda hard to test obv
         redirect_back fallback_location: messages_path, notice: "Mediator requested successfully."
       else
         redirect_back fallback_location: messages_path, alert: "No available mediators at this time. Please try again later."

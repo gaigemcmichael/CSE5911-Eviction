@@ -2,10 +2,9 @@ class MediatorCasesController < ApplicationController
   before_action :require_login
   before_action :set_user
   before_action :authorize_mediator
-  before_action :set_mediation, only: [:show]
+  before_action :set_mediation, only: [ :show ]
 
   def show
-
   end
 
   private
