@@ -1,4 +1,5 @@
-<div class="chat-message <%= message.SenderID == @user.UserID ? 'sent' : 'received' %>"
+<div class="chat-message <%= message.SenderID == user.UserID ? 'sent' : 'received' if message.recipientID == user.UserID || message.SenderID == user.UserID %>"
+
      data-message-id="<%= message.id %>"
      data-sender-id="<%= message.SenderID %>" 
      data-current-user-id="<%= @user.UserID %>"
