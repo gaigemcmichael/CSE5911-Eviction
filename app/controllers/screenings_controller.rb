@@ -8,12 +8,11 @@ class ScreeningsController < ApplicationController
   end
 
   def create
-    puts "DEBUG: Conversation ID: #{@conversation_id}" # This will output the value of the conversation_id to your server logs
-
+    @conversation_id = params[:conversation_id]
     @screening = ScreeningQuestion.new(screening_params)
     if @screening.save
       if @user.Role == 'Landlord'
-        redirect_to landlord_show_path(conversation_id: @conversation_id), notice: 'Screening completed successfully'
+        redirect_to "/messages/#{params[:conversation_id]}"
       elsif @user.Role == 'Tenant'
         redirect_to tenant_show_path(conversation_id: @conversation_id), notice: 'Screening completed successfully'
       else
@@ -46,7 +45,7 @@ class ScreeningsController < ApplicationController
       :DisabilityAccommodation, :DisabilityExplanation, 
       :ConflictOfInterest, :SpeakOnOwnBehalf, 
       :NeedToConsult, :ConsultExplanation, 
-      :RelationshipToOtherParty, :Unsafe, :UnsafeExplanation, :UserID
+      :RelationshipToOtherParty, :Unsafe, :UnsafeExplanation, :UserID, :conversation_id
     )
   end
 end
