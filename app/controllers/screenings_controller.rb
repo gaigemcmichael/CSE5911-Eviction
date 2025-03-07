@@ -14,7 +14,7 @@ class ScreeningsController < ApplicationController
       if @user.Role == 'Landlord'
         redirect_to "/messages/#{params[:conversation_id]}"
       elsif @user.Role == 'Tenant'
-        redirect_to tenant_show_path(conversation_id: @conversation_id), notice: 'Screening completed successfully'
+        redirect_to "/messages/#{params[:conversation_id]}"
       else
         redirect_to root_path, alert: 'Unauthorized role'
       end
