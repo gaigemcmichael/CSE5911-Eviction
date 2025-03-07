@@ -84,7 +84,7 @@ class MessagesController < ApplicationController
         ConversationID: params[:ConversationID],
         Contents: params[:Contents]
       ).where("MessageDate >= ?", 2.seconds.ago).exists?
-    
+
       if duplicate_exists
         Rails.logger.info "Duplicate message detected, blocking it."
         return render status: :no_content, body: nil
