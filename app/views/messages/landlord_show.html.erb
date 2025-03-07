@@ -52,9 +52,10 @@
               </p>
             <% elsif @user.Role == "Landlord" && @mediation.LandlordScreeningID.nil? %>
               <p class="screening-alert">
+              <%= debug @message_string.ConversationID %>
                 You must complete your screening questions before proceeding with mediation.
-                <a href="<%= complete_screening_path %>">Click here to complete screening.</a>
-              </p>
+                <a href="<%= new_screening_path(conversation_id: @message_string.ConversationID)%>">Click here to complete screening.</a>
+                </p>
             <% end %>
         <% else %>
           <p class="mediator-status">unknown error.</p>
