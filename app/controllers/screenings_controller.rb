@@ -10,10 +10,14 @@ class ScreeningsController < ApplicationController
   def create
     @conversation_id = params[:conversation_id]
     @screening = ScreeningQuestion.new(screening_params)
+    @primary_message_group = PrimaryMessageGroup.find_by(ConversationID: @conversation_id)
+
     if @screening.save
       if @user.Role == 'Landlord'
+        @primary_message_group.update(LandlordScreeningID: @screening.ScreeningID)
         redirect_to "/messages/#{params[:conversation_id]}"
       elsif @user.Role == 'Tenant'
+        @primary_message_group.update(TenantScreeningID: @screening.ScreeningID)
         redirect_to "/messages/#{params[:conversation_id]}"
       else
         redirect_to root_path, alert: 'Unauthorized role'
