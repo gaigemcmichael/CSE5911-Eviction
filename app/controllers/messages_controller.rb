@@ -76,10 +76,25 @@ class MessagesController < ApplicationController
     conversation = MessageString.find_by(ConversationID: params[:ConversationID])
 
     if conversation
+      # Determine Recipient
+      recipient_id = determine_recipient(conversation)
+
+      duplicate_exists = Message.where(
+        SenderID: @user.UserID,
+        ConversationID: params[:ConversationID],
+        Contents: params[:Contents]
+      ).where("MessageDate >= ?", 2.seconds.ago).exists?
+    
+      if duplicate_exists
+        Rails.logger.info "Duplicate message detected, blocking it."
+        return render status: :no_content, body: nil
+      end
+
       # Create a new message
       @message = Message.create!(
         ConversationID: conversation.ConversationID,
         SenderID: @user.UserID,
+        recipientID: recipient_id,
         MessageDate: Time.current,
         Contents: params[:Contents]
       )
@@ -92,16 +107,17 @@ class MessagesController < ApplicationController
             message_id: @message.id,
             contents: @message.Contents,
             sender_id: @message.SenderID,
+            recipient_id: @message.recipientID,
             message_date: @message.MessageDate.strftime("%B %d, %Y %I:%M %p"),
             sender_role: @user.Role
           }
         )
 
         # Prevent page reload and avoid "Conversation not found" error
-        render status: :no_content, body: nil
+        render json: { success: true, message_id: @message.id }, status: :created
       else
-        # this needs better error handling, rn sends user to a dark screen with error message
-        render plain: "There was an error saving your message.", status: :unprocessable_entity
+        Rails.logger.error "Message save failed: #{@message.errors.full_messages}"
+        render json: { error: @message.errors.full_messages }, status: :unprocessable_entity
       end
     else
       redirect_to messages_path, alert: "Conversation not found"
@@ -109,6 +125,22 @@ class MessagesController < ApplicationController
   end
 
   private
+
+  def determine_recipient(conversation)
+    primary_group = PrimaryMessageGroup.find_by(ConversationID: conversation.ConversationID)
+
+    if primary_group.nil?
+      raise "There was an issue finding the mediation group for this conversation."
+    end
+
+    if @user.Role == "Tenant"
+      primary_group.LandlordID
+    elsif @user.Role == "Landlord"
+      primary_group.TenantID
+    else
+      nil # Handle unexpected roles
+    end
+  end
 
   def require_login
     unless session[:user_id]
