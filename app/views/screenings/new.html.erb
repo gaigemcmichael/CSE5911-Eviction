@@ -1,7 +1,4 @@
 <p>Please complete the following screening questions before proceeding with mediation.</p>
-<%= debug @conversation_id %>
-<%= debug @user.Role %>
-
 
 <%= form_with model: @screening, url: screenings_path(conversation_id: @conversation_id), method: :post do |f| %>
   <%= f.hidden_field :UserID, value: @user.UserID %>
