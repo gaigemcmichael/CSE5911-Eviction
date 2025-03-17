@@ -47,14 +47,14 @@
             <p class="mediator-status">Mediator Assigned!</p>
             <% if @user.Role == "Tenant" && @mediation.TenantScreeningID.nil? %>
               <p class="screening-alert">
-                You must complete your screening questions before proceeding with mediation. 
-                <a href="<%= complete_screening_path %>">Click here to complete screening.</a>
-              </p>
+                You must complete your screening questions before proceeding with mediation.
+                <a href="<%= new_screening_path(conversation_id: @message_string.ConversationID)%>">Click here to complete screening.</a>             
+                </p>
             <% elsif @user.Role == "Landlord" && @mediation.LandlordScreeningID.nil? %>
               <p class="screening-alert">
                 You must complete your screening questions before proceeding with mediation.
-                <a href="<%= complete_screening_path %>">Click here to complete screening.</a>
-              </p>
+                <a href="<%= new_screening_path(conversation_id: @message_string.ConversationID)%>">Click here to complete screening.</a>
+                </p>
             <% end %>
         <% else %>
           <p class="mediator-status">unknown error.</p>

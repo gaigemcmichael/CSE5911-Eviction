@@ -26,8 +26,9 @@ Rails.application.routes.draw do
   get "messages/tenant_show/:conversation_id", to: "messages#show", as: "tenant_show"
   get "messages/landlord_show/:conversation_id", to: "messages#show", as: "landlord_show"
   
-  get '/complete_screening', to: 'screenings#complete_screening'
+  #get '/complete_screening', to: 'screenings#complete_screening'
 
+  get 'screenings/new/:conversation_id', to: 'screenings#new', as: 'new_screening'
 
   # Resources
   resources :messages, only: [:index, :show, :create, :destroy] do
@@ -52,6 +53,8 @@ Rails.application.routes.draw do
 
   # Allow third party mediator to view cases
   resources :third_party_mediations, only: [:index]
+
+  resources :screenings, only: [:new, :create]
 
   # Messages related ActionCable
   mount ActionCable.server => "/cable"
