@@ -3,7 +3,7 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    min-height: 100vh; /* Allow flexibility */
+    min-height: 100vh; 
     background: linear-gradient(135deg, #102a4d 40%, #1c3b6f 100%);
     padding: 20px;
 }
@@ -252,14 +252,14 @@
 
 /* Close Button Hover Effect */
 .close-popup:hover {
-    background: #f8d7da; /* Light red background */
+    background: #f8d7da;
     color: darkred;
 }
 
 /* Ensure the modal adapts to smaller screens */
 @media (max-width: 600px) {
     .modal-popup {
-        width: 90vw; /* Expands more on smaller screens */
+        width: 90vw; 
         max-height: 90vh;
     }
 }
