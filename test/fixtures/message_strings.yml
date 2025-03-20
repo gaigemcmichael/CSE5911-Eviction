@@ -4,8 +4,13 @@
 # model remove the "{}" from the fixture names and add the columns immediately
 # below each fixture, per the syntax in the comments below
 #
-one: {}
-# column: value
-#
-two: {}
-# column: value
+one: 
+  ConversationID: 1
+  CreatedAt: 2025-01-01 00:00:00
+  LastMessageSentDate: 2025-01-01 00:00:00
+  Role: Primary
+two:
+  ConversationID: 2
+  CreatedAt: 2025-01-01 00:00:00
+  LastMessageSentDate: 2025-01-01 00:00:00
+  Role: Side
