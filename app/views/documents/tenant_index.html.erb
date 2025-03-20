@@ -1,2 +1,16 @@
 <h1>Tenant documents</h1>
 <p>Welcome, <%= @user.FName %>! This is the tenant documents page.</p>
+
+<% if @files.any? %>
+  <ul>
+    <% @files.each do |file| %>
+      <li>
+        <a href="<%= serve_file_path(filename: file.FileName) %>" target="_blank">
+          <%= file.FileName %>
+        </a>
+      </li>
+    <% end %>
+  </ul>
+<% else %>
+  <p>No documents available.</p>
+<% end %>
