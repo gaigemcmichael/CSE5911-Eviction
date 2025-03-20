@@ -1,7 +1,7 @@
 /* General Navbar Style */
 .navbar {
     background: #102a4d;
-    padding: 15px 20px;
+    padding: 10px 15px;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -12,34 +12,38 @@
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
-/* Navbar Menu for Desktop */
+/* Navbar Menu (Desktop) */
 .navbar-menu {
     list-style: none;
     display: flex;
-    gap: 20px;
+    gap: 15px;
     padding: 0;
     margin: 0;
-    justify-content: center;
+    justify-content: center; 
+    align-items: center;
 }
 
+/* Navbar Items */
 .navbar-menu li {
-    margin: 0 10px;
-    display: inline-block;
+    display: flex;
+    align-items: center;
 }
 
 /* Navbar Links */
 .navbar-menu li a {
-    color: white !important;
+    color: white;
     text-decoration: none;
     font-size: 1rem;
-    padding: 12px 15px;
+    padding: 8px 10px;
     transition: background 0.3s ease, transform 0.2s ease;
     border-radius: 8px;
     font-weight: 500;
     display: flex;
     align-items: center;
+    gap: 6px;
 }
 
+/* Hover Effect */
 .navbar-menu li a:hover {
     background: #007bff;
     transform: scale(1.05);
@@ -48,63 +52,98 @@
 /* Ensure icons are aligned properly */
 .navbar-menu li a i {
     font-size: 1.2rem;
-    margin-right: 5px;
+}
+
+/* Logout Button (Navbar) */
+.navbar-logout {
+    background: #e74c3c;
+    color: white;
+    font-size: 1rem;
+    font-weight: bold;
+    border-radius: 8px;
+    transition: background 0.3s ease, transform 0.2s ease;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+}
+
+.navbar-logout:hover {
+    background: #c0392b;
+    transform: scale(1.05);
+}
+
+.navbar-logout:active {
+    background: #a93226;
+    transform: scale(0.98);
+}
+
+.logout-item {
+    margin-left: auto;
 }
 
 /* Responsive Design for Mobile */
 @media (max-width: 768px) {
-    /* Make navbar scrollable */
     .navbar {
-        overflow-x: auto;
-        white-space: nowrap;
-        -webkit-overflow-scrolling: touch;
-        justify-content: flex-start;
-        padding: 10px 5px;
+        flex-wrap: wrap; /* Allow wrapping */
+        justify-content: center;
     }
 
-    /* Ensure menu is inline and scrollable */
     .navbar-menu {
         display: flex;
-        flex-wrap: nowrap;
-        gap: 15px;
-        padding: 0;
-        margin: 0;
-        width: max-content;
+        flex-wrap: wrap;
+        justify-content: center;
+        width: 100%;
+        gap: 5px;
     }
 
-    /* Navbar items - shrink to fit */
-    .navbar-menu li {
-        display: inline-block;
-        flex-shrink: 0;
-        text-align: center; 
-    }
-
-    /* Icon-only navbar links */
+    /* Stack icons & text vertically */
     .navbar-menu li a {
-        display: flex;
-        flex-direction: column; 
-        align-items: center;
-        font-size: 12px;
-        padding: 8px 5px; 
-        border-radius: 6px;
-        text-decoration: none;
-        color: white;
-        transition: background 0.3s ease;
+        flex-direction: column;
+        font-size: 0.8rem;
+        padding: 6px 6px;
+        text-align: center;
     }
 
-    /* Reduce icon size */
     .navbar-menu li a i {
-        font-size: 20px;
-        margin-bottom: 5px; 
+        font-size: 18px;
+        margin-bottom: 3px;
     }
 
-    /* Hover effect */
-    .navbar-menu li a:hover {
-        background: #007bff;
+    /* Stack Logout Button Text Under Icon */
+    .navbar-logout {
+        flex-direction: column;
+        font-size: 0.8rem;
+        padding: 6px 6px;
+        text-align: center;
     }
 
-    /* Hide scrollbar for cleaner design */
-    .navbar::-webkit-scrollbar {
-        display: none;
+    .navbar-logout i {
+        font-size: 18px;
+        margin-bottom: 3px;
+    }
+}
+
+@media (max-width: 480px) {
+    .navbar-menu {
+        gap: 3px;
+    }
+
+    .navbar-menu li a {
+        font-size: 0.75rem;
+        padding: 5px 5px;
+    }
+
+    .navbar-menu li a i {
+        font-size: 16px;
+    }
+
+    .navbar-logout {
+        font-size: 0.75rem;
+        padding: 5px 5px;
+    }
+
+    .navbar-logout i {
+        font-size: 16px;
     }
 }
