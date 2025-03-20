@@ -1,2 +1,20 @@
 <h1>Landlord Documents</h1>
 <p>Welcome, <%= @user.FName %>! This is the landlord documents page.</p>
+
+
+<% if @files.any? %>
+  <ul>
+    <% @files.each do |file| %>
+      <li>
+        <%= link_to file.FileName, download_file_path(file.FileID), target: "_blank" %>
+      </li>
+    <% end %>
+  </ul>
+<% else %>
+  <p>No documents available.</p>
+<% end %>
+
+<!-- Button to generate a new file (currently a dead link), not sure if we want this long term as the generation of files is probably specific to landlord + tenant combinations of people -->
+<%= button_to "Generate New File", "#", method: :post, disabled: true, class: "btn btn-primary" %>
+
+
