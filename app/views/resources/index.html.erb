@@ -1,25 +1,18 @@
-<div class="resources">
-    <!-- Sidebar Navigation -->
-    <nav class="resources-sidebar">
-        <ul>
-        <li class="<%= 'active' if @active_tab == 'resources' %>">
-            <%= link_to "Resources", resources_path(tab: 'resources') %>
-        </li>
-        <li class="<%= 'active' if @active_tab == 'faqs' %>">
-            <%= link_to "FAQs", resources_path(tab: 'faqs') %>
-        </li>
-        </ul>
-    </nav>
+<!-- Tab Navigation (Resources & FAQs) -->
+<div class="tabs">
+    <a href="<%= resources_path(tab: 'resources') %>" class="<%= 'active' if @active_tab == 'resources' %>">
+        Resources
+    </a>
+    <a href="<%= resources_path(tab: 'faqs') %>" class="<%= 'active' if @active_tab == 'faqs' %>">
+        FAQs
+    </a>
+</div>
 
-    <div class="resources-content">
-        <h1>Tenant Resources</h1>
-        <p>Welcome, <%= @user.FName %>! This is the tenant resources page.</p>
-
-        <!-- Main Content -->
-        <% if @active_tab == "resources" %>
+<!-- Main Content -->
+<div class="resources-content">
+   <% if @active_tab == "resources" %>
         <%= render "resources" %>
-        <% else %>
+   <% else %>
         <%= render "faqs" %>
-        <% end %>
-    </div>
+   <% end %>
 </div>
