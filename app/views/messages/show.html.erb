@@ -24,4 +24,10 @@
   <% end %>
 </div>
 
+<!-- Pass mediator status clearly to JavaScript -->
+<script>
+  window.mediatorAssigned = <%= @mediation&.MediatorRequested && @mediation&.MediatorAssigned ? 'true' : 'false' %>;
+</script>
+
 <%= javascript_include_tag "negotiation_chat" %>
+
