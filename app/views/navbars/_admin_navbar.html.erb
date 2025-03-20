@@ -1,8 +1,8 @@
 <nav class="navbar">
-  <ul>
-    <li><%= link_to "<i class='fa-solid fa-home'></i> Home".html_safe, dashboard_path %></li>
-    <li><%= link_to "<i class='fa-solid fa-scale-balanced'></i> Mediations".html_safe, mediations_path %></li>
-    <li><%= link_to "<i class='fa-solid fa-users-gear'></i> Manage Accounts".html_safe, admin_accounts_path %></li>
-    <li><%= link_to "<i class='fa-solid fa-database'></i> System Data".html_safe, system_data_path %></li>
-  </ul>
+    <ul class="navbar-menu">
+        <li><a href="/dashboard" title="Home"><i class="fas fa-home"></i> Home</a></li>
+        <li><a href="/mediations" title="Mediations"><i class="fas fa-scale-balanced"></i> Mediations</a></li>
+        <li><a href="/admin_accounts" title="Manage Accounts"><i class="fas fa-users-gear"></i> Manage Accounts</a></li>
+        <li><a href="/system_data" title="System Data"><i class="fas fa-database"></i> System Data</a></li>
+    </ul>
 </nav>

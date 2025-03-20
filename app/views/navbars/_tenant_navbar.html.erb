@@ -1,9 +1,9 @@
 <nav class="navbar">
-  <ul>
-    <li><%= link_to "<i class='fa-solid fa-home'></i> Home".html_safe, dashboard_path %></li>
-    <li><%= link_to "<i class='fa-solid fa-envelope'></i> Messages".html_safe, messages_path %></li>
-    <li><%= link_to "<i class='fa-solid fa-file'></i> Documents".html_safe, documents_path %></li>
-    <li><%= link_to "<i class='fa-solid fa-book'></i> Resources".html_safe, resources_path %></li>
-    <li><%= link_to "<i class='fa-solid fa-user'></i> Account".html_safe, account_path %></li>
-  </ul>
+    <ul class="navbar-menu">
+        <li><a href="/dashboard" title="Home"><i class="fas fa-home"></i> Home</a></li>
+        <li><a href="/messages" title="Messages"><i class="fas fa-envelope"></i> Messages</a></li>
+        <li><a href="/documents" title="Documents"><i class="fas fa-file-alt"></i> Documents</a></li>
+        <li><a href="/resources" title="Resources"><i class="fas fa-book"></i> Resources</a></li>
+        <li><a href="/account" title="Account"><i class="fas fa-user"></i> Account</a></li>
+    </ul>
 </nav>

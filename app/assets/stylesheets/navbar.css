@@ -12,7 +12,8 @@
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
-.navbar ul {
+/* Navbar Menu for Desktop */
+.navbar-menu {
     list-style: none;
     display: flex;
     gap: 20px;
@@ -21,70 +22,94 @@
     justify-content: center;
 }
 
-.navbar ul li {
-    margin: 0 15px;
+.navbar-menu li {
+    margin: 0 10px;
     display: inline-block;
 }
 
-.navbar ul li a {
-    color: white;
+/* Navbar Links */
+.navbar-menu li a {
+    color: white !important;
     text-decoration: none;
     font-size: 1rem;
-    padding: 12px 18px;
+    padding: 12px 15px;
     transition: background 0.3s ease, transform 0.2s ease;
     border-radius: 8px;
     font-weight: 500;
-    margin-right: 12px;
-    vertical-align: middle;
+    display: flex;
+    align-items: center;
 }
 
-.navbar ul li a:hover {
+.navbar-menu li a:hover {
     background: #007bff;
     transform: scale(1.05);
 }
 
-/* Mobile Navbar */
-.menu-toggle {
-    display: none;
-    background: none;
-    border: none;
-    font-size: 1.8rem;
-    color: white;
-    cursor: pointer;
+/* Ensure icons are aligned properly */
+.navbar-menu li a i {
+    font-size: 1.2rem;
+    margin-right: 5px;
 }
 
+/* Responsive Design for Mobile */
 @media (max-width: 768px) {
-    .navbar {
-        flex-direction: column;
-        align-items: flex-start;
-        padding: 10px;
-    }
-
+    /* Hide menu toggle (not needed) */
     .menu-toggle {
-        display: block;
-    }
-
-    .navbar ul {
         display: none;
-        flex-direction: column;
-        width: 100%;
-        background: #102a4d;
-        padding: 10px;
-        margin-top: 10px;
     }
 
-    .navbar ul.active {
+    /* Make navbar scrollable */
+    .navbar {
+        overflow-x: auto;
+        white-space: nowrap;
+        -webkit-overflow-scrolling: touch; /* Smooth scrolling */
+        justify-content: flex-start;
+        padding: 10px 5px; /* Reduce padding for minimal look */
+    }
+
+    /* Ensure menu is inline and scrollable */
+    .navbar-menu {
         display: flex;
+        flex-wrap: nowrap;
+        gap: 15px; /* Space between icons */
+        padding: 0;
+        margin: 0;
+        width: max-content;
     }
 
-    .navbar ul li {
-        width: 100%;
-        text-align: left;
+    /* Navbar items - shrink to fit */
+    .navbar-menu li {
+        display: inline-block;
+        flex-shrink: 0;
+        text-align: center; /* Center the text below the icon */
     }
 
-    .navbar ul li a {
-        display: block;
-        width: 100%;
-        padding: 12px;
+    /* Icon-only navbar links */
+    .navbar-menu li a {
+        display: flex;
+        flex-direction: column; /* Stack icon above text */
+        align-items: center;
+        font-size: 12px; /* Keep text minimal */
+        padding: 8px 5px; /* Adjust padding */
+        border-radius: 6px;
+        text-decoration: none;
+        color: white;
+        transition: background 0.3s ease;
+    }
+
+    /* Reduce icon size */
+    .navbar-menu li a i {
+        font-size: 20px; /* Keep icons noticeable but not oversized */
+        margin-bottom: 5px; /* Space between icon and text */
+    }
+
+    /* Hover effect */
+    .navbar-menu li a:hover {
+        background: #007bff;
+    }
+
+    /* Hide scrollbar for cleaner design */
+    .navbar::-webkit-scrollbar {
+        display: none;
     }
 }
