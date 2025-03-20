@@ -21,15 +21,15 @@ class MessagesController < ApplicationController
 
   def show
     @message_string = MessageString.find_by(ConversationID: params[:id])
-  
+
     unless @message_string
       render plain: "Conversation not found", status: :not_found
       return
     end
-  
+
     @messages = Message.where(ConversationID: @message_string.ConversationID).order(:MessageDate)
     @mediation = PrimaryMessageGroup.find_by(ConversationID: params[:id])
-  
+
     render "messages/show"
   end
 
