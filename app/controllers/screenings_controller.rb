@@ -1,10 +1,4 @@
 class ScreeningsController < ApplicationController
-<<<<<<< HEAD
-  def complete_screening
-    render plain: "Screening Questions WIP: Please complete your screening questions."
-  end
-end
-=======
   before_action :require_login
   before_action :set_user
   before_action :set_conversation_ID
@@ -59,4 +53,3 @@ end
     )
   end
 end
->>>>>>> origin/main
