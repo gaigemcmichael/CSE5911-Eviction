@@ -4,8 +4,17 @@
 # model remove the "{}" from the fixture names and add the columns immediately
 # below each fixture, per the syntax in the comments below
 #
-one: {}
-# column: value
-#
-two: {}
-# column: value
+one:
+  MessageID: 1
+  ConversationID: 1
+  SenderID: 1
+  MessageDate: 2025-01-01 00:00:00
+  Contents: lorem ipsum
+  RequiresMediatorReview: 0
+two:
+  MessageID: 2
+  ConversationID: 2
+  SenderID: 2
+  MessageDate: 2025-01-01 00:00:00
+  Contents: lorem ipsum
+  RequiresMediatorReview: 0
