@@ -21,25 +21,16 @@ class MessagesController < ApplicationController
 
   def show
     @message_string = MessageString.find_by(ConversationID: params[:id])
-
+  
     unless @message_string
       render plain: "Conversation not found", status: :not_found
       return
     end
-
-    # this gets all the messages of the convo, need to decipher which ones are from who when displaying
+  
     @messages = Message.where(ConversationID: @message_string.ConversationID).order(:MessageDate)
-
     @mediation = PrimaryMessageGroup.find_by(ConversationID: params[:id])
-
-    case @user.Role
-    when "Tenant"
-      render "messages/tenant_show"
-    when "Landlord"
-      render "messages/landlord_show"
-    else
-      render plain: "Access Denied", status: :forbidden
-    end
+  
+    render "messages/show"
   end
 
   def request_mediator
