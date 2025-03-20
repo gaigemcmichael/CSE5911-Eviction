@@ -51,6 +51,14 @@ class MessagesController < ApplicationController
           MediatorID: mediator.UserID
         )
         mediator.increment!(:ActiveMediations)
+
+        # Hide the chatbox for other party upon mediator request
+        ActionCable.server.broadcast(
+          "messages_#{@mediation.ConversationID}",
+          {
+            type: "mediator_assigned"
+          }
+        )
         # not sure on these redirects, they seem to work but also kinda hard to test obv
         redirect_back fallback_location: messages_path, notice: "Mediator requested successfully."
       else
@@ -104,14 +112,21 @@ class MessagesController < ApplicationController
           }
         )
 
-        # Prevent page reload and avoid "Conversation not found" error
-        render json: { success: true, message_id: @message.id }, status: :created
+        respond_to do |format|
+          format.html { redirect_to message_path(conversation.ConversationID) }
+          format.json { render json: { success: true, message_id: @message.id }, status: :created }
+        end
       else
-        Rails.logger.error "Message save failed: #{@message.errors.full_messages}"
-        render json: { error: @message.errors.full_messages }, status: :unprocessable_entity
+        respond_to do |format|
+          format.html { redirect_to message_path(conversation.ConversationID), alert: "Failed to send message." }
+          format.json { render json: { error: @message.errors.full_messages }, status: :unprocessable_entity }
+        end
       end
     else
-      redirect_to messages_path, alert: "Conversation not found"
+      respond_to do |format|
+        format.html { redirect_to messages_path, alert: "Conversation not found" }
+        format.json { render json: { error: "Conversation not found" }, status: :not_found }
+      end
     end
   end
 

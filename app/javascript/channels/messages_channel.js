@@ -37,6 +37,15 @@ document.addEventListener('turbo:load', () => {
             console.log(`Connected to conversation ID: ${conversationId}`);
           },
           received(data) {
+            if (data.type === 'mediator_assigned') {
+              const messageFormContainer = document.getElementById('new_message_form');
+              if (messageFormContainer) {
+                messageFormContainer.style.display = 'none';
+                console.log("Mediator assigned, message input form hidden.");
+              }
+              return; // Stop further processing
+            }
+
             const isSender = data.sender_id.toString() === currentUserId;
             const isRecipient = data.recipient_id.toString() === currentUserId;
             
@@ -69,6 +78,16 @@ document.addEventListener('turbo:load', () => {
       });
     } else {
       console.error("No conversation ID found in message list!");
+    }
+  }
+});
+
+document.addEventListener('turbo:load', () => {
+  if (window.mediatorAssigned === true || window.mediatorAssigned === 'true') {
+    const messageFormContainer = document.getElementById('new_message_form');
+    if (messageFormContainer) {
+      messageFormContainer.style.display = 'none';
+      console.log("Mediator already assigned, message input form hidden.");
     }
   }
 });
