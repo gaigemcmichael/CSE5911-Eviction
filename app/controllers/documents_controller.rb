@@ -14,18 +14,17 @@ class DocumentsController < ApplicationController
     end
   end
 
-  def serve_file
-    filename = params[:filename]
-    file_path = Rails.root.join("userFiles", filename)
+  def download
+    file = FileDraft.find_by(FileID: params[:id], CreatorID: @user.UserID)
 
-    if File.exist?(file_path)
-      send_file file_path, disposition: "inline"
+    if file && File.exist?(Rails.root.join(file.FileURLPath))
+      send_file Rails.root.join(file.FileURLPath), filename: file.FileName, disposition: "attachment"
     else
       render plain: "File not found", status: :not_found
     end
   end
 
-  
+
   private
 
   def require_login
