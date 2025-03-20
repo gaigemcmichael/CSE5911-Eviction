@@ -1,14 +1,4 @@
 <div class = "account">
-    <!-- Sidebar 
-    <div class="account-sidebar">
-            <ul class="nav-links">
-                <li><a href="#">Personal Details</a></li>
-                <li><a href="#">Password and security</a></li>
-            </ul>
-
-            <%= link_to "Log Out", logout_path, method: :delete, class: "account-sidebar-logout" %>
-    </div> -->
-
     <!-- Main Content -->
     <div class="account-content">
         <div class="profile-section">
@@ -46,11 +36,7 @@
                 <tr>
                     <th> <i class="fa-solid fa-key"></i> Password</th>
                     <td>
-                        <input type="checkbox" id="toggle-password" class="toggle-checkbox">
-                        <label for="toggle-password">
-                            <i class="fa-solid fa-eye"></i>
-                        </label>
-                        <input type="text" class="password-field" value="<%= @user.Password %>" readonly>
+                        Update Password
                     </td>
                 </tr>
             </table>
