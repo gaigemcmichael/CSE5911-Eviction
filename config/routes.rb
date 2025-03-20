@@ -30,6 +30,11 @@ Rails.application.routes.draw do
 
   get 'screenings/new/:conversation_id', to: 'screenings#new', as: 'new_screening'
 
+
+  get "/user_files/:filename", to: "documents#serve_file", as: "serve_file"
+
+
+  
   # Resources
   resources :messages, only: [:index, :show, :create, :destroy] do
     patch :request_mediator, on: :member  # Custom action inside messages
