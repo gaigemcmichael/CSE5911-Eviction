@@ -53,25 +53,20 @@
 
 /* Responsive Design for Mobile */
 @media (max-width: 768px) {
-    /* Hide menu toggle (not needed) */
-    .menu-toggle {
-        display: none;
-    }
-
     /* Make navbar scrollable */
     .navbar {
         overflow-x: auto;
         white-space: nowrap;
-        -webkit-overflow-scrolling: touch; /* Smooth scrolling */
+        -webkit-overflow-scrolling: touch;
         justify-content: flex-start;
-        padding: 10px 5px; /* Reduce padding for minimal look */
+        padding: 10px 5px;
     }
 
     /* Ensure menu is inline and scrollable */
     .navbar-menu {
         display: flex;
         flex-wrap: nowrap;
-        gap: 15px; /* Space between icons */
+        gap: 15px;
         padding: 0;
         margin: 0;
         width: max-content;
@@ -81,16 +76,16 @@
     .navbar-menu li {
         display: inline-block;
         flex-shrink: 0;
-        text-align: center; /* Center the text below the icon */
+        text-align: center; 
     }
 
     /* Icon-only navbar links */
     .navbar-menu li a {
         display: flex;
-        flex-direction: column; /* Stack icon above text */
+        flex-direction: column; 
         align-items: center;
-        font-size: 12px; /* Keep text minimal */
-        padding: 8px 5px; /* Adjust padding */
+        font-size: 12px;
+        padding: 8px 5px; 
         border-radius: 6px;
         text-decoration: none;
         color: white;
@@ -99,8 +94,8 @@
 
     /* Reduce icon size */
     .navbar-menu li a i {
-        font-size: 20px; /* Keep icons noticeable but not oversized */
-        margin-bottom: 5px; /* Space between icon and text */
+        font-size: 20px;
+        margin-bottom: 5px; 
     }
 
     /* Hover effect */
