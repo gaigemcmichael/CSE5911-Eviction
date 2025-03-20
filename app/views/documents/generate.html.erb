@@ -1,0 +1,25 @@
+<h1>File Generation - Select a Template</h1>
+<p>Choose a template for generating a proposal document:</p>
+
+<div class="template-selection">
+  <h3>Template 1: Payment Plan Proposal A</h3>
+  <iframe src="<%= '/Agree to Vacate PDF.pdf' %>" width="600" height="400">
+  Your browser does not support embedded PDFs.
+    </iframe>
+  <br>
+  <%= button_to 'Select Template A', proposal_generation_path(template: 'a'), method: :get, class: 'btn btn-primary' %>
+
+  <h3>Template 2: Payment Plan Proposal B</h3>
+  <iframe src="<%= '/Pay and Stay Negotiated Agreement PDF.pdf' %>" width="600" height="400">
+    Your browser does not support embedded PDFs.
+  </iframe>
+  <br>
+  <%= button_to 'Select Template B', proposal_generation_path(template: 'b'), method: :get, class: 'btn btn-primary' %>
+
+  <h3>Template 3: Payment Plan Proposal C</h3>
+  <iframe src="<%= '/Sandbox Mediation Agreement PDF.pdf' %>" width="600" height="400">
+    Your browser does not support embedded PDFs.
+  </iframe>
+  <br>
+  <%= button_to 'Select Template C', proposal_generation_path(template: 'c'), method: :get, class: 'btn btn-primary' %>
+</div>

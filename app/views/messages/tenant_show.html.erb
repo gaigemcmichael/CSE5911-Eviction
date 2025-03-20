@@ -2,6 +2,9 @@
   <h1>Negotiation Conversation with Landlord</h1>
   <p>Welcome, <%= @user.FName %>! Here is the negotiation conversation.</p>
 
+  <!-- Button to navigate to the file generation page -->
+  <%= link_to "Generate New File", generate_file_path, class: "btn btn-primary", role: "button" %>
+
   <div class="message-page-container">
     <div class="message-list-container">
       <div class="message-list" 

@@ -30,11 +30,17 @@ Rails.application.routes.draw do
 
   get 'screenings/new/:conversation_id', to: 'screenings#new', as: 'new_screening'
 
-
+  
   get "documents/download/:id", to: "documents#download", as: "download_file"
 
 
+  get "documents/generate", to: "documents#generate", as: "generate_file"
 
+  post "documents/select_template", to: "documents#select_template", as: "select_template"
+
+  get 'proposal_generation/:template', to: 'documents#proposal_generation', as: 'proposal_generation'
+
+  
   # Resources
   resources :messages, only: [:index, :show, :create, :destroy] do
     patch :request_mediator, on: :member  # Custom action inside messages
