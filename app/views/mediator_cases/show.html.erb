@@ -1,6 +1,29 @@
 <h1>Mediation Case Details</h1>
 
-<p><strong>Tenant Name:</strong> <%= @mediation.tenant.FName %> <%= @mediation.tenant.LName %></p>
-<p><strong>Landlord Name:</strong> <%= @mediation.landlord.FName %> <%= @mediation.landlord.LName %></p>
+<div class="mediator-chat-columns">
+  <div class="mediator-column">
+    <h3>Chat with Tenant: <%= @mediation.tenant.FName %></h3>
+    <%= render partial: "messages/mediator_chatbox",
+               locals: {
+                 recipient: @mediation.tenant,
+                 messages: @tenant_messages,
+                 message_string: @message_string,
+                 user: @user
+               } %>
+  </div>
+
+  <div class="mediator-column">
+    <h3>Chat with Landlord: <%= @mediation.landlord.FName %></h3>
+    <%= render partial: "messages/mediator_chatbox",
+               locals: {
+                 recipient: @mediation.landlord,
+                 messages: @landlord_messages,
+                 message_string: @message_string,
+                 user: @user
+               } %>
+  </div>
+</div>
 
 <%= link_to "Back to Cases", third_party_mediations_path, class: "btn btn-secondary" %>
+
+<%= javascript_include_tag "mediator_chats" %>

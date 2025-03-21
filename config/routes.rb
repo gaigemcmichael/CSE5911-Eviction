@@ -32,9 +32,11 @@ Rails.application.routes.draw do
   get "screenings/new/:conversation_id", to: "screenings#new", as: "new_screening"
 
   # Resources
-  resources :messages, only: [ :index, :show, :create, :destroy ] do
-    patch :request_mediator, on: :member  # Custom action inside messages
+  resources :messages, only: [:index, :show, :create, :destroy] do
+    patch :request_mediator, on: :member
   end
+  
+  resources :mediator_messages, only: [:create] 
 
 
   resources :documents, only: [ :index, :show, :create, :destroy ]

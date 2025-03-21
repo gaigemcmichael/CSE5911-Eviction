@@ -13,6 +13,7 @@
       </p>
     <% elsif @mediation && @mediation.MediatorRequested && @mediation.MediatorAssigned %>
       <p class="mediator-status">Mediator Assigned!</p>
+      <p class="mediator-status"><%= render 'mediator_details' %></p>
       <% if @user.Role == "Tenant" && @mediation.TenantScreeningID.nil? %>
         <p class="screening-alert">
           You must complete your screening questions before proceeding with mediation.
