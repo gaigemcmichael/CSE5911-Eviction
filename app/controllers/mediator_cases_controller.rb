@@ -5,6 +5,18 @@ class MediatorCasesController < ApplicationController
   before_action :set_mediation, only: [ :show ]
 
   def show
+    @mediation = PrimaryMessageGroup.find(params[:id])
+    @tenant_messages = Message.where(
+      ConversationID: @mediation.ConversationID,
+      SenderID: [@user.UserID, @mediation.TenantID],
+      recipientID: [@user.UserID, @mediation.TenantID]
+    ).order(:MessageDate)
+  
+    @landlord_messages = Message.where(
+      ConversationID: @mediation.ConversationID,
+      SenderID: [@user.UserID, @mediation.LandlordID],
+      recipientID: [@user.UserID, @mediation.LandlordID]
+    ).order(:MessageDate)
   end
 
   private

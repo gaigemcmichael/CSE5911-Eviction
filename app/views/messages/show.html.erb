@@ -10,7 +10,22 @@
     ((@user.Role == "Tenant" && @mediation.TenantScreeningID.nil?) ||
      (@user.Role == "Landlord" && @mediation.LandlordScreeningID.nil?)) %>
 
-  <% if mediator_screening_needed %>
+  <% mediator_chat_ready = @mediation&.MediatorRequested && @mediation&.MediatorAssigned &&
+    ((@user.Role == "Tenant" && @mediation.TenantScreeningID.present?) ||
+     (@user.Role == "Landlord" && @mediation.LandlordScreeningID.present?)) %>
+
+  <% if mediator_chat_ready %>
+    <!-- Mediator Chatbox -->
+    <div class="message-page-container">
+      <%= render partial: "mediator_chatbox", locals: {
+        recipient: @mediator,
+        messages: @messages,
+        message_string: @message_string,
+        user: @user
+      } %>
+      <%= render 'mediator_details' %>
+    </div>
+  <% elsif mediator_screening_needed %>
     <!-- Single Column Layout (centered mediator actions) -->
     <div class="mediator-single-column">
       <%= render 'actions' %>

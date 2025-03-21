@@ -21,6 +21,24 @@ class MessagesController < ApplicationController
 
   def show
     @message_string = MessageString.find_by(ConversationID: params[:id])
+    @mediation = PrimaryMessageGroup.find_by(ConversationID: params[:id])
+
+    # Load mediatior chat recipient
+    if @mediation&.MediatorAssigned
+      @mediator = User.find_by(UserID: @mediation.MediatorID)
+    
+      if @user.Role == "Tenant"
+        @recipient = @mediator
+      elsif @user.Role == "Landlord"
+        @recipient = @mediator
+      elsif @user.Role == "Mediator"
+        # Optional: if the mediator is viewing the case, this helps find the tenant or landlord
+        tenant = User.find_by(UserID: @mediation.TenantID)
+        landlord = User.find_by(UserID: @mediation.LandlordID)
+        @tenant_recipient = tenant
+        @landlord_recipient = landlord
+      end
+    end
 
     unless @message_string
       render plain: "Conversation not found", status: :not_found
@@ -28,7 +46,24 @@ class MessagesController < ApplicationController
     end
 
     @messages = Message.where(ConversationID: @message_string.ConversationID).order(:MessageDate)
-    @mediation = PrimaryMessageGroup.find_by(ConversationID: params[:id])
+
+    mediator_chat_ready = @mediation&.MediatorRequested && @mediation&.MediatorAssigned &&
+      ((@user.Role == "Tenant" && @mediation.TenantScreeningID.present?) ||
+      (@user.Role == "Landlord" && @mediation.LandlordScreeningID.present?))
+
+    if mediator_chat_ready
+      # Load mediator <-> current user side conversation
+      side_group = SideMessageGroup.find_by(
+        UserID: @user.UserID,
+        MediatorID: @mediation.MediatorID
+      )
+
+      if side_group
+        @message_string = MessageString.find_by(ConversationID: side_group.ConversationID)
+        @messages = Message.where(ConversationID: @message_string.ConversationID).order(:MessageDate)
+        @mediator = User.find_by(UserID: @mediation.MediatorID)
+      end
+    end
 
     render "messages/show"
   end
@@ -51,6 +86,25 @@ class MessagesController < ApplicationController
           MediatorID: mediator.UserID
         )
         mediator.increment!(:ActiveMediations)
+
+        # Create SideMessageGroup for mediatior chatboxes
+        MessageString.find_or_create_by!(
+          ConversationID: @mediation.ConversationID,
+          Role: "Side"
+        )
+      
+        # Create SideMessageGroup entries for tenant and landlord
+        SideMessageGroup.find_or_create_by!(
+          UserID: @mediation.TenantID,
+          MediatorID: mediator.UserID,
+          ConversationID: @mediation.ConversationID
+        )
+      
+        SideMessageGroup.find_or_create_by!(
+          UserID: @mediation.LandlordID,
+          MediatorID: mediator.UserID,
+          ConversationID: @mediation.ConversationID
+        )
 
         # Hide the chatbox for other party upon mediator request
         ActionCable.server.broadcast(
