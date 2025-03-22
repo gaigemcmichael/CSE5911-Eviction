@@ -3,8 +3,8 @@ class ResourcesController < ApplicationController
     @active_tab = params[:tab] || "resources"
 
     faq_categories = {
-      "General" => Rails.root.join('db', 'faq_general.txt'),
-      "Data Privacy" => Rails.root.join('db', 'faq_privacy.txt')
+      "General" => Rails.root.join("db", "faq_general.txt"),
+      "Data Privacy" => Rails.root.join("db", "faq_privacy.txt")
     }
 
     @faqs = {}
