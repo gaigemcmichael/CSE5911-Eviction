@@ -24,9 +24,15 @@ class MediatorMessagesController < ApplicationController
             sender_role: @user.Role
           }
         )
-        render json: { success: true }, status: :created
+        respond_to do |format|
+          format.json { render json: { success: true } }
+          format.html { head :ok } # fallback
+        end
       else
-        render json: { error: @message.errors.full_messages }, status: :unprocessable_entity
+        respond_to do |format|
+          format.json { render json: { error: @message.errors.full_messages }, status: :unprocessable_entity }
+          format.html { head :unprocessable_entity }
+        end
       end
     end
   
