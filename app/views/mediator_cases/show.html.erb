@@ -1,29 +1,37 @@
 <h1>Mediation Case Details</h1>
 
+
 <div class="mediator-chat-columns">
   <div class="mediator-column">
     <h3>Chat with Tenant: <%= @mediation.tenant.FName %></h3>
-    <%= render partial: "messages/mediator_chatbox",
-               locals: {
-                 recipient: @mediation.tenant,
-                 messages: @tenant_messages,
-                 message_string: @message_string,
-                 user: @user
-               } %>
+    <% if @mediation.TenantScreeningID.nil? %>
+      <p>The tenant <%= @mediation.tenant.FName %> <%= @mediation.tenant.LName %> must still complete screening questions </p>
+    <% else %>
+      <%= render partial: "messages/mediator_chatbox",
+        locals: {
+          recipient: @mediation.tenant,
+          messages: @tenant_messages,
+          message_string: @tenant_message_string,
+          user: @user
+        } %>
+    <% end %>
   </div>
 
   <div class="mediator-column">
     <h3>Chat with Landlord: <%= @mediation.landlord.FName %></h3>
-    <%= render partial: "messages/mediator_chatbox",
-               locals: {
-                 recipient: @mediation.landlord,
-                 messages: @landlord_messages,
-                 message_string: @message_string,
-                 user: @user
-               } %>
+    <% if @mediation.LandlordScreeningID.nil? %>
+      <p>The Landlord <%= @mediation.landlord.FName %> <%= @mediation.landlord.LName %> must still complete screening questions </p>
+    <% else %>
+      <%= render partial: "messages/mediator_chatbox",
+        locals: {
+          recipient: @mediation.landlord,
+          messages: @landlord_messages,
+          message_string: @landlord_message_string,
+          user: @user
+        } %>
+    <% end %>
   </div>
 </div>
 
 <%= link_to "Back to Cases", third_party_mediations_path, class: "btn btn-secondary" %>
-
-<%= javascript_include_tag "mediator_chats" %>
+<%= javascript_include_tag "mediator_chats", "data-turbo-track": "reload" %>

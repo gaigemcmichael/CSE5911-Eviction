@@ -1,9 +1,9 @@
 <div class="message-list-container mediator-chat-box"
-     data-conversation-id="<%= @message_string.ConversationID %>"
+     data-conversation-id="<%= message_string&.ConversationID %>"
      data-user-id="<%= @user.UserID %>">
 
   <div class="message-list"
-       id="mediator-messages-<%= @recipient.UserID %>">
+       id="mediator-messages-<%= recipient.UserID %>">
     
     <% if messages.any? %>
       <% messages.each do |message| %>
@@ -17,9 +17,9 @@
   <div class="message-input-form">
     <%= form_with url: mediator_messages_path, method: :post, data: { turbo: "false" }, html: { class: "mediator-message-form" } do |f| %>
       <div class="message-input">
-        <%= f.hidden_field :conversation_id, value: @message_string.ConversationID %>
-        <%= f.hidden_field :recipient_id, value: @recipient.UserID %>
-        <%= f.text_area :Contents, placeholder: "Message #{@recipient.FName}...", class: "mediator-message-textarea" %>
+        <%= f.hidden_field :conversation_id, value: message_string&.ConversationID %>
+        <%= f.hidden_field :recipient_id, value: recipient.UserID %>
+        <%= f.text_area :Contents, placeholder: "Message #{recipient.FName}...", class: "mediator-message-textarea" %>
         <%= f.submit "Send Message", class: "send-btn" %>
       </div>
     <% end %>
