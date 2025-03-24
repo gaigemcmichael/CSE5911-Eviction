@@ -14,15 +14,45 @@ class DocumentsController < ApplicationController
     end
   end
 
+  # Alot of errors in the file paths/linking in the show and download methods, I am going to leave the loggers in for now just in case we hit the issues again later - They are not doing any harm anyways
+  # For the most part, my take aways are that the file paths need to be handled in different ways between the inline html presentation and the controllers
   def download
     file = FileDraft.find_by(FileID: params[:id], CreatorID: @user.UserID)
+  
+    if file
+      # Correct file path by joining with 'public' (no leading / needed)
+      file_path = Rails.root.join('public', file.FileURLPath)
+  
+      if File.exist?(file_path)
+        send_file file_path, filename: file.FileName, disposition: "attachment"
+      else
+        logger.error "File not found at path: #{file_path}" 
+        render plain: "File not found", status: :not_found
+      end
+    else
+      logger.error "FileDraft not found for ID: #{params[:id]} and CreatorID: #{@user.UserID}"
+      render plain: "File not found", status: :not_found
+    end
+  end
 
-    if file && File.exist?(Rails.root.join(file.FileURLPath))
-      send_file Rails.root.join(file.FileURLPath), filename: file.FileName, disposition: "attachment"
+
+  def show
+    @file = FileDraft.find_by(FileID: params[:id], CreatorID: @user.UserID)
+  
+    if @file
+      # Correct file path by joining with 'public' (no leading / needed)
+      file_path = Rails.root.join('public', @file.FileURLPath)
+  
+      if File.exist?(file_path)
+        render "documents/show"
+      else
+        render plain: "File not found", status: :not_found
+      end
     else
       render plain: "File not found", status: :not_found
     end
   end
+
 
   #I think something is wrong with this set of methods (generate, select_template, and proposal_generation) but I am unsure what to do here
   def generate
