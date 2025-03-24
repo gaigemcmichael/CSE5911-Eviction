@@ -32,7 +32,7 @@ Rails.application.routes.draw do
 
   
   get "documents/download/:id", to: "documents#download", as: "download_file"
-
+  get 'documents/:id/view', to: 'documents#show', as: 'view_file'
 
   get "documents/generate", to: "documents#generate", as: "generate_file"
 
