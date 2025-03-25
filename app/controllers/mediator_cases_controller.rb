@@ -6,28 +6,28 @@ class MediatorCasesController < ApplicationController
 
   def show
     @mediation = PrimaryMessageGroup.find(params[:id])
-  
+
     # Get tenant-side conversation
     tenant_side_group = SideMessageGroup.find_by(
       UserID: @mediation.TenantID,
       MediatorID: @mediation.MediatorID
     )
     tenant_msg_string = tenant_side_group && MessageString.find_by(ConversationID: tenant_side_group.ConversationID)
-  
+
     # Get landlord-side conversation
     landlord_side_group = SideMessageGroup.find_by(
       UserID: @mediation.LandlordID,
       MediatorID: @mediation.MediatorID
     )
     landlord_msg_string = landlord_side_group && MessageString.find_by(ConversationID: landlord_side_group.ConversationID)
-  
+
     @tenant_message_string = tenant_msg_string
     @landlord_message_string = landlord_msg_string
-  
+
     @tenant_messages = tenant_msg_string ? Message.where(ConversationID: tenant_msg_string.ConversationID).order(:MessageDate) : []
     @landlord_messages = landlord_msg_string ? Message.where(ConversationID: landlord_msg_string.ConversationID).order(:MessageDate) : []
   end
-  
+
 
   private
 
