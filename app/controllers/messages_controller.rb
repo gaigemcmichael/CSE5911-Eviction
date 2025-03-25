@@ -88,19 +88,20 @@ class MessagesController < ApplicationController
         mediator.increment!(:ActiveMediations)
 
         # Create SideMessageGroup for mediatior chatboxes
-        side_convo = MessageString.create!(Role: "Side")
+        side_convo_tenant = MessageString.create!(Role: "Side")
+        side_convo_landlord = MessageString.create!(Role: "Side")
       
         # Create SideMessageGroup entries for tenant and landlord
         SideMessageGroup.find_or_create_by!(
           UserID: @mediation.TenantID,
           MediatorID: mediator.UserID,
-          ConversationID: side_convo.ConversationID
+          ConversationID: side_convo_tenant.ConversationID
         )
       
         SideMessageGroup.find_or_create_by!(
           UserID: @mediation.LandlordID,
           MediatorID: mediator.UserID,
-          ConversationID: side_convo.ConversationID
+          ConversationID: side_convo_landlord.ConversationID
         )
 
         # Hide the chatbox for other party upon mediator request
