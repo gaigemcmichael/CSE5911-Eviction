@@ -26,7 +26,7 @@ class MessagesController < ApplicationController
     # Load mediatior chat recipient
     if @mediation&.MediatorAssigned
       @mediator = User.find_by(UserID: @mediation.MediatorID)
-    
+
       if @user.Role == "Tenant"
         @recipient = @mediator
       elsif @user.Role == "Landlord"
@@ -90,14 +90,14 @@ class MessagesController < ApplicationController
         # Create SideMessageGroup for mediatior chatboxes
         side_convo_tenant = MessageString.create!(Role: "Side")
         side_convo_landlord = MessageString.create!(Role: "Side")
-      
+
         # Create SideMessageGroup entries for tenant and landlord
         SideMessageGroup.find_or_create_by!(
           UserID: @mediation.TenantID,
           MediatorID: mediator.UserID,
           ConversationID: side_convo_tenant.ConversationID
         )
-      
+
         SideMessageGroup.find_or_create_by!(
           UserID: @mediation.LandlordID,
           MediatorID: mediator.UserID,
