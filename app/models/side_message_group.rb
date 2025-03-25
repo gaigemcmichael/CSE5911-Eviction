@@ -1,3 +1,3 @@
 class SideMessageGroup < ApplicationRecord
-    self.table_name = "SideMessageGroup"
+    self.table_name = "SideMessageGroups"
 end
