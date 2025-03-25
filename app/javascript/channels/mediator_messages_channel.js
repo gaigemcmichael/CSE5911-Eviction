@@ -1,12 +1,22 @@
 import consumer from "channels/consumer";
 
 document.addEventListener("turbo:load", () => {
+  const messagesContainer = document.querySelector('.message-list-container');
   document.querySelectorAll(".mediator-chat-box").forEach((box) => {
     const conversationId = box.dataset.conversationId;
     const currentUserId = box.dataset.userId;
     const messagesList = box.querySelector(".message-list");
 
     if (!conversationId || !currentUserId || !messagesList) return;
+    
+    // Select correct chatbox for scrolling from mediator perspective
+    const containerSelector = box.classList.contains("tenant-message-list-container")
+      ? ".tenant-message-list-container"
+      : ".landlord-message-list-container";
+
+    const messagesContainer = document.querySelector(containerSelector);
+
+    if (!messagesContainer) return;
 
     // Cleanup old subscriptions
     consumer.subscriptions.subscriptions.forEach((subscription) => {
@@ -49,8 +59,9 @@ document.addEventListener("turbo:load", () => {
             `;
 
             messagesList.insertAdjacentHTML("beforeend", messageHtml);
-            messagesList.scrollTo({
-              top: messagesList.scrollHeight,
+            console.log("message sent, Scrolling to bottom of:", messagesList);
+            messagesContainer.scrollTo({
+              top: messagesContainer.scrollHeight,
               behavior: "smooth"
             });
           }
@@ -59,8 +70,9 @@ document.addEventListener("turbo:load", () => {
     }
 
     // Scroll to bottom on load
-    messagesList.scrollTo({
-      top: messagesList.scrollHeight,
+    console.log("page load, Scrolling to bottom of:", messagesList);
+    messagesContainer.scrollTo({
+      top: messagesContainer.scrollHeight,
       behavior: "auto"
     });
   });

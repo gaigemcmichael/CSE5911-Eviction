@@ -1,34 +1,55 @@
 <h1>Mediation Case Details</h1>
 
-
-<div class="mediator-chat-columns">
-  <div class="mediator-column">
-    <h3>Chat with Tenant: <%= @mediation.tenant.FName %></h3>
-    <% if @mediation.TenantScreeningID.nil? %>
-      <p>The tenant <%= @mediation.tenant.FName %> <%= @mediation.tenant.LName %> must still complete screening questions </p>
+<div class="message-page-container mediator-grid">
+  <!-- Row 1, Column 1: Tenant Info -->
+  <div class="message-column">
+    <h3>Tenant Info</h3>
+    <p><strong>Name:</strong> <%= @mediation.tenant.FName %> <%= @mediation.tenant.LName %></p>
+    <% if @mediation.TenantScreeningID %>
+      <p><em>Screening completed.</em></p>
     <% else %>
-      <%= render partial: "messages/mediator_chatbox",
-        locals: {
-          recipient: @mediation.tenant,
-          messages: @tenant_messages,
-          message_string: @tenant_message_string,
-          user: @user
-        } %>
+      <p><em>Screening not completed.</em></p>
     <% end %>
   </div>
 
-  <div class="mediator-column">
-    <h3>Chat with Landlord: <%= @mediation.landlord.FName %></h3>
-    <% if @mediation.LandlordScreeningID.nil? %>
-      <p>The Landlord <%= @mediation.landlord.FName %> <%= @mediation.landlord.LName %> must still complete screening questions </p>
+  <!-- Row 1, Column 2: Landlord Info -->
+  <div class="message-column">
+    <h3>Landlord Info</h3>
+    <p><strong>Name:</strong> <%= @mediation.landlord.FName %> <%= @mediation.landlord.LName %></p>
+    <% if @mediation.LandlordScreeningID %>
+      <p><em>Screening completed.</em></p>
     <% else %>
-      <%= render partial: "messages/mediator_chatbox",
-        locals: {
-          recipient: @mediation.landlord,
-          messages: @landlord_messages,
-          message_string: @landlord_message_string,
-          user: @user
-        } %>
+      <p><em>Screening not completed.</em></p>
+    <% end %>
+  </div>
+
+  <!-- Row 2, Column 1: Chat with Tenant -->
+  <div class="message-column">
+    <h3>Chat with Tenant</h3>
+    <% if @mediation.TenantScreeningID.nil? %>
+      <p>The tenant must still complete screening.</p>
+    <% else %>
+      <%= render partial: "messages/mediator_chatbox", locals: {
+        recipient: @mediation.tenant,
+        messages: @tenant_messages,
+        message_string: @tenant_message_string,
+        user: @user
+      } %>
+    <% end %>
+  </div>
+
+  <!-- Row 2, Column 2: Chat with Landlord -->
+  <div class="message-column">
+    <h3>Chat with Landlord</h3>
+    <% if @mediation.LandlordScreeningID.nil? %>
+      <p>The landlord must still complete screening.</p>
+    <% else %>
+      <%= render partial: "messages/mediator_chatbox", locals: {
+        recipient: @mediation.landlord,
+        messages: @landlord_messages,
+        message_string: @landlord_message_string,
+        user: @user
+      } %>
     <% end %>
   </div>
 </div>

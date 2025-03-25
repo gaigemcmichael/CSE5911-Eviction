@@ -1,4 +1,4 @@
-<div class="message-list-container mediator-chat-box"
+<div class="message-list-container <%= recipient.Role == 'Tenant' ? 'tenant-message-list-container' : 'landlord-message-list-container' %> mediator-chat-box"
      data-conversation-id="<%= message_string&.ConversationID %>"
      data-user-id="<%= @user.UserID %>">
 
