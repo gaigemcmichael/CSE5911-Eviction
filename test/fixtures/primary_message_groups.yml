@@ -17,7 +17,7 @@ one:
   MediatorID: 4
   EndOfConversationGoodFaithLandlord: 1
   EndOfConversationGoodFaithTenant: 1
-  accepted_by_landlord: 1
+  #accepted_by_landlord: false
 
 two:
   ConversationID: 2
@@ -32,4 +32,4 @@ two:
   MediatorID: 8
   EndOfConversationGoodFaithLandlord: 0
   EndOfConversationGoodFaithTenant: 0
-  accepted_by_landlord: 0
+  #accepted_by_landlord: false
