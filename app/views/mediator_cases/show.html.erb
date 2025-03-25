@@ -1,3 +1,4 @@
+<%= stylesheet_link_tag "mediator_screening_view", "data-turbo-track": "reload" %>
 <h1>Mediation Case Details</h1>
 
 <div class="message-page-container mediator-grid">
@@ -5,23 +6,67 @@
   <div class="message-column">
     <h3>Tenant Info</h3>
     <p><strong>Name:</strong> <%= @mediation.tenant.FName %> <%= @mediation.tenant.LName %></p>
+    <p><strong>Email:</strong> <%= @mediation.tenant.Email %></p>
+    <p><strong>Phone:</strong> <%= @mediation.tenant.PhoneNumber.presence || "N/A" %></p>
+    <p><strong>Address:</strong> <%= @mediation.tenant.TenantAddress.presence || "N/A" %></p>
+
     <% if @mediation.TenantScreeningID %>
       <p><em>Screening completed.</em></p>
+
+      <% tenant_screening = ScreeningQuestion.find_by(ScreeningID: @mediation.TenantScreeningID) %>
+      <% if tenant_screening %>
+        <table class="table table-bordered screening-table">
+          <tr><th>Interpreter Needed</th><td><%= tenant_screening.InterpreterNeeded ? "Yes" : "No" %></td></tr>
+          <tr><th>Interpreter Language</th><td><%= tenant_screening.InterpreterLanguage.presence || "N/A" %></td></tr>
+          <tr><th>Disability Accommodation</th><td><%= tenant_screening.DisabilityAccommodation ? "Yes" : "No" %></td></tr>
+          <tr><th>Disability Explanation</th><td><%= tenant_screening.DisabilityExplanation.presence || "N/A" %></td></tr>
+          <tr><th>Conflict of Interest</th><td><%= tenant_screening.ConflictOfInterest ? "Yes" : "No" %></td></tr>
+          <tr><th>Speak on Own Behalf</th><td><%= tenant_screening.SpeakOnOwnBehalf ? "Yes" : "No" %></td></tr>
+          <tr><th>Need to Consult</th><td><%= tenant_screening.NeedToConsult ? "Yes" : "No" %></td></tr>
+          <tr><th>Consult Explanation</th><td><%= tenant_screening.ConsultExplanation.presence || "N/A" %></td></tr>
+          <tr><th>Relationship to Other Party</th><td><%= tenant_screening.RelationshipToOtherParty.presence || "N/A" %></td></tr>
+          <tr><th>Unsafe?</th><td><%= tenant_screening.Unsafe ? "Yes" : "No" %></td></tr>
+          <tr><th>Unsafe Explanation</th><td><%= tenant_screening.UnsafeExplanation.presence || "N/A" %></td></tr>
+        </table>
+      <% end %>
     <% else %>
       <p><em>Screening not completed.</em></p>
     <% end %>
   </div>
 
+
   <!-- Row 1, Column 2: Landlord Info -->
   <div class="message-column">
     <h3>Landlord Info</h3>
     <p><strong>Name:</strong> <%= @mediation.landlord.FName %> <%= @mediation.landlord.LName %></p>
+    <p><strong>Email:</strong> <%= @mediation.landlord.Email %></p>
+    <p><strong>Phone:</strong> <%= @mediation.landlord.PhoneNumber.presence || "N/A" %></p>
+    <p><strong>Company Name:</strong> <%= @mediation.landlord.CompanyName.presence || "N/A" %></p>
+
     <% if @mediation.LandlordScreeningID %>
       <p><em>Screening completed.</em></p>
+
+      <% landlord_screening = ScreeningQuestion.find_by(ScreeningID: @mediation.LandlordScreeningID) %>
+      <% if landlord_screening %>
+        <table class="table table-bordered screening-table">
+          <tr><th>Interpreter Needed</th><td><%= landlord_screening.InterpreterNeeded ? "Yes" : "No" %></td></tr>
+          <tr><th>Interpreter Language</th><td><%= landlord_screening.InterpreterLanguage.presence || "N/A" %></td></tr>
+          <tr><th>Disability Accommodation</th><td><%= landlord_screening.DisabilityAccommodation ? "Yes" : "No" %></td></tr>
+          <tr><th>Disability Explanation</th><td><%= landlord_screening.DisabilityExplanation.presence || "N/A" %></td></tr>
+          <tr><th>Conflict of Interest</th><td><%= landlord_screening.ConflictOfInterest ? "Yes" : "No" %></td></tr>
+          <tr><th>Speak on Own Behalf</th><td><%= landlord_screening.SpeakOnOwnBehalf ? "Yes" : "No" %></td></tr>
+          <tr><th>Need to Consult</th><td><%= landlord_screening.NeedToConsult ? "Yes" : "No" %></td></tr>
+          <tr><th>Consult Explanation</th><td><%= landlord_screening.ConsultExplanation.presence || "N/A" %></td></tr>
+          <tr><th>Relationship to Other Party</th><td><%= landlord_screening.RelationshipToOtherParty.presence || "N/A" %></td></tr>
+          <tr><th>Unsafe?</th><td><%= landlord_screening.Unsafe ? "Yes" : "No" %></td></tr>
+          <tr><th>Unsafe Explanation</th><td><%= landlord_screening.UnsafeExplanation.presence || "N/A" %></td></tr>
+        </table>
+      <% end %>
     <% else %>
       <p><em>Screening not completed.</em></p>
     <% end %>
   </div>
+
 
   <!-- Row 2, Column 1: Chat with Tenant -->
   <div class="message-column">
