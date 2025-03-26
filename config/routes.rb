@@ -33,8 +33,10 @@ Rails.application.routes.draw do
 
   # Resources
   resources :messages, only: [ :index, :show, :create, :destroy ] do
-    patch :request_mediator, on: :member  # Custom action inside messages
+    patch :request_mediator, on: :member
   end
+
+  resources :mediator_messages, only: [ :create ]
 
 
   resources :documents, only: [ :index, :show, :create, :destroy ]

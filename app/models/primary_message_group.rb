@@ -5,4 +5,5 @@ class PrimaryMessageGroup < ApplicationRecord
 
   belongs_to :tenant, class_name: "User", foreign_key: "TenantID"
   belongs_to :landlord, class_name: "User", foreign_key: "LandlordID"
+  belongs_to :mediator, class_name: "User", foreign_key: "MediatorID", optional: true
 end
