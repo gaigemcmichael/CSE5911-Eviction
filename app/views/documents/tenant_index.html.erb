@@ -1,2 +1,18 @@
-<h1>Tenant documents</h1>
+<h1>Tenant Documents</h1>
 <p>Welcome, <%= @user.FName %>! This is the tenant documents page.</p>
+
+<% if @files.any? %>
+  <ul>
+    <% @files.each do |file| %>
+      <li>
+        <%= link_to "View", document_path(file.FileID), class: "btn btn-link" %> |
+        <%= link_to "Download", download_file_path(file.FileID), class: "btn btn-link" %> - <%= file.FileName %>
+      </li>
+    <% end %>
+  </ul>
+<% else %>
+  <p>No documents available.</p>
+<% end %>
+
+<!-- Link to generate a new file -->
+<%= link_to "Generate New File", generate_file_path, class: "btn btn-primary" %>

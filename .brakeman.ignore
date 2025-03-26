@@ -1,0 +1,8 @@
+{
+  "ignored_warnings": [
+    {
+      "fingerprint": "517a0b825a8bccfb72b32e0f8f43d42fe6764a280f5de2a6c09c5d54b8e9719e",
+      "reason": "Path is sanitized and scoped to public directory. False positive."
+    }
+  ]
+}
