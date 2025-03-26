@@ -6,7 +6,9 @@
   <ul>
     <% @files.each do |file| %>
       <li>
-        <%= link_to file.FileName, download_file_path(file.FileID), target: "_blank" %>
+        <%= link_to "View", document_path(file.FileID), class: "btn btn-link" %> |
+                <%= link_to "Download", download_file_path(file.FileID), class: "btn btn-link" %> - <%= file.FileName %>
+
       </li>
     <% end %>
   </ul>
@@ -14,7 +16,7 @@
   <p>No documents available.</p>
 <% end %>
 
-<!-- Button to generate a new file (currently a dead link), not sure if we want this long term as the generation of files is probably specific to landlord + tenant combinations of people -->
-<%= button_to "Generate New File", "#", method: :post, disabled: true, class: "btn btn-primary" %>
+<!-- Link to generate a new file -->
+<%= link_to "Generate New File", generate_file_path, class: "btn btn-primary" %>
 
 

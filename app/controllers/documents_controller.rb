@@ -8,6 +8,7 @@ class DocumentsController < ApplicationController
       @files = FileDraft.where(CreatorID: @user.UserID, UserDeletedAt: nil)# Fetch files not labeled as deleted
       render "documents/tenant_index"
     when "Landlord"
+      @files = FileDraft.where(CreatorID: @user.UserID, UserDeletedAt: nil)# Fetch files not labeled as deleted
       render "documents/landlord_index"
     else
       render plain: "Access Denied", status: :forbidden
