@@ -14,7 +14,7 @@
         <td><%= mediation.tenant.FName %> <%= mediation.tenant.LName %></td>
         <td><%= mediation.landlord.FName %> <%= mediation.landlord.LName %></td>
         <td>
-          <%= link_to "View Mediation", message_path(mediation.ConversationID), class: "btn btn-primary" %>
+          <%= link_to "View Mediation", mediator_case_path(mediation.id), class: "btn btn-primary" %>
         </td>
       </tr>
     <% end %>

@@ -1,6 +1,6 @@
-<div class = "dashboard">
-  <h2>Welcome, <%= @user.FName %> <%= @user.LName %>!</h2>
-  <p>You are now logged in.</p>
+<div class="dashboard">
+  <h2 class="dashboard-welcome">Welcome, <%= @user.FName %> <%= @user.LName %>!</h2>
+  <p class="dashboard-subtext">You are now logged in.</p>
 
   <% case @user.Role %>
     <% when "Landlord" %>
@@ -12,8 +12,6 @@
     <% when "Mediator" %>
       <%= render "mediator_dashboard" %>
     <% else %>
-      <p>"Error: User has an Invalid role."</p>
+      <p class="error-text">"Error: User has an Invalid role."</p>
   <% end %>
-
-  <%= link_to "Log Out", logout_path, method: :delete, class: "logout-btn" %>
 </div>
