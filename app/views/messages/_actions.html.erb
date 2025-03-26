@@ -1,5 +1,10 @@
 <div class="actions-container">
   <div class="mediator-action">
+    <%= button_to "Generate New File",
+                    class: "btn btn-primary" %>
+    <p class="action-description">
+      This button allows you to create a proposal
+    </p>
     <% if @mediation && !@mediation.MediatorRequested && !@mediation.MediatorAssigned %>
       <%= button_to "Request a Mediator", request_mediator_message_path(@mediation.id),
                     method: :patch, class: "btn btn-primary" %>
@@ -12,7 +17,6 @@
         Your request for mediation is being processed.
       </p>
     <% elsif @mediation && @mediation.MediatorRequested && @mediation.MediatorAssigned %>
-      <p class="mediator-status">Mediator Assigned!</p>
       <p class="mediator-status"><%= render 'mediator_details' %></p>
       <% if @user.Role == "Tenant" && @mediation.TenantScreeningID.nil? %>
         <p class="screening-alert">
