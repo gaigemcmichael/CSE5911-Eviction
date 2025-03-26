@@ -1,7 +1,7 @@
 /* Centering the Message Page Container */
 .message-page-container {
   display: grid;
-  grid-template-columns: repeat(2, minmax(400px, 1fr)); 
+  grid-template-columns: repeat(2, minmax(400px, 1fr));
   gap: 20px;
   max-width: 1200px;
   margin: 0 auto;
@@ -27,7 +27,7 @@
     font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     overflow-x: hidden;
   }
-  
+
 .actions-container {
   width: 100%;
   min-width: 400px; /* Prevents excessive shrinking */
@@ -125,13 +125,14 @@
 
   /* Scrollable message area, Previous chat history */
   .message-list {
-    display: flex;
+    display: flex ;
     flex-direction: column;
+    justify-content: flex-end;
     gap: 10px;
     scroll-behavior: smooth;
-    overflow-y: auto; 
-  }
-  
+    overflow-y: auto;
+   }
+
   /* Individual chat message styling */
   .chat-message {
     display: flex;
@@ -140,19 +141,19 @@
     position: relative;
     flex-shrink: 0;
   }
-  
+
   /* Sent messages (right-aligned) */
   .chat-message.sent {
     align-self: flex-end;
     justify-content: flex-end;
   }
-  
+
   /* Received messages (left-aligned) */
   .chat-message.received {
     align-self: flex-start;
     justify-content: flex-start;
   }
-  
+
   /* Message bubble styling */
   .message-bubble {
     padding: 6px 10px;
@@ -164,19 +165,19 @@
     position: relative;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   }
-  
+
   /* Bubble colors */
   .chat-message.sent .message-bubble {
     background-color: #006bb7; /* Cbus Colors */
     border-radius: 20px 20px 0 20px;
   }
-  
+
   .chat-message.received .message-bubble {
     background-color: #ffffff; /* default white? */
     border: 1px solid #ddd;
     border-radius: 20px 20px 20px 0;
   }
-  
+
     /* Message content styling for sent messages */
   .chat-message.sent .message-content {
     color: white; /* White text for sent messages */
@@ -195,14 +196,14 @@
     margin-top: 5px;
     text-align: right;
   }
-  
+
   /* Ensure the chat always shows the latest messages */
-  .message-list {
+  /* .message-list {
     display: flex;
     flex-direction: column;
     justify-content: flex-end;
-  }
-  
+  } */
+
   /* no messages exist */
   .no-messages {
     color: #666;
@@ -210,14 +211,14 @@
     text-align: center;
     padding: 20px;
   }
-  
+
   @media (max-width: 900px) {
     .message-page-container {
       grid-template-columns: 1fr;
       max-width: 600px;
     }
 
-    .message-list-container, 
+    .message-list-container,
     .actions-container {
         width: 100%;
         max-width: 100%;

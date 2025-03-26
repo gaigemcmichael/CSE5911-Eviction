@@ -1,0 +1,18 @@
+.screening-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 10px;
+  }
+  
+  .screening-table th,
+  .screening-table td {
+    border: 1px solid #ccc;
+    padding: 8px 12px;
+    text-align: left;
+    vertical-align: top;
+  }
+  
+  .screening-table th {
+    background-color: #f2f2f2;
+    width: 40%;
+  }

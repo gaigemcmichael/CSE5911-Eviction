@@ -81,7 +81,7 @@ class MediationsController < ApplicationController
         accepted_by_landlord: false
       )
 
-      redirect_to mediation_path(mediation), notice: "Mediation created with #{landlord.CompanyName || landlord.Email}."
+      redirect_to mediation_path(mediation), notice: "Negotiation created with #{landlord.CompanyName || landlord.Email}."
     end
   end
 
