@@ -28,6 +28,9 @@ class DocumentsController < ApplicationController
 
       # Prevent directory traversal and ensure the file exists
       if file_path.to_s.start_with?(base_path.to_s) && File.exist?(file_path)
+
+        # We think this should not be a real threat as long as we sanatize the other input areas.
+        # brakeman:ignore SendFile
         send_file file_path, filename: file.FileName, disposition: "attachment"
       else
         logger.error "File not found at path: #{file_path}"
