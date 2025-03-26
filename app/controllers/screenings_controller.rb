@@ -14,14 +14,13 @@ class ScreeningsController < ApplicationController
 
     if @screening.save
       if @user.Role == "Landlord"
-        @primary_message_group.update(LandlordScreeningID: @screening.ScreeningID)
-        redirect_to "/messages/#{params[:conversation_id]}"
+        @primary_message_group.update!(LandlordScreeningID: @screening.ScreeningID)
       elsif @user.Role == "Tenant"
-        @primary_message_group.update(TenantScreeningID: @screening.ScreeningID)
-        redirect_to "/messages/#{params[:conversation_id]}"
+        @primary_message_group.update!(TenantScreeningID: @screening.ScreeningID)
       else
         redirect_to root_path, alert: "Unauthorized role"
       end
+      redirect_to message_path(@conversation_id), notice: "Screening completed successfully."
     else
       render :new
     end
