@@ -1,0 +1,18 @@
+<!-- app/views/documents/proposal_generation.html.erb -->
+<h1>Generate Proposal: <%= @template_name %></h1>
+<p>Please answer the following questions to generate your proposal:</p>
+
+<h2> Need an iframe view of the proposal here </h2>
+
+<!-- Going to need specific questions for each template-->
+<%= form_with url: '/documents/generate_proposal', method: :post do |form| %>
+  <%= form.label :question_1, 'What is the payment amount?' %>
+  <%= form.text_field :question_1 %>
+
+  <%= form.label :question_2, 'What is the payment schedule?' %>
+  <%= form.text_field :question_2 %>
+
+  <!-- Add more questions based on the template. these are just quick test questions -->
+
+  <%= form.submit 'Generate Proposal', class: 'btn btn-primary' %>
+<% end %>
