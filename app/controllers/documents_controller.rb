@@ -19,15 +19,18 @@ class DocumentsController < ApplicationController
   # For the most part, my take aways are that the file paths need to be handled in different ways between the inline html presentation and the controllers
   def download
     file = FileDraft.find_by(FileID: params[:id], CreatorID: @user.UserID)
-  
+
     if file
-      # Correct file path by joining with 'public' (no leading / needed)
-      file_path = Rails.root.join('public', file.FileURLPath)
-  
-      if File.exist?(file_path)
+      # Ensure the path is scoped to 'public' and cleaned
+      sanitized_path = Pathname.new(file.FileURLPath).cleanpath
+      base_path = Rails.root.join("public")
+      file_path = base_path.join(sanitized_path)
+
+      # Prevent directory traversal and ensure the file exists
+      if file_path.to_s.start_with?(base_path.to_s) && File.exist?(file_path)
         send_file file_path, filename: file.FileName, disposition: "attachment"
       else
-        logger.error "File not found at path: #{file_path}" 
+        logger.error "File not found at path: #{file_path}"
         render plain: "File not found", status: :not_found
       end
     else
@@ -39,11 +42,11 @@ class DocumentsController < ApplicationController
 
   def show
     @file = FileDraft.find_by(FileID: params[:id], CreatorID: @user.UserID)
-  
+
     if @file
       # Correct file path by joining with 'public' (no leading / needed)
-      file_path = Rails.root.join('public', @file.FileURLPath)
-  
+      file_path = Rails.root.join("public", @file.FileURLPath)
+
       if File.exist?(file_path)
         render "documents/show"
       else
@@ -55,7 +58,7 @@ class DocumentsController < ApplicationController
   end
 
 
-  #I think something is wrong with this set of methods (generate, select_template, and proposal_generation) but I am unsure what to do here
+  # I think something is wrong with this set of methods (generate, select_template, and proposal_generation) but I am unsure what to do here
   def generate
     render "documents/generate"
   end
@@ -66,15 +69,15 @@ class DocumentsController < ApplicationController
 
     # Depending on the template, you can now load the appropriate form or questions
     case @template
-    when 'a'
-      @template_name = 'Payment Plan Proposal A'
+    when "a"
+      @template_name = "Payment Plan Proposal A"
       # You can also define the questions or data needed to generate the PDF here.
-    when 'b'
-      @template_name = 'Payment Plan Proposal B'
-    when 'c'
-      @template_name = 'Payment Plan Proposal C'
+    when "b"
+      @template_name = "Payment Plan Proposal B"
+    when "c"
+      @template_name = "Payment Plan Proposal C"
     else
-      @template_name = 'Unknown Template'
+      @template_name = "Unknown Template"
     end
 
     # Render a view to ask financial questions to generate a proposal
@@ -83,16 +86,16 @@ class DocumentsController < ApplicationController
 
   def proposal_generation
     @template = params[:template]
-    
+
     case @template
-    when 'a'
-      @template_name = 'Payment Plan Proposal A'
-    when 'b'
-      @template_name = 'Payment Plan Proposal B'
-    when 'c'
-      @template_name = 'Payment Plan Proposal C'
+    when "a"
+      @template_name = "Payment Plan Proposal A"
+    when "b"
+      @template_name = "Payment Plan Proposal B"
+    when "c"
+      @template_name = "Payment Plan Proposal C"
     else
-      @template_name = 'Unknown Template'
+      @template_name = "Unknown Template"
     end
 
     # Here we can add logic to actually begin the payment plan info filling
