@@ -66,74 +66,41 @@ Follow the [GoRails Windows 10 setup](https://gorails.com/setup/windows) (includ
 
 a. Install the WSL extension and SQL Server extensions.  
 b. Open a new VS Code window with the command:
-
 ```!whitespace-pre
-sh
-
+code .
 ```
-
-CopyEdit
-
-`code .`
 
 #### 3\. Set Up Git & Permissions
 
 a. In the WSL or Ubuntu terminal, run:
 
 ```!whitespace-pre
-sh
-
+sudo mount -t drvfs D: /mnt/d -o metadata
+sudo umount /mnt/d
+wsl --shutdown
 ```
-
-CopyEdit
-
-`sudo mount -t drvfs D: /mnt/d -o metadata sudo umount /mnt/d wsl --shutdown`
 
 > **Note:** Replace `D:` with your drive letter.
 
 b. Navigate to the desired folder and run:
-
-```!whitespace-pre
-sh
-
-```
-
-CopyEdit
-
 `git clone <ssh link to repository>`
 
 **Potential Problem:** If you encounter an error when trying to clone the repository (for example):
-
-```!whitespace-pre
-sh
-
-```
-
-CopyEdit
 
 `error: chmod on /mnt/d/eviction1/CSE5915_Eviction1/.git/config.lock failed: Operation not permitted fatal: could not set 'core.filemode' to 'false'`
 
 **Solution:** Run:
 
 ```!whitespace-pre
-sh
-
+sudo mount -t drvfs D: /mnt/d -o metadata
+sudo umount /mnt/d
 ```
-
-CopyEdit
-
-`sudo mount -t drvfs D: /mnt/d -o metadata sudo umount /mnt/d`
 
 After this, open Windows PowerShell and execute:
 
 ```!whitespace-pre
-sh
-
+wsl --shutdown
 ```
-
-CopyEdit
-
-`wsl --shutdown`
 
 Finally, retry the Git clone command.
 
@@ -142,13 +109,18 @@ Finally, retry the Git clone command.
 a. In the WSL or Ubuntu terminal, run:
 
 ```!whitespace-pre
-sh
+sudo apt-get --assume-yes update
+curl -sSL https://rvm.io/pkuczynski.asc | gpg -
+import -
+\curl -sSL https://get.rvm.io/ | bash -s stable
 
+# *ENSURE YOU RUN THE COMMAND SPECIFIED IN THE RECENT OUTPUT TO CONSOLE, THEN PROCEED BELOW*
+
+rvm install "ruby-3.4.1"
+sudo apt-get --assume-yes
+install freetds-dev freetds-bin
+bundle install
 ```
-
-CopyEdit
-
-`sudo apt-get --assume-yes update curl -sSL https://rvm.io/pkuczynski.asc | gpg --import - \curl -sSL https://get.rvm.io/ | bash -s stable # *ENSURE YOU RUN THE COMMAND SPECIFIED IN THE RECENT OUTPUT TO CONSOLE, THEN PROCEED BELOW* rvm install "ruby-3.4.1" sudo apt-get --assume-yes install freetds-dev freetds-bin bundle install`
 
 #### 5\. Install SQL Server
 
@@ -164,144 +136,95 @@ b. Set the port to 1433 and update `database.yml` to match the specified configu
 a. Open PowerShell as an administrator and run:
 
 ```!whitespace-pre
-sh
-
+New-NetFirewallRule -DisplayName "Allow SQL Server
+from WSL" -Direction Inbound -Protocol TCP -
+LocalPort 1433 -Action Allow
 ```
-
-CopyEdit
-
-`New-NetFirewallRule -DisplayName "Allow SQL Server from WSL" -Direction Inbound -Protocol TCP -LocalPort 1433 -Action Allow`
 
 #### 8\. Initialize Database
 
 a. In the terminal, run:
 
 ```!whitespace-pre
-sh
-
+rails db:create
+rails db:drop
 ```
-
-CopyEdit
-
-`rails db:create rails db:drop`
 
 b. Add proper dependencies for SQL Server by running:
 
 ```!whitespace-pre
-sh
-
+curl
+https://packages.microsoft.com/keys/microsoft.asc | 
+sudo apt-key add -
+sudo add-apt-repository "$(curl -fsSL
+https://packages.microsoft.com/config/ubuntu/20.04/prod.list)"
+sudo apt update
+sudo apt install mssql-tools unixodbc-dev -y
+# Accept the terms, then:
+echo 'export PATH="$PATH:/opt/mssql-tools/bin"' >>
+~/.bashrc
+source ~/.bashrc
 ```
-
-CopyEdit
-
-`curl https://packages.microsoft.com/keys/microsoft.asc | sudo apt-key add - sudo add-apt-repository "$(curl -fsSL https://packages.microsoft.com/config/ubuntu/20.04/prod.list)" sudo apt update sudo apt install mssql-tools unixodbc-dev -y # Accept the terms, then: echo 'export PATH="$PATH:/opt/mssql-tools/bin"' >> ~/.bashrc source ~/.bashrc`
 
 c. Ensure the SQL Browser service is installed and running:
 
 *   In PowerShell, run:
     
     ```!whitespace-pre
-    sh
-    
+    Get-Service -Name SQLBrowser
     ```
-    
-    CopyEdit
-    
-    `Get-Service -Name SQLBrowser`
     
 *   If the service is stopped, run:
     
     ```!whitespace-pre
-    sh
-    
+    Start-Service -Name SQLBrowser
     ```
     
-    CopyEdit
-    
-    `Start-Service -Name SQLBrowser`
-    
 *   If you cannot start it via the command line, open **Run** (Windows key + R), type `services.msc`, and hit enter. Locate **SQL Server Browser**, right-click, select **Properties**, change the **Startup Type** to **Manual**, and then start the service.
-    
 
 d. Check for a connection to the database (replace IP, username, and password as needed):
 
 ```!whitespace-pre
-sh
-
+sqlcmd -S 172.21.176.1 -U sa -P changeme
 ```
 
-CopyEdit
-
-`sqlcmd -S 172.21.176.1 -U sa -P changeme`
-
-If successfully connected, you should see a prompt similar to:
-
-```!whitespace-pre
-sh
-
-```
-
-CopyEdit
-
-`1>`
+If successfully connected, you should see a prompt similar to: `1>`
 
 Then, to check for existing databases, type:
 
 ```!whitespace-pre
-sh
-
+1> SELECT name FROM sys.databases;
+2> GO
 ```
-
-CopyEdit
-
-`1> SELECT name FROM sys.databases; 2> GO`
 
 If the desired database is not present, create it:
 
 *   Create the database (replace `EVICTION_TEST` with your database name):
     
     ```!whitespace-pre
-    sh
-    
+    1> CREATE DATABASE EVICTION_TEST;
+    2> GO
     ```
-    
-    CopyEdit
-    
-    `1> CREATE DATABASE EVICTION_TEST; 2> GO`
     
 *   Then select it:
     
     ```!whitespace-pre
-    sh
-    
+    1> USE EVICTION_TEST;
+    2> GO
     ```
-    
-    CopyEdit
-    
-    `1> USE EVICTION_TEST; 2> GO`
-    
 
 e. To initialize from the `DBInitTest.sql` file (replace username, password, IP, and database name as needed), run:
 
 ```!whitespace-pre
-sh
-
+sqlcmd -S 172.21.176.1 -U sa -P changeme -d
+EVICTION_TEST -i "DBInitTest.sql"
 ```
-
-CopyEdit
-
-`sqlcmd -S 172.21.176.1 -U sa -P changeme -d EVICTION_TEST -i "DBInitTest.sql"`
 
 f. Run the migrations:
 
 ```!whitespace-pre
-sh
-
+rails db:migrate
 ```
-
-CopyEdit
-
-`rails db:migrate`
 
 ### macOS (M1)
 
@@ -310,13 +233,10 @@ CopyEdit
 a. Install **Homebrew**:
 
 ```!whitespace-pre
-sh
-
+/bin/bash -c "$(curl -fsSL
+https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+brew install docker
 ```
-
-CopyEdit
-
-`/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)" brew install docker`
 
 b. Install **Docker** for Mac with Apple Silicon – see the [Docker Setup for Mac](https://docs.docker.com/desktop/setup/install/mac-install/).
 
@@ -332,13 +252,11 @@ a. Refer to [Setting Up A Local SQL Server on a Mac](https://medium.com/@aleksej
 b. Start the SQL Server container by running:
 
 ```!whitespace-pre
-sh
-
+docker run mcr.microsoft.com/azure-sql-edge
+docker run -p 1433:1433 mcr.microsoft.com/azure-sql-edge
+docker run -e "ACCEPT_EULA=Y" -e "MSSQL_SA_PASSWORD=StrongPassword1" -p 1433:1433 -d mcr.microsoft.com/azure-sql-edge docker ps
+docker ps
 ```
-
-CopyEdit
-
-`docker run -p 1433:1433 mcr.microsoft.com/azure-sql-edge docker run -e "ACCEPT_EULA=Y" -e "MSSQL_SA_PASSWORD=StrongPassword1" -p 1433:1433 -d mcr.microsoft.com/azure-sql-edge docker ps`
 
 #### 3\. Run in the VS Code Terminal
 
@@ -347,13 +265,9 @@ b. Update `database.yml` with your specific configuration.
 c. Run the following commands:
 
 ```!whitespace-pre
-sh
-
+bundle install
+ruby ./bin/rails server
 ```
-
-CopyEdit
-
-`bundle install ruby ./bin/rails server`
 
 This will start the application; the database is initialized in the container (not locally).
 
@@ -363,13 +277,8 @@ a. Create a folder on your local machine (e.g., `SQLData`) in the same directory
 b. Open the **Docker** terminal and run:
 
 ```!whitespace-pre
-sh
-
+docker run -e "ACCEPT_EULA=Y" -e "MSSQL_SA_PASSWORD=StrongPassword1" -p 1433:1433 -v ./SQLData:/var/opt/mssql --name sqlserver -d --rm mcr.microsoft.com/azure-sql-edge
 ```
-
-CopyEdit
-
-`docker run -e "ACCEPT_EULA=Y" -e "MSSQL_SA_PASSWORD=StrongPassword1" -p 1433:1433 -v ./SQLData:/var/opt/mssql --name sqlserver -d --rm mcr.microsoft.com/azure-sql-edge`
 
 > **Notes:**
 > 
@@ -383,13 +292,8 @@ CopyEdit
 c. In VS Code, run:
 
 ```!whitespace-pre
-sh
-
+ruby ./bin/rails server
 ```
-
-CopyEdit
-
-`ruby ./bin/rails server`
 
 d. Whenever you need to run Docker, use the command from step 4b.
 
@@ -401,13 +305,13 @@ i. Download [npm](https://nodejs.org/en/download/).
 ii. To install and test, run:
 
 ```!whitespace-pre
-sh
+npm install -g sql-cli
 
+# OR
+
+sudo npm install -g sql-cli
+mssql -u sa -p
 ```
-
-CopyEdit
-
-`npm install -g sql-cli # OR sudo npm install -g sql-cli mssql -u sa -p`
 
 g. Install the GUI application – [Azure Data Studio](https://learn.microsoft.com/en-us/azure-data-studio/download-azure-data-studio?view=sql-server-ver15&viewFallbackFrom=sql-server-ver15%5D&tabs=win-install%2Cwin-user-install%2Credhat-install%2Cwindows-uninstall%2Credhat-uninstall). After installation, add the necessary credentials and click connect.
 
@@ -433,24 +337,24 @@ h. Initialize the database using your DB initialization file.
 a. **config/database.yml** (modify according to your specific setup):
 
 ```!whitespace-pre
-yaml
-
+development:
+    adapter: sqlserver
+    host: '127.0.0.1'
+    port: 1433 database: EVICTION_TEST
+    username: 'sa'
+    password: 'StrongPassword1'
+    trust_server_certificate: true
+    timeout: 5000
 ```
-
-CopyEdit
-
-`development: adapter: sqlserver host: '127.0.0.1' port: 1433 database: EVICTION_TEST username: 'sa' password: 'StrongPassword1' trust_server_certificate: true timeout: 5000`
 
 b. **freetds.conf** (modify for your specific SQL Server name and host IP):
 
 ```!whitespace-pre
-conf
-
+[EVICTION_TEST]
+    host = 127.0.0.1
+    port = 1433
+    tds version = 7.4
 ```
-
-CopyEdit
-
-`[EVICTION_TEST] host = 127.0.0.1 port = 1433 tds version = 7.4`
 
 ### SQL Server Configurations
 
@@ -466,13 +370,29 @@ CopyEdit
 In **config/environments/development.rb** (for development) and **config/environments/production.rb** (for production):
 
 ```!whitespace-pre
-rb
+Config/environments/development.rb (For development) and Config/environments/production.rb (for production):
+  config.action_mailer.delivery_method = :smtp
 
+  # Configuring smpt settings, will need changed to proper MSA.
+  config.action_mailer.smtp_settings = {
+    address: "smtp.gmail.com",
+    port: 587,
+    domain: "gmail.com",
+    authentication: "plain",
+    enable_starttls_auto: true,
+    user_name: ENV["GMAIL_USERNAME"], # Use environment variables for security
+    password: ENV["GMAIL_PASSWORD"]   # Use environment variables for security
+  }
+
+  # Show error if mailer can't send
+  config.action_mailer.raise_delivery_errors = true
+
+  # Make template changes take effect immediately.
+  config.action_mailer.perform_caching = false
+
+  # Mailer performs deliveries
+  config.action_mailer.perform_deliveries = true
 ```
-
-CopyEdit
-
-`config.action_mailer.delivery_method = :smtp # Configuring smtp settings; update to your proper mail service. config.action_mailer.smtp_settings = { address: "smtp.gmail.com", port: 587, domain: "gmail.com", authentication: "plain", enable_starttls_auto: true, user_name: ENV["GMAIL_USERNAME"], # Use environment variables for security password: ENV["GMAIL_PASSWORD"] # Use environment variables for security } # Show error if mailer can't send config.action_mailer.raise_delivery_errors = true # Make template changes take effect immediately config.action_mailer.perform_caching = false # Enable mailer deliveries config.action_mailer.perform_deliveries = true`
 
 > **Note:** You can change the `ENV[]` values in your `.env` file (for example, Gmail username and password).
 
@@ -512,24 +432,12 @@ Our project uses the standard Ruby on Rails directory structure. Key points incl
 To start the server, run either:
 
 ```!whitespace-pre
-sh
-
+rails s
 ```
-
-CopyEdit
-
-`rails s`
-
 or
-
 ```!whitespace-pre
-sh
-
+rails server
 ```
-
-CopyEdit
-
-`rails server`
 
 A message should confirm that the server is online. In VS Code, you may also be prompted to view the application in your browser. If not, access the application at [http://localhost:3000](http://localhost:3000).
 
@@ -553,24 +461,14 @@ Rails uses **Continuous Integration Tests** to automatically scan for known Ruby
 Rails’ built-in testing framework executes tests located under the `test/` folder. Run:
 
 ```!whitespace-pre
-sh
-
+rails test
 ```
-
-CopyEdit
-
-`rails test`
 
 to execute all tests. To run tests for a specific component (for example, controllers), use:
 
 ```!whitespace-pre
-sh
-
+rails test:controllers
 ```
-
-CopyEdit
-
-`rails test:controllers`
 
 (replace `controllers` with the desired test subcategory).
 
