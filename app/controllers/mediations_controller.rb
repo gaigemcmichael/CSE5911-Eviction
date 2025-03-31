@@ -1,7 +1,7 @@
 class MediationsController < ApplicationController
   before_action :require_login
   before_action :set_user
-  before_action :require_tenant_or_landlord_role, only: [ :create, :respond, :accept ]
+  before_action :require_tenant_or_landlord_role, only: [ :create, :accept, :end_conversation, :update_good_faith ]
 
   def index
     redirect_to messages_path, alert: "Negotiation index is not available. Please use the messages page."
@@ -50,8 +50,29 @@ class MediationsController < ApplicationController
     @landlords = User.where(Role: "Landlord").order(:CompanyName)
   end
 
-  def respond
+  def end_conversation
+    @mediation = PrimaryMessageGroup.find(params[:id])
+    if @mediation.deleted_at.nil?
+      @mediation.update(deleted_at: Time.current)
+      @mediation.linked_message_string&.update(deleted_at: Time.current) if @mediation.message_string
+    end
+    redirect_to good_faith_path(@mediation.ConversationID)
   end
+
+  def update_good_faith
+    @mediation = PrimaryMessageGroup.find(params[:id])
+    role = params[:role]
+    good_faith = ActiveModel::Type::Boolean.new.cast(params[:good_faith])
+  
+    if role == "Tenant"
+      @mediation.update(EndOfConversationGoodFaithLandlord: good_faith)
+    elsif role == "Landlord"
+      @mediation.update(EndOfConversationGoodFaithTenant: good_faith)
+    end
+  
+    redirect_to root_path, notice: "Thanks for your feedback."
+  end
+  
 
   private
 

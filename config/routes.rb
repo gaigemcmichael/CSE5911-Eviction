@@ -65,6 +65,13 @@ Rails.application.routes.draw do
     post :respond, on: :member
   end
 
+  # Allow tenant or landlord to terminate a negotiation or mediation
+  patch "/end_mediation/:id", to: "mediations#end_conversation", as: "end_mediation"
+
+  # Allow tenant and landlord to fill out good faith question
+  patch "/good_faith/:id", to: "mediations#update_good_faith", as: "good_faith_response"
+
+
   # Allow third party mediator to view cases
   resources :third_party_mediations, only: [ :index ]
   resources :mediator_cases, only: [ :show ]

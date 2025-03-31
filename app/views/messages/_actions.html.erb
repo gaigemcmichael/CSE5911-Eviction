@@ -29,9 +29,21 @@
           <a href="<%= new_screening_path(conversation_id: @message_string.ConversationID) %>">Click here to complete screening.</a>
         </p>
       <% end %>
-      <!-- Add more mediator-related buttons/actions here later -->
     <% else %>
       <p class="mediator-status">Unknown error.</p>
+    <% end %>
+    <% if @mediation && @mediation.deleted_at.nil? %>
+      <%= button_to (@mediation.MediatorRequested && @mediation.MediatorAssigned ? "End Mediation" : "End Negotiation"),
+                    end_mediation_path(@mediation.ConversationID),
+                    method: :patch,
+                    data: {
+                      turbo: false,
+                      confirm: "Are you sure you want to end this #{@mediation.MediatorRequested && @mediation.MediatorAssigned ? 'mediation' : 'negotiation'}?"
+                    },
+                    class: "btn btn-danger mt-3" %>
+      <p class="action-description">
+        You can end the <%= @mediation.MediatorRequested && @mediation.MediatorAssigned ? "mediation" : "negotiation" %> at any time. You’ll be asked if the other party acted in good faith.
+      </p>
     <% end %>
   </div>
 </div>
