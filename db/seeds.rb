@@ -66,4 +66,51 @@ file_draft = FileDraft.create(
   FileURLPath: 'userFiles/testfile.txt'
 )
 
-puts "Seed data created successfully! - 4 users (one of each type) and a sample file (already in the system)"
+landlord2 = User.create(
+  Email: 'landlord2@test.com',
+  Password: 'test',
+  FName: 'Larry',
+  LName: 'Lonald',
+  Role: 'Landlord',
+  CompanyName: 'Bofa Property Management',
+  TenantAddress: nil,
+  PhoneNumber: '740-565-3234'
+)
+
+tenant2 = User.create(
+  Email: 'tenant2@test.com',
+  Password: 'test',
+  FName: 'Terry',
+  LName: 'Terrel',
+  Role: 'Tenant',
+  TenantAddress: '456 Elm St',
+  PhoneNumber: '614-455-5678'
+)
+
+mediator2 = User.create(
+  Email: 'mediator2@test.com',
+  Password: 'test',
+  FName: 'Melony',
+  LName: 'Marry',
+  Role: 'Mediator',
+  PhoneNumber: '816-695-9876'
+)
+
+admin2 = User.create(
+  Email: 'admin2@test.com',
+  Password: 'test',
+  FName: 'Aaron',
+  LName: 'Able',
+  Role: 'Admin',
+  PhoneNumber: '740-555-1321'
+)
+
+# Creating a Mediator
+mediator_user2 = Mediator.create(
+  UserID: mediator2.UserID,
+  Available: true,
+  ActiveMediations: 0,
+  MediationCap: 5
+)
+
+puts "Seed data created successfully! - 8 users (one of each type) and a sample file (already in the system)"

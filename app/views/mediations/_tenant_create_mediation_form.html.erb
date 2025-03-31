@@ -1,13 +1,16 @@
-<%= form_with url: mediations_path, method: :post, local: true do |form| %>
+<%= form_with url: mediations_path, method: :post, local: true, html: { id: "mediation-form" } do |form| %>
 
   <div>
     <%= form.label :landlord_id, "Select a Landlord:" %>
-    <%= form.select :landlord_id, options_from_collection_for_select(@landlords, "UserID", "CompanyName"), { prompt: "Choose a Landlord" }, { name: "landlord_id" } %>
+    <%= form.select :landlord_id,
+                    options_from_collection_for_select(@landlords, "UserID", "CompanyName"),
+                    { prompt: "Choose a Landlord" },
+                    { id: "landlord-select" } %>
   </div>
 
   <div>
     <%= form.label :landlord_email, "Or Enter Landlord's Email:" %>
-    <%= form.text_field :landlord_email, required: false, placeholder: "Enter landlord's email", name: "landlord_email" %>
+    <%= form.text_field :landlord_email, required: false, placeholder: "Enter landlord's email", id: "landlord-email" %>
   </div>
 
   <%= hidden_field_tag :format, "html" %>
@@ -16,3 +19,20 @@
     <%= form.submit "Request Negotiation" %>
   </div>
 <% end %>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    const landlordSelect = document.getElementById("landlord-select");
+    const emailField = document.getElementById("landlord-email");
+
+    landlordSelect.addEventListener("change", function () {
+      if (landlordSelect.value) {
+        emailField.disabled = true;
+        emailField.placeholder = "Disabled while landlord is selected";
+      } else {
+        emailField.disabled = false;
+        emailField.placeholder = "Enter landlord's email";
+      }
+    });
+  });
+</script>
