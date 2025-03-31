@@ -1,7 +1,6 @@
 class MessagesController < ApplicationController
   before_action :require_login
   before_action :set_user
-  before_action :set_message, only: [ :request_mediator ]
 
   def index
     case @user.Role
@@ -245,9 +244,5 @@ class MessagesController < ApplicationController
 
   def set_user
     @user = User.find(session[:user_id])
-  end
-
-  def set_message
-    @message = Message.find(params[:id])
   end
 end
