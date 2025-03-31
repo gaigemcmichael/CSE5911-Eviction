@@ -1,10 +1,5 @@
 <div class="actions-container">
   <div class="mediator-action">
-    <%= button_to "Generate New File", generate_file_path,
-                    method: :get, class: "btn btn-primary" %>
-    <p class="action-description">
-      This button allows you to create a proposal
-    </p>
     <% if @mediation && !@mediation.MediatorRequested && !@mediation.MediatorAssigned %>
       <%= button_to "Request a Mediator", request_mediator_message_path(@mediation.id),
                     method: :patch, class: "btn btn-primary" %>
@@ -33,6 +28,12 @@
       <p class="mediator-status">Unknown error.</p>
     <% end %>
     <% if @mediation && @mediation.deleted_at.nil? %>
+      <%= button_to "Generate New File", generate_file_path,
+          method: :get, class: "btn btn-primary" %>
+      <p class="action-description">
+        This button allows you to create a proposal
+      </p>
+
       <%= button_to (@mediation.MediatorRequested && @mediation.MediatorAssigned ? "End Mediation" : "End Negotiation"),
                     end_mediation_path(@mediation.ConversationID),
                     method: :patch,
