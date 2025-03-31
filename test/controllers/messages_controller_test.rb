@@ -2,8 +2,8 @@ require "test_helper"
 
 class MessagesControllerTest < ActionDispatch::IntegrationTest
   def setup
-    @tenant = users(:tenant) # Assume a fixture for a tenant user
-    @landlord = users(:landlord) # Assume a fixture for a landlord user
+    @tenant = users(:tenant1) # Assume a fixture for a tenant user
+    @landlord = users(:landlord1) # Assume a fixture for a landlord user
     @mediation = primary_message_groups(:one) # Assume a fixture for mediation
   end
 
@@ -17,14 +17,14 @@ class MessagesControllerTest < ActionDispatch::IntegrationTest
     assert_equal "You must be logged in to access the dashboard.", flash[:alert]
   end
 
-  test "tenant should see tenant_index if mediation exists" do
+  test "tenant should see tenant_index if mediation exists" do # Expected response to be a <2XX: success>, but was a <302: Found> redirect to <http://www.example.com/login>
     log_in_as(@tenant) # Helper method to simulate login
     get messages_path
     assert_response :success
     assert_template "messages/tenant_index"
   end
 
-  test "tenant without mediation should see landlords list" do
+  test "tenant without mediation should see landlords list" do # Expected response to be a <2XX: success>, but was a <302: Found> redirect to <http://www.example.com/login>
     @mediation.destroy # Ensure no mediation exists
     log_in_as(@tenant)
     get messages_path
@@ -33,15 +33,15 @@ class MessagesControllerTest < ActionDispatch::IntegrationTest
     assert_not_nil assigns(:landlords)
   end
 
-  test "landlord should see landlord_index if mediation exists" do
+  test "landlord should see landlord_index if mediation exists" do # Expected response to be a <2XX: success>, but was a <302: Found> redirect to <http://www.example.com/login>
     log_in_as(@landlord)
     get messages_path
     assert_response :success
     assert_template "messages/landlord_index"
   end
 
-  test "unauthorized users should get forbidden response" do # Not sure if this case is even testing anything useful
-    unauthorized_user = users(:random) # Assume a fixture for unauthorized role
+  test "unauthorized users should get forbidden response" do # Expected response to be a <403: forbidden>, but was a <302: Found> redirect to <http://www.example.com/login>
+    unauthorized_user = users(:random1) # Assume a fixture for unauthorized role
     log_in_as(unauthorized_user)
     get messages_path
     assert_response :forbidden
