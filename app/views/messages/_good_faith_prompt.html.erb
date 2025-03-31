@@ -1,15 +1,32 @@
-<h3>This conversation has ended.</h3>
+<h3>Someone has ended the negotiation/mediation!</h3>
 <p>Please let us know if the other party ended the negotiation/mediation in good faith:</p>
 
 <%= form_with url: good_faith_response_path(@mediation.ConversationID), method: :patch do |f| %>
   <%= hidden_field_tag :role, @user.Role %>
   <div class="form-group">
-    <label>
-      <%= radio_button_tag :good_faith, true %> Yes
-    </label>
-    <label>
-      <%= radio_button_tag :good_faith, false %> No
-    </label>
+    <%= radio_button_tag :good_faith, "true", false, id: "good_faith_true" %>
+    <%= label_tag "good_faith_true", "Yes" %>
+    
+    <%= radio_button_tag :good_faith, "false", false, id: "good_faith_false" %>
+    <%= label_tag "good_faith_false", "No" %>
   </div>
   <%= f.submit "Submit", class: "btn btn-primary" %>
 <% end %>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    const forms = document.querySelectorAll("form[action*='good_faith_response']");
+    
+    forms.forEach(function (form) {
+      form.addEventListener("submit", function (event) {
+        const yes = document.getElementById("good_faith_true")?.checked;
+        const no = document.getElementById("good_faith_false")?.checked;
+
+        if (!yes && !no) {
+          alert("Please select Yes or No before submitting.");
+          event.preventDefault(); // stops the form from submitting
+        }
+      });
+    });
+  });
+</script>

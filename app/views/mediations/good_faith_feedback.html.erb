@@ -3,14 +3,29 @@
 <p>Did the <%= @user.Role == "Tenant" ? "Landlord" : "Tenant" %> act in good faith during this conversation?</p>
 
 <%= form_with url: good_faith_response_path(@mediation.ConversationID), method: :patch do %>
-  <div>
-    <%= radio_button_tag :good_faith, true %>
-    <%= label_tag :good_faith_true, "Yes" %>
-  </div>
-  <div>
-    <%= radio_button_tag :good_faith, false %>
-    <%= label_tag :good_faith_false, "No" %>
-  </div>
+  <%= radio_button_tag :good_faith, "true", false, id: "good_faith_true" %>
+  <%= label_tag "good_faith_true", "Yes" %>
+
+  <%= radio_button_tag :good_faith, "false", false, id: "good_faith_false" %>
+  <%= label_tag "good_faith_false", "No" %>
   <%= hidden_field_tag :role, @user.Role %>
   <%= submit_tag "Submit", class: "btn btn-primary mt-2" %>
 <% end %>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    const forms = document.querySelectorAll("form[action*='good_faith_response']");
+    
+    forms.forEach(function (form) {
+      form.addEventListener("submit", function (event) {
+        const yes = document.getElementById("good_faith_true")?.checked;
+        const no = document.getElementById("good_faith_false")?.checked;
+
+        if (!yes && !no) {
+          alert("Please select Yes or No before submitting.");
+          event.preventDefault(); // stops the form from submitting
+        }
+      });
+    });
+  });
+</script>

@@ -14,6 +14,7 @@ class MessagesController < ApplicationController
                            .includes(:landlord)
                            .where(TenantID: @user.UserID)
                            .where.not(deleted_at: nil)
+                           .order(deleted_at: :desc)
   
       @show_mediation_view = @mediation.present?
       @landlords = User.where(Role: "Landlord").order(:CompanyName) unless @mediation
@@ -29,6 +30,7 @@ class MessagesController < ApplicationController
                            .includes(:tenant)
                            .where(LandlordID: @user.UserID)
                            .where.not(deleted_at: nil)
+                           .order(deleted_at: :desc)
   
       @show_mediation_view = @mediation.any?
   

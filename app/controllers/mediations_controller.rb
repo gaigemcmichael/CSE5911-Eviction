@@ -121,8 +121,8 @@ class MediationsController < ApplicationController
         GoodFaith: false,
         MediatorRequested: false,
         MediatorAssigned: false,
-        EndOfConversationGoodFaithLandlord: false,
-        EndOfConversationGoodFaithTenant: false,
+        EndOfConversationGoodFaithLandlord: nil,
+        EndOfConversationGoodFaithTenant: nil,
         accepted_by_landlord: false
       )
 
