@@ -50,15 +50,26 @@ class MediationsController < ApplicationController
     @landlords = User.where(Role: "Landlord").order(:CompanyName)
   end
 
+  # end the negotiation/mediation
   def end_conversation
     @mediation = PrimaryMessageGroup.find(params[:id])
     if @mediation.deleted_at.nil?
       @mediation.update(deleted_at: Time.current)
-      @mediation.linked_message_string&.update(deleted_at: Time.current) if @mediation.message_string
+      @mediation.linked_message_string&.update(deleted_at: Time.current)
+
+      # Decrement the mediator’s active mediation count if one is assigned
+      if @mediation.MediatorID.present?
+        mediator = Mediator.find_by(UserID: @mediation.MediatorID)
+        if mediator && mediator.ActiveMediations > 0
+          mediator.decrement!(:ActiveMediations)
+        end
+      end
+
     end
-    redirect_to good_faith_path(@mediation.ConversationID)
+    redirect_to messages_path
   end
 
+  # good faith questionaire
   def update_good_faith
     @mediation = PrimaryMessageGroup.find(params[:id])
     role = params[:role]
@@ -77,10 +88,14 @@ class MediationsController < ApplicationController
   private
 
   def find_existing_landlord
-    if params[:landlord_id].present? && params[:landlord_id] != ""
+    email = params[:landlord_email].to_s.strip
+
+    if params[:landlord_id].present?
       User.find_by(UserID: params[:landlord_id])
-    elsif params[:landlord_email].present?
-      User.find_by(Email: params[:landlord_email])
+    elsif email.present?
+      User.find_by(Email: email)
+    else
+      nil
     end
   end
 
