@@ -30,7 +30,7 @@ class DocumentsController < ApplicationController
       if file_path.to_s.start_with?(base_path.to_s) && File.exist?(file_path)
 
         # We think this should not be a real threat as long as we sanatize the other input areas.
-        send_file file_path, filename: file.FileName, disposition: "attachment"
+        send_file file_path, filename: file.FileURLPath.sub(/^userFiles\//, ''), disposition: "attachment"
       else
         logger.error "File not found at path: #{file_path}"
         render plain: "File not found", status: :not_found
