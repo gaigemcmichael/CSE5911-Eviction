@@ -1,7 +1,7 @@
 class MediationsController < ApplicationController
   before_action :require_login
   before_action :set_user
-  before_action :require_tenant_or_landlord_role, only: [ :create, :accept, :end_conversation, :update_good_faith ]
+  before_action :require_tenant_or_landlord_role, only: [ :create, :accept, :end_conversation ]
 
   def index
     redirect_to messages_path, alert: "Negotiation index is not available. Please use the messages page."
@@ -66,7 +66,7 @@ class MediationsController < ApplicationController
       end
 
     end
-    redirect_to messages_path
+    redirect_to good_faith_response_path(@mediation.ConversationID)
   end
 
   # good faith questionaire
@@ -76,14 +76,23 @@ class MediationsController < ApplicationController
     good_faith = ActiveModel::Type::Boolean.new.cast(params[:good_faith])
   
     if role == "Tenant"
-      @mediation.update(EndOfConversationGoodFaithLandlord: good_faith)
+      @mediation.update!(EndOfConversationGoodFaithLandlord: good_faith)
     elsif role == "Landlord"
-      @mediation.update(EndOfConversationGoodFaithTenant: good_faith)
+      @mediation.update!(EndOfConversationGoodFaithTenant: good_faith)
     end
   
-    redirect_to root_path, notice: "Thanks for your feedback."
+    redirect_to messages_path
   end
   
+  def good_faith_form
+    @mediation = PrimaryMessageGroup.find_by(ConversationID: params[:id])
+    if @mediation.nil? || @mediation.deleted_at.nil?
+      redirect_to messages_path, alert: "Mediation not found or still ongoing."
+      return
+    end
+  
+    render "mediations/good_faith_feedback"
+  end
 
   private
 

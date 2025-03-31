@@ -1,0 +1,16 @@
+<h2>Good Faith Feedback</h2>
+
+<p>Did the <%= @user.Role == "Tenant" ? "Landlord" : "Tenant" %> act in good faith during this conversation?</p>
+
+<%= form_with url: good_faith_response_path(@mediation.ConversationID), method: :patch do %>
+  <div>
+    <%= radio_button_tag :good_faith, true %>
+    <%= label_tag :good_faith_true, "Yes" %>
+  </div>
+  <div>
+    <%= radio_button_tag :good_faith, false %>
+    <%= label_tag :good_faith_false, "No" %>
+  </div>
+  <%= hidden_field_tag :role, @user.Role %>
+  <%= submit_tag "Submit", class: "btn btn-primary mt-2" %>
+<% end %>
