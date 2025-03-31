@@ -12,7 +12,26 @@ class MediatorMessagesController < ApplicationController
       MessageDate: Time.current
     )
 
+    
+
     if @message.save
+
+      # Handle file attachment if present
+      if params[:file_id].present?
+        # Find the selected FileDraft by FileID
+        file_draft = FileDraft.find_by(FileID: params[:file_id])
+
+        # Create a file attachment
+        if file_draft
+          FileAttachment.create!(
+            MessageID: @message.MessageID,
+            FileID: file_draft.FileID
+          )
+        else
+          Rails.logger.error "FileDraft not found with ID: #{params[:file_id]}"
+        end
+      end
+
       ActionCable.server.broadcast(
         "side_messages_#{@side_group.ConversationID}",
         {
@@ -65,4 +84,5 @@ class MediatorMessagesController < ApplicationController
   def require_login
     redirect_to login_path, alert: "Please log in to continue" unless session[:user_id]
   end
+
 end
