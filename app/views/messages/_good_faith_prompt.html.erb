@@ -1,0 +1,15 @@
+<h3>This conversation has ended.</h3>
+<p>Please let us know if the other party ended the negotiation/mediation in good faith:</p>
+
+<%= form_with url: good_faith_response_path(@mediation.ConversationID), method: :patch do |f| %>
+  <%= hidden_field_tag :role, @user.Role %>
+  <div class="form-group">
+    <label>
+      <%= radio_button_tag :good_faith, true %> Yes
+    </label>
+    <label>
+      <%= radio_button_tag :good_faith, false %> No
+    </label>
+  </div>
+  <%= f.submit "Submit", class: "btn btn-primary" %>
+<% end %>
