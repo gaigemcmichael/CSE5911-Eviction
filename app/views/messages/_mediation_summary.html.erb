@@ -1,0 +1,15 @@
+<div class="mediation-summary">
+  <h4>Negotiation with <%= mediation.landlord.CompanyName || mediation.landlord.Email %> and <%= mediation.tenant.FName %> <%= mediation.tenant.LName %></h4>
+  <p>Conversation ended on: <%= mediation.deleted_at.strftime("%B %d, %Y at %I:%M %p") %></p>
+
+  <% if @user.Role == "Tenant" %>
+    <p>Did Landlord act in good faith? <strong><%= mediation.EndOfConversationGoodFaithLandlord ? "Yes" : "No" %></strong></p>
+  <% elsif @user.Role == "Landlord" %>
+    <p>Did Tenant act in good faith? <strong><%= mediation.EndOfConversationGoodFaithTenant ? "Yes" : "No" %></strong></p>
+  <% end %>
+
+  # TODO: add conditional logic to show signed documents. Maybe add chat history too!
+  <% if true %>
+    <p>This is where signed documents will appear %>
+  <% end %>
+</div>

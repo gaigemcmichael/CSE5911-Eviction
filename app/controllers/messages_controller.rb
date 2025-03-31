@@ -6,14 +6,34 @@ class MessagesController < ApplicationController
   def index
     case @user.Role
     when "Tenant"
-      @mediation = PrimaryMessageGroup.find_by(TenantID: @user.UserID)
+      @mediation = PrimaryMessageGroup
+                     .includes(:landlord)
+                     .find_by(TenantID: @user.UserID, deleted_at: nil)
+  
+      @past_mediations = PrimaryMessageGroup
+                           .includes(:landlord)
+                           .where(TenantID: @user.UserID)
+                           .where.not(deleted_at: nil)
+  
       @show_mediation_view = @mediation.present?
       @landlords = User.where(Role: "Landlord").order(:CompanyName) unless @mediation
+  
       render "messages/tenant_index"
+  
     when "Landlord"
-      @mediation = PrimaryMessageGroup.where(LandlordID: @user.UserID).includes(:tenant)
+      @mediation = PrimaryMessageGroup
+                     .includes(:tenant)
+                     .where(LandlordID: @user.UserID, deleted_at: nil)
+  
+      @past_mediations = PrimaryMessageGroup
+                           .includes(:tenant)
+                           .where(LandlordID: @user.UserID)
+                           .where.not(deleted_at: nil)
+  
       @show_mediation_view = @mediation.any?
+  
       render "messages/landlord_index"
+  
     else
       render plain: "Access Denied", status: :forbidden
     end
@@ -180,6 +200,21 @@ class MessagesController < ApplicationController
         format.json { render json: { error: "Conversation not found" }, status: :not_found }
       end
     end
+  end
+
+  # Allows a user to view summaries of previous mediations
+  def summary
+    @mediation = PrimaryMessageGroup.find_by(ConversationID: params[:id])
+  
+    if @mediation.nil? || @mediation.deleted_at.nil?
+      redirect_to messages_path, alert: "Mediation not found or still active."
+      return
+    end
+  
+    @tenant = User.find_by(UserID: @mediation.TenantID)
+    @landlord = User.find_by(UserID: @mediation.LandlordID)
+  
+    render "messages/summary"
   end
 
   private

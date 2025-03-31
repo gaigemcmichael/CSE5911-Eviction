@@ -1,0 +1,18 @@
+<div class="mediation-summary-page">
+  <h1>Mediation Summary</h1>
+
+  <p><strong>Ended At:</strong> <%= @mediation.deleted_at.strftime("%B %d, %Y at %I:%M %p") %></p>
+
+  <h2>Tenant Info</h2>
+  <p><strong>Name:</strong> <%= @tenant.FName %> <%= @tenant.LName %></p>
+  <p><strong>Email:</strong> <%= @tenant.Email %></p>
+
+  <h2>Landlord Info</h2>
+  <p><strong>Name:</strong> <%= @landlord.FName %> <%= @landlord.LName %></p>
+  <p><strong>Email:</strong> <%= @landlord.Email %></p>
+
+  <p><strong>Good Faith - Tenant:</strong> <%= good_faith_label(@mediation.EndOfConversationGoodFaithTenant) %></p>
+  <p><strong>Good Faith - Landlord:</strong> <%= good_faith_label(@mediation.EndOfConversationGoodFaithLandlord) %></p>  
+
+  <%= link_to "Back", messages_path, class: "btn btn-secondary mt-3" %>
+</div>

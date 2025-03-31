@@ -15,4 +15,7 @@
       <%= render "mediations/tenant_create_mediation_form" %>
     </div>
   <% end %>
+  <% if @past_mediations.any? %>
+    <%= render 'tenants_old_mediations_table' %>
+  <% end %>
 </div>
