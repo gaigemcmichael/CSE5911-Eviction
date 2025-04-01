@@ -38,7 +38,16 @@
         <label for="Password">Password</label>
         <div class="input-field">
           <i class="fa-solid fa-lock"></i>
-          <%= f.password_field :Password, placeholder: "Create a password", required: true, class: "signup-input" %>
+          <%= f.password_field :password, placeholder: "Create a password", required: true, class: "signup-input" %>
+        </div>
+      </div>
+
+      <!-- Password Confirmation -->
+      <div class="input-group">
+        <label for="PasswordConfirmation">Confirm Password</label>
+        <div class="input-field">
+          <i class="fa-solid fa-lock"></i>
+          <%= f.password_field :password_confirmation, placeholder: "Confirm your password", required: true, class: "signup-input" %>
         </div>
       </div>
 
