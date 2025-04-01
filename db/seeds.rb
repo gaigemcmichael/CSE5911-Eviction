@@ -61,48 +61,50 @@ mediator_user = Mediator.create(
 # Creating a File Draft
 file_draft = FileDraft.create(
   CreatorID: tenant.UserID,
-  FileName: 'test document',
+  FileName: 'test document1',
   FileTypes: 'text/plain',
-  FileURLPath: 'userFiles/testfile.txt'
+  FileURLPath: 'userFiles/TestDocument1.pdf'
 )
+
+puts "Seed data set 1 created successfully! - 4 users (one of each type) and a sample file (already in the system)"
 
 landlord2 = User.create(
   Email: 'landlord2@test.com',
   Password: 'test',
-  FName: 'Larry',
-  LName: 'Lonald',
+  FName: 'John2',
+  LName: 'Doe2',
   Role: 'Landlord',
-  CompanyName: 'Bofa Property Management',
+  CompanyName: 'Doe2 Property Management 2',
   TenantAddress: nil,
-  PhoneNumber: '740-565-3234'
+  PhoneNumber: '111-1234'
 )
 
 tenant2 = User.create(
   Email: 'tenant2@test.com',
   Password: 'test',
-  FName: 'Terry',
-  LName: 'Terrel',
+  FName: 'Jane2',
+  LName: 'Smith2',
   Role: 'Tenant',
-  TenantAddress: '456 Elm St',
-  PhoneNumber: '614-455-5678'
+  TenantAddress: '456 Elm St 2',
+  PhoneNumber: '111-4321'
 )
 
 mediator2 = User.create(
   Email: 'mediator2@test.com',
   Password: 'test',
-  FName: 'Melony',
-  LName: 'Marry',
+  FName: 'Alice2',
+  LName: 'Johnson2',
   Role: 'Mediator',
-  PhoneNumber: '816-695-9876'
+  PhoneNumber: '555-3333'
 )
 
 admin2 = User.create(
   Email: 'admin2@test.com',
   Password: 'test',
-  FName: 'Aaron',
-  LName: 'Able',
+  FName: 'Adam2',
+  LName: 'Admin2',
   Role: 'Admin',
-  PhoneNumber: '740-555-1321'
+  PhoneNumber: '555-2222'
 )
 
 # Creating a Mediator
@@ -113,4 +115,12 @@ mediator_user2 = Mediator.create(
   MediationCap: 5
 )
 
-puts "Seed data created successfully! - 8 users (one of each type) and a sample file (already in the system)"
+# Creating a File Draft
+file_draft2 = FileDraft.create(
+  CreatorID: landlord.UserID,
+  FileName: 'test document 2',
+  FileTypes: 'text/plain',
+  FileURLPath: 'userFiles/testfile2.txt'
+)
+
+puts "Seed data set 2 created successfully! - 4 users (one of each type) and a sample file (already in the system)"
