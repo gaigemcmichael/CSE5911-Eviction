@@ -2,7 +2,7 @@ class ScreeningsController < ApplicationController
   before_action :require_login
   before_action :set_user
   before_action :set_conversation_ID
-  before_action :check_mediation_status, only: [:new, :create]
+  before_action :check_mediation_status, only: [ :new, :create ]
 
   def new
     @screening = ScreeningQuestion.new
@@ -32,7 +32,7 @@ class ScreeningsController < ApplicationController
   # Prevent users from completing screening questions after mediation has ended (edge case)
   def check_mediation_status
     mediation = PrimaryMessageGroup.find_by(ConversationID: @conversation_id)
-  
+
     if mediation&.deleted_at.present?
       redirect_to mediation_ended_prompt_path(@conversation_id)
     end

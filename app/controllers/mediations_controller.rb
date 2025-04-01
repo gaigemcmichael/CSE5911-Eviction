@@ -2,7 +2,7 @@ class MediationsController < ApplicationController
   before_action :require_login
   before_action :set_user
   before_action :require_tenant_or_landlord_role, only: [ :create, :accept ]
-  before_action :require_any_user_role, only: [:end_conversation]
+  before_action :require_any_user_role, only: [ :end_conversation ]
 
   def index
     redirect_to messages_path, alert: "Negotiation index is not available. Please use the messages page."
@@ -102,12 +102,12 @@ class MediationsController < ApplicationController
   # Good Faith Screening prompt for edge case error handling
   def prompt_screen
     @mediation = PrimaryMessageGroup.find_by(ConversationID: params[:id])
-    
+
     if @mediation.nil? || @mediation.deleted_at.nil?
       redirect_to messages_path, alert: "This mediation is still active or not found."
       return
     end
-  
+
     render "mediations/prompt_screen" # We'll create this view next
   end
 
@@ -176,7 +176,7 @@ class MediationsController < ApplicationController
   end
 
   def require_any_user_role
-    unless ["Tenant", "Landlord", "Mediator"].include?(@user.Role)
+    unless [ "Tenant", "Landlord", "Mediator" ].include?(@user.Role)
       flash[:alert] = "You are not authorized to access this page."
       redirect_to root_path
     end
