@@ -14,5 +14,14 @@
   <p><strong>Did the tenant act in good faith? According to the landlord:</strong> <%= good_faith_label(@mediation.EndOfConversationGoodFaithTenant) %></p>
   <p><strong>Did the landlord act in good faith? According to the tenant:</strong> <%= good_faith_label(@mediation.EndOfConversationGoodFaithLandlord) %></p>  
 
-  <%= link_to "Back", messages_path, class: "btn btn-secondary mt-3" %>
+  # TODO: modify logic to show attached documents here!
+  <% if true %>
+    <p> this is where documents will be shown </p>
+  <% end %>
+
+  <% if @user.Role == "Mediator" %>
+    <%= link_to "Back", third_party_mediations_path, class: "btn btn-secondary mt-3" %>
+  <% else %>
+    <%= link_to "Back", messages_path, class: "btn btn-secondary mt-3" %>
+  <% end %>
 </div>

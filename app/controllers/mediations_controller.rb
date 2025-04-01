@@ -1,7 +1,8 @@
 class MediationsController < ApplicationController
   before_action :require_login
   before_action :set_user
-  before_action :require_tenant_or_landlord_role, only: [ :create, :accept, :end_conversation ]
+  before_action :require_tenant_or_landlord_role, only: [ :create, :accept ]
+  before_action :require_any_user_role, only: [:end_conversation]
 
   def index
     redirect_to messages_path, alert: "Negotiation index is not available. Please use the messages page."
@@ -66,7 +67,11 @@ class MediationsController < ApplicationController
       end
 
     end
-    redirect_to good_faith_response_path(@mediation.ConversationID)
+    if @user.Role == "Mediator"
+      redirect_to third_party_mediations_path, notice: "Mediation terminated."
+    else
+      redirect_to good_faith_response_path(@mediation.ConversationID)
+    end
   end
 
   # good faith questionaire
@@ -153,6 +158,13 @@ class MediationsController < ApplicationController
 
   def require_tenant_or_landlord_role
     unless [ "Tenant", "Landlord" ].include?(@user.Role)
+      flash[:alert] = "You are not authorized to access this page."
+      redirect_to root_path
+    end
+  end
+
+  def require_any_user_role
+    unless ["Tenant", "Landlord", "Mediator"].include?(@user.Role)
       flash[:alert] = "You are not authorized to access this page."
       redirect_to root_path
     end
