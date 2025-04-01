@@ -99,6 +99,18 @@ class MediationsController < ApplicationController
     render "mediations/good_faith_feedback"
   end
 
+  # Good Faith Screening prompt for edge case error handling
+  def prompt_screen
+    @mediation = PrimaryMessageGroup.find_by(ConversationID: params[:id])
+    
+    if @mediation.nil? || @mediation.deleted_at.nil?
+      redirect_to messages_path, alert: "This mediation is still active or not found."
+      return
+    end
+  
+    render "mediations/prompt_screen" # We'll create this view next
+  end
+
   private
 
   def find_existing_landlord
