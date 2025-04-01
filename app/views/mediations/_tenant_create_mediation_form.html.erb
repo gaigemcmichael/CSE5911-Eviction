@@ -21,11 +21,11 @@
 <% end %>
 
 <script>
-  document.addEventListener("DOMContentLoaded", function () {
+  document.addEventListener("turbo:load", function () {
     const landlordSelect = document.getElementById("landlord-select");
     const emailField = document.getElementById("landlord-email");
 
-    landlordSelect.addEventListener("change", function () {
+    function toggleEmailField() {
       if (landlordSelect.value) {
         emailField.disabled = true;
         emailField.placeholder = "Disabled while landlord is selected";
@@ -33,6 +33,12 @@
         emailField.disabled = false;
         emailField.placeholder = "Enter landlord's email";
       }
-    });
+    }
+
+    // Run once on page load in case a landlord is already selected
+    toggleEmailField();
+
+    // Also run when user changes the selection
+    landlordSelect.addEventListener("change", toggleEmailField);
   });
 </script>

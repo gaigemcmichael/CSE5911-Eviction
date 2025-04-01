@@ -8,6 +8,12 @@ class ThirdPartyMediationsController < ApplicationController
       .where(MediatorID: @user.UserID, MediatorAssigned: true)
       .includes(:tenant, :landlord)
 
+    @past_mediations = PrimaryMessageGroup
+      .where(MediatorID: @user.UserID, MediatorAssigned: true)
+      .where.not(deleted_at: nil)
+      .includes(:tenant, :landlord)
+      .order(deleted_at: :desc)
+      
     render "third_party_mediations/index"
   end
 

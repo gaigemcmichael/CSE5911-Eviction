@@ -20,3 +20,28 @@
     <% end %>
   </tbody>
 </table>
+
+<h2>Past Mediations</h2>
+
+<table class="table table-striped">
+  <thead>
+    <tr>
+      <th>Tenant</th>
+      <th>Landlord</th>
+      <th>Ended At</th>
+      <th>Summary</th>
+    </tr>
+  </thead>
+  <tbody>
+    <% @past_mediations.each do |mediation| %>
+      <tr>
+        <td><%= mediation.tenant.FName %> <%= mediation.tenant.LName %></td>
+        <td><%= mediation.landlord.FName %> <%= mediation.landlord.LName %></td>
+        <td><%= mediation.deleted_at.strftime("%B %d, %Y %I:%M %p") %></td>
+        <td>
+          <%= link_to "View Summary", mediation_summary_path(mediation.ConversationID), class: "btn btn-outline-primary btn-sm" %>
+        </td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
