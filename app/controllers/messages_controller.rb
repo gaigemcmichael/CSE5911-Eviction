@@ -44,6 +44,17 @@ class MessagesController < ApplicationController
     @message_string = MessageString.find_by(ConversationID: params[:id])
     @mediation = PrimaryMessageGroup.find_by(ConversationID: params[:id])
 
+    # Edge Case error handling
+    if @mediation.nil? || @message_string.nil?
+      render plain: "Conversation not found", status: :not_found
+      return
+    end
+  
+    if @mediation.deleted_at.present? || @message_string.deleted_at.present?
+      redirect_to mediation_ended_prompt_path(@mediation.ConversationID)
+      return
+    end
+
     # Load mediatior chat recipient
     if @mediation&.MediatorAssigned
       @mediator = User.find_by(UserID: @mediation.MediatorID)
@@ -91,6 +102,12 @@ class MessagesController < ApplicationController
 
   def request_mediator
     @mediation = PrimaryMessageGroup.find(params[:id]) # Ensure we find the right mediation record
+
+    # Edge case error handling
+    if @mediation.deleted_at.present?
+      redirect_to mediation_ended_prompt_path(@mediation.ConversationID)
+      return
+    end
 
     if !@mediation.MediatorRequested && !@mediation.MediatorAssigned
       mediator = Mediator

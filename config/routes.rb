@@ -74,6 +74,7 @@ Rails.application.routes.draw do
   # Allow tenant and landlord to fill out good faith question
   get "/good_faith_response/:id", to: "mediations#good_faith_form", as: "good_faith_response"
   patch "/good_faith_response/:id", to: "mediations#update_good_faith"
+  get "/mediation_ended_prompt/:id", to: "mediations#prompt_screen", as: "mediation_ended_prompt"
 
 
   # Allow third party mediator to view cases

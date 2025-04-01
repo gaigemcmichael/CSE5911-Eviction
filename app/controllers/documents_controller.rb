@@ -1,6 +1,7 @@
 class DocumentsController < ApplicationController
   before_action :require_login
   before_action :set_user
+  before_action :check_mediation_status, only: [:generate, :select_template, :proposal_generation]
 
   def index
     case @user.Role
@@ -104,6 +105,16 @@ class DocumentsController < ApplicationController
   end
 
   private
+
+  # Prevent user from creating document if mediation has ended (edge case)
+  def check_mediation_status
+    mediation = PrimaryMessageGroup.find_by(TenantID: @user.UserID) ||
+                       PrimaryMessageGroup.find_by(LandlordID: @user.UserID)
+  
+    if mediation.deleted_at.present?
+      redirect_to mediation_ended_prompt_path(mediation.ConversationID)
+    end
+  end
 
   def require_login
     unless session[:user_id]
