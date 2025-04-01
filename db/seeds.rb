@@ -61,9 +61,9 @@ mediator_user = Mediator.create(
 # Creating a File Draft
 file_draft = FileDraft.create(
   CreatorID: tenant.UserID,
-  FileName: 'test document',
+  FileName: 'test document1',
   FileTypes: 'text/plain',
-  FileURLPath: 'userFiles/testfile.txt'
+  FileURLPath: 'userFiles/TestDocument1.pdf'
 )
 
 puts "Seed data set 1 created successfully! - 4 users (one of each type) and a sample file (already in the system)"
