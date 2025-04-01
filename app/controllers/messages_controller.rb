@@ -8,33 +8,33 @@ class MessagesController < ApplicationController
       @mediation = PrimaryMessageGroup
                      .includes(:landlord)
                      .find_by(TenantID: @user.UserID, deleted_at: nil)
-  
+
       @past_mediations = PrimaryMessageGroup
                            .includes(:landlord)
                            .where(TenantID: @user.UserID)
                            .where.not(deleted_at: nil)
                            .order(deleted_at: :desc)
-  
+
       @show_mediation_view = @mediation.present?
       @landlords = User.where(Role: "Landlord").order(:CompanyName) unless @mediation
-  
+
       render "messages/tenant_index"
-  
+
     when "Landlord"
       @mediation = PrimaryMessageGroup
                      .includes(:tenant)
                      .where(LandlordID: @user.UserID, deleted_at: nil)
-  
+
       @past_mediations = PrimaryMessageGroup
                            .includes(:tenant)
                            .where(LandlordID: @user.UserID)
                            .where.not(deleted_at: nil)
                            .order(deleted_at: :desc)
-  
+
       @show_mediation_view = @mediation.any?
-  
+
       render "messages/landlord_index"
-  
+
     else
       render plain: "Access Denied", status: :forbidden
     end
@@ -222,15 +222,15 @@ class MessagesController < ApplicationController
   # Allows a user to view summaries of previous mediations
   def summary
     @mediation = PrimaryMessageGroup.find_by(ConversationID: params[:id])
-  
+
     if @mediation.nil? || @mediation.deleted_at.nil?
       redirect_to messages_path, alert: "Mediation not found or still active."
       return
     end
-  
+
     @tenant = User.find_by(UserID: @mediation.TenantID)
     @landlord = User.find_by(UserID: @mediation.LandlordID)
-  
+
     render "messages/summary"
   end
 

@@ -74,23 +74,23 @@ class MediationsController < ApplicationController
     @mediation = PrimaryMessageGroup.find(params[:id])
     role = params[:role]
     good_faith = ActiveModel::Type::Boolean.new.cast(params[:good_faith])
-  
+
     if role == "Tenant"
       @mediation.update!(EndOfConversationGoodFaithLandlord: good_faith)
     elsif role == "Landlord"
       @mediation.update!(EndOfConversationGoodFaithTenant: good_faith)
     end
-  
+
     redirect_to messages_path
   end
-  
+
   def good_faith_form
     @mediation = PrimaryMessageGroup.find_by(ConversationID: params[:id])
     if @mediation.nil? || @mediation.deleted_at.nil?
       redirect_to messages_path, alert: "Mediation not found or still ongoing."
       return
     end
-  
+
     render "mediations/good_faith_feedback"
   end
 
