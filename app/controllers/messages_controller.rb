@@ -49,7 +49,7 @@ class MessagesController < ApplicationController
       render plain: "Conversation not found", status: :not_found
       return
     end
-  
+
     if @mediation.deleted_at.present? || @message_string.deleted_at.present?
       redirect_to mediation_ended_prompt_path(@mediation.ConversationID)
       return
