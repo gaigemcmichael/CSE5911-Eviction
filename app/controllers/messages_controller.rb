@@ -155,15 +155,15 @@ class MessagesController < ApplicationController
         # Find the selected FileDraft by FileID
         file_draft = FileDraft.find_by(FileID: params[:file_id])
 
-        # Create a file attachment
+       # Create a file attachment
        if file_draft
           FileAttachment.create!(
             MessageID: @message.MessageID,
             FileID: file_draft.FileID
           )
-        else
+       else
           Rails.logger.error "FileDraft not found with ID: #{params[:file_id]}"
-        end
+       end
       end
 
       if @message.save

@@ -12,7 +12,7 @@ class MediatorMessagesController < ApplicationController
       MessageDate: Time.current
     )
 
-    
+
 
     if @message.save
 
@@ -84,5 +84,4 @@ class MediatorMessagesController < ApplicationController
   def require_login
     redirect_to login_path, alert: "Please log in to continue" unless session[:user_id]
   end
-
 end
