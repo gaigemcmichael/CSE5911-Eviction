@@ -35,17 +35,6 @@
     padding-bottom: 5px;
 }
 
-.quick-start ul {
-    list-style: none;
-    padding: 0;
-}
-
-.quick-start li {
-    font-size: 1.1rem;
-    color: #333;
-    margin-bottom: 10px;
-}
-
 /* Dashboard Links */
 .dashboard-link {
     color: #007bff;
@@ -81,8 +70,9 @@
 }
 
 .dashboard-list {
-    list-style: none;
-    padding: 0;
+    list-style: disc;
+    padding-left: 20px;
+    margin: 0;
 }
 
 .dashboard-list li {
