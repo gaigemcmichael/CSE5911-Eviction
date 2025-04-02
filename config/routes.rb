@@ -65,6 +65,18 @@ Rails.application.routes.draw do
     post :respond, on: :member
   end
 
+  # Allow a tenant or landlord table to see previous mediations
+  get "/mediation_summary/:id", to: "messages#summary", as: "mediation_summary"
+
+  # Allow tenant or landlord to terminate a negotiation or mediation
+  patch "/end_mediation/:id", to: "mediations#end_conversation", as: "end_mediation"
+
+  # Allow tenant and landlord to fill out good faith question
+  get "/good_faith_response/:id", to: "mediations#good_faith_form", as: "good_faith_response"
+  patch "/good_faith_response/:id", to: "mediations#update_good_faith"
+  get "/mediation_ended_prompt/:id", to: "mediations#prompt_screen", as: "mediation_ended_prompt"
+
+
   # Allow third party mediator to view cases
   resources :third_party_mediations, only: [ :index ]
   resources :mediator_cases, only: [ :show ]

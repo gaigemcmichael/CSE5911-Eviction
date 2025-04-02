@@ -7,7 +7,7 @@ class SessionsController < ApplicationController
         user = User.find_by(Email: params[:email])
 
         # Directly compare the plain text password
-        if user && user.Password == params[:password]  # Make sure to match the plain text password
+        if user && user.authenticate(params[:password]) # Match encrypted password
           session[:user_id] = user.UserID
           redirect_to dashboard_path, notice: "Logged in successfully!"
         else
