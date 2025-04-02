@@ -1,19 +1,40 @@
 class MessagesController < ApplicationController
   before_action :require_login
   before_action :set_user
-  before_action :set_message, only: [ :request_mediator ]
 
   def index
     case @user.Role
     when "Tenant"
-      @mediation = PrimaryMessageGroup.find_by(TenantID: @user.UserID)
+      @mediation = PrimaryMessageGroup
+                     .includes(:landlord)
+                     .find_by(TenantID: @user.UserID, deleted_at: nil)
+
+      @past_mediations = PrimaryMessageGroup
+                           .includes(:landlord)
+                           .where(TenantID: @user.UserID)
+                           .where.not(deleted_at: nil)
+                           .order(deleted_at: :desc)
+
       @show_mediation_view = @mediation.present?
       @landlords = User.where(Role: "Landlord").order(:CompanyName) unless @mediation
+
       render "messages/tenant_index"
+
     when "Landlord"
-      @mediation = PrimaryMessageGroup.where(LandlordID: @user.UserID).includes(:tenant)
+      @mediation = PrimaryMessageGroup
+                     .includes(:tenant)
+                     .where(LandlordID: @user.UserID, deleted_at: nil)
+
+      @past_mediations = PrimaryMessageGroup
+                           .includes(:tenant)
+                           .where(LandlordID: @user.UserID)
+                           .where.not(deleted_at: nil)
+                           .order(deleted_at: :desc)
+
       @show_mediation_view = @mediation.any?
+
       render "messages/landlord_index"
+
     else
       render plain: "Access Denied", status: :forbidden
     end
@@ -22,6 +43,17 @@ class MessagesController < ApplicationController
   def show
     @message_string = MessageString.find_by(ConversationID: params[:id])
     @mediation = PrimaryMessageGroup.find_by(ConversationID: params[:id])
+
+    # Edge Case error handling
+    if @mediation.nil? || @message_string.nil?
+      render plain: "Conversation not found", status: :not_found
+      return
+    end
+
+    if @mediation.deleted_at.present? || @message_string.deleted_at.present?
+      redirect_to mediation_ended_prompt_path(@mediation.ConversationID)
+      return
+    end
 
     # Load mediatior chat recipient
     if @mediation&.MediatorAssigned
@@ -70,6 +102,12 @@ class MessagesController < ApplicationController
 
   def request_mediator
     @mediation = PrimaryMessageGroup.find(params[:id]) # Ensure we find the right mediation record
+
+    # Edge case error handling
+    if @mediation.deleted_at.present?
+      redirect_to mediation_ended_prompt_path(@mediation.ConversationID)
+      return
+    end
 
     if !@mediation.MediatorRequested && !@mediation.MediatorAssigned
       mediator = Mediator
@@ -198,6 +236,21 @@ class MessagesController < ApplicationController
     end
   end
 
+  # Allows a user to view summaries of previous mediations
+  def summary
+    @mediation = PrimaryMessageGroup.find_by(ConversationID: params[:id])
+
+    if @mediation.nil? || @mediation.deleted_at.nil?
+      redirect_to messages_path, alert: "Mediation not found or still active."
+      return
+    end
+
+    @tenant = User.find_by(UserID: @mediation.TenantID)
+    @landlord = User.find_by(UserID: @mediation.LandlordID)
+
+    render "messages/summary"
+  end
+
   private
 
   def determine_recipient(conversation)
@@ -224,9 +277,5 @@ class MessagesController < ApplicationController
 
   def set_user
     @user = User.find(session[:user_id])
-  end
-
-  def set_message
-    @message = Message.find(params[:id])
   end
 end
