@@ -23,6 +23,6 @@ class UsersController < ApplicationController
 
     # Adjust the permitted parameters to match your Users table column names.
     def user_params
-      params.require(:user).permit(:Email, :Password, :FName, :LName, :Role, :CompanyName, :TenantAddress, :ProfileDisclaimer)
+      params.require(:user).permit(:Email, :password, :password_confirmation, :FName, :LName, :Role, :CompanyName, :TenantAddress, :ProfileDisclaimer)
     end
 end

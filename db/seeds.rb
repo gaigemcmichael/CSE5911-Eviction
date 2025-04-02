@@ -13,7 +13,7 @@
 # Creating Users (Landlord, Tenant, Mediator, Admin)
 landlord = User.create(
   Email: 'landlord@test.com',
-  Password: 'test',
+  password: 'test',
   FName: 'John',
   LName: 'Doe',
   Role: 'Landlord',
@@ -24,7 +24,7 @@ landlord = User.create(
 
 tenant = User.create(
   Email: 'tenant@test.com',
-  Password: 'test',
+  password: 'test',
   FName: 'Jane',
   LName: 'Smith',
   Role: 'Tenant',
@@ -34,7 +34,7 @@ tenant = User.create(
 
 mediator = User.create(
   Email: 'mediator@test.com',
-  Password: 'test',
+  password: 'test',
   FName: 'Alice',
   LName: 'Johnson',
   Role: 'Mediator',
@@ -43,7 +43,7 @@ mediator = User.create(
 
 admin = User.create(
   Email: 'admin@test.com',
-  Password: 'test',
+  password: 'test',
   FName: 'Adam',
   LName: 'Admin',
   Role: 'Admin',
@@ -70,7 +70,7 @@ puts "Seed data set 1 created successfully! - 4 users (one of each type) and a s
 
 landlord2 = User.create(
   Email: 'landlord2@test.com',
-  Password: 'test',
+  password: 'test',
   FName: 'John2',
   LName: 'Doe2',
   Role: 'Landlord',
@@ -81,7 +81,7 @@ landlord2 = User.create(
 
 tenant2 = User.create(
   Email: 'tenant2@test.com',
-  Password: 'test',
+  password: 'test',
   FName: 'Jane2',
   LName: 'Smith2',
   Role: 'Tenant',
@@ -91,7 +91,7 @@ tenant2 = User.create(
 
 mediator2 = User.create(
   Email: 'mediator2@test.com',
-  Password: 'test',
+  password: 'test',
   FName: 'Alice2',
   LName: 'Johnson2',
   Role: 'Mediator',
@@ -100,7 +100,7 @@ mediator2 = User.create(
 
 admin2 = User.create(
   Email: 'admin2@test.com',
-  Password: 'test',
+  password: 'test',
   FName: 'Adam2',
   LName: 'Admin2',
   Role: 'Admin',
