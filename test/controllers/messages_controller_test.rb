@@ -11,7 +11,7 @@ class MessagesControllerTest < ActionDispatch::IntegrationTest
     post login_path, params: { session: { email: user.Email, password: user.Password } }
   end
 
-  test "should redirect to login if not logged in" do
+  test "should redirect to login if not logged in" do # PASS
     get messages_path
     assert_redirected_to login_path
     assert_equal "You must be logged in to access the dashboard.", flash[:alert]

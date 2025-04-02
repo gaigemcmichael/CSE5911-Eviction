@@ -11,6 +11,7 @@ class DashboardControllerTest < ActionDispatch::IntegrationTest
 
   def log_in_as(user)
     post login_path, params: { session: { email: user.Email, password: user.Password } }
+    assert_equal :success
   end
 
   test "should redirect to login if not logged in" do
