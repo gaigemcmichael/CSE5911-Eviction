@@ -11,7 +11,7 @@
         <label for="FName">First Name</label>
         <div class="input-field">
           <i class="fa-solid fa-user"></i>
-          <%= f.text_field :FName, placeholder: "Enter your first name", required: true, class: "signup-input" %>
+          <%= f.text_field :FName, placeholder: "    Enter your first name", required: true, class: "signup-input" %>
         </div>
       </div>
 
@@ -20,7 +20,7 @@
         <label for="LName">Last Name</label>
         <div class="input-field">
           <i class="fa-solid fa-user"></i>
-          <%= f.text_field :LName, placeholder: "Enter your last name", required: true, class: "signup-input" %>
+          <%= f.text_field :LName, placeholder: "    Enter your last name", required: true, class: "signup-input" %>
         </div>
       </div>
 
@@ -42,37 +42,46 @@
         </div>
       </div>
 
+      <!-- Password Confirmation -->
+      <div class="input-group">
+        <label for="PasswordConfirmation">Confirm Password</label>
+        <div class="input-field">
+          <i class="fa-solid fa-lock"></i>
+          <%= f.password_field :password_confirmation, placeholder: "Confirm your password", required: true, class: "signup-input" %>
+        </div>
+      </div>
+
       <!-- Role Selection -->
       <div class="role-selection">
         <p>Please select your role:</p>
         <label class="role-option">
-          <%= f.radio_button :Role, "Tenant", checked: @user.Role == "Tenant", class: "signup-radio", data: { role_target: "role" } %>
+          <%= f.radio_button :Role, "Tenant", id: "role_tenant", checked: @user.Role == "Tenant", class: "signup-radio" %>
           Tenant
         </label>
         <label class="role-option">
-          <%= f.radio_button :Role, "Landlord", checked: @user.Role == "Landlord", class: "signup-radio", data: { role_target: "role" } %>
+          <%= f.radio_button :Role, "Landlord", id: "role_landlord", checked: @user.Role == "Landlord", class: "signup-radio" %>
           Landlord
         </label>
       </div>
 
       <!-- Address Field -->
-      <div data-role-target="address">
+      <div id="address-field" class="conditional-field">
         <div class="input-group">
           <label for="TenantAddress">Address</label>
           <div class="input-field">
             <i class="fa-solid fa-map-marker-alt"></i>
-            <%= f.text_field :TenantAddress, placeholder: "Enter your address", class: "signup-input" %>
+            <%= f.text_field :TenantAddress, placeholder: "    Enter your address", class: "signup-input" %>
           </div>
         </div>
       </div>
 
       <!-- Company Name Field -->
-      <div data-role-target="company">
+      <div id="company-field" class="conditional-field">
         <div class="input-group">
           <label for="CompanyName">Company Name</label>
           <div class="input-field">
             <i class="fa-solid fa-building"></i>
-            <%= f.text_field :CompanyName, placeholder: "Enter your company name", class: "signup-input" %>
+            <%= f.text_field :CompanyName, placeholder: "    Enter your company name", class: "signup-input" %>
           </div>
         </div>
       </div>
@@ -143,3 +152,30 @@
     <% end %>
   </div>
 </div>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    const tenantRadio = document.getElementById("role_tenant");
+    const landlordRadio = document.getElementById("role_landlord");
+    const addressField = document.getElementById("address-field");
+    const companyField = document.getElementById("company-field");
+
+    function toggleFields() {
+      if (tenantRadio.checked) {
+        addressField.style.display = "block";
+        companyField.style.display = "none";
+      } else if (landlordRadio.checked) {
+        addressField.style.display = "none";
+        companyField.style.display = "block";
+      } else {
+        addressField.style.display = "none";
+        companyField.style.display = "none";
+      }
+    }
+
+    toggleFields();
+
+    tenantRadio.addEventListener("change", toggleFields);
+    landlordRadio.addEventListener("change", toggleFields);
+  });
+</script>
