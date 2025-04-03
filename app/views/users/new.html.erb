@@ -160,12 +160,15 @@
     const addressField = document.getElementById("address-field");
     const companyField = document.getElementById("company-field");
 
+    // Function to toggle visibility of form fields based on selected radio button
     function toggleFields() {
+      // Tenant: address field
       if (tenantRadio.checked) {
         addressField.style.display = "block";
         companyField.style.display = "none";
       } else if (landlordRadio.checked) {
-        addressField.style.display = "none";
+       // Landlord: company field
+       addressField.style.display = "none";
         companyField.style.display = "block";
       } else {
         addressField.style.display = "none";
