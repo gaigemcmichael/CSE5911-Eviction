@@ -1,18 +1,19 @@
-<%= form_with url: mediations_path, method: :post, local: true do |form| %>
+<div class="mediation-card">
+    <h2>Request Mediation</h2>
 
-  <div>
-    <%= form.label :landlord_id, "Select a Landlord:" %>
-    <%= form.select :landlord_id, options_from_collection_for_select(@landlords, "UserID", "CompanyName"), { prompt: "Choose a Landlord" }, { name: "landlord_id" } %>
-  </div>
+    <%= form_with url: mediations_path, method: :post, local: true do |form| %>
+      <div class="input-group">
+        <%= form.label :landlord_id, "Select a Landlord:" %>
+        <%= form.select :landlord_id, options_from_collection_for_select(@landlords, "UserID", "CompanyName"), { prompt: "Choose a Landlord" }, { name: "landlord_id" } %>
+      </div>
 
-  <div>
-    <%= form.label :landlord_email, "Or Enter Landlord's Email:" %>
-    <%= form.text_field :landlord_email, required: false, placeholder: "Enter landlord's email", name: "landlord_email" %>
-  </div>
+      <div class="input-group">
+        <%= form.label :landlord_email, "Or Enter Landlord's Email:" %>
+        <%= form.text_field :landlord_email, required: false, placeholder: "Enter landlord's email", name: "landlord_email" %>
+      </div>
 
-  <%= hidden_field_tag :format, "html" %>
+      <%= hidden_field_tag :format, "html" %>
 
-  <div>
-    <%= form.submit "Request Negotiation" %>
-  </div>
-<% end %>
+      <%= form.submit "Request Negotiation", class: "mediation-btn" %>
+    <% end %>
+</div>
