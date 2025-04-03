@@ -370,7 +370,6 @@ b. **freetds.conf** (modify for your specific SQL Server name and host IP):
 In **config/environments/development.rb** (for development) and **config/environments/production.rb** (for production):
 
 ```!whitespace-pre
-Config/environments/development.rb (For development) and Config/environments/production.rb (for production):
   config.action_mailer.delivery_method = :smtp
 
   # Configuring smpt settings, will need changed to proper MSA.
@@ -559,3 +558,5 @@ One member’s Windows 11 device is still unable to connect to a local instance 
 3.  Expand accessibility and localization efforts.
     
 4.  Implement additional security features as compliance needs evolve.
+
+## Appendices
