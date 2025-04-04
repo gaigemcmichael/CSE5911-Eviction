@@ -1,6 +1,7 @@
 class DocumentsController < ApplicationController
   before_action :require_login
   before_action :set_user
+  before_action :check_mediation_status, only: [ :generate, :select_template, :proposal_generation ]
 
   def index
     case @user.Role
@@ -30,7 +31,7 @@ class DocumentsController < ApplicationController
       if file_path.to_s.start_with?(base_path.to_s) && File.exist?(file_path)
 
         # We think this should not be a real threat as long as we sanatize the other input areas.
-        send_file file_path, filename: file.FileName, disposition: "attachment"
+        send_file file_path, filename: file.FileURLPath.sub(/^userFiles\//, ""), disposition: "attachment"
       else
         logger.error "File not found at path: #{file_path}"
         render plain: "File not found", status: :not_found
@@ -43,7 +44,7 @@ class DocumentsController < ApplicationController
 
 
   def show
-    @file = FileDraft.find_by(FileID: params[:id], CreatorID: @user.UserID)
+    @file = FileDraft.find_by(FileID: params[:id])
 
     if @file
       # Correct file path by joining with 'public' (no leading / needed)
@@ -104,6 +105,16 @@ class DocumentsController < ApplicationController
   end
 
   private
+
+  # Prevent user from creating document if mediation has ended (edge case)
+  def check_mediation_status
+    mediation = PrimaryMessageGroup.find_by(TenantID: @user.UserID) ||
+                       PrimaryMessageGroup.find_by(LandlordID: @user.UserID)
+
+    if mediation.deleted_at.present?
+      redirect_to mediation_ended_prompt_path(mediation.ConversationID)
+    end
+  end
 
   def require_login
     unless session[:user_id]
