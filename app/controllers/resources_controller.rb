@@ -15,26 +15,24 @@ class ResourcesController < ApplicationController
 
         category_faqs = []
         current_question = nil
-        current_answer = []
+        current_answer_lines = []
 
         raw_faqs.each do |line|
-          line.strip!
-
-          if line.start_with?("Q: ")
-            if current_question && current_answer.any?
-              formatted_answer = current_answer.join(" ").gsub(/\*\*(.*?)\*\*/, '<strong>\1</strong>')
+          if line.strip.start_with?("Q: ")
+            if current_question && current_answer_lines.any?
+              formatted_answer = format_answer(current_answer_lines)
               category_faqs << { question: current_question, answer: formatted_answer.html_safe }
             end
 
-            current_question = line.sub("Q: ", "")
-            current_answer = []
-          elsif line.start_with?("A: ") || current_question
-            current_answer << line.sub(/^A:\s*/, "")
+            current_question = line.sub("Q: ", "").strip
+            current_answer_lines = []
+          elsif line.strip.start_with?("A: ") || current_question
+            current_answer_lines << line.sub(/^A:\s*/, "")
           end
         end
 
-        if current_question && current_answer.any?
-          formatted_answer = current_answer.join(" ").gsub(/\*\*(.*?)\*\*/, '<strong>\1</strong>')
+        if current_question && current_answer_lines.any?
+          formatted_answer = format_answer(current_answer_lines)
           category_faqs << { question: current_question, answer: formatted_answer.html_safe }
         end
 
@@ -43,5 +41,19 @@ class ResourcesController < ApplicationController
         @faqs[category] = []
       end
     end
+  end
+
+  private
+
+  def format_answer(lines)
+    formatted = lines.map do |line|
+      escaped_line = CGI.escapeHTML(line)
+      escaped_line.gsub!(/\*\*(.*?)\*\*/, '<strong>\1</strong>')
+      # indentations
+      indent_level = (line[/\A[\t ]*/] || "").gsub("    ", "\t").count("\t")
+      "<div style='margin-left: #{indent_level * 20}px;'>#{escaped_line}</div>"
+    end
+
+    formatted.join("\n")
   end
 end

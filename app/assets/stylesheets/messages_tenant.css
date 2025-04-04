@@ -68,16 +68,69 @@
     color: #856404;
 }
 
-/* Mediation Form */
-.mediation-form {
-    margin-top: 20px;
-    padding: 15px;
-    background: #f9f9f9;
-    border-radius: 5px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+/* Mediation Form Card */
+.mediation-card {
+    background: white;
+    padding: 30px;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    max-width: 500px;
+    font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    box-sizing: border-box;
 }
 
+/* Section Title */
+.mediation-card h2 {
+    text-align: center;
+    font-size: 1.6rem;
+    margin-bottom: 20px;
+    font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
 
+/* Input Group */
+.input-group {
+    display: flex;
+    flex-direction: column;
+    text-align: left;
+    margin-bottom: 15px;
+}
+
+/* Label Styling */
+.input-group label {
+    font-weight: bold;
+    color: black;
+    margin-bottom: 5px;
+}
+
+/* Input and Select Styling */
+.input-group input[type="text"],
+.input-group select {
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 1rem;
+    font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+/* Submit Button */
+.mediation-btn {
+    width: 100%;
+    padding: 12px;
+    font-size: 1rem;
+    border-radius: 5px;
+    cursor: pointer;
+    background: #007bff;
+    color: white;
+    border: none;
+    font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    margin-top: 10px;
+    transition: background 0.3s ease;
+}
+
+.mediation-btn:hover {
+    background: #0056b3;
+}
 
 /* Responsive Design */
 @media (max-width: 600px) {
@@ -92,5 +145,20 @@
 
     p {
         font-size: 0.9rem;
+    }
+
+    .mediation-card {
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+    }
+
+    .mediation-card h2 {
+        font-size: 1.2rem;
+    }
+
+    .mediation-btn {
+        padding: 10px;
+        font-size: 0.95rem;
     }
 }
