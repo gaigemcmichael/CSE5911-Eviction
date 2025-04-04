@@ -16,7 +16,7 @@
               <% @mediation.each do |mediation| %>
                   <tr>
                       <td><%= mediation.tenant.FName %> <%= mediation.tenant.LName %></td>
-                      <td> Tenant's address </td>
+                      <td> <%= mediation.tenant.TenantAddress %> </td>
                       <td>
                           <% if mediation.accepted_by_landlord %>
                               <a href="<%= message_path(mediation.ConversationID) %>" class="view-btn">View Negotiation</a>
@@ -34,4 +34,5 @@
   <% if @past_mediations.any? %>
     <%= render 'landlords_old_mediations_table' %>
   <% end %>
+
 </div>
