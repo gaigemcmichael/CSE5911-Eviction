@@ -1,7 +1,8 @@
 class MediationsController < ApplicationController
   before_action :require_login
   before_action :set_user
-  before_action :require_tenant_or_landlord_role, only: [ :create, :respond, :accept ]
+  before_action :require_tenant_or_landlord_role, only: [ :create, :accept ]
+  before_action :require_any_user_role, only: [ :end_conversation ]
 
   def index
     redirect_to messages_path, alert: "Negotiation index is not available. Please use the messages page."
@@ -50,16 +51,77 @@ class MediationsController < ApplicationController
     @landlords = User.where(Role: "Landlord").order(:CompanyName)
   end
 
-  def respond
+  # end the negotiation/mediation
+  def end_conversation
+    @mediation = PrimaryMessageGroup.find(params[:id])
+    if @mediation.deleted_at.nil?
+      @mediation.update(deleted_at: Time.current)
+      @mediation.linked_message_string&.update(deleted_at: Time.current)
+
+      # Decrement the mediator’s active mediation count if one is assigned
+      if @mediation.MediatorID.present?
+        mediator = Mediator.find_by(UserID: @mediation.MediatorID)
+        if mediator && mediator.ActiveMediations > 0
+          mediator.decrement!(:ActiveMediations)
+        end
+      end
+
+    end
+    if @user.Role == "Mediator"
+      redirect_to third_party_mediations_path, notice: "Mediation terminated."
+    else
+      redirect_to good_faith_response_path(@mediation.ConversationID)
+    end
+  end
+
+  # good faith questionaire
+  def update_good_faith
+    @mediation = PrimaryMessageGroup.find(params[:id])
+    role = params[:role]
+    good_faith = ActiveModel::Type::Boolean.new.cast(params[:good_faith])
+
+    if role == "Tenant"
+      @mediation.update!(EndOfConversationGoodFaithLandlord: good_faith)
+    elsif role == "Landlord"
+      @mediation.update!(EndOfConversationGoodFaithTenant: good_faith)
+    end
+
+    redirect_to messages_path
+  end
+
+  def good_faith_form
+    @mediation = PrimaryMessageGroup.find_by(ConversationID: params[:id])
+    if @mediation.nil? || @mediation.deleted_at.nil?
+      redirect_to messages_path, alert: "Mediation not found or still ongoing."
+      return
+    end
+
+    render "mediations/good_faith_feedback"
+  end
+
+  # Good Faith Screening prompt for edge case error handling
+  def prompt_screen
+    @mediation = PrimaryMessageGroup.find_by(ConversationID: params[:id])
+
+    if @mediation.nil? || @mediation.deleted_at.nil?
+      redirect_to messages_path, alert: "This mediation is still active or not found."
+      return
+    end
+
+    render "mediations/prompt_screen" # We'll create this view next
   end
 
   private
 
   def find_existing_landlord
-    if params[:landlord_id].present? && params[:landlord_id] != ""
+    email = params[:landlord_email].to_s.strip
+
+    if params[:landlord_id].present?
       User.find_by(UserID: params[:landlord_id])
-    elsif params[:landlord_email].present?
-      User.find_by(Email: params[:landlord_email])
+    elsif email.present?
+      User.find_by(Email: email)
+    else
+      nil
     end
   end
 
@@ -76,8 +138,8 @@ class MediationsController < ApplicationController
         GoodFaith: false,
         MediatorRequested: false,
         MediatorAssigned: false,
-        EndOfConversationGoodFaithLandlord: false,
-        EndOfConversationGoodFaithTenant: false,
+        EndOfConversationGoodFaithLandlord: nil,
+        EndOfConversationGoodFaithTenant: nil,
         accepted_by_landlord: false
       )
 
@@ -108,6 +170,13 @@ class MediationsController < ApplicationController
 
   def require_tenant_or_landlord_role
     unless [ "Tenant", "Landlord" ].include?(@user.Role)
+      flash[:alert] = "You are not authorized to access this page."
+      redirect_to root_path
+    end
+  end
+
+  def require_any_user_role
+    unless [ "Tenant", "Landlord", "Mediator" ].include?(@user.Role)
       flash[:alert] = "You are not authorized to access this page."
       redirect_to root_path
     end

@@ -2,14 +2,6 @@
   <h1>Tenant Negotiation & Messages</h1>
   <p>Welcome, <%= @user.FName %>! This is the tenant negotiations page.</p>
 
-  <% if flash[:notice].present? %>
-    <p class="notice"><%= flash[:notice] %></p>
-  <% end %>
-
-  <% if flash[:alert].present? %>
-    <p class="alert"><%= flash[:alert] %></p>
-  <% end %>
-
   <% if @show_mediation_view %>
     <% if @mediation.accepted_by_landlord %>
       <p>Negotiation with <%= @mediation.landlord.CompanyName || @mediation.landlord.Email %> is accepted and in progress.</p>
@@ -22,5 +14,8 @@
     <div class="mediation-form">
       <%= render "mediations/tenant_create_mediation_form" %>
     </div>
+  <% end %>
+  <% if @past_mediations.any? %>
+    <%= render 'tenants_old_mediations_table' %>
   <% end %>
 </div>
