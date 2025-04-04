@@ -1,22 +1,22 @@
-<h1>Landlord Documents</h1>
-<p>Welcome, <%= @user.FName %>! This is the landlord documents page.</p>
+<div class="tenant-documents-container">
+  <h1>Landlord Documents</h1>
+  <p class="welcome-msg">Welcome back, <strong><%= @user.FName %></strong>! Here you can view or download your submitted documents.</p>
 
+  <% if @files.any? %>
+    <ul class="document-list">
+      <% @files.each do |file| %>
+        <li class="document-item">
+          <span class="file-name"><%= file.FileName %></span>
+          <div class="file-actions">
+            <%= link_to "View", document_path(file.FileID), class: "btn btn-link" %>
+            <%= link_to "Download", download_file_path(file.FileID), class: "btn btn-link" %>
+          </div>
+        </li>
+      <% end %>
+    </ul>
+  <% else %>
+    <p class="no-documents-msg">No documents available yet. You can generate a new one below.</p>
+  <% end %>
 
-<% if @files.any? %>
-  <ul>
-    <% @files.each do |file| %>
-      <li>
-        <%= link_to "View", document_path(file.FileID), class: "btn btn-link" %> |
-                <%= link_to "Download", download_file_path(file.FileID), class: "btn btn-link" %> - <%= file.FileName %>
-
-      </li>
-    <% end %>
-  </ul>
-<% else %>
-  <p>No documents available.</p>
-<% end %>
-
-<!-- Link to generate a new file -->
-<%= link_to "Generate New File", generate_file_path, class: "btn btn-primary" %>
-
-
+  <%= link_to "Generate New File", generate_file_path, class: "btn btn-primary generate-btn" %>
+</div>
