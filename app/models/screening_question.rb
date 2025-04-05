@@ -4,5 +4,5 @@ class ScreeningQuestion < ApplicationRecord
     # Ensure users fill out alll required fields
     validates :InterpreterNeeded, :DisabilityAccommodation, :ConflictOfInterest,
           :SpeakOnOwnBehalf, :NeedToConsult, :Unsafe,
-          inclusion: { in: [true, false], message: "must be selected" }
+          inclusion: { in: [ true, false ], message: "must be selected" }
 end
