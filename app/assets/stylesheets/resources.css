@@ -41,7 +41,7 @@ html, body {
 }
 
 /* Section Boxes */
-.resources-legal, .resources-finaid{
+.resources-legal, .resources-other{
     padding: 20px;
     border-radius: 8px;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
@@ -49,7 +49,7 @@ html, body {
     box-sizing: border-box;
 }
 
-.resources-legal h1, .resources-finaid h1 {
+.resources-legal h1, .resources-other h1 {
     font-size: 1.4rem;
     color: #102a4d;
     margin-bottom: 15px;
@@ -180,6 +180,8 @@ html, body {
 .accordion-content {
     max-height: 0;
     display: flex;
+    white-space: pre-wrap;
+    line-height: 1.4rem;
     flex-direction: column;
     overflow: hidden;
     padding: 0;
@@ -187,12 +189,11 @@ html, body {
     transition: max-height 0.3s ease, opacity 0.3s ease;
 }
 
-/* Show content when checkbox is checked */
 .accordion-toggle:checked + .accordion-header + .accordion-content {
-    max-height: 500px;
+    max-height: none;
     opacity: 1;
     padding: 10px 15px;
-}
+  }  
 
 /* Mobile Adjustments */
 @media (max-width: 768px) {
