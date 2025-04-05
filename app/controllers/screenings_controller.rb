@@ -2,6 +2,7 @@ class ScreeningsController < ApplicationController
   before_action :require_login
   before_action :set_user
   before_action :set_conversation_ID
+  before_action :set_mediation
   before_action :check_mediation_status, only: [ :new, :create ]
 
   def new
@@ -14,6 +15,17 @@ class ScreeningsController < ApplicationController
     @primary_message_group = PrimaryMessageGroup.find_by(ConversationID: @conversation_id)
 
     if @screening.save
+      # Flag for review by admin
+      if @screening.InterpreterNeeded == true || 
+        @screening.DisabilityAccommodation == true ||
+        @screening.ConflictOfInterest == true ||
+        @screening.NeedToConsult == true ||
+        @screening.Unsafe == true || 
+        @screening.SpeakOnOwnBehalf == false
+
+        @screening.update(flagged: true)
+      end
+      # Update associated screeningID
       if @user.Role == "Landlord"
         @primary_message_group.update!(LandlordScreeningID: @screening.ScreeningID)
       elsif @user.Role == "Tenant"
@@ -28,6 +40,10 @@ class ScreeningsController < ApplicationController
   end
 
   private
+
+  def set_mediation
+    @mediation = PrimaryMessageGroup.find_by(ConversationID: @conversation_id)
+  end
 
   # Prevent users from completing screening questions after mediation has ended (edge case)
   def check_mediation_status
