@@ -164,6 +164,12 @@ class MessagesController < ApplicationController
     # Ensure the user is involved in the conversation
     conversation = MessageString.find_by(ConversationID: params[:ConversationID])
 
+    # Edge case error handling
+    if conversation.deleted_at.present?
+      redirect_to mediation_ended_prompt_path(conversation.ConversationID)
+      return
+    end
+
     if conversation
       # Determine Recipient
       recipient_id = determine_recipient(conversation)
