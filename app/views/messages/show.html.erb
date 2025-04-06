@@ -1,10 +1,16 @@
 <div class="mediation-container">
+  <%       
+    tenant_screening = ScreeningQuestion.find_by(ScreeningID: @mediation.TenantScreeningID)
+    landlord_screening = ScreeningQuestion.find_by(ScreeningID: @mediation.LandlordScreeningID)
+  %>
   <% if @mediation&.deleted_at.nil? && @message_string&.deleted_at.nil? %>
-    <% if @mediation&.MediatorRequested && @mediation&.MediatorAssigned %>
+    <% if @mediation&.MediatorRequested && @mediation&.MediatorAssigned && tenant_screening&.flagged == false && landlord_screening&.flagged == false %>
       <h1>Mediation Conversation</h1>
       <p>
         A mediator has been requested and assigned to this case. You are now communicating with a neutral third-party mediator to help resolve the issue.
       </p>
+    <% elsif @mediation&.MediatorRequested && @mediation&.MediatorAssigned && (tenant_screening&.flagged == true || landlord_screening&.flagged == true) %>
+      <h1>Mediation Conversation</h1>
     <% else %>
       <h1>
         Negotiation Conversation with <%= @user.Role == "Tenant" ? "Landlord" : "Tenant" %>
@@ -18,9 +24,11 @@
       ((@user.Role == "Tenant" && @mediation.TenantScreeningID.nil?) ||
       (@user.Role == "Landlord" && @mediation.LandlordScreeningID.nil?)) %>
 
-    <% mediator_chat_ready = @mediation&.MediatorRequested && @mediation&.MediatorAssigned &&
-      ((@user.Role == "Tenant" && @mediation.TenantScreeningID.present?) ||
-      (@user.Role == "Landlord" && @mediation.LandlordScreeningID.present?)) %>
+    <%
+      mediator_chat_ready = @mediation&.MediatorRequested && @mediation&.MediatorAssigned &&
+        ((@user.Role == "Tenant" && tenant_screening&.flagged == false) ||
+          (@user.Role == "Landlord" && landlord_screening&.flagged == false))
+    %>
 
     <% if mediator_chat_ready %>
       <!-- Mediator Chatbox -->
@@ -33,6 +41,8 @@
         } %>
         <%= render 'actions' %>
       </div>
+    <% elsif (tenant_screening&.flagged || landlord_screening&.flagged) %>
+      <p class="alert alert-warning">One of the party's screening questions has been flagged and is under review by an administrator. Please wait before continuing mediation.</p>
     <% elsif mediator_screening_needed %>
       <!-- Single Column Layout (centered mediator actions) -->
       <div class="mediator-single-column">
