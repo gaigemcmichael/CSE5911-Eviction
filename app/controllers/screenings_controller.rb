@@ -16,14 +16,14 @@ class ScreeningsController < ApplicationController
 
     if @screening.save
       # Flag for review by admin
-      if @screening.InterpreterNeeded == true || 
+      if @screening.InterpreterNeeded == true ||
         @screening.DisabilityAccommodation == true ||
         @screening.ConflictOfInterest == true ||
         @screening.NeedToConsult == true ||
         @screening.Unsafe == true || 
         @screening.SpeakOnOwnBehalf == false
 
-        @screening.update(flagged: true)
+        @screening.update!(flagged: true)
       end
       # Update associated screeningID
       if @user.Role == "Landlord"
