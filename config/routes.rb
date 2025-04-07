@@ -31,6 +31,8 @@ Rails.application.routes.draw do
 
   get "screenings/new/:conversation_id", to: "screenings#new", as: "new_screening"
 
+  get "messages/tenant_index", to: "messages#tenant_index", as: "tenant_index"
+  get "messages/landlord_index", to: "messages#landlord_index", as: "landlord_index"
 
   get "documents/download/:id", to: "documents#download", as: "download_file"
   get "documents/:id/view", to: "documents#show", as: "view_file"
@@ -41,7 +43,8 @@ Rails.application.routes.draw do
 
   get "proposal_generation/:template", to: "documents#proposal_generation", as: "proposal_generation"
 
-
+  get "intake_questions/new", to: "intake_questions#new", as: "new_intake_question"
+  post "intake_questions", to: "intake_questions#create", as: "intake_questions"
   # Resources
   resources :messages, only: [ :index, :show, :create, :destroy ] do
     patch :request_mediator, on: :member
