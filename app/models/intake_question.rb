@@ -1,8 +1,8 @@
 class IntakeQuestion < ApplicationRecord
     self.table_name = "IntakeQuestions"
-  
+
     belongs_to :user, foreign_key: "UserID"
-  
+
     validates :Reason, inclusion: {
       in: [
         "Failure to Pay Rent",
@@ -14,10 +14,10 @@ class IntakeQuestion < ApplicationRecord
         "Unknown"
       ]
     }
-  
+
     validates :BestOption, inclusion: {
-      in: ["Pay Missed Rent", "Move Out"]
+      in: [ "Pay Missed Rent", "Move Out" ]
     }
-  
+
     validates :Section8, :MoneyOwed, :TotalCostOrMonthly, presence: true
-  end
+end
