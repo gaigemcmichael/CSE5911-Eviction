@@ -1,0 +1,81 @@
+<h1>Start Your Intake</h1>
+
+<%= form_with(model: @intake_question, url: intake_questions_path(conversation_id: @conversation_id), local: true) do |f| %>
+    <!-- REASON FOR DISPUTE -->
+  <div>
+    <%= f.label :Reason, "What is the reason for the dispute?" %><br>
+    <%= f.select :Reason, [
+        "Failure to Pay Rent",
+        "Violation of Lease Terms",
+        "Damage to Property",
+        "Illegal Activity",
+        "Nuisance or Disturbance",
+        "Expiration of Lease",
+        "Unknown"
+      ], {}, { class: "form-control", required: true } %>
+  </div>
+
+  <!-- DESCRIPTION -->
+  <div>
+    <%= f.label :DescribeCause, "Please describe what caused this dispute. In other words, what happened?" %><br>
+    <small>*This information will not be shared with the Landlord. It is an opportunity for you to share your side of the story.</small><br>
+    <%= f.text_area :DescribeCause, rows: 5, class: "form-control", required: true %>
+  </div>
+
+  <!-- BEST OPTION -->
+  <div>
+  <small> Many eviction disputes end with an agreement where the tenant agrees to do one of the following: (1.) pay the rent that was due or (2.) move out. While there may be other options that become available to you through conversation with your landlord or through the mediation process, you are encouraged to think about these likely agreements to end the dispute. </small> <br>
+    <%= f.label :BestOption, "Which of the following is the best option for you?" %><br>
+    <%= f.select :BestOption, ["Pay Missed Rent", "Move Out"], {}, { class: "form-control", required: true } %>
+  </div>
+
+  <!-- SECTION 8 -->
+  <div>
+    <%= f.label :Section8, "Are you in Section 8 Housing?" %><br>
+    <%= f.radio_button :Section8, true, required: true %> Yes
+    <%= f.radio_button :Section8, false %> No
+  </div>
+
+  <div id="legal-aid-info" margin-top: 1rem;">
+    <p>If yes, You may qualify for Legal Aid Resources. You are encouraged to contact Legal Aid:</p>
+    <a href="https://oslsaoi.legalserver.org/modules/matter/extern_intake.php?pid=129&h=daa817&" target="_blank" class="button">Contact Legal Aid</a>
+  </div>
+
+  <hr>
+
+  <!-- MONEY OWED -->
+  <div>
+    <%= f.label :MoneyOwed, "How much money do you currently owe in rent?" %><br>
+    <small>*Please check your online rental portal or anywhere else you can see the rent amount due.</small><br>
+    $<%= f.number_field :MoneyOwed, step: 0.01, class: "form-control", required: true %>
+  </div>
+
+  <!-- TOTAL COST OR MONTHLY -->
+  <div>
+    <%= f.label :TotalCostOrMonthly, "Is the amount you typed above the total cost of your monthly rent?" %><br>
+    <%= f.radio_button :TotalCostOrMonthly, true, required: true %> Yes
+    <%= f.radio_button :TotalCostOrMonthly, false %> No
+  </div>
+
+  <!-- MONTHLY RENT (only if No) -->
+  <div id="monthly-rent-field">
+    <%= f.label :MonthlyRent, "If no, What is the total rent you pay each month?" %><br>
+    $<%= f.number_field :MonthlyRent, step: 0.01, class: "form-control" %>
+  </div>
+
+  <!-- DATE DUE -->
+  <div>
+    <%= f.label :DateDue, "When was your rent due?" %><br>
+    <%= f.date_field :DateDue, class: "form-control", required: true %>
+  </div>
+
+  <!-- PAYABLE TODAY -->
+  <div>
+    <%= f.label :PayableToday, "How much money could you pay today?" %><br>
+    <small>*It's okay to type “0” if you cannot pay any of the rent due today.</small><br>
+    $<%= f.number_field :PayableToday, step: 0.01, class: "form-control", required: true %>
+  </div>
+
+  <br>
+  <%= f.submit "Continue", class: "btn btn-primary" %>
+<% end %>
