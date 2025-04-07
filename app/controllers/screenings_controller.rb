@@ -20,7 +20,7 @@ class ScreeningsController < ApplicationController
         @screening.DisabilityAccommodation == true ||
         @screening.ConflictOfInterest == true ||
         @screening.NeedToConsult == true ||
-        @screening.Unsafe == true || 
+        @screening.Unsafe == true ||
         @screening.SpeakOnOwnBehalf == false
 
         @screening.update!(flagged: true)
