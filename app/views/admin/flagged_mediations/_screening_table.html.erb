@@ -1,0 +1,15 @@
+<table class="table table-bordered">
+  <% if screening.InterpreterNeeded %>
+    <tr><th>Interpreter Language</th><td><%= screening.InterpreterLanguage.presence || "N/A" %></td></tr>
+  <% end %>
+  <tr><th>Interpreter Needed</th><td><%= screening.InterpreterNeeded ? "Yes" : "No" %></td></tr>
+  <tr><th>Disability Accommodation</th><td><%= screening.DisabilityAccommodation ? "Yes" : "No" %></td></tr>
+  <tr><th>Disability Explanation</th><td><%= screening.DisabilityExplanation.presence || "N/A" %></td></tr>
+  <tr><th>Conflict of Interest</th><td><%= screening.ConflictOfInterest ? "Yes" : "No" %></td></tr>
+  <tr><th>Speak on Own Behalf</th><td><%= screening.SpeakOnOwnBehalf ? "Yes" : "No" %></td></tr>
+  <tr><th>Need to Consult</th><td><%= screening.NeedToConsult ? "Yes" : "No" %></td></tr>
+  <tr><th>Consult Explanation</th><td><%= screening.ConsultExplanation.presence || "N/A" %></td></tr>
+  <tr><th>Relationship to Other Party</th><td><%= screening.RelationshipToOtherParty.presence || "N/A" %></td></tr>
+  <tr><th>Unsafe</th><td><%= screening.Unsafe ? "Yes" : "No" %></td></tr>
+  <tr><th>Unsafe Explanation</th><td><%= screening.UnsafeExplanation.presence || "N/A" %></td></tr>
+</table>

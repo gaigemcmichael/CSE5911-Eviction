@@ -1,7 +1,7 @@
 <div class="mediation-container">
   <%       
-    tenant_screening = ScreeningQuestion.find_by(ScreeningID: @mediation.TenantScreeningID)
-    landlord_screening = ScreeningQuestion.find_by(ScreeningID: @mediation.LandlordScreeningID)
+    tenant_screening = ScreeningQuestion.find_by(ScreeningID: @mediation.TenantScreeningID, deleted_at: nil)
+    landlord_screening = ScreeningQuestion.find_by(ScreeningID: @mediation.LandlordScreeningID, deleted_at: nil)
   %>
   <% if @mediation&.deleted_at.nil? && @message_string&.deleted_at.nil? %>
     <% if @mediation&.MediatorRequested && @mediation&.MediatorAssigned && tenant_screening&.flagged == false && landlord_screening&.flagged == false %>
@@ -26,8 +26,8 @@
 
     <%
       mediator_chat_ready = @mediation&.MediatorRequested && @mediation&.MediatorAssigned &&
-        ((@user.Role == "Tenant" && tenant_screening&.flagged == false) ||
-          (@user.Role == "Landlord" && landlord_screening&.flagged == false))
+        ((tenant_screening&.flagged == false) &&
+          (landlord_screening&.flagged == false))
     %>
 
     <% if mediator_chat_ready %>

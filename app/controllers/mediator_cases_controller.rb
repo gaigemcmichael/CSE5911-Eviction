@@ -7,6 +7,12 @@ class MediatorCasesController < ApplicationController
   def show
     @mediation = PrimaryMessageGroup.find(params[:id])
 
+    # Prevents edge case unauthorized access to a mediation that they are no longer assigned to
+    if @mediation.MediatorID != @user.UserID
+      redirect_to third_party_mediations_path, alert: "You are no longer assigned to this mediation."
+      return
+    end
+
     # Get tenant-side conversation
     tenant_side_group = SideMessageGroup.find_by(
       UserID: @mediation.TenantID,
