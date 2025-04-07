@@ -124,7 +124,7 @@ class DocumentsController < ApplicationController
     elsif @user.Role == "Landlord"
       mediation = PrimaryMessageGroup.where(LandlordID: @user.UserID, deleted_at: nil).first
     end
-    if mediation.MediatorRequested || mediation.MediatorAssigned
+    if mediation && (mediation.MediatorRequested || mediation.MediatorAssigned)
       if (@user.Role == "Tenant" && mediation.TenantScreeningID.nil?) ||
          (@user.Role == "Landlord" && mediation.LandlordScreeningID.nil?)
         redirect_to message_path(mediation.ConversationID)

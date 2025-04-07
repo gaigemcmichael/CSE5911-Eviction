@@ -124,3 +124,38 @@ file_draft2 = FileDraft.create(
 )
 
 puts "Seed data set 2 created successfully! - 4 users (one of each type) and a sample file (already in the system)"
+
+# Create extra mediators
+mediator3 = User.create(
+  Email: 'mediator3@test.com',
+  password: 'test',
+  FName: 'Melony',
+  LName: 'Madana',
+  Role: 'Mediator',
+  PhoneNumber: '324-555-9876'
+)
+
+mediator_user3 = Mediator.create(
+  UserID: mediator3.UserID,
+  Available: true,
+  ActiveMediations: 0,
+  MediationCap: 5
+)
+
+mediator4 = User.create(
+  Email: 'mediator4@test.com',
+  password: 'test',
+  FName: 'Patrick',
+  LName: 'Mahomes',
+  Role: 'Mediator',
+  PhoneNumber: '324-599-9876'
+)
+
+mediator_user4 = Mediator.create(
+  UserID: mediator4.UserID,
+  Available: true,
+  ActiveMediations: 0,
+  MediationCap: 5
+)
+
+puts "Extra 2 mediators created"
