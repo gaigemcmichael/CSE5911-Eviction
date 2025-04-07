@@ -116,7 +116,7 @@ class DocumentsController < ApplicationController
     end
   end
 
-  
+
   # Prevents a user from generating a file prior to filling out screening questions if mediator is assigned
   def prevent_generation_without_screening
     if @user.Role == "Tenant"
