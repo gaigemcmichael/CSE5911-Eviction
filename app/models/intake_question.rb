@@ -19,5 +19,6 @@ class IntakeQuestion < ApplicationRecord
       in: [ "Pay Missed Rent", "Move Out" ]
     }
 
-    validates :Section8, :MoneyOwed, :TotalCostOrMonthly, presence: true
+    validates :Section8, :TotalCostOrMonthly, inclusion: { in: [true, false] }
+    validates :MoneyOwed, presence: true
 end
