@@ -8,8 +8,14 @@ class IntakeQuestionsController < ApplicationController
     end
 
     def create
+      section8 = ActiveModel::Type::Boolean.new.cast(params[:intake_question][:Section8])
+      total_cost_or_monthly = ActiveModel::Type::Boolean.new.cast(params[:intake_question][:TotalCostOrMonthly])
+      
       @intake_question = IntakeQuestion.new(intake_question_params)
       @intake_question.UserID = @user.UserID
+      @intake_question.Section8 = section8
+      @intake_question.TotalCostOrMonthly = total_cost_or_monthly
+      Rails.logger.debug params[:intake_question]
 
       if @intake_question.save
         @conversation_id = params[:conversation_id]
@@ -20,7 +26,7 @@ class IntakeQuestionsController < ApplicationController
         conversation.update!(IntakeID: @intake_question.IntakeID)
         redirect_to messages_path, notice: "Intake questions completed successfully. You can now proceed to your negotiations."
       else
-            redirect_to root_path, alert: "An error occured."
+        render plain: "ERROR 1 @intake_question"
       end
     end
 
