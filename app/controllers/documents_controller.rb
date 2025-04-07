@@ -1,8 +1,8 @@
 class DocumentsController < ApplicationController
   before_action :require_login
   before_action :set_user
-  before_action :check_mediation_status, only: [ :generate, :select_template, :proposal_generation, :index ]
-  before_action :prevent_generation_without_screening, only: [ :generate, :select_template, :proposal_generation, :index ]
+  before_action :check_mediation_status, only: [ :generate, :select_template, :proposal_generation ]
+  before_action :prevent_generation_without_screening, only: [ :generate, :select_template, :proposal_generation ]
 
   def index
     case @user.Role
