@@ -1,0 +1,32 @@
+<h1>Flagged Mediation Details</h1>
+
+<h2>Tenant</h2>
+<p><strong>Name:</strong> <%= @tenant.FName %> <%= @tenant.LName %></p>
+<p><strong>Email:</strong> <%= @tenant.Email %></p>
+
+<h2>Landlord</h2>
+<p><strong>Name:</strong> <%= @landlord.FName %> <%= @landlord.LName %></p>
+<p><strong>Email:</strong> <%= @landlord.Email %></p>
+
+<h2>Assigned Mediator</h2>
+<p><strong>Name:</strong> <%= @mediator&.FName %> <%= @mediator&.LName || "None assigned" %></p>
+
+<% if @tenant_screening %>
+  <h3>Tenant Screening</h3>
+  <%= render partial: "screening_table", locals: { screening: @tenant_screening } %>
+<% end %>
+
+<% if @landlord_screening %>
+  <h3>Landlord Screening</h3>
+  <%= render partial: "screening_table", locals: { screening: @landlord_screening } %>
+<% end %>
+
+<h3>Reassign Mediator</h3>
+<%= form_with url: admin_reassign_mediator_path(@mediation), method: :patch, local: true do %>
+    <%= select_tag :new_mediator_id, options_from_collection_for_select(@eligible_mediators, :UserID, ->(m) { "#{m.user.FName} #{m.user.LName}" }), prompt: "Select a new mediator", class: "form-control" %>
+    <%= submit_tag "Reassign and Require New Screenings", class: "btn btn-warning mt-2" %>
+  <% end %>
+  
+<%= button_to "Unflag Without Reassigning", admin_unflag_mediation_path(@mediation), method: :patch, class: "btn btn-secondary mt-3" %>
+
+<%= link_to "Back to Flagged Mediations", admin_mediations_path, class: "btn btn-secondary mt-3" %>
