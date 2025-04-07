@@ -1,7 +1,7 @@
 <%= stylesheet_link_tag "mediator_screening_view", "data-turbo-track": "reload" %>
 <h1>Mediation Case Details</h1>
-<% tenant_screening = ScreeningQuestion.find_by(ScreeningID: @mediation.TenantScreeningID) %>
-<% landlord_screening = ScreeningQuestion.find_by(ScreeningID: @mediation.LandlordScreeningID) %>
+<% tenant_screening = ScreeningQuestion.find_by(ScreeningID: @mediation.TenantScreeningID, deleted_at: nil) %>
+<% landlord_screening = ScreeningQuestion.find_by(ScreeningID: @mediation.LandlordScreeningID, deleted_at: nil) %>
 <% flagged = tenant_screening&.flagged || landlord_screening&.flagged %>
 <% if @mediation.deleted_at.nil? %>
   <% if !flagged %>
@@ -16,8 +16,6 @@
 
         <% if @mediation.TenantScreeningID %>
           <p><em>Screening completed.</em></p>
-
-          <% tenant_screening = ScreeningQuestion.find_by(ScreeningID: @mediation.TenantScreeningID) %>
           <% if tenant_screening %>
             <table class="table table-bordered screening-table">
               <tr><th>Interpreter Needed</th><td><%= tenant_screening.InterpreterNeeded ? "Yes" : "No" %></td></tr>
@@ -49,8 +47,6 @@
 
         <% if @mediation.LandlordScreeningID %>
           <p><em>Screening completed.</em></p>
-
-          <% landlord_screening = ScreeningQuestion.find_by(ScreeningID: @mediation.LandlordScreeningID) %>
           <% if landlord_screening %>
             <table class="table table-bordered screening-table">
               <tr><th>Interpreter Needed</th><td><%= landlord_screening.InterpreterNeeded ? "Yes" : "No" %></td></tr>
