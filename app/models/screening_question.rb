@@ -10,7 +10,7 @@ class ScreeningQuestion < ApplicationRecord
   def soft_delete!
     update(deleted_at: Time.current)
   end
-  
+
   def active?
     deleted_at.nil?
   end

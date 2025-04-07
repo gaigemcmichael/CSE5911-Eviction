@@ -36,37 +36,37 @@ class Admin::FlaggedMediationsController < ApplicationController
     @mediation = PrimaryMessageGroup.find(params[:id])
     new_mediator_id = params[:new_mediator_id]
     old_mediator_id = @mediation.MediatorID
-  
+
     if new_mediator_id.blank?
       redirect_to admin_flagged_mediation_path(@mediation), alert: "No mediator selected." and return
     end
-  
+
     if new_mediator_id.to_i == old_mediator_id
       redirect_to admin_flagged_mediation_path(@mediation), alert: "New mediator must be different from the current one." and return
     end
-  
+
     ActiveRecord::Base.transaction do
       # Decrement old mediator
       if old_mediator_id
         old_mediator = Mediator.find_by(UserID: old_mediator_id)
         old_mediator.decrement!(:ActiveMediations) if old_mediator
       end
-  
+
       # Assign new mediator
       @mediation.update!(MediatorID: new_mediator_id)
-  
+
       # Increment new mediator
       new_mediator = Mediator.find_by(UserID: new_mediator_id)
       new_mediator.increment!(:ActiveMediations) if new_mediator
-  
+
       # Soft delete current screenings so users are required to submit new ones
       ScreeningQuestion.find_by(ScreeningID: @mediation.TenantScreeningID)&.soft_delete!
       ScreeningQuestion.find_by(ScreeningID: @mediation.LandlordScreeningID)&.soft_delete!
-  
+
       # Clear associations so users are prompted to fill again
       @mediation.update!(TenantScreeningID: nil, LandlordScreeningID: nil)
     end
-  
+
     redirect_to admin_mediations_path, notice: "Mediator reassigned successfully. Parties will be prompted to complete new screening questions."
   end
 
@@ -74,13 +74,13 @@ class Admin::FlaggedMediationsController < ApplicationController
     @mediation = PrimaryMessageGroup.find(params[:id])
     tenant_screening = ScreeningQuestion.find_by(ScreeningID: @mediation.TenantScreeningID, deleted_at: nil)
     landlord_screening = ScreeningQuestion.find_by(ScreeningID: @mediation.LandlordScreeningID, deleted_at: nil)
-  
+
     tenant_screening&.update!(flagged: false) if tenant_screening&.active?
     landlord_screening&.update!(flagged: false) if landlord_screening&.active?
-  
+
     redirect_to admin_mediations_path, notice: "Mediation unflagged. Current screening responses will remain."
   end
-  
+
   private
 
   def require_login
