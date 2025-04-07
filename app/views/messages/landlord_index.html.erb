@@ -19,7 +19,11 @@
                       <td> <%= mediation.tenant.TenantAddress %> </td>
                       <td>
                           <% if mediation.accepted_by_landlord %>
-                              <a href="<%= message_path(mediation.ConversationID) %>" class="view-btn">View Negotiation</a>
+                                <% if mediation.IntakeID.present? %>
+                                    <a href="<%= message_path(mediation.ConversationID) %>" class="view-btn">View Negotiation</a>
+                                <% else %>
+                                    Waiting on Tenant to complete intake questions!
+                                    <% end %>
                           <% else %>
                               <%= button_to "Accept Negotiation", accept_mediation_path(mediation), method: :post, class: "accept-btn" %>
                           <% end %>
