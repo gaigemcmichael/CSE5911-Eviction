@@ -92,7 +92,7 @@ Rails.application.routes.draw do
     get "mediations/:id", to: "flagged_mediations#show", as: "flagged_mediation"
     patch "mediations/:id/reassign", to: "flagged_mediations#reassign", as: "reassign_mediator"
   end
-  
+
   # admin unflag
   patch "/admin/mediations/:id/unflag", to: "admin/flagged_mediations#unflag", as: "admin_unflag_mediation"
 
