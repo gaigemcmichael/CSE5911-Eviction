@@ -13,7 +13,7 @@ class CreateIntakeQuestions < ActiveRecord::Migration[8.0]
       t.integer :PayableToday
 
       # This was auto created when I created the migration file, I just added the getdate() portion
-      t.timestamps default: -> { 'getdate()' }  
+      t.timestamps default: -> { 'getdate()' }
     end
 
     add_foreign_key :IntakeQuestions, :Users, column: :UserID, primary_key: "UserID", on_delete: :cascade
