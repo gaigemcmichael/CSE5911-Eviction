@@ -2,8 +2,8 @@
     <ul class="navbar-menu">
         <li><a href="/dashboard" title="Home"><i class="fas fa-home"></i> Home</a></li>
         <li><a href="<%= admin_mediations_path %>" title="Mediations"><i class="fas fa-scale-balanced"></i> Mediations</a></li>
-        <li><a href="/admin_accounts" title="Manage Accounts"><i class="fas fa-users-gear"></i> Manage Accounts</a></li>
-        <li><a href="/system_data" title="System Data"><i class="fas fa-database"></i> System Data</a></li>
+        <li><a href="<%= admin_accounts_path %>" title="Manage Accounts"><i class="fas fa-users-gear"></i> Manage Accounts</a></li>
+        <%# this is not needed atm <li><a href="/system_data" title="System Data"><i class="fas fa-database"></i> System Data</a></li> %>
         <li class="logout-nav">
             <%= link_to "Log Out", logout_path, method: :delete, class: "logout-btn navbar-logout" %>
         </li>

@@ -1,0 +1,24 @@
+<h2>Create Mediator Account</h2>
+<%= form_with url: admin_accounts_path, method: :post, local: true do |f| %>
+  <div>
+    <%= label_tag :email %>
+    <%= text_field_tag :email %>
+  </div>
+  <div>
+    <%= label_tag :fname, "First Name" %>
+    <%= text_field_tag :fname %>
+  </div>
+  <div>
+    <%= label_tag :lname, "Last Name" %>
+    <%= text_field_tag :lname %>
+  </div>
+  <div>
+    <%= label_tag :password %>
+    <%= password_field_tag :password %>
+  </div>
+  <div>
+    <%= label_tag :mediation_cap, "Mediation Cap" %>
+    <%= number_field_tag :mediation_cap %>
+  </div>
+  <%= submit_tag "Create Mediator" %>
+<% end %>
