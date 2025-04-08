@@ -2,7 +2,8 @@ class ScreeningQuestion < ApplicationRecord
   self.table_name = "ScreeningQuestions"
 
   belongs_to :user, foreign_key: "UserID"
-  # Ensure users fill out alll required fields
+
+  # Require users to fill out all required fields on screening questions
   validates :InterpreterNeeded, :DisabilityAccommodation, :ConflictOfInterest,
         :SpeakOnOwnBehalf, :NeedToConsult, :Unsafe,
         inclusion: { in: [ true, false ], message: "must be selected" }
