@@ -1,0 +1,15 @@
+<h2>Update Existing Mediators</h2>
+
+<% @mediators.each do |mediator| %>
+  <%= form_with url: admin_account_path(mediator), method: :patch, local: true do %>
+    <p><strong><%= mediator.user.FName %> <%= mediator.user.LName %></strong> (ID: <%= mediator.UserID %>)</p>
+
+    <%= label_tag "mediation_cap_#{mediator.UserID}", "Mediation Cap" %>
+    <%= number_field_tag :mediation_cap, mediator.MediationCap %>
+
+    <%= label_tag "password_#{mediator.UserID}", "New Password" %>
+    <%= password_field_tag :password %>
+
+    <%= submit_tag "Update Mediator" %>
+  <% end %>
+<% end %>
