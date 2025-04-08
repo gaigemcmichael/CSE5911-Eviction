@@ -1,7 +1,7 @@
 class Admin::FlaggedMediationsController < ApplicationController
   before_action :require_login
   before_action :set_user
-  before_action :authorize_admin
+  before_action :authorize_admin # Ensures Only Admins Can deal with flagged mediations
 
   def index
     @flagged_mediations = PrimaryMessageGroup
