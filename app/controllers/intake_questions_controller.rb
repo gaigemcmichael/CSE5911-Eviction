@@ -10,7 +10,7 @@ class IntakeQuestionsController < ApplicationController
     def create
       section8 = ActiveModel::Type::Boolean.new.cast(params[:intake_question][:Section8])
       total_cost_or_monthly = ActiveModel::Type::Boolean.new.cast(params[:intake_question][:TotalCostOrMonthly])
-      
+
       @intake_question = IntakeQuestion.new(intake_question_params)
       @intake_question.UserID = @user.UserID
       @intake_question.Section8 = section8
