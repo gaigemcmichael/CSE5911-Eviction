@@ -1,5 +1,5 @@
 <p>Please complete the following screening questions before proceeding with mediation.</p>
-
+<p> Your current mediator: <%= User.find_by(UserID: @mediation.MediatorID).FName %> <%= User.find_by(UserID: @mediation.MediatorID).LName %> </p>
 <%= form_with model: @screening, url: screenings_path(conversation_id: @conversation_id), method: :post do |f| %>
   <%= f.hidden_field :UserID, value: @user.UserID %>
 
