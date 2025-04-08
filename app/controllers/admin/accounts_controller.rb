@@ -32,24 +32,24 @@ class Admin::AccountsController < ApplicationController
   def update
     user = User.find(params[:id])
     mediator = Mediator.find_by!(UserID: user.UserID)
-  
+
     # Update Mediator model
     if params[:mediation_cap].present?
       mediator.update!(MediationCap: params[:mediation_cap])
     end
-  
+
     # Update password (User model)
     if params[:password].present?
       user.update!(password: params[:password])
     end
-  
+
     redirect_to "#{admin_accounts_path}#reset", notice: "Mediator updated successfully."     # Need this line so that javascript refreshes
   rescue ActiveRecord::RecordNotFound
     redirect_to admin_accounts_path, alert: "Mediator not found."
   rescue ActiveRecord::RecordInvalid => e
     redirect_to admin_accounts_path, alert: "Update failed: #{e.message}"
   end
-  
+
   private
 
   def require_login
