@@ -85,8 +85,8 @@ Rails.application.routes.draw do
 
   namespace :admin do
     # Admin Mediator Accounts Controller
-    resources :accounts, only: [:index, :create, :update], controller: 'accounts'
-    
+    resources :accounts, only: [ :index, :create, :update ], controller: "accounts"
+
     # This matches the /mediations path in the navbar
     get "mediations", to: "flagged_mediations#index"
     get "mediations/:id", to: "flagged_mediations#show", as: "flagged_mediation"
