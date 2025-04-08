@@ -2,6 +2,7 @@ class DocumentsController < ApplicationController
   before_action :require_login
   before_action :set_user
   before_action :check_mediation_status, only: [ :generate, :select_template, :proposal_generation ]
+  before_action :prevent_generation_without_screening, only: [ :generate, :select_template, :proposal_generation ]
 
   def index
     case @user.Role
@@ -110,9 +111,24 @@ class DocumentsController < ApplicationController
   def check_mediation_status
     mediation = PrimaryMessageGroup.find_by(TenantID: @user.UserID) ||
                        PrimaryMessageGroup.find_by(LandlordID: @user.UserID)
-
-    if mediation.deleted_at.present?
+    if mediation.deleted_at.nil?
       redirect_to mediation_ended_prompt_path(mediation.ConversationID)
+    end
+  end
+
+
+  # Prevents a user from generating a file prior to filling out screening questions if mediator is assigned
+  def prevent_generation_without_screening
+    if @user.Role == "Tenant"
+      mediation = PrimaryMessageGroup.where(TenantID: @user.UserID, deleted_at: nil).first
+    elsif @user.Role == "Landlord"
+      mediation = PrimaryMessageGroup.where(LandlordID: @user.UserID, deleted_at: nil).first
+    end
+    if mediation && (mediation.MediatorRequested || mediation.MediatorAssigned)
+      if (@user.Role == "Tenant" && mediation.TenantScreeningID.nil?) ||
+         (@user.Role == "Landlord" && mediation.LandlordScreeningID.nil?)
+        redirect_to message_path(mediation.ConversationID)
+      end
     end
   end
 
