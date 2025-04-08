@@ -13,7 +13,8 @@ class Admin::AccountsController < ApplicationController
       FName: params[:fname],
       LName: params[:lname],
       Role: "Mediator",
-      password: params[:password]
+      password: params[:password],
+      password_confirmation: params[:password_confirmation]
     )
 
     Mediator.create!(
@@ -42,13 +43,13 @@ class Admin::AccountsController < ApplicationController
       user.update!(password: params[:password])
     end
   
-    redirect_to admin_accounts_path, notice: "Mediator updated successfully."
+    redirect_to "#{admin_accounts_path}#reset", notice: "Mediator updated successfully."     # Need this line so that javascript refreshes
   rescue ActiveRecord::RecordNotFound
     redirect_to admin_accounts_path, alert: "Mediator not found."
   rescue ActiveRecord::RecordInvalid => e
     redirect_to admin_accounts_path, alert: "Update failed: #{e.message}"
   end
-
+  
   private
 
   def require_login
