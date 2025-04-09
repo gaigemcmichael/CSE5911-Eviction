@@ -13,12 +13,23 @@
  @import 'font-awesome';
 
  @import "base";
+
  @import "login";
  @import "signup";
  @import "navbar"; 
- 
  @import "dashboard";
- @import "account_view";
+
+ @import "chat";
  @import "messages_tenant";
  @import "messages_landlord";
  @import "screening_questions";
+ @import "action";
+ @import "mediator_screening_view";
+
+ @import "mediations";
+ @import "documents";
+
+ @import "resources";
+
+ @import "account_view";
+ 
