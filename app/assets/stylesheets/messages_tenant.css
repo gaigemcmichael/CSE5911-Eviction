@@ -14,16 +14,28 @@
 
 /* Header Styling */
 .mediation-container h1 {
+    font-size: 2rem;
     color: #102a4d;
-    font-size: 1.8rem;
-    margin-bottom: 15px;
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.mediation-container h2 {
+    font-size: 1.6rem;
+    color: #102a4d;
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
 }
 
 /* Welcome Message */
 .mediation-container p {
     font-size: 1rem;
-    color: #333;
-    line-height: 1.5;
+    margin-bottom: 20px;
+    color: black;
 }
 
 /* Flash Messages */
@@ -50,10 +62,9 @@
 /* Mediation Messages */
 .mediation-status {
     background: #f1f1f1;
-    padding: 15px;
     border-radius: 5px;
     font-size: 1rem;
-    margin: 20px 0;
+    margin: 16px 0;
     text-align: center;
     font-weight: bold;
 }
@@ -71,7 +82,7 @@
 /* Mediation Form Card */
 .mediation-card {
     background: white;
-    padding: 30px;
+    padding: 15px 30px;
     border-radius: 10px;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
     width: 100%;
@@ -115,21 +126,81 @@
 
 /* Submit Button */
 .mediation-btn {
-    width: 100%;
-    padding: 12px;
+    width: fit-content;
+    display: inline-block;
+    padding: 12px 24px;
+    margin: 10px 0;
     font-size: 1rem;
+    font-weight: bold;
+    font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     border-radius: 5px;
-    cursor: pointer;
     background: #007bff;
     color: white;
+    text-decoration: none;
     border: none;
-    font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    margin-top: 10px;
+    cursor: pointer;
     transition: background 0.3s ease;
 }
 
 .mediation-btn:hover {
     background: #0056b3;
+}
+
+/* Negotiation requested */
+.request-alert {
+    background-color: #FFEE8C;
+    border: 1px solid #cce0ff;
+    padding: 10px 25px;
+    margin: 15px auto;
+    border-radius: 10px;
+    max-width: 600px;
+    text-align: center;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+
+.request-alert p {
+    font-size: 1rem;
+    color: black;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    margin: 10px 0;
+
+}
+
+/* Intake question reminder - after user choose their landlord */
+.intake-alert {
+    background-color: #ffd1dc;
+    border: 1px solid #cce0ff;
+    padding: 10px 25px;
+    margin: 15px auto;
+    border-radius: 10px;
+    max-width: 600px;
+    text-align: center;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+
+.intake-alert h1 {
+    font-size: 1.2rem;
+    font-weight: bold;
+    color: black;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    margin-top: 10px;
+}
+
+.intake-alert p {
+    font-size: 1rem;
+    color: black;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    margin: 10px 0;
+
 }
 
 /* Responsive Design */
@@ -158,7 +229,19 @@
     }
 
     .mediation-btn {
-        padding: 10px;
+        padding: 10px 20px;
         font-size: 0.95rem;
+    }
+
+    .intake-alert {
+        flex-direction: row;
+        justify-content: center;
+        padding: 10px 16px;
+        margin: 20px 10px;
+    }
+
+    .intake-alert p {
+        margin: 0;
+        padding-right: 10px;
     }
 }

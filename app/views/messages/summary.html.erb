@@ -1,27 +1,62 @@
-<div class="mediation-summary-page">
-  <h1>Mediation Summary</h1>
+<div class="summary-container">
+  <div class="header-with-back">
+    <% if @user.Role == "Mediator" %>
+      <%= link_to third_party_mediations_path, class: "back-btn" do %>
+        <i class="fa-solid fa-arrow-left"></i> Back
+      <% end %>
+    <% else %>
+      <%= link_to messages_path, class: "back-btn" do %>
+        <i class="fa-solid fa-arrow-left"></i> Back
+      <% end %>
+    <% end %>
+    <h1>Mediation Summary</h1>
+  </div>
 
-  <p><strong>Ended At:</strong> <%= @mediation.deleted_at.strftime("%B %d, %Y at %I:%M %p") %></p>
+  <div class="summary-content">
+    <div class="summary-section">
+      <h2><i class="fa-solid fa-calendar-check"></i> Mediation Ended</h2>
+      <p><strong>Ended At:</strong> <%= @mediation.deleted_at.strftime("%B %d, %Y at %I:%M %p") %></p>
+    </div>
 
-  <h2>Tenant Info</h2>
-  <p><strong>Name:</strong> <%= @tenant.FName %> <%= @tenant.LName %></p>
-  <p><strong>Email:</strong> <%= @tenant.Email %></p>
+    <!-- Tenant Info -->
+    <div class="summary-section">
+      <h2><i class="fa-solid fa-user"></i> Tenant Info</h2>
+      <table class="summary-table">
+        <tr><th><i class="fa-solid fa-id-badge"></i> Name</th><td><%= @tenant.FName %> <%= @tenant.LName %></td></tr>
+        <tr><th><i class="fa-solid fa-envelope"></i> Email</th><td><%= @tenant.Email %></td></tr>
+      </table>
+    </div>
 
-  <h2>Landlord Info</h2>
-  <p><strong>Name:</strong> <%= @landlord.FName %> <%= @landlord.LName %></p>
-  <p><strong>Email:</strong> <%= @landlord.Email %></p>
+    <!-- Landlord Info -->
+    <div class="summary-section">
+      <h2><i class="fa-solid fa-building-user"></i> Landlord Info</h2>
+      <table class="summary-table">
+        <tr><th><i class="fa-solid fa-id-badge"></i> Name</th><td><%= @landlord.FName %> <%= @landlord.LName %></td></tr>
+        <tr><th><i class="fa-solid fa-envelope"></i> Email</th><td><%= @landlord.Email %></td></tr>
+      </table>
+    </div>
 
-  <p><strong>Did the tenant act in good faith? According to the landlord:</strong> <%= good_faith_label(@mediation.EndOfConversationGoodFaithTenant) %></p>
-  <p><strong>Did the landlord act in good faith? According to the tenant:</strong> <%= good_faith_label(@mediation.EndOfConversationGoodFaithLandlord) %></p>  
+    <!-- Feedback-->
+    <div class="summary-section">
+      <h2><i class="fa-solid fa-scale-balanced"></i> Feedback</h2>
+      <table class="summary-table">
+        <tr>
+          <th>Tenant acted in good faith <br>(per landlord)</th>
+          <td><%= good_faith_label(@mediation.EndOfConversationGoodFaithTenant) %></td>
+        </tr>
+        <tr>
+          <th>Landlord acted in good faith <br>(per tenant)</th>
+          <td><%= good_faith_label(@mediation.EndOfConversationGoodFaithLandlord) %></td>
+        </tr>
+      </table>
+    </div>
 
-  # TODO: modify logic to show attached documents here!
-  <% if true %>
-    <p> this is where documents will be shown </p>
-  <% end %>
-
-  <% if @user.Role == "Mediator" %>
-    <%= link_to "Back", third_party_mediations_path, class: "btn btn-secondary mt-3" %>
-  <% else %>
-    <%= link_to "Back", messages_path, class: "btn btn-secondary mt-3" %>
-  <% end %>
+    <div class="summary-section">
+      <h2><i class="fa-solid fa-paperclip"></i> Attached Documents</h2>
+      <%# TODO: modify logic to show attached documents here! %>
+      <% if true %>
+        <p>This is where documents will be shown</p>
+      <% end %>
+    </div>
+  </div>
 </div>
