@@ -1,3 +1,20 @@
+/* Header Styling */
+.mediation-container h1 {
+  font-size: 2rem;
+  color: #102a4d;
+  margin-bottom: 10px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* Welcome Message */
+.mediation-container p {
+  font-size: 1rem;
+  margin-bottom: 20px;
+  color: black;
+}
+
 /* Centering the Message Page Container */
 .message-page-container {
   display: grid;
@@ -28,83 +45,6 @@
     overflow-x: hidden;
   }
 
-.actions-container {
-  width: 100%;
-  min-width: 400px; /* Prevents excessive shrinking */
-  max-width: 570px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: flex-start;
-  padding: 20px;
-  overflow-y: auto;
-  max-height: 60vh;
-  overflow-x: hidden;
-  box-sizing: border-box;
-}
-
-
-/* Mediator Request Button */
-.mediator-action {
-  width: 100%;
-  padding: 15px;
-  border: 1px solid #eee;
-  background-color: #fafafa;
-  border-radius: 10px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  text-align: center;
-  overflow-wrap: break-word;
-  min-height: 100px;
-}
-
-.mediation-status {
-  width: 100%;
-  padding: 15px;
-  border: 1px solid #eee;
-  background-color: #f0f4f8;
-  border-radius: 10px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  text-align: center;
-  max-height: 100%;
-  overflow-y: auto;
-}
-
-.mediator-status {
-  font-size: 16px;
-  color: #555;
-  margin-top: 10px;
-  white-space: normal;
-  overflow-wrap: break-word;
-}
-
-.status-message {
-  font-size: 16px;
-  color: #555;
-  margin-top: 10px;
-}
-
-.action-description {
-  font-size: 14px;
-  color: #555;
-  margin-top: 5px;
-  white-space: normal;
-  overflow-wrap: break-word;
-}
-
-
-  h1 {
-    color: #102a4d;
-    font-size: 1.8rem;
-    margin-bottom: 15px;
-  }
-
-  /* Welcome Message */
-  .messages-container > p {
-    font-size: 1rem;
-    color: #333;
-    line-height: 1.5;
-  }
-
   /* Container to handle scrolling */
   .message-list-container {
     width: 100%;
@@ -116,7 +56,6 @@
     padding: 10px;
     border-radius: 10px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    height: 100%;
     max-height: 60vh;
     overflow-x: hidden;
     box-sizing: border-box;
@@ -197,44 +136,98 @@
     text-align: right;
   }
 
-  .send-btn {
-    background-color: #007bff;
-    color: white;
-    border: none;
-    padding: 10px 20px;
+  .message-textarea {
+    width: 100%;
+    padding: 12px 20px;
+    margin: 8px 0;
     font-size: 1rem;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    border-radius: 5px;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-    margin-left: 10px; /* spacing from textarea */
-    flex-shrink: 0; /* prevents shrinking on narrow screens */
+    border: 1px solid #dadce0;
+    border-radius: 8px;
+    background-color: #fff;
+    color: #202124;
+    box-sizing: border-box;
+    resize: vertical;
+    min-height: 80px;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
   }
   
-  .send-btn:hover {
-    background-color: #0056b3;
+  .message-textarea:focus {
+    border-color: #4285f4;
+    outline: none;
+    box-shadow: 0 0 0 2px rgba(66, 133, 244, 0.2);
   }
   
-  /* Primary Button Style */
-  .btn.btn-primary {
-    background-color: #007bff;
-    color: white;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+/* File dropdown layout */
+.file-dropdown-wrapper {
+  margin: 12px 0;
+}
+
+.file-label {
+  font-weight: bold;
+  color: #333;
+  font-size: 0.95rem;
+  display: block;
+  margin-bottom: 6px;
+}
+
+/* Wrap the select for arrow styling */
+.custom-select-wrapper {
+  position: relative;
+}
+
+.custom-select-wrapper select {
+  width: 100%;
+  padding: 10px 16px;
+  padding-right: 44px; /* space for arrow */
+  font-size: 1rem;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  background-color: #fff;
+  color: #333;
+  appearance: none;
+  cursor: pointer;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.custom-select-wrapper select:focus {
+  border-color: #4285f4;
+  box-shadow: 0 0 0 2px rgba(66, 133, 244, 0.2);
+  outline: none;
+}
+
+/* The custom dropdown arrow */
+.custom-select-wrapper .arrow.down {
+  position: absolute;
+  right: 16px;
+  top: 50%;
+  transform: translateY(-50%) rotate(45deg);
+  pointer-events: none;
+  border: solid #666;
+  border-width: 0 2px 2px 0;
+  display: inline-block;
+  padding: 4px;
+}
+
+  .send-msg-btn[type="submit"] {
+    width: fit-content;
+    padding: 12px 24px;
+    margin: 10px 0;
     font-size: 1rem;
-    padding: 10px 18px;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    margin-top: 10px;
-    margin-bottom: 8px;
-    transition: background-color 0.3s ease;
+    font-weight: bold;
+    font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    border-radius: 6px;
+    background-color: #28a745;
+    color: white;
     text-decoration: none;
-    display: inline-block;
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
     text-align: center;
   }
-
-  .btn.btn-primary:hover {
-    background-color: #0056b3;
+  
+  .send-msg-btn:hover {
+    background-color: #109864 !important;
+    color: white;
   }
 
   /* Ensure the chat always shows the latest messages */
@@ -258,8 +251,7 @@
       max-width: 600px;
     }
 
-    .message-list-container,
-    .actions-container {
+    .message-list-container {
         width: 100%;
         max-width: 100%;
         min-width: 100%;
