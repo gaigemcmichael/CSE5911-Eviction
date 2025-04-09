@@ -1,8 +1,8 @@
-<div class="actions-container">
-  <div class="mediator-action">
+<div class="mediation-card">
     <% if @mediation && !@mediation.MediatorRequested && !@mediation.MediatorAssigned %>
-      <%= button_to "Request a Mediator", request_mediator_message_path(@mediation.id),
-                    method: :patch, class: "btn btn-primary" %>
+      <%= button_to "<i class='fa-solid fa-handshake'></i> Request a Mediator".html_safe,
+              request_mediator_message_path(@mediation.id),
+              method: :patch, class: "action-btn" %>
       <p class="action-description">
         If negotiations are not progressing, you can request a mediator to assist with resolving the dispute.
       </p>
@@ -12,39 +12,42 @@
         Your request for mediation is being processed.
       </p>
     <% elsif @mediation && @mediation.MediatorRequested && @mediation.MediatorAssigned %>
-      <p class="mediator-status"><%= render 'mediator_details' %></p>
+      <!-- Screening Question Alert-->
+      <%= render 'mediator_details' %>
       <% if @user.Role == "Tenant" && @mediation.TenantScreeningID.nil? %>
-        <p class="screening-alert">
-          You must complete your screening questions before proceeding with mediation.
-          <a href="<%= new_screening_path(conversation_id: @message_string.ConversationID) %>">Click here to complete screening.</a>
-        </p>
+        <div class="intake-alert">
+          <h1>Next Steps:</h1>
+          <p>You must complete your screening questions before proceeding with mediation.</p>
+          <%= link_to "Complete Screening Questions", new_screening_path(conversation_id: @message_string.ConversationID), class: "mediation-btn" %>
+        </div>
       <% elsif @user.Role == "Landlord" && @mediation.LandlordScreeningID.nil? %>
-        <p class="screening-alert">
-          You must complete your screening questions before proceeding with mediation.
-          <a href="<%= new_screening_path(conversation_id: @message_string.ConversationID) %>">Click here to complete screening.</a>
-        </p>
+        <div class="intake-alert">
+          <h1>Next Steps:</h1>
+          <p>You must complete your screening questions before proceeding with mediation.</p>
+          <%= link_to "Complete Screening Questions", new_screening_path(conversation_id: @message_string.ConversationID), class: "mediation-btn" %>
+        </div>
       <% end %>
     <% else %>
       <p class="mediator-status">Unknown error.</p>
     <% end %>
     <% if @mediation && @mediation.deleted_at.nil? %>
-      <%= button_to "Generate New File", generate_file_path,
-          method: :get, class: "btn btn-primary" %>
+      <%= button_to "<i class='fa-solid fa-file-circle-plus'></i> Generate New File".html_safe,
+              generate_file_path,
+              method: :get, class: "action-btn" %>
       <p class="action-description">
-        This button allows you to create a proposal
+        This button allows you to create a proposal.
       </p>
 
-      <%= button_to (@mediation.MediatorRequested && @mediation.MediatorAssigned ? "End Mediation" : "End Negotiation"),
-                    end_mediation_path(@mediation.ConversationID),
-                    method: :patch,
-                    data: {
-                      turbo: false,
-                      confirm: "Are you sure you want to end this #{@mediation.MediatorRequested && @mediation.MediatorAssigned ? 'mediation' : 'negotiation'}?"
-                    },
-                    class: "btn btn-danger mt-3" %>
+      <%= button_to "<i class='fa-solid fa-circle-xmark'></i> #{ @mediation.MediatorRequested && @mediation.MediatorAssigned ? 'End Mediation' : 'End Negotiation' }".html_safe,
+              end_mediation_path(@mediation.ConversationID),
+              method: :patch,
+              data: {
+                turbo: false,
+                confirm: "Are you sure you want to end this #{@mediation.MediatorRequested && @mediation.MediatorAssigned ? 'mediation' : 'negotiation'}?"
+              },
+              class: "action-end-btn" %>
       <p class="action-description">
         You can end the <%= @mediation.MediatorRequested && @mediation.MediatorAssigned ? "mediation" : "negotiation" %> at any time. You’ll be asked if the other party acted in good faith.
       </p>
     <% end %>
-  </div>
 </div>
