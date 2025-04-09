@@ -56,9 +56,6 @@ Rails.application.routes.draw do
   resources :documents, only: [ :index, :show, :create, :destroy ]
   resources :resources, only: [ :index ]
 
-  # Admin Account Management
-  resources :accounts, only: [ :index, :show, :create, :destroy ], as: "admin_accounts"
-
   # System Data
   resource :system_data, only: [ :show ]
 
@@ -87,6 +84,9 @@ Rails.application.routes.draw do
   resources :screenings, only: [ :new, :create ]
 
   namespace :admin do
+    # Admin Mediator Accounts Controller
+    resources :accounts, only: [ :index, :create, :update ], controller: "accounts"
+
     # This matches the /mediations path in the navbar
     get "mediations", to: "flagged_mediations#index"
     get "mediations/:id", to: "flagged_mediations#show", as: "flagged_mediation"

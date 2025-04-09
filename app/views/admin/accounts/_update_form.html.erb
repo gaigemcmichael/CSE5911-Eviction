@@ -1,0 +1,125 @@
+<h2>Update Mediator</h2>
+
+<label for="mediator-select">Choose Mediator:</label>
+<select id="mediator-select" required>
+  <option value="">-- Select a mediator --</option>
+  <% @mediators.each do |mediator| %>
+    <option value="<%= mediator.UserID %>"
+            data-fname="<%= mediator.user.FName %>"
+            data-lname="<%= mediator.user.LName %>"
+            data-email="<%= mediator.user.Email %>"
+            data-cap="<%= mediator.MediationCap %>">
+      <%= "#{mediator.user.FName} #{mediator.user.LName}" %>
+    </option>
+  <% end %>
+</select>
+
+<div id="selected-mediator-info" style="margin-top: 1rem; display: none;">
+  <p><strong>Name:</strong> <span id="mediator-name"></span></p>
+  <p><strong>Email:</strong> <span id="mediator-email"></span></p>
+</div>
+
+<%= form_with url: "", method: :patch, local: true, id: "mediator-update-form" do %>
+  <%= hidden_field_tag :id, "", id: "mediator-id" %>
+
+  <div>
+    <%= label_tag :mediation_cap, "Mediation Cap" %>
+    <%= number_field_tag :mediation_cap, nil, id: "mediation-cap" %>
+  </div>
+
+  <div>
+    <%= label_tag :password, "New Password" %>
+    <%= password_field_tag :password, nil, id: "password" %>
+  </div>
+
+  <div>
+    <%= label_tag :password_confirmation, "Confirm Password" %>
+    <%= password_field_tag :password_confirmation, nil, id: "password-confirmation" %>
+    <p id="password-warning" style="color: red; display: none;">⚠️ Passwords do not match</p>
+  </div>
+
+  <%= submit_tag "Update Mediator" %>
+<% end %>
+
+<%# Script for password confirmation and displaying mediator details after being selected #%>
+<script>
+  document.addEventListener("turbo:load", () => {
+    const dropdown = document.getElementById("mediator-select");
+    const nameEl = document.getElementById("mediator-name");
+    const emailEl = document.getElementById("mediator-email");
+    const infoBlock = document.getElementById("selected-mediator-info");
+
+    const form = document.getElementById("mediator-update-form");
+    const mediatorIdField = document.getElementById("mediator-id");
+    const mediationCapField = document.getElementById("mediation-cap");
+    const password = document.getElementById("password");
+    const confirmation = document.getElementById("password-confirmation");
+    const warning = document.getElementById("password-warning");
+
+    function resetForm() {
+      dropdown.value = "";
+      form.action = "";
+      mediatorIdField.value = "";
+      mediationCapField.value = "";
+      password.value = "";
+      confirmation.value = "";
+      warning.style.display = "none";
+      infoBlock.style.display = "none";
+    }
+
+    function checkPasswordMatch() {
+      // If password is filled in, require confirmation to match
+      if (password.value !== "" && confirmation.value !== password.value) {
+        warning.style.display = "block";
+        return false;
+      } else {
+        warning.style.display = "none";
+        return true;
+      }
+    }
+
+    password.addEventListener("input", checkPasswordMatch);
+    confirmation.addEventListener("input", checkPasswordMatch);
+
+    form.addEventListener("submit", function (e) {
+      // Only validate if password is being changed
+      if (password.value !== "" && !checkPasswordMatch()) {
+        e.preventDefault();
+      } else {
+        window.location.hash = "reset"; // for reset on reload
+      }
+    });
+
+    dropdown.addEventListener("change", () => {
+      const selected = dropdown.selectedOptions[0];
+      if (!selected.value) {
+        resetForm();
+        return;
+      }
+
+      const id = selected.value;
+      const fname = selected.dataset.fname;
+      const lname = selected.dataset.lname;
+      const email = selected.dataset.email;
+      const cap = selected.dataset.cap;
+
+      nameEl.textContent = `${fname} ${lname}`;
+      emailEl.textContent = email;
+      infoBlock.style.display = "block";
+
+      form.action = `/admin/accounts/${id}`;
+      mediatorIdField.value = id;
+      mediationCapField.value = cap;
+
+      password.value = "";
+      confirmation.value = "";
+      warning.style.display = "none";
+    });
+
+    if (window.location.hash === "#reset") {
+      resetForm();
+      history.replaceState(null, null, window.location.pathname);
+    }
+  });
+</script>
+
