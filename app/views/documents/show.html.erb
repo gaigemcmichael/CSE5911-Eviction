@@ -1,8 +1,13 @@
-<h1>Viewing Document: <%= @file.FileName %></h1>
+<div class="documents-container">
+    <div class ="header-with-back">
+        <%= link_to documents_path, class: "back-btn" do %>
+                <i class="fa-solid fa-arrow-left"></i> Back
+        <% end %>
+        <h1>Document: <%= @file.FileName %></h1>
+    </div>
 
-<iframe src="<%= '/' + @file.FileURLPath %>"
-        width="100%" height="800px">
-    Your browser does not support iframes. <a href="<%= @file.FileURLPath %>">View Document</a>
-</iframe>
-
-<%= link_to "Back to Documents", documents_path, class: "btn btn-secondary" %>
+    <iframe src="<%= '/' + @file.FileURLPath %>"
+        width="80%" height="600px">
+        Your browser does not support iframes. <a href="<%= @file.FileURLPath %>">View Document</a>
+    </iframe>
+</div>
