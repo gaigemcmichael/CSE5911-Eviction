@@ -4,6 +4,34 @@ class DocumentsController < ApplicationController
   before_action :check_mediation_status, only: [ :generate, :select_template, :proposal_generation ]
   before_action :prevent_generation_without_screening, only: [ :generate, :select_template, :proposal_generation ]
 
+
+
+
+
+
+
+  # Renders a document template (like Agreement to Vacate) with a prefilled form from intake data, this form can be updated to change the agreement generation.
+  def intake_template_view
+    @conversation = PrimaryMessageGroup.find_by(ConversationID: params[:conversation_id])
+    @intake = IntakeQuestion.find_by(IntakeID: @conversation.IntakeID)
+    render :intake_template_view
+  end
+
+  # Handles submission of the form and generates the filled document
+  def generate_filled_template
+    # params for the form/generaton WIP but we will see
+    filled_data = params.permit(:conversation_id, :fname, :lname, :address, :landlord_name, :money_owed, :date_due, :payable_today, :monthly_rent, :reason)
+    # Test:
+    logger.info "Received filled template data: #{filled_data.to_h}"
+
+    #Test:
+    redirect_to root_path, notice: "Document generation coming soon!"
+  end
+
+
+
+
+
   def index
     case @user.Role
     when "Tenant"
