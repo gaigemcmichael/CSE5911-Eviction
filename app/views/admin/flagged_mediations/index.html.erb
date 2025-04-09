@@ -1,0 +1,22 @@
+<h1>Flagged Mediations</h1>
+
+<table class="table table-bordered">
+  <thead>
+    <tr>
+      <th>Tenant</th>
+      <th>Landlord</th>
+      <th>Assigned Mediator</th>
+      <th>View Details</th>
+    </tr>
+  </thead>
+  <tbody>
+    <% @flagged_mediations.each do |mediation| %>
+      <tr>
+        <td><%= mediation.tenant.FName %> <%= mediation.tenant.LName %></td>
+        <td><%= mediation.landlord.FName %> <%= mediation.landlord.LName %></td>
+        <td><%= mediation.mediator&.FName %> <%= mediation.mediator&.LName || "Unassigned" %></td>
+        <td><%= link_to "View", admin_flagged_mediation_path(mediation), class: "btn btn-primary" %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>

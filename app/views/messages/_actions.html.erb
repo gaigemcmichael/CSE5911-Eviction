@@ -31,13 +31,17 @@
       <p class="mediator-status">Unknown error.</p>
     <% end %>
     <% if @mediation && @mediation.deleted_at.nil? %>
-      <%= button_to "<i class='fa-solid fa-file-circle-plus'></i> Generate New File".html_safe,
+      <% if (@user.Role == "Tenant" && @mediation.TenantScreeningID.nil? && !@mediation.MediatorAssigned) || 
+            (@user.Role == "Landlord" && @mediation.LandlordScreeningID.nil? && !@mediation.MediatorAssigned) ||
+            (@user.Role == "Tenant" && !@mediation.TenantScreeningID.nil? && @mediation.MediatorAssigned) ||
+            (@user.Role == "Landlord" && !@mediation.LandlordScreeningID.nil? && @mediation.MediatorAssigned) %>
+        <%= button_to "<i class='fa-solid fa-file-circle-plus'></i> Generate New File".html_safe,
               generate_file_path,
               method: :get, class: "action-btn" %>
-      <p class="action-description">
-        This button allows you to create a proposal.
-      </p>
-
+        <p class="action-description">
+          This button allows you to create a proposal
+        </p>
+      <% end %>
       <%= button_to "<i class='fa-solid fa-circle-xmark'></i> #{ @mediation.MediatorRequested && @mediation.MediatorAssigned ? 'End Mediation' : 'End Negotiation' }".html_safe,
               end_mediation_path(@mediation.ConversationID),
               method: :patch,
