@@ -1,82 +1,81 @@
-<p>Please complete the following screening questions before proceeding with mediation.</p>
+<div class="form-container">
+  <div class="form-card">
+    <h1>Screening Questions</h1>
+    <p>Please complete the following screening questions before proceeding with mediation.</p>
 
-<%= form_with model: @screening, url: screenings_path(conversation_id: @conversation_id), method: :post do |f| %>
-  <%= f.hidden_field :UserID, value: @user.UserID %>
+    <%= form_with model: @screening, url: screenings_path(conversation_id: @conversation_id), method: :post do |f| %>
+      <%= f.hidden_field :UserID, value: @user.UserID %>
 
+      <!-- Interpreter -->
+      <div class="form-section">
+        <%= f.label :InterpreterNeeded, "Do you need an interpreter?", class: "required-label" %><br>
+        <%= f.radio_button :InterpreterNeeded, true, required: true %> Yes
+        <%= f.radio_button :InterpreterNeeded, false %> No
+        <p></p> <!-- Space-->
+        <%= f.label :InterpreterLanguage, "If yes, select a language:" %>
+        <div class="custom-select-wrapper">
+          <%= f.select :InterpreterLanguage, [
+              'Español (Spanish)', 'русский (Russian)', 'Soomaali (Somali)', 'Tigrigna (Tigrinya)',
+              'العربية (Arabic)', 'Sign Language', 'नेपाली (Nepali)', '普通话 (Mandarin)',
+              'Français (French)', 'አማርኛ (Amharic)', 'Other'
+            ], { include_blank: "Select a language" }, class: "form-control" %>
+          <i class="arrow down"></i>
+        </div>
+      </div>
 
-  <!-- Interpreter Question -->
-  <div class="form-group">
-    <%= f.label :InterpreterNeeded, "Do you need an interpreter?", class: "required-label" %><br>
-    <%= f.radio_button :InterpreterNeeded, true, required: true %> Yes
-    <%= f.radio_button :InterpreterNeeded, false %> No
+      <!-- Accessibility -->
+      <div class="form-section">
+        <%= f.label :DisabilityAccommodation, "Do you need accommodations?", class: "required-label" %><br>
+        <%= f.radio_button :DisabilityAccommodation, true, required: true %> Yes
+        <%= f.radio_button :DisabilityAccommodation, false %> No
+        <p></p> <!-- Space-->
+        <%= f.label :DisabilityExplanation, "If yes, describe further:" %>
+        <%= f.text_area :DisabilityExplanation, placeholder: 'Describe accommodations needed', class: "form-control" %>
+      </div>
+
+      <!-- Conflict of Interest -->
+      <div class="form-section">
+        <%= f.label :ConflictOfInterest, "Have you met the mediator before?", class: "required-label" %><br>
+        <%= f.radio_button :ConflictOfInterest, true, required: true %> Yes
+        <%= f.radio_button :ConflictOfInterest, false %> No
+      </div>
+
+      <!-- Need to Consult -->
+      <div class="form-section">
+        <%= f.label :NeedToConsult, "Do you need to consult someone else?", class: "required-label" %><br>
+        <%= f.radio_button :NeedToConsult, true, required: true %> Yes
+        <%= f.radio_button :NeedToConsult, false %> No
+        <p></p> <!-- Space-->
+        <%= f.label :ConsultExplanation, "If yes, describe further:" %>
+        <%= f.text_area :ConsultExplanation, placeholder: 'Who do you need to consult?', class: "form-control" %>
+        <p></p> <!-- Space-->
+        <!-- Relationship -->
+        <%= f.label :RelationshipToOtherParty, "How do you know the other party?" %>
+        <%= f.text_field :RelationshipToOtherParty, placeholder: 'Describe your relationship', class: "form-control" %>
+      </div>
+
+      <!-- Unsafe Mediation -->
+      <div class="form-section">
+        <%= f.label :Unsafe, "Is there any reason you wouldn’t feel comfortable mediating?", class: "required-label" %><br>
+        <%= f.radio_button :Unsafe, true, required: true %> Yes
+        <%= f.radio_button :Unsafe, false %> No
+        <p></p> <!-- Space-->
+        <%= f.label :UnsafeExplanation, "If yes, describe further:" %>
+        <%= f.text_area :UnsafeExplanation, placeholder: 'Describe concerns (e.g., threats, violence)', class: "form-control" %>
+      </div>
+
+      <!-- Ability to Speak -->
+      <div class="form-section">
+        <%= f.label :SpeakOnOwnBehalf, "Do you feel able to speak on your own behalf?", class: "required-label" %><br>
+        <%= f.radio_button :SpeakOnOwnBehalf, true, required: true %> Yes
+        <%= f.radio_button :SpeakOnOwnBehalf, false %> No
+      </div>
+
+      <!-- Submit -->
+      <div class="form-footer">
+        <%= f.submit "Submit"%>
+      </div>
+
+    <% end %>
   </div>
-
-  <div class="form-group">
-    <%= f.label :InterpreterLanguage, "If yes, select a language:" %><br>
-    <%= f.select :InterpreterLanguage, [
-        'Español (Spanish)', 'русский (Russian)', 'Soomaali (Somali)', 'Tigrigna (Tigrinya)',
-        'العربية (Arabic)', 'Sign Language', 'नेपाली (Nepali)', '普通话 (Mandarin)',
-        'Français (French)', 'አማርኛ (Amharic)', 'Other'
-      ], include_blank: "Select a language" %>
-  </div>
-
-  <!-- Accessibility Accommodations -->
-  <div class="form-group">
-    <%= f.label :DisabilityAccommodation, "Do you need accommodations?", class: "required-label" %><br>
-    <%= f.radio_button :DisabilityAccommodation, true, required: true %> Yes
-    <%= f.radio_button :DisabilityAccommodation, false %> No
-  </div>
-
-  <div class="form-group">
-    <%= f.label :DisabilityExplanation, "If yes, describe further:" %><br>
-    <%= f.text_area :DisabilityExplanation, placeholder: 'Describe accommodations needed' %>
-  </div>
-
-  <!-- Conflict of Interest -->
-  <div class="form-group">
-    <%= f.label :ConflictOfInterest, "Have you met the mediator before?", class: "required-label" %><br>
-    <%= f.radio_button :ConflictOfInterest, true, required: true %> Yes
-    <%= f.radio_button :ConflictOfInterest, false %> No
-  </div>
-
-  <!-- Need to Consult -->
-  <div class="form-group">
-    <%= f.label :NeedToConsult, "Do you need to consult someone else?", class: "required-label" %><br>
-    <%= f.radio_button :NeedToConsult, true, required: true %> Yes
-    <%= f.radio_button :NeedToConsult, false %> No
-  </div>
-
-  <div class="form-group">
-    <%= f.label :ConsultExplanation, "If yes, describe further:" %><br>
-    <%= f.text_area :ConsultExplanation, placeholder: 'Who do you need to consult?' %>
-  </div>
-
-  <!-- Relationship to Other Party -->
-  <div class="form-group">
-    <%= f.label :RelationshipToOtherParty, "How do you know the other party?" %><br>
-    <%= f.text_field :RelationshipToOtherParty, placeholder: 'Describe your relationship' %>
-  </div>
-
-  <!-- Unsafe Mediation Conditions -->
-  <div class="form-group">
-    <%= f.label :Unsafe, "Is there any reason you wouldn’t feel comfortable mediating?", class: "required-label" %><br>
-    <%= f.radio_button :Unsafe, true, required: true %> Yes
-    <%= f.radio_button :Unsafe, false %> No
-  </div>
-
-  <div class="form-group">
-    <%= f.label :UnsafeExplanation, "If yes, describe further:" %><br>
-    <%= f.text_area :UnsafeExplanation, placeholder: 'Describe concerns (e.g., threats, violence)' %>
-  </div>
-
-  <!-- Ability to Speak on Own Behalf -->
-  <div class="form-group">
-    <%= f.label :SpeakOnOwnBehalf, "Do you feel able to speak on your own behalf?", class: "required-label" %><br>
-    <%= f.radio_button :SpeakOnOwnBehalf, true, required: true %> Yes
-    <%= f.radio_button :SpeakOnOwnBehalf, false %> No
-  </div>
-
-  <div class="form-group">
-    <%= f.submit "Submit Screening" %>
-  </div>
-<% end %>
+</div>
