@@ -1,17 +1,27 @@
-<%= stylesheet_link_tag "mediator_screening_view", "data-turbo-track": "reload" %>
-<h1>Mediation Case Details</h1>
+<div class="mediation-container">
+  <%= stylesheet_link_tag "mediator_screening_view", "data-turbo-track": "reload" %>
+  
+  <div class="header-with-back">
+    <%= link_to third_party_mediations_path, class: "back-btn" do%>
+      <i class="fa-solid fa-arrow-left"></i> Back
+    <% end %>
+    <h1>Mediation Case Details</h1>
+  </div>
+
 <% if @mediation.deleted_at.nil? %>
   <div class="message-page-container mediator-grid">
     <!-- Row 1, Column 1: Tenant Info -->
     <div class="message-column">
       <h3>Tenant Info</h3>
-      <p><strong>Name:</strong> <%= @mediation.tenant.FName %> <%= @mediation.tenant.LName %></p>
-      <p><strong>Email:</strong> <%= @mediation.tenant.Email %></p>
-      <p><strong>Phone:</strong> <%= @mediation.tenant.PhoneNumber.presence || "N/A" %></p>
-      <p><strong>Address:</strong> <%= @mediation.tenant.TenantAddress.presence || "N/A" %></p>
+      <table class="info-table">
+        <tr><th>Name</th><td><%= @mediation.tenant.FName %> <%= @mediation.tenant.LName %></td></tr>
+        <tr><th>Email</th><td><%= @mediation.tenant.Email %></td></tr>
+        <tr><th>Phone</th><td><%= @mediation.tenant.PhoneNumber.presence || "N/A" %></td></tr>
+        <tr><th>Address</th><td><%= @mediation.tenant.TenantAddress.presence || "N/A" %></td></tr>
+      </table>
 
       <% if @mediation.TenantScreeningID %>
-        <p><em>Screening completed.</em></p>
+        <p class="screening-completed">Screening completed.</p>
 
         <% tenant_screening = ScreeningQuestion.find_by(ScreeningID: @mediation.TenantScreeningID) %>
         <% if tenant_screening %>
@@ -30,21 +40,22 @@
           </table>
         <% end %>
       <% else %>
-        <p><em>Screening not completed.</em></p>
+        <p class="screening-not-completed">Screening not completed.</p>
       <% end %>
     </div>
-
 
     <!-- Row 1, Column 2: Landlord Info -->
     <div class="message-column">
       <h3>Landlord Info</h3>
-      <p><strong>Name:</strong> <%= @mediation.landlord.FName %> <%= @mediation.landlord.LName %></p>
-      <p><strong>Email:</strong> <%= @mediation.landlord.Email %></p>
-      <p><strong>Phone:</strong> <%= @mediation.landlord.PhoneNumber.presence || "N/A" %></p>
-      <p><strong>Company Name:</strong> <%= @mediation.landlord.CompanyName.presence || "N/A" %></p>
+      <table class="info-table">
+        <tr><th>Name</th><td><%= @mediation.landlord.FName %> <%= @mediation.landlord.LName %></td></tr>
+        <tr><th>Email</th><td><%= @mediation.landlord.Email %></td></tr>
+        <tr><th>Phone</th><td><%= @mediation.landlord.PhoneNumber.presence || "N/A" %></td></tr>
+        <tr><th>Company</th><td><%= @mediation.landlord.CompanyName.presence || "N/A" %></td></tr>
+      </table>
 
       <% if @mediation.LandlordScreeningID %>
-        <p><em>Screening completed.</em></p>
+        <p class="screening-completed">Screening completed.</p>
 
         <% landlord_screening = ScreeningQuestion.find_by(ScreeningID: @mediation.LandlordScreeningID) %>
         <% if landlord_screening %>
@@ -63,10 +74,9 @@
           </table>
         <% end %>
       <% else %>
-        <p><em>Screening not completed.</em></p>
+        <p class="screening-not-completed">Screening not completed.</p>
       <% end %>
     </div>
-
 
     <!-- Row 2, Column 1: Chat with Tenant -->
     <div class="message-column">
@@ -98,12 +108,15 @@
       <% end %>
     </div>
   </div>
-  <%= button_to "Terminate Mediation", end_mediation_path(@mediation.ConversationID),
-    method: :patch,
-    data: { turbo: false, confirm: "Are you sure you want to end this mediation?" },
-    class: "btn btn-danger" %>
+  
+  <div class="form-footer">
+    <%= button_to "Terminate Mediation", end_mediation_path(@mediation.ConversationID),
+      method: :patch,
+      data: { turbo: false, confirm: "Are you sure you want to end this mediation?" },
+      class: "action-end-btn" %>
+  </div>
 <% else %> 
   <p> Mediation was ended by a party </p>
 <% end %>
-<%= link_to "Back to Cases", third_party_mediations_path, class: "btn btn-secondary" %>
+
 <%= javascript_include_tag "mediator_chats", "data-turbo-track": "reload" %>
