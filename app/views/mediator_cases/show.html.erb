@@ -88,12 +88,12 @@
           <% if @mediation.TenantScreeningID.nil? %>
             <p>The tenant must still complete screening.</p>
           <% else %>
-            <%= render partial: "messages/just_mediator_chatbox", locals: {
+            <%= render partial: "messages/just_mediator_chatbox", locals: ({
               recipient: @mediation.tenant,
               messages: @tenant_messages,
               message_string: @tenant_message_string,
               user: @user
-            } %>
+            }) %>
           <% end %>
         </div>
 
@@ -104,12 +104,12 @@
           <% if @mediation.LandlordScreeningID.nil? %>
             <p>The landlord must still complete screening.</p>
           <% else %>
-            <%= render partial: "messages/just_mediator_chatbox", locals: {
+            <%= render partial: "messages/just_mediator_chatbox", locals: ({
               recipient: @mediation.landlord,
               messages: @landlord_messages,
               message_string: @landlord_message_string,
               user: @user
-            } %>
+            }) %>
           <% end %>
         </div>
       </div>
@@ -124,4 +124,6 @@
     <strong>⚠️ One of the screenings has been flagged for review by an admin.</strong>
   <% end %>
 </div>
+<% end %>
+
 <%= javascript_include_tag "mediator_chats", "data-turbo-track": "reload" %>
