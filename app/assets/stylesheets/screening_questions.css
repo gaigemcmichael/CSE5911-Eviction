@@ -45,13 +45,32 @@
   color: black;
 }
 
-/* Section Card (Google Forms Style) */
+/* Section Card */
 .form-section {
   background-color: white;
   border-radius: 8px;
   padding: 20px 24px;
   margin: 16px 0;
   box-shadow: 0 1px 3px rgba(60, 64, 67, 0.15);
+}
+
+.form-section h2 {
+  font-size: 1.3rem;
+    color: #102a4d;
+    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+/* Labels */
+.form-section h3 {
+  font-size: 1rem;
+  font-weight: bold;
+  color: #202124;
+  text-align: center;
+  display: block;
+  margin-bottom: 6px;
 }
 
 /* Labels */
@@ -76,6 +95,8 @@
 .form-section input[type="text"],
 .form-section input[type="number"],
 .form-section input[type="date"],
+.form-section input[type="email"],
+.form-section input[type="password"],
 .form-section textarea,
 .form-section select {
   width: 100%;
