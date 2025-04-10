@@ -4,6 +4,74 @@
     <h2>Customize Document</h2>
     <!-- Form will go here later -->
     <p>This will be the form area. You can edit placeholder values before generating the final document.</p>
+    <div style="flex: 1; border-right: 1px solid #ccc; padding-right: 20px;">
+      <h2>Customize Document</h2>
+      <%= form_with url: generate_filled_template_path, method: :post do |f| %>
+        <%= hidden_field_tag :conversation_id, @conversation.ConversationID %>
+
+        <%# Shared Fields %>
+        <div>
+          <%= label_tag :landlord_name %>
+          <%= text_field_tag :landlord_name %>
+        </div>
+
+        <div>
+          <%= label_tag :tenant_name, "Tenant Name" %>
+          <%= text_field_tag :fname %>
+        </div>
+
+        <div>
+          <%= label_tag :tenant_address, "Tenant Address" %>
+          <%= text_field_tag :address %>
+        </div>
+
+        <div>
+          <%= label_tag :negotiation_date %>
+          <%= date_field_tag :negotiation_date %>
+        </div>
+
+        <% if @intake.BestOption == "Move Out" %>
+          <%# Agreement to Vacate specific fields %>
+          <div>
+            <%= label_tag :vacate_date %>
+            <%= date_field_tag :vacate_date %>
+          </div>
+
+          <% 6.times do |i| %>
+            <div>
+              <%= label_tag "amount#{i+1}", "Amount #{i+1}" %>
+              <%= number_field_tag "amount#{i+1}", nil, step: 0.01 %>
+            </div>
+            <div>
+              <%= label_tag "date#{i+1}", "Due Date #{i+1}" %>
+              <%= date_field_tag "date#{i+1}" %>
+            </div>
+          <% end %>
+
+        <% elsif @intake.BestOption == "Pay Missed Rent" %>
+          <%# Pay and Stay specific fields (only 5 payments) %>
+          <% 5.times do |i| %>
+            <div>
+              <%= label_tag "amount#{i+1}", "Amount #{i+1}" %>
+              <%= number_field_tag "amount#{i+1}", nil, step: 0.01 %>
+            </div>
+            <div>
+              <%= label_tag "date#{i+1}", "Due Date #{i+1}" %>
+              <%= date_field_tag "date#{i+1}" %>
+            </div>
+          <% end %>
+        <% end %>
+
+        <div>
+          <%= label_tag :additional_provisions, "Additional Provisions" %><br>
+          <%= text_area_tag :additional_provisions, nil, rows: 4, cols: 40 %>
+        </div>
+
+        <%= submit_tag "Generate Document", class: "btn btn-primary", style: "margin-top: 10px;" %>
+      <% end %>
+    </div>
+
+
   </div>
 
   <!-- Right side: PDF preview -->
