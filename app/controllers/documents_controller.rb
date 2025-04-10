@@ -13,6 +13,8 @@ class DocumentsController < ApplicationController
   # Renders a document template (like Agreement to Vacate) with a prefilled form from intake data, this form can be updated to change the agreement generation.
   def intake_template_view
     @conversation = PrimaryMessageGroup.find_by(ConversationID: params[:conversation_id])
+    @landlord = User.find_by(UserID: @conversation.LandlordID)
+    @tenant = User.find_by(UserID: @conversation.TenantID)
     @intake = IntakeQuestion.find_by(IntakeID: @conversation.IntakeID)
     render :intake_template_view
   end
