@@ -1,5 +1,23 @@
-<h1>Manage Mediator Accounts</h1>
+<div class="admin-account-container">
+    <h1>Manage Mediator Accounts</h1>
 
-<%= render partial: "create_form" %>
-<hr>
-<%= render partial: "update_form" %>
+    <!-- Admin Tabs -->
+    <div class="admin-tabs">
+        <a href="?tab=create" class="<%= params[:tab] == 'create' || params[:tab].blank? ? 'active' : '' %>">Create</a>
+        <a href="?tab=update" class="<%= params[:tab] == 'update' ? 'active' : '' %>">Update</a>
+    </div>
+
+    <div>
+        <% tab = params[:tab] || 'create' %>
+
+        <% if tab == 'create' %>
+        <div class="admin-form-section">
+            <%= render partial: "create_form" %>
+        </div>
+        <% elsif tab == 'update' %>
+        <div class="admin-form-section">
+            <%= render partial: "update_form" %>
+        </div>
+        <% end %>
+    </div>
+</div>
