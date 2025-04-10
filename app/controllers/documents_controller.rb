@@ -26,7 +26,7 @@ class DocumentsController < ApplicationController
     # Test:
     logger.info "Received filled template data: #{filled_data.to_h}"
 
-    #Test:
+    # Test:
     redirect_to root_path, notice: "Document generation coming soon!"
   end
 
