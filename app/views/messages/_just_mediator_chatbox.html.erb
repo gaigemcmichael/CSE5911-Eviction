@@ -42,14 +42,16 @@
         <%= f.hidden_field :recipient_id, value: recipient.UserID %>
         
         <!-- Message Box -->
-        <%= f.text_area :Contents, placeholder: "Type your message...", id: "message_contents", class: "message-textarea", rows:3 %>
+        <%= f.text_area :Contents, placeholder: "Message #{recipient.FName}...", id: "message_contents", class: "message-textarea", rows:3 %>
 
         <!-- Dropdown for selecting a file from FileDrafts -->
         <div class="file-dropdown-wrapper">
           <%= f.label :file_id, "Select a file to attach", class: "file-label" %>
           <div class="custom-select-wrapper">
-            <%= f.collection_select :file_id, FileDraft.where(CreatorID: @user.UserID), :FileID, :FileName,
-              { prompt: "Choose a file" }, { class: "form-control", required: false } %>
+            <%= f.collection_select :file_id, 
+               (FileDraft.where(FileID: FileAttachment.where(MessageID: (@tenant_messages + @landlord_messages).pluck(:MessageID)).pluck(:FileID))).uniq, 
+               :FileID, :FileName, 
+               { prompt: "Choose a file" }, { class: "form-control", required: false } %>            
             <i class="arrow down"></i>
           </div>
         </div>
