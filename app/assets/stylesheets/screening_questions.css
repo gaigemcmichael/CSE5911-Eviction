@@ -1,5 +1,184 @@
 .required-label::after {
-    content: " *";
-    color: red;
+  content: " *";
+  color: red;
+  font-weight: bold;
+}
+
+/* Container */
+.form-container {
+  background-color: #c4dbe2;
+  display: flex;
+  min-height: 100vh;
+  justify-content: center;
+  padding: 20px;
+}
+
+/* Form Card */
+.form-card {
+  background-color: transparent;
+  border-radius: 0;
+  padding: 0;
+  box-shadow: none;
+  max-width: 720px;
+  width: 100%;
+}
+
+/* Form Title */
+.form-card h1 {
+  font-size: 2rem;
+  font-weight: bold;
+  margin: 12px;
+  margin-bottom: 12px;
+  color: black;
+}
+
+.form-card h2 {
+  font-size: 1rem;
+  margin-bottom: 20px;
+  color: black;
+  margin: 12px;
+}
+
+.form-card p {
+  font-size: 1rem;
+  margin-bottom: 20px;
+  color: black;
+}
+
+/* Section Card (Google Forms Style) */
+.form-section {
+  background-color: white;
+  border-radius: 8px;
+  padding: 20px 24px;
+  margin: 16px 0;
+  box-shadow: 0 1px 3px rgba(60, 64, 67, 0.15);
+}
+
+/* Labels */
+.form-section label {
+  font-size: 1rem;
+  font-weight: bold;
+  color: #202124;
+  display: block;
+  margin-bottom: 6px;
+}
+
+/* Helper text */
+.form-section p ul li {
+  font-size: 0.95rem;
+  color: black;
+  margin: 6px 0 12px;
+  text-align: justify;
+}
+
+/* Inputs / Selects / Textareas */
+.form-control,
+.form-section input[type="text"],
+.form-section input[type="number"],
+.form-section input[type="date"],
+.form-section textarea,
+.form-section select {
+  width: 100%;
+  padding: 12px 20px;
+  margin: 8px 0;
+  font-size: 1rem;
+  border: 1px solid #dadce0;
+  border-radius: 8px;
+  background-color: #fff;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+  appearance: none;
+  box-sizing: border-box;
+  color: black;
+}
+
+/* Focus effect */
+.form-control:focus,
+input:focus,
+select:focus,
+textarea:focus {
+  border-color: #4285f4;
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(66, 133, 244, 0.2);
+}
+
+.custom-select-wrapper {
+  position: relative;
+}
+
+.custom-select-wrapper select {
+  padding-right: 44px; /* make room for icon */
+}
+
+.custom-select-wrapper .arrow.down {
+  position: absolute;
+  right: 16px;
+  top: 50%;
+  transform: translateY(-50%);
+  pointer-events: none;
+  border: solid #666;
+  border-width: 0 2px 2px 0;
+  display: inline-block;
+  padding: 4px;
+  transform: translateY(-50%) rotate(45deg);
+}
+
+/* Radio Buttons */
+.form-section input[type="radio"] {
+  margin-right: 6px;
+  transform: scale(1.2);
+}
+
+/* Error Styles */
+.form-section.error .form-control {
+  border-color: #d93025;
+  box-shadow: 0 0 0 2px rgba(217, 48, 37, 0.1);
+}
+
+.form-section .feedback-text {
+  color: #d93025;
+  font-size: 0.875rem;
+  margin-top: 6px;
+}
+
+.form-footer {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 20px;
+  margin: 16px;
+}
+
+/* Submit Button */
+input[type="submit"] {
+    width: fit-content;
+    display: inline-block;
+    padding: 12px 24px;
+    font-size: 1rem;
     font-weight: bold;
+    font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    border-radius: 5px;
+    background: #1a73e8;
+    color: white;
+    text-decoration: none;
+    border: none;
+    cursor: pointer;
+    transition: background 0.3s ease;
   }
+
+input[type="submit"]:hover {
+  background-color: #1558b0;
+}
+
+/* Responsive Design */
+@media (max-width: 600px) {
+  .form-card {
+    padding: 30px 20px;
+  }
+
+  .form-card h1 {
+    font-size: 1.4rem;
+  }
+
+  .form-section {
+    padding: 16px;
+  }
+}

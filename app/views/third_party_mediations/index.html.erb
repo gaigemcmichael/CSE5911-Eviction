@@ -1,47 +1,49 @@
-<h1>Your Assigned Mediation Cases</h1>
+<div class="mediation-container">
+  <h1>Your Assigned Mediation Cases</h1>
 
-<table>
-  <thead>
-    <tr>
-      <th>Tenant Name</th>
-      <th>Landlord Name</th>
-      <th>Action</th>
-    </tr>
-  </thead>
-  <tbody>
-    <% @mediations.each do |mediation| %>
+  <table class="mediation-table">
+    <thead>
       <tr>
-        <td><%= mediation.tenant.FName %> <%= mediation.tenant.LName %></td>
-        <td><%= mediation.landlord.FName %> <%= mediation.landlord.LName %></td>
-        <td>
-          <%= link_to "View Mediation", mediator_case_path(mediation.id), class: "btn btn-primary" %>
-        </td>
+        <th style="width: 35%;">Tenant Name</th>
+        <th style="width: 35%;">Landlord Name</th>
+        <th style="width: 30%;">Action</th>
       </tr>
-    <% end %>
-  </tbody>
-</table>
+    </thead>
+    <tbody>
+      <% @mediations.each do |mediation| %>
+        <tr>
+          <td><%= mediation.tenant.FName %> <%= mediation.tenant.LName %></td>
+          <td><%= mediation.landlord.FName %> <%= mediation.landlord.LName %></td>
+          <td>
+            <%= link_to "View Mediation", mediator_case_path(mediation.id), class: "view-link" %>
+          </td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
 
-<h2>Past Mediations</h2>
+  <h2>Past Mediations</h2>
 
-<table class="table table-striped">
-  <thead>
-    <tr>
-      <th>Tenant</th>
-      <th>Landlord</th>
-      <th>Ended At</th>
-      <th>Summary</th>
-    </tr>
-  </thead>
-  <tbody>
-    <% @past_mediations.each do |mediation| %>
+  <table class="mediation-table">
+    <thead>
       <tr>
-        <td><%= mediation.tenant.FName %> <%= mediation.tenant.LName %></td>
-        <td><%= mediation.landlord.FName %> <%= mediation.landlord.LName %></td>
-        <td><%= mediation.deleted_at.strftime("%B %d, %Y %I:%M %p") %></td>
-        <td>
-          <%= link_to "View Summary", mediation_summary_path(mediation.ConversationID), class: "btn btn-outline-primary btn-sm" %>
-        </td>
+        <th>Tenant</th>
+        <th>Landlord</th>
+        <th>Ended At</th>
+        <th>Summary</th>
       </tr>
-    <% end %>
-  </tbody>
-</table>
+    </thead>
+    <tbody>
+      <% @past_mediations.each do |mediation| %>
+        <tr>
+          <td><%= mediation.tenant.FName %> <%= mediation.tenant.LName %></td>
+          <td><%= mediation.landlord.FName %> <%= mediation.landlord.LName %></td>
+          <td><%= mediation.deleted_at.strftime("%B %d, %Y %I:%M %p") %></td>
+          <td>
+            <%= link_to "View Summary", mediation_summary_path(mediation.ConversationID), class: "view-link" %>
+          </td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+</div>

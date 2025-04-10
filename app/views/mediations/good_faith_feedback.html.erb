@@ -1,16 +1,28 @@
-<h2>Good Faith Feedback</h2>
+<div class="form-container">
+  <div class="form-card">
+    <h1>Feedback</h1>
+      <p>Please complete the following form before ending with mediation.</p>
 
-<p>Did the <%= @user.Role == "Tenant" ? "Landlord" : "Tenant" %> act in good faith during this conversation?</p>
+    <%= form_with url: good_faith_response_path(@mediation.ConversationID), method: :patch do %>
+      <div class="form-section">
+        <%= label_tag :good_faith, "Did the #{@user.Role == 'Tenant' ? 'Landlord' : 'Tenant'} act in good faith during this conversation?", 
+          class: "required-label" %>
+        <p>
+          Please answer based on your perception of the conversation.
+          If you feel the other party was cooperative and honest, you may select "Yes."
+        </p>
 
-<%= form_with url: good_faith_response_path(@mediation.ConversationID), method: :patch do %>
-  <%= radio_button_tag :good_faith, "true", false, id: "good_faith_true" %>
-  <%= label_tag "good_faith_true", "Yes" %>
+        <%= radio_button_tag :good_faith, "true", false, required: true, id: "good_faith_true" %> Yes
+        <p></p> <!-- space -->
+        <%= radio_button_tag :good_faith, "false", false, id: "good_faith_false" %> No
 
-  <%= radio_button_tag :good_faith, "false", false, id: "good_faith_false" %>
-  <%= label_tag "good_faith_false", "No" %>
-  <%= hidden_field_tag :role, @user.Role %>
-  <%= submit_tag "Submit", class: "btn btn-primary mt-2" %>
-<% end %>
+        <%= hidden_field_tag :role, @user.Role %>
+        <p></p> <!-- space -->
+        <%= submit_tag "Submit" %>
+      </div>
+    <% end %>
+  </div>
+</div>
 
 <script>
   document.addEventListener("DOMContentLoaded", function () {
