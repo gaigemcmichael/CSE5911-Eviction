@@ -1,0 +1,77 @@
+<h2>Create Mediator Account</h2>
+<%= form_with url: admin_accounts_path, method: :post, local: true, id: "create-mediator-form" do |f| %>
+  <div>
+    <%= label_tag :email %>
+    <%= email_field_tag :email, nil, required: true, id: "email-create" %>
+  </div>
+  <div>
+    <%= label_tag :fname, "First Name" %>
+    <%= text_field_tag :fname, nil, required: true %>
+  </div>
+  <div>
+    <%= label_tag :lname, "Last Name" %>
+    <%= text_field_tag :lname, nil, required: true %>
+  </div>
+  <div>
+    <%= label_tag :password %>
+    <%= password_field_tag :password, nil, required: true, id: "password-create" %>
+  </div>
+  <div>
+    <%= label_tag :password_confirmation, "Confirm Password" %>
+    <%= password_field_tag :password_confirmation, nil, required: true, id: "password-confirmation-create" %>
+    <p id="password-warning-create" style="color: red; display: none;">⚠️ Passwords do not match</p>
+  </div>
+  <div>
+    <%= label_tag :mediation_cap, "Mediation Cap" %>
+    <%= number_field_tag :mediation_cap, nil, required: true %>
+  </div>
+  <%= submit_tag "Create Mediator" %>
+<% end %>
+
+<%# Script for password confirmation #%>
+<script>
+  // Password confirmation
+  document.addEventListener("turbo:load", () => {
+    const createForm = document.getElementById('create-mediator-form');
+    const createPassword = document.getElementById('password-create');
+    const createConfirmation = document.getElementById('password-confirmation-create');
+    const createWarning = document.getElementById('password-warning-create');
+
+    if (!createForm || !createPassword || !createConfirmation || !createWarning) return;
+
+    function checkCreatePasswordMatch() {
+      if (createPassword.value && createConfirmation.value && createPassword.value !== createConfirmation.value) {
+        createWarning.style.display = 'block';
+        return false;
+      } else {
+        createWarning.style.display = 'none';
+        return true;
+      }
+    }
+
+    createPassword.addEventListener('input', checkCreatePasswordMatch);
+    createConfirmation.addEventListener('input', checkCreatePasswordMatch);
+
+    createForm.addEventListener('submit', function (e) {
+      if (!checkCreatePasswordMatch()) {
+        e.preventDefault();
+      }
+    });
+  });
+
+// Make sure user enters a valid email 
+const email = document.getElementById('email-create');
+
+createForm.addEventListener('submit', function (e) {
+  if (!checkCreatePasswordMatch()) {
+    e.preventDefault();
+    return;
+  }
+
+  if (!email.checkValidity()) {
+    alert("Please enter a valid email address.");
+    email.focus();
+    e.preventDefault();
+  }
+});
+</script>

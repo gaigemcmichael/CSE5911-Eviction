@@ -40,13 +40,22 @@
       <div class="message-input">
         <%= f.hidden_field :conversation_id, value: message_string&.ConversationID %>
         <%= f.hidden_field :recipient_id, value: recipient.UserID %>
-        <%= f.text_area :Contents, placeholder: "Message #{recipient.FName}...", class: "mediator-message-textarea" %>
         
-        <!-- Dropdown for selecting a file from FileDrafts -->
-        <%= f.label :file_id, "Select a file to attach" %>
-        <%= f.collection_select :file_id, FileDraft.where(CreatorID: @user.UserID), :FileID, :FileName, { prompt: "Choose a file" }, class: "file-select" %>
+        <!-- Message Box -->
+        <%= f.text_area :Contents, placeholder: "Message #{recipient.FName}...", id: "message_contents", class: "message-textarea", rows:3 %>
 
-        <%= f.submit "Send Message", class: "send-btn" %>
+        <!-- Dropdown for selecting a file from FileDrafts -->
+        <div class="file-dropdown-wrapper">
+          <%= f.label :file_id, "Select a file to attach", class: "file-label" %>
+          <div class="custom-select-wrapper">
+            <%= f.collection_select :file_id, FileDraft.where(CreatorID: @user.UserID), :FileID, :FileName, 
+               { prompt: "Choose a file" }, { class: "form-control", required: false } %>            
+            <i class="arrow down"></i>
+          </div>
+        </div>
+
+        <!-- Send Button -->
+        <%= f.submit "Send Message", class: "send-msg-btn" %>
       </div>
     <% end %>
   </div>

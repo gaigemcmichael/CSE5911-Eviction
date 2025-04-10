@@ -1,20 +1,28 @@
-<div class="tenant-documents-container">
+<div class="documents-container">
   <h1>Landlord Documents</h1>
-  <p class="welcome-msg">Welcome back, <strong><%= @user.FName %></strong>! Here you can view or download your submitted documents.</p>
+  <p>Welcome back, <%= @user.FName %>! Here you can view or download your submitted documents.</p>
 
   <% if @files.any? %>
-    <ul class="document-list">
-      <% @files.each do |file| %>
-        <li class="document-item">
-          <span class="file-name"><%= file.FileName %></span>
-          <div class="file-actions">
-            <%= link_to "View", document_path(file.FileID), class: "btn btn-link" %>
-            <%= link_to "Download", download_file_path(file.FileID), class: "btn btn-link" %>
-          </div>
-        </li>
-      <% end %>
-    </ul>
+    <table class="documents-table">
+      <thead>
+        <tr>
+            <th>Documents</th>
+            <th>View</th>
+            <th>Download</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% @files.each do |file| %>
+          <tr>
+            <td><%= file.FileName %></td>
+            <td><%= link_to "View", document_path(file.FileID), class: "view-link" %></td>
+            <td><%= link_to "Download", download_file_path(file.FileID), class: "view-link" %></td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+
   <% else %>
-    <p class="no-documents-msg">No documents available yet. You can generate a new one below.</p>
+    <p class="documents-status">No documents available yet. You can generate a new one below.</p>
   <% end %>
 </div>
