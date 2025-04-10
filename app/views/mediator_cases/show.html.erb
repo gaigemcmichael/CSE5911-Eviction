@@ -29,7 +29,7 @@
             <p class="screening-completed">Screening completed.</p>
 
             <% if tenant_screening %>
-              <table class="table table-bordered screening-table">
+              <table class="screening-table">
                 <tr><th>Interpreter Needed</th><td><%= tenant_screening.InterpreterNeeded ? "Yes" : "No" %></td></tr>
                 <tr><th>Interpreter Language</th><td><%= tenant_screening.InterpreterLanguage.presence || "N/A" %></td></tr>
                 <tr><th>Disability Accommodation</th><td><%= tenant_screening.DisabilityAccommodation ? "Yes" : "No" %></td></tr>
@@ -62,7 +62,7 @@
             <p class="screening-completed">Screening completed.</p>
           
             <% if landlord_screening %>
-              <table class="table table-bordered screening-table">
+              <table class="screening-table">
                 <tr><th>Interpreter Needed</th><td><%= landlord_screening.InterpreterNeeded ? "Yes" : "No" %></td></tr>
                 <tr><th>Interpreter Language</th><td><%= landlord_screening.InterpreterLanguage.presence || "N/A" %></td></tr>
                 <tr><th>Disability Accommodation</th><td><%= landlord_screening.DisabilityAccommodation ? "Yes" : "No" %></td></tr>
@@ -121,7 +121,9 @@
           class: "action-end-btn" %>
       </div>
     <% else %> 
-      <strong>⚠️ One of the screenings has been flagged for review by an admin.</strong>
+      <p class="alert alert-warning">
+        ⚠️ One of the screenings has been flagged for review by an admin.
+      </p>
     <% end %>
   <% else %>
     <p> Mediation was ended by a party </p>
