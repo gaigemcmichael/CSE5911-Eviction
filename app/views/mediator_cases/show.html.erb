@@ -114,16 +114,18 @@
         </div>
       </div>
 
-    <div class="form-footer">
-      <%= button_to "Terminate Mediation", end_mediation_path(@mediation.ConversationID),
-        method: :patch,
-        data: { turbo: false, confirm: "Are you sure you want to end this mediation?" },
-        class: "action-end-btn" %>
-    </div>
-  <% else %> 
-    <strong>⚠️ One of the screenings has been flagged for review by an admin.</strong>
+      <div class="form-footer">
+        <%= button_to "Terminate Mediation", end_mediation_path(@mediation.ConversationID),
+          method: :patch,
+          data: { turbo: false, confirm: "Are you sure you want to end this mediation?" },
+          class: "action-end-btn" %>
+      </div>
+    <% else %> 
+      <strong>⚠️ One of the screenings has been flagged for review by an admin.</strong>
+    <% end %>
+  <% else %>
+    <p> Mediation was ended by a party </p>
   <% end %>
 </div>
-<% end %>
 
 <%= javascript_include_tag "mediator_chats", "data-turbo-track": "reload" %>
