@@ -12,9 +12,9 @@
           If you feel the other party was cooperative and honest, you may select "Yes."
         </p>
 
-        <%= radio_button_tag :good_faith, "true", false, required: true %> Yes
+        <%= radio_button_tag :good_faith, "true", false, required: true, id: "good_faith_true" %> Yes
         <p></p> <!-- space -->
-        <%= radio_button_tag :good_faith, "false", false %> No
+        <%= radio_button_tag :good_faith, "false", false, id: "good_faith_false" %> No
 
         <%= hidden_field_tag :role, @user.Role %>
         <p></p> <!-- space -->
