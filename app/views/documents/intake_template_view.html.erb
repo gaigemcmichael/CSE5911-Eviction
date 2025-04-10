@@ -29,7 +29,7 @@
       <% if @intake.BestOption == "Move Out" %>
         <div>
           <%= label_tag :vacate_date %>
-          <%= date_field_tag :vacate_date, @intake.vacate_date || 2.weeks.from_now.to_date %>
+          <%= date_field_tag :vacate_date, 2.weeks.from_now.to_date %>
         </div>
       <% end %>
 
@@ -60,6 +60,18 @@
         <%= label_tag :additional_provisions, "Additional Provisions" %><br>
         <%= text_area_tag :additional_provisions, "None", rows: 4, cols: 40 %>
       </div>
+
+      <% if @user.Role == 'Tenant' %>
+        <div>
+          <%= label_tag :tenant_signature, "Tenant Signature (type name, must start and end with '/')" %>
+          <%= text_field_tag :tenant_signature, nil, pattern: '^/.+/$', title: "Signature must start and end with '/'", required: true %>
+        </div>
+      <% elsif @user.Role == 'Landlord' %>
+        <div>
+          <%= label_tag :landlord_signature, "Landlord Signature (type name, must start and end with '/')" %>
+          <%= text_field_tag :landlord_signature, nil, pattern: '^/.+/$', title: "Signature must start and end with '/'", required: true %>
+        </div>
+      <% end %>
 
       <%= submit_tag "Generate Document", class: "btn btn-primary", style: "margin-top: 10px;" %>
     <% end %>
