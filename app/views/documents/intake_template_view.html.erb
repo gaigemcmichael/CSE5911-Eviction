@@ -1,0 +1,92 @@
+<div style="display: flex; height: 90vh; gap: 20px; padding: 20px;">
+  <!-- Left side: Form -->
+  <div style="flex: 1; border-right: 1px solid #ccc; padding-right: 20px;">
+    <h2>Customize Document</h2>
+
+    <%= form_with url: generate_filled_template_path, method: :post do %>
+      <%= hidden_field_tag :conversation_id, @conversation.ConversationID %>
+
+      <div>
+        <%= label_tag :landlord_name %>
+        <%= text_field_tag :landlord_name, (@landlord.FName + " " + @landlord.LName) %>
+      </div>
+
+      <div>
+        <%= label_tag :tenant_name, "Tenant Name" %>
+        <%= text_field_tag :fname, (@tenant.FName + " " + @tenant.LName) %>
+      </div>
+
+      <div>
+        <%= label_tag :tenant_address, "Tenant Address" %>
+        <%= text_field_tag :address, @tenant.TenantAddress %>
+      </div>
+
+      <div>
+        <%= label_tag :negotiation_date %>
+        <%= date_field_tag :negotiation_date, Date.today %>
+      </div>
+
+      <% if @intake.BestOption == "Move Out" %>
+        <div>
+          <%= label_tag :vacate_date %>
+          <%= date_field_tag :vacate_date, 2.weeks.from_now.to_date %>
+        </div>
+      <% end %>
+
+      <% if @intake.BestOption == "Move Out" %>
+        <% number_of_payments = 6 %>
+      <% elsif @intake.BestOption == "Pay Missed Rent" %>
+        <% number_of_payments = 5 %>
+      <% else %>
+        <% number_of_payments = 0 %>
+      <% end %>
+      
+      <% total_due = @intake.try(:MoneyOwed).to_f %>
+      <% base_amount = (total_due / number_of_payments).round(2) %>
+      
+      <% number_of_payments.times do |i| %>
+        <div>
+          <%= label_tag "amount#{i+1}", "Amount #{i+1} $" %>
+          <%= number_field_tag "amount#{i+1}", '%.2f' % base_amount, step: 0.01 %>
+        </div>
+      
+        <div>
+          <%= label_tag "date#{i+1}", "Due Date #{i+1}" %>
+          <%= date_field_tag "date#{i+1}", (Date.today + ((i + 1) * 14)) %>
+        </div>
+      <% end %>
+
+      <div>
+        <%= label_tag :additional_provisions, "Additional Provisions" %><br>
+        <%= text_area_tag :additional_provisions, "None", rows: 4, cols: 40 %>
+      </div>
+
+      <% if @user.Role == 'Tenant' %>
+        <div>
+          <%= label_tag :tenant_signature, "Tenant Signature (type name, must start and end with '/')" %>
+          <%= text_field_tag :tenant_signature, nil, pattern: '^/.+/$', title: "Signature must start and end with '/'", required: true %>
+        </div>
+      <% elsif @user.Role == 'Landlord' %>
+        <div>
+          <%= label_tag :landlord_signature, "Landlord Signature (type name, must start and end with '/')" %>
+          <%= text_field_tag :landlord_signature, nil, pattern: '^/.+/$', title: "Signature must start and end with '/'", required: true %>
+        </div>
+      <% end %>
+
+      <%= submit_tag "Generate Document", class: "btn btn-primary", style: "margin-top: 10px;" %>
+    <% end %>
+  </div>
+
+  <!-- Right side: PDF preview -->
+  <div style="flex: 2;">
+    <h2>Document Preview</h2>
+
+    <% if @intake.BestOption == "Move Out" %>
+      <iframe src="/templates/Agreement to Vacate.pdf" width="100%" height="100%" style="border: 1px solid #ccc;"></iframe>
+    <% elsif @intake.BestOption == "Pay Missed Rent" %>
+      <iframe src="/templates/Pay and Stay Agreement.pdf" width="100%" height="100%" style="border: 1px solid #ccc;"></iframe>
+    <% else %>
+      <p>No document preview available for this option: <%= @intake.BestOption %></p>
+    <% end %>
+  </div>
+</div>
