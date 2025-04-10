@@ -100,3 +100,6 @@ gem "dotenv-rails"
 
 # for frontend to add icons
 gem "font-awesome-sass", "~> 6.4.2"
+
+# For document generation
+gem "docx_templater"
