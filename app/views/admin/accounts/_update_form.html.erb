@@ -1,44 +1,67 @@
-<h2>Update Mediator</h2>
+<h2> <i class="fa-solid fa-user-pen"></i> Update Mediator</h2>
+<p>Select a mediator and update their info below.</p>
 
-<label for="mediator-select">Choose Mediator:</label>
-<select id="mediator-select" required>
-  <option value="">-- Select a mediator --</option>
-  <% @mediators.each do |mediator| %>
-    <option value="<%= mediator.UserID %>"
-            data-fname="<%= mediator.user.FName %>"
-            data-lname="<%= mediator.user.LName %>"
-            data-email="<%= mediator.user.Email %>"
-            data-cap="<%= mediator.MediationCap %>">
-      <%= "#{mediator.user.FName} #{mediator.user.LName}" %>
-    </option>
-  <% end %>
-</select>
+<%= form_with url: "", method: :patch, local: true, id: "mediator-update-form" do |f| %>
 
-<div id="selected-mediator-info" style="margin-top: 1rem; display: none;">
-  <p><strong>Name:</strong> <span id="mediator-name"></span></p>
-  <p><strong>Email:</strong> <span id="mediator-email"></span></p>
-</div>
+  <!-- Mediator Select -->
+  <div class="form-section">
+    <%= f.label :mediator_id, "Choose a Mediator:", class: "required-label" %>
+    <div class="custom-select-wrapper">
+      <%= select_tag :mediator_id, options_for_select([["Select a mediator", ""]] + 
+        @mediators.map do |mediator|
+          [
+            "#{mediator.user.FName} #{mediator.user.LName}",
+            mediator.UserID,
+            {
+              "data-fname": mediator.user.FName,
+              "data-lname": mediator.user.LName,
+              "data-email": mediator.user.Email,
+              "data-cap": mediator.MediationCap
+            }
+          ]
+        end
+      ), id: "mediator-select", class: "form-control", required: true %>
+      <i class="arrow down"></i>
+    </div>
+  </div>
 
-<%= form_with url: "", method: :patch, local: true, id: "mediator-update-form" do %>
+  <!-- Display Selected Mediator Info -->
+  <div id="selected-mediator-info" style="margin-top: 1rem; display: none;">
+    <p><strong>Name:</strong> <span id="mediator-name"></span></p>
+    <p><strong>Email:</strong> <span id="mediator-email"></span></p>
+  </div>
+
   <%= hidden_field_tag :id, "", id: "mediator-id" %>
 
-  <div>
-    <%= label_tag :mediation_cap, "Mediation Cap" %>
-    <%= number_field_tag :mediation_cap, nil, id: "mediation-cap" %>
+  <!-- Mediation Cap -->
+  <div class="form-section">
+    <%= f.label :mediation_cap, "Mediation Cap" %>
+    <div class="input-field">
+      <i class="fa-solid fa-scale-balanced"></i>
+      <%= number_field_tag :mediation_cap, nil, placeholder: "    Update the maximum number of mediations this mediator can be assigned at any time", class: "signup-input", id: "mediation-cap" %>
+    </div>
   </div>
 
-  <div>
-    <%= label_tag :password, "New Password" %>
-    <%= password_field_tag :password, nil, id: "password" %>
+  <!-- New Password -->
+  <div class="form-section">
+    <%= f.label :password, "New Password", class: "required-label" %>
+    <div class="input-field">
+      <i class="fa-solid fa-lock"></i>
+      <%= password_field_tag :password, nil, placeholder: "    Enter new password", class: "signup-input", id: "password" %>
+    </div>
   </div>
 
-  <div>
-    <%= label_tag :password_confirmation, "Confirm Password" %>
-    <%= password_field_tag :password_confirmation, nil, id: "password-confirmation" %>
+  <!-- Confirm Password -->
+  <div class="form-section">
+    <%= f.label :password_confirmation, "Confirm Password", class: "required-label" %>
+    <div class="input-field">
+      <i class="fa-solid fa-lock"></i>
+      <%= password_field_tag :password_confirmation, nil, placeholder: "    Confirm new password", class: "signup-input", id: "password-confirmation" %>
+    </div>
     <p id="password-warning" style="color: red; display: none;">⚠️ Passwords do not match</p>
   </div>
 
-  <%= submit_tag "Update Mediator" %>
+  <%= submit_tag "Update Mediator", class: "signup-btn" %>
 <% end %>
 
 <%# Script for password confirmation and displaying mediator details after being selected #%>

@@ -1,29 +1,60 @@
-<h2>Create Mediator Account</h2>
+<h2> <i class="fa-solid fa-user-plus"></i> Create a Mediator Account</h2>
+<p> Let's get started. </p>
+
 <%= form_with url: admin_accounts_path, method: :post, local: true, id: "create-mediator-form" do |f| %>
-  <div>
-    <%= label_tag :email %>
-    <%= email_field_tag :email, nil, required: true, id: "email-create" %>
+  <!-- Email -->
+  <div class="form-section">
+    <%= f.label :email, "Email", class: "required-label"%>
+    <div class="input-field">
+        <i class="fa-solid fa-envelope"></i>
+      <%= email_field_tag :email, nil, placeholder: "    user@example.com", required: true, id: "email-create" %>
+    </div>
   </div>
-  <div>
-    <%= label_tag :fname, "First Name" %>
-    <%= text_field_tag :fname, nil, required: true %>
+
+  <!-- First Name -->
+  <div class="form-section">
+    <%= f.label :fname, "First Name", class: "required-label" %>
+    <div class="input-field">
+        <i class="fa-solid fa-user"></i>
+        <%= text_field_tag :fname, nil, placeholder: "    Enter mediator's first name", required: true %>
+    </div>
   </div>
-  <div>
-    <%= label_tag :lname, "Last Name" %>
-    <%= text_field_tag :lname, nil, required: true %>
+
+  <!-- Last Name -->
+  <div class="form-section">
+    <%= f.label :lname, "Last Name", class: "required-label" %>
+    <div class="input-field">
+        <i class="fa-solid fa-user"></i>
+        <%= text_field_tag :lname, nil,  placeholder: "    Enter mediator's last name",required: true %>
+    </div>
   </div>
-  <div>
-    <%= label_tag :password %>
-    <%= password_field_tag :password, nil, required: true, id: "password-create" %>
+
+  <!-- Password -->
+  <div class="form-section">
+    <%= f.label :password, "Password", class: "required-label" %>
+    <div class="input-field">
+      <i class="fa-solid fa-lock"></i>
+      <%= password_field_tag :password, nil, placeholder: "    Create a password", required: true, id: "password-create" %>
+    </div>
   </div>
-  <div>
-    <%= label_tag :password_confirmation, "Confirm Password" %>
-    <%= password_field_tag :password_confirmation, nil, required: true, id: "password-confirmation-create" %>
+
+  <!-- Password Confirmation -->
+  <div class="form-section">
+    <%= f.label :password_confirmation, "Confirm Password", class: "required-label" %>
+    <div class="input-field">
+      <i class="fa-solid fa-lock"></i>
+      <%= password_field_tag :password_confirmation, nil, placeholder: "    Confirm your password", required: true, id: "password-confirmation-create" %>
+    </div>
     <p id="password-warning-create" style="color: red; display: none;">⚠️ Passwords do not match</p>
   </div>
-  <div>
-    <%= label_tag :mediation_cap, "Mediation Cap" %>
-    <%= number_field_tag :mediation_cap, nil, required: true %>
+
+  <!-- Mediation Cap -->
+  <div class="form-section">
+    <%= f.label :mediation_cap, "Mediation Cap", class: "required-label" %>
+    <div class="input-field">
+      <i class="fa-solid fa-scale-balanced"></i>
+      <%= number_field_tag :mediation_cap, nil, placeholder: "    Set the maximum number of mediations this mediator can be assigned at any time", required: true %>
+    </div>
   </div>
   <%= submit_tag "Create Mediator" %>
 <% end %>
