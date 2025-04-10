@@ -102,4 +102,4 @@ gem "dotenv-rails"
 gem "font-awesome-sass", "~> 6.4.2"
 
 # For document generation
-gem 'docx_templater'
+gem "docx_templater"
