@@ -1,32 +1,88 @@
-<h1>Flagged Mediation Details</h1>
+<div class="summary-container">
 
-<h2>Tenant</h2>
-<p><strong>Name:</strong> <%= @tenant.FName %> <%= @tenant.LName %></p>
-<p><strong>Email:</strong> <%= @tenant.Email %></p>
+  <!-- Back Header -->
+  <div class="header-with-back">
+    <%= link_to admin_mediations_path, class: "back-btn" do %>
+      <i class="fa-solid fa-arrow-left"></i> Back
+    <% end %>
+    <h1>Flagged Mediation Details</h1>
+  </div>
 
-<h2>Landlord</h2>
-<p><strong>Name:</strong> <%= @landlord.FName %> <%= @landlord.LName %></p>
-<p><strong>Email:</strong> <%= @landlord.Email %></p>
+  <!-- Tabs -->
+  <div class="admin-tabs">
+    <a href="?tab=mediator" class="<%= params[:tab] == 'mediator' || params[:tab].blank? ? 'active' : '' %>">Mediator</a>
+    <a href="?tab=parties" class="<%= params[:tab] == 'parties' ? 'active' : '' %>">Tenant & Landlord</a>
+  </div>
 
-<h2>Assigned Mediator</h2>
-<p><strong>Name:</strong> <%= @mediator&.FName %> <%= @mediator&.LName || "None assigned" %></p>
+  <% tab = params[:tab] || 'mediator' %>
 
-<% if @tenant_screening %>
-  <h3>Tenant Screening</h3>
-  <%= render partial: "screening_table", locals: { screening: @tenant_screening } %>
-<% end %>
+  <% if tab == 'mediator' %>
+    <!-- Mediator Info -->
+    <div class="summary-section">
+      <h2><i class="fa-solid fa-briefcase"></i> Mediator Info</h2>
+      <table class="summary-table">
+        <tr>
+          <th><i class="fa-solid fa-id-badge"></i> Name</th>
+          <td><%= @mediator&.FName %> <%= @mediator&.LName || "None assigned" %></td>
+        </tr>
+      </table>
+    </div>
 
-<% if @landlord_screening %>
-  <h3>Landlord Screening</h3>
-  <%= render partial: "screening_table", locals: { screening: @landlord_screening } %>
-<% end %>
+    <!-- Reassign Mediator -->
+    <div class="admin-form-section">
+      <h2><i class="fa-solid fa-people-arrows"></i> Reassign Mediator</h2>
+      <div class="form-section">
+        <%= form_with url: admin_reassign_mediator_path(@mediation), method: :patch, local: true do |f| %>
+        
+        <div class="custom-select-wrapper">
+          <%= f.select :new_mediator_id,
+            @eligible_mediators.map { |m| ["#{m.user.FName} #{m.user.LName}", m.UserID] },
+            { include_blank: "Select a new mediator" },
+            class: "form-control" %>
+          <i class="arrow down"></i>
+        </div>
 
-<h3>Reassign Mediator</h3>
-<%= form_with url: admin_reassign_mediator_path(@mediation), method: :patch, local: true do %>
-    <%= select_tag :new_mediator_id, options_from_collection_for_select(@eligible_mediators, :UserID, ->(m) { "#{m.user.FName} #{m.user.LName}" }), prompt: "Select a new mediator", class: "form-control" %>
-    <%= submit_tag "Reassign and Require New Screenings", class: "btn btn-warning mt-2" %>
+        <%= submit_tag "Reassign and Require New Screenings" %>
+        <% end %>
+        
+        <h3> OR </h3>
+        
+        <%= button_to "Unflag Without Reassigning", admin_unflag_mediation_path(@mediation), 
+          method: :patch, class: "unflag-btn" %>
+      </div>
+    </div>
+
+  <% elsif tab == 'parties' %>
+    <!-- Tenant Info -->
+    <div class="summary-section">
+      <h2><i class="fa-solid fa-user"></i> Tenant Info</h2>
+      <table class="summary-table">
+        <tr><th><i class="fa-solid fa-id-badge"></i> Name</th><td><%= @tenant.FName %> <%= @tenant.LName %></td></tr>
+        <tr><th><i class="fa-solid fa-envelope"></i> Email</th><td><%= @tenant.Email %></td></tr>
+      </table>
+    </div>
+
+    <!-- Landlord Info -->
+    <div class="summary-section">
+      <h2><i class="fa-solid fa-building-user"></i> Landlord Info</h2>
+      <table class="summary-table">
+        <tr><th><i class="fa-solid fa-id-badge"></i> Name</th><td><%= @landlord.FName %> <%= @landlord.LName %></td></tr>
+        <tr><th><i class="fa-solid fa-envelope"></i> Email</th><td><%= @landlord.Email %></td></tr>
+      </table>
+    </div>
+
+    <% if @tenant_screening %>
+      <div class="summary-section">
+        <h2>Tenant Screening</h2>
+        <%= render partial: "screening_table", locals: { screening: @tenant_screening } %>
+      </div>
+    <% end %>
+
+    <% if @landlord_screening %>
+      <div class="summary-section">
+        <h2>Landlord Screening</h2>
+        <%= render partial: "screening_table", locals: { screening: @landlord_screening } %>
+      </div>
+    <% end %>
   <% end %>
-  
-<%= button_to "Unflag Without Reassigning", admin_unflag_mediation_path(@mediation), method: :patch, class: "btn btn-secondary mt-3" %>
-
-<%= link_to "Back to Flagged Mediations", admin_mediations_path, class: "btn btn-secondary mt-3" %>
+</div>
