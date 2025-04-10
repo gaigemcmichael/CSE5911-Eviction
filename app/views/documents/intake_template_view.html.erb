@@ -8,17 +8,17 @@
 
       <div>
         <%= label_tag :landlord_name %>
-        <%= text_field_tag :landlord_name, "BILL COME TO LATER" %>
+        <%= text_field_tag :landlord_name, (@landlord.FName + " " + @landlord.LName) %>
       </div>
 
       <div>
         <%= label_tag :tenant_name, "Tenant Name" %>
-        <%= text_field_tag :fname, "PHIL COME TO LATER" %>
+        <%= text_field_tag :fname, (@tenant.FName + " " + @tenant.LName) %>
       </div>
 
       <div>
         <%= label_tag :tenant_address, "Tenant Address" %>
-        <%= text_field_tag :address, "PHILS ADDRESS COME TO LATER" %>
+        <%= text_field_tag :address, @tenant.TenantAddress %>
       </div>
 
       <div>
@@ -46,8 +46,8 @@
       
       <% number_of_payments.times do |i| %>
         <div>
-          <%= label_tag "amount#{i+1}", "Amount #{i+1}" %>
-          <%= number_field_tag "amount#{i+1}", base_amount, step: 0.01 %>
+          <%= label_tag "amount#{i+1}", "Amount #{i+1} $" %>
+          <%= number_field_tag "amount#{i+1}", '%.2f' % base_amount, step: 0.01 %>
         </div>
       
         <div>
