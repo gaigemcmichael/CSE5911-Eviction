@@ -7,7 +7,8 @@
     <% if @mediation&.MediatorRequested && @mediation&.MediatorAssigned && tenant_screening&.flagged == false && landlord_screening&.flagged == false %>
       <h1>Mediation Conversation</h1>
       <p>
-        A mediator has been requested and assigned to this case. You are now communicating with a neutral third-party mediator to help resolve the issue.
+        A mediator has been requested and assigned to this case. <br>
+        You are now communicating with a neutral third-party mediator to help resolve the issue.
       </p>
     <% elsif @mediation&.MediatorRequested && @mediation&.MediatorAssigned && (tenant_screening&.flagged == true || landlord_screening&.flagged == true) %>
       <h1>Mediation Conversation</h1>
@@ -44,10 +45,9 @@
     <% elsif (tenant_screening&.flagged || landlord_screening&.flagged) %>
       <p class="alert alert-warning">One of the party's screening questions has been flagged and is under review by an administrator. Please wait before continuing mediation.</p>
     <% elsif mediator_screening_needed %>
-      <!-- Single Column Layout (centered mediator actions) -->
-      <div class="mediator-single-column">
+      
         <%= render 'actions' %>
-      </div>
+      
     <% else %>
       <!-- Normal Chatbox and Actions Side-by-side Layout -->
       <div class="message-page-container">

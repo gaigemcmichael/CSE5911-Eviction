@@ -1,34 +1,35 @@
-<hr>
-<h2>Past Mediations</h2>
+<div class = "mediation-container">
+  <h2>Past Mediations</h2>
 
-<table class="table table-striped">
-  <thead>
-    <tr>
-      <th>Landlord Name</th>
-      <th>Email</th>
-      <th>Ended At</th>
-      <th>Summary</th>
-      <th>Feedback</th>
-    </tr>
-  </thead>
-  <tbody>
-    <% @past_mediations.each do |mediation| %>
-      <% landlord = mediation.landlord %>
+  <table class="mediation-table">
+    <thead>
       <tr>
-        <td><%= landlord.FName %> <%= landlord.LName %></td>
-        <td><%= landlord.Email %></td>
-        <td><%= mediation.deleted_at.strftime("%B %d, %Y %I:%M %p") %></td>
-        <td>
-          <%= link_to "View Summary", mediation_summary_path(mediation.ConversationID), class: "btn btn-outline-primary btn-sm" %>
-        </td>
-        <td>
-          <% if needs_good_faith_response?(mediation, @user) %>
-              <%= link_to "Complete Feedback", good_faith_response_path(mediation.ConversationID), class: "btn btn-warning btn-sm" %>
-          <% else %>
-              <span class="text-muted">Submitted</span>
-          <% end %>
-        </td>
+        <th>Landlord Name</th>
+        <th>Email</th>
+        <th>Ended At</th>
+        <th>Summary</th>
+        <th>Feedback</th>
       </tr>
-    <% end %>
-  </tbody>
-</table>
+    </thead>
+    <tbody>
+      <% @past_mediations.each do |mediation| %>
+        <% landlord = mediation.landlord %>
+        <tr>
+          <td><%= landlord.FName %> <%= landlord.LName %></td>
+          <td><%= landlord.Email %></td>
+          <td><%= mediation.deleted_at.strftime("%B %d, %Y %I:%M %p") %></td>
+          <td>
+            <%= link_to "View Summary", mediation_summary_path(mediation.ConversationID), class: "view-link" %>
+          </td>
+          <td>
+            <% if needs_good_faith_response?(mediation, @user) %>
+                <%= link_to "Complete Feedback", good_faith_response_path(mediation.ConversationID), class: "complete-link" %>
+            <% else %>
+                <span class="text-muted">Submitted</span>
+            <% end %>
+          </td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+</div>
