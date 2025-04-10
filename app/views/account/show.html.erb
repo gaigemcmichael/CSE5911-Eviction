@@ -41,5 +41,21 @@
                 </tr>
             </table>
         </div>
+
+        <% if @user.Role == "Mediator" %>
+            <!-- Mediator Availability -->
+            <div class="profile-section">
+                <h1> <i class="fa-solid fa-user"></i> Mediator Availability</h1>
+                <table class = "pass-security-table">
+                    <tr>
+                        <th>Are you available for Mediation? </th>
+                        <td>
+                        
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        <% end %>
+
     </div>
 </div>
