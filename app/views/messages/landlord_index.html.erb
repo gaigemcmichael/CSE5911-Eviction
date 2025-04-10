@@ -7,9 +7,9 @@
       <table class="mediation-table">
           <thead>
               <tr>
-                  <th>Tenant</th>
-                  <th>Address</th>
-                  <th>Actions</th>
+                  <th style="width: 35%;">Tenant</th>
+                  <th style="width: 35%;">Address</th>
+                  <th style="width: 30%;">Actions</th>
               </tr>
           </thead>
           <tbody>
@@ -20,12 +20,12 @@
                       <td>
                           <% if mediation.accepted_by_landlord %>
                                 <% if mediation.IntakeID.present? %>
-                                    <a href="<%= message_path(mediation.ConversationID) %>" class="view-btn">View Negotiation</a>
+                                    <%= link_to "View Negotiation", message_path(mediation.ConversationID), class: "view-link" %>
                                 <% else %>
                                     Waiting on Tenant to complete intake questions!
-                                    <% end %>
+                                <% end %>
                           <% else %>
-                              <%= button_to "Accept Negotiation", accept_mediation_path(mediation), method: :post, class: "accept-btn" %>
+                                <%= button_to "Accept Negotiation", accept_mediation_path(mediation), method: :post, class: "accept-btn" %>
                           <% end %>
                       </td>
                   </tr>
@@ -33,7 +33,7 @@
           </tbody>
       </table>
   <% else %>
-      <p class="no-mediation-msg">No negotiations currently exist. A negotiation needs to be created.</p>
+      <p class="mediation-status">No negotiations currently exist. A negotiation needs to be created.</p>
   <% end %>
   <% if @past_mediations.any? %>
     <%= render 'landlords_old_mediations_table' %>

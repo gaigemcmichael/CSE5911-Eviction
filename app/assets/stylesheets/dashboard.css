@@ -1,10 +1,14 @@
 /* Welcome Message */
 .dashboard-welcome {
+    font-size: 2rem;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     color: #102a4d;
-    font-size: 1.6rem;
-    font-weight: bold;
+    margin-bottom: 10px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
     text-align: center;
-    margin-bottom: 5px;
+    gap: 8px;
 }
 
 .dashboard-subtext {
@@ -38,6 +42,7 @@
 /* Dashboard Links */
 .dashboard-link {
     color: #007bff;
+    font-size: 1.2rem;
     font-weight: bold;
     text-decoration: none;
     transition: color 0.2s ease-in-out;
@@ -77,7 +82,6 @@
 
 .dashboard-list li {
     font-size: 1.2rem;
-    color: #333;
     margin-bottom: 12px;
 }
 
@@ -87,8 +91,8 @@
 }
 
 .dashboard-list ul li {
-    font-size: 1rem;
-    color: #555;
+    font-size: 1.2rem;
+    color: black;
     margin-bottom: 8px;
 }
 
@@ -111,7 +115,7 @@
         font-size: 1.4rem;
     }
 
-    .quick-start li, .dashboard-list li {
+    .quick-start li, .dashboard-list ul li, .dashboard-link {
         font-size: 1rem;
     }
 
@@ -133,7 +137,7 @@
         font-size: 1.3rem;
     }
 
-    .quick-start li, .dashboard-list li {
+    .quick-start li, .dashboard-list ul li, .dashboard-link {
         font-size: 0.95rem;
     }
 
