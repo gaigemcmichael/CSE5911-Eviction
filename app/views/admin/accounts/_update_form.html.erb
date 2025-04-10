@@ -35,10 +35,10 @@
 
   <!-- Mediation Cap -->
   <div class="form-section">
-    <%= f.label :mediation_cap, "Mediation Cap", class: "required-label" %>
+    <%= f.label :mediation_cap, "Mediation Cap" %>
     <div class="input-field">
       <i class="fa-solid fa-scale-balanced"></i>
-      <%= number_field_tag :mediation_cap, nil, required: true, placeholder: "    Update the maximum number of mediations this mediator can be assigned at any time", class: "signup-input", id: "mediation-cap" %>
+      <%= number_field_tag :mediation_cap, nil, placeholder: "    Update the maximum number of mediations this mediator can be assigned at any time", class: "signup-input", id: "mediation-cap" %>
     </div>
   </div>
 
@@ -47,7 +47,7 @@
     <%= f.label :password, "New Password", class: "required-label" %>
     <div class="input-field">
       <i class="fa-solid fa-lock"></i>
-      <%= password_field_tag :password, nil, placeholder: "    Enter new password", class: "signup-input", id: "password-update" %>
+      <%= password_field_tag :password, nil, placeholder: "    Enter new password", class: "signup-input", id: "password" %>
     </div>
   </div>
 
@@ -56,9 +56,9 @@
     <%= f.label :password_confirmation, "Confirm Password", class: "required-label" %>
     <div class="input-field">
       <i class="fa-solid fa-lock"></i>
-      <%= password_field_tag :password_confirmation, nil, placeholder: "    Confirm new password", class: "signup-input", id: "password-confirmation-update" %>
+      <%= password_field_tag :password_confirmation, nil, placeholder: "    Confirm new password", class: "signup-input", id: "password-confirmation" %>
     </div>
-    <p id="password-warning-update" style="color: red; display: none;">⚠️ Passwords do not match</p>
+    <p id="password-warning" style="color: red; display: none;">⚠️ Passwords do not match</p>
   </div>
 
   <%= submit_tag "Update Mediator", class: "signup-btn" %>
