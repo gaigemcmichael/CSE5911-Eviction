@@ -4,4 +4,4 @@ unless File.respond_to?(:exists?)
         self.exist?(*args)
       end
     end
-  end
+end
