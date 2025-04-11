@@ -17,10 +17,16 @@
                     <td> <%= @user.Role %> </td>
                 </tr>
                 <% if @user.Role == "Tenant" %>
-                    <tr>
-                        <th> <i class="fa-solid fa-location-dot"></i> Address</th>
-                        <td> <%= @user.TenantAddress %> </td>
-                    </tr>
+                  <tr>
+                    <th> <i class="fa-solid fa-location-dot"></i> Address</th>
+                    <td>
+                      <p>Current: <strong><%= @user.TenantAddress.presence || "Not provided" %></strong></p>
+                      <%= form_with model: @user, url: account_path, method: :patch, local: true, id: "address-form" do |f| %>
+                        <%= f.text_field :TenantAddress, placeholder: "Enter new address", class: "form-control", required: true %><br>
+                        <%= f.submit "Update Address", class: "btn btn-sm btn-primary mt-1" %>
+                      <% end %>
+                    </td>
+                  </tr>
                 <% elsif @user.Role == "Landlord"%>
                     <tr>
                         <th> <i class="fa-solid fa-building"></i> Company</th>
@@ -36,8 +42,15 @@
                 <tr>
                     <th> <i class="fa-solid fa-key"></i> Password</th>
                     <td>
-                        Update Password
-                    </td>
+                      <%= form_with model: @user, url: account_path, method: :patch, local: true, id: "password-form" do |f| %>
+                        <div>
+                          <%= f.password_field :password, placeholder: "New Password", id: "password" %><br>
+                          <%= f.password_field :password_confirmation, placeholder: "Confirm Password", id: "password_confirmation" %><br>
+                          <%= f.submit "Update Password", class: "btn btn-sm btn-primary mt-1" %>
+                        </div>
+                        <div id="password-error" class="text-danger mt-1" style="display: none;"></div>
+                      <% end %>
+                    </td>      
                 </tr>
             </table>
         </div>
@@ -50,12 +63,54 @@
                     <tr>
                         <th>Are you available for Mediation? </th>
                         <td>
-                        
+                          <%= form_with model: @user, url: account_path, method: :patch, local: true do |f| %>
+                            <%= f.fields_for :mediator do |m| %>
+                              <div class="form-check">
+                                <p>Status: <strong><%= @user.mediator.Available ? "Available" : "Not Available" %></strong></p>
+                                <%= m.check_box :Available, class: "form-check-input", id: "availableCheckbox" %>
+                                <%= m.label :Available, "Currently Available", class: "form-check-label", for: "availableCheckbox" %>
+                              </div>
+                            <% end %>
+                            <%= f.submit "Update Availability", class: "btn btn-sm btn-primary mt-1" %>
+                          <% end %>
                         </td>
                     </tr>
                 </table>
             </div>
         <% end %>
-
     </div>
 </div>
+
+<%# Password Confirmation Error Control #%>
+
+<script>
+  document.addEventListener("turbo:load", function () {
+    const form = document.getElementById("password-form");
+    const password = document.getElementById("password");
+    const confirm = document.getElementById("password_confirmation");
+    const errorBox = document.getElementById("password-error");
+
+    if (!form || !password || !confirm || !errorBox) return;
+
+    function checkMatch() {
+      if (password.value !== confirm.value) {
+        errorBox.textContent = "⚠️Passwords do not match.";
+        errorBox.style.display = "block";
+        return false;
+      } else {
+        errorBox.textContent = "";
+        errorBox.style.display = "none";
+        return true;
+      }
+    }
+
+    password.addEventListener("input", checkMatch);
+    confirm.addEventListener("input", checkMatch);
+
+    form.addEventListener("submit", function (event) {
+      if (!checkMatch()) {
+        event.preventDefault();
+      }
+    });
+  });
+</script>
