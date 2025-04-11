@@ -1,4 +1,6 @@
 require "docx_templater"
+require 'docsplit'
+
 class DocumentsController < ApplicationController
   before_action :require_login
   before_action :set_user
@@ -77,13 +79,23 @@ class DocumentsController < ApplicationController
 
     # Save filled document
     File.open(filled_docx_path.to_s, "wb") { |f| f.write(buffer.string) }
-    unless File.exist?(filled_docx_path)
-      logger.error "DOCX generation failed"
-      render plain: "Document generation failed", status: :internal_server_error
-      return
-    end
+    #unless File.exist?(filled_docx_path)
+      #logger.error "DOCX generation failed"
+      #render plain: "Document generation failed", status: :internal_server_error
+      #return
+    #end
+
+    Docsplit.extract_pdf("public/userFiles/#{file_id}.docx", output: "public/userFiles")
+
+    FileDraft.create!(
+      FileName: "#{file_id}",
+      FileTypes: "pdf",
+      FileURLPath: "userFiles/#{file_id}.pdf",
+      CreatorID: @user.UserID
+    )
     
     redirect_to user_role == "Tenant" ? documents_path : landlord_documents_path, notice: "Document generated successfully."
+    
 
   end
 
