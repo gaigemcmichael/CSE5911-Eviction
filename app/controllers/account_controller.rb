@@ -20,7 +20,7 @@ class AccountController < ApplicationController
         flash.now[:alert] = "Password update failed."
         render :show and return
       end
-    
+
     # Update Availability for mediator
     elsif @user.Role == "Mediator" && params[:user][:mediator_attributes]
       if @user.update(mediator_params)
@@ -45,19 +45,19 @@ class AccountController < ApplicationController
 
     redirect_to account_path
   end
-  
+
   private
-  
+
   def address_params
     params.require(:user).permit(:TenantAddress)
   end
-  
+
   def password_params
     params.require(:user).permit(:password, :password_confirmation)
   end
-  
+
   def mediator_params
-    params.require(:user).permit(mediator_attributes: [:id, :Available])
+    params.require(:user).permit(mediator_attributes: [ :id, :Available ])
   end
 
   def require_login
