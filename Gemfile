@@ -105,4 +105,4 @@ gem "font-awesome-sass", "~> 6.4.2"
 gem "docx_templater"
 
 # For docx into pdf conversion
-gem 'docsplit'
+gem "docsplit"
