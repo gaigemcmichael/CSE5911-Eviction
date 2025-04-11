@@ -52,7 +52,6 @@ class DocumentsController < ApplicationController
       landlord_company: landlord.CompanyName.to_s, 
       negotiation_date: params[:negotiation_date],
       additional_provisions: params[:additional_provisions],
-      signature: user_role == "Tenant" ? params[:tenant_signature] : params[:landlord_signature]
     }
 
     if user_role == "Tenant"
@@ -69,8 +68,8 @@ class DocumentsController < ApplicationController
 
     # Payment plan
     (1..j).each do |i|
-      data["amount#{i}"] = params["amount#{i}"]
-      data["date#{i}"] = params["date#{i}"]
+      data[:"amount#{i}"] = params[:"amount#{i}"].to_s
+      data[:"date#{i}"] = params[:"date#{i}"].to_s
     end
       
     # Fill the DOCX template using the gem's API
