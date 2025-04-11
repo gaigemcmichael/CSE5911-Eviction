@@ -23,6 +23,7 @@ class DocumentsController < ApplicationController
   # Handles submission of the form and generates the filled document
   def generate_filled_template
     conversation = PrimaryMessageGroup.find_by(ConversationID: params[:conversation_id])
+    landlord = User.find_by(UserID: conversation.LandlordID)
     intake = IntakeQuestion.find_by(IntakeID: conversation.IntakeID)
     user_role = @user.Role
 
@@ -48,10 +49,18 @@ class DocumentsController < ApplicationController
       landlord_name: params[:landlord_name],
       tenant_name: params[:fname],
       tenant_address: params[:address],
+      landlord_company: landlord.CompanyName.to_s, 
       negotiation_date: params[:negotiation_date],
       additional_provisions: params[:additional_provisions],
       signature: user_role == "Tenant" ? params[:tenant_signature] : params[:landlord_signature]
     }
+
+    if user_role == "Tenant"
+      data[:tenant_signature] = params[:tenant_signature]
+    else
+      data[:landlord_signature] = params[:landlord_signature]
+    end
+
     j = 5
 
     if intake.BestOption == "Move Out"
