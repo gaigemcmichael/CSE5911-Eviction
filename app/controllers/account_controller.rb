@@ -11,7 +11,54 @@ class AccountController < ApplicationController
   def edit
   end
 
+  def update
+    # Update password for tenant, landlord, mediator
+    if params[:user][:password].present?
+      if @user.update(password_params)
+        flash[:notice] = "Password updated successfully."
+      else
+        flash.now[:alert] = "Password update failed."
+        render :show and return
+      end
+    
+    # Update Availability for mediator
+    elsif @user.Role == "Mediator" && params[:user][:mediator_attributes]
+      if @user.update(mediator_params)
+        flash[:notice] = "Availability updated."
+      else
+        flash.now[:alert] = "Failed to update availability."
+        render :show and return
+      end
+
+    # Update Address for Tenant
+    elsif params[:commit] == "Update Address" && @user.Role == "Tenant"
+      if @user.update(address_params)
+        flash[:notice] = "Address updated successfully."
+      else
+        flash.now[:alert] = "Address update failed."
+        render :show and return
+      end
+
+    else
+      flash[:alert] = "No changes detected."
+    end
+
+    redirect_to account_path
+  end
+  
   private
+  
+  def address_params
+    params.require(:user).permit(:TenantAddress)
+  end
+  
+  def password_params
+    params.require(:user).permit(:password, :password_confirmation)
+  end
+  
+  def mediator_params
+    params.require(:user).permit(mediator_attributes: [:id, :Available])
+  end
 
   def require_login
     unless session[:user_id]
