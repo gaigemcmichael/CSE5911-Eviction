@@ -95,12 +95,27 @@
 .form-section input[type="text"],
 .form-section input[type="number"],
 .form-section input[type="date"],
-.form-section input[type="email"],
-.form-section input[type="password"],
 .form-section textarea,
 .form-section select {
   width: 100%;
   padding: 12px 20px;
+  margin: 8px 0;
+  font-size: 1rem;
+  border: 1px solid #dadce0;
+  border-radius: 8px;
+  background-color: #fff;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+  appearance: none;
+  box-sizing: border-box;
+  color: black;
+}
+
+.form-section input[type="email"],
+.form-section input[type="password"],
+.form-section input[type="fname"],
+.form-section input[type="text"] {
+  width: 100%;
+  padding: 10px 10px 10px 35px !important;
   margin: 8px 0;
   font-size: 1rem;
   border: 1px solid #dadce0;
