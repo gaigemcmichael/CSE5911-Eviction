@@ -67,7 +67,7 @@
 /* Input Styling */
 .signup-input {
     width: 100%;
-    padding: 10px 10px 10px 35px;
+    padding: 10px 10px 10px 35px !important;
     border: 1px solid #ccc;
     border-radius: 5px;
     font-size: 1rem;
