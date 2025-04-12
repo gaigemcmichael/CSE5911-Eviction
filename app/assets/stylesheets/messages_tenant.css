@@ -89,6 +89,7 @@
     max-width: 500px;
     font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     box-sizing: border-box;
+    align-content: space-evenly;
 }
 
 /* Section Title */
