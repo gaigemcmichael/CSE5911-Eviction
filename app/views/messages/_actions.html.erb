@@ -36,7 +36,7 @@
             (@user.Role == "Tenant" && !@mediation.TenantScreeningID.nil? && @mediation.MediatorAssigned) ||
             (@user.Role == "Landlord" && !@mediation.LandlordScreeningID.nil? && @mediation.MediatorAssigned) %>
         <%= button_to "Generate New File", intake_template_view_path(conversation_id: @mediation.ConversationID), 
-          method: :get, class: "btn btn-primary" %>
+          method: :get, class: "action-btn" %>
         <p class="action-description">
           This button allows you to create a proposal
         </p>

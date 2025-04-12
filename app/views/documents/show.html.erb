@@ -1,13 +1,22 @@
 <div class="documents-container">
-    <div class ="header-with-back">
-        <%= link_to documents_path, class: "back-btn" do %>
-                <i class="fa-solid fa-arrow-left"></i> Back
-        <% end %>
-        <h1>Document: <%= @file.FileName %></h1>
-    </div>
+  <div class="header-with-back">
+    <% back_path = case @user.Role
+      when "Mediator"
+        third_party_mediations_path
+      else
+        documents_path
+    end %>
 
-    <iframe src="<%= '/' + @file.FileURLPath %>"
-        width="80%" height="600px">
-        Your browser does not support iframes. <a href="<%= @file.FileURLPath %>">View Document</a>
-    </iframe>
+    <%= link_to back_path, class: "back-btn" do %>
+      <i class="fa-solid fa-arrow-left"></i> Back
+    <% end %>
+
+    <h1>Document: <%= @file.FileName %></h1>
+  </div>
+
+  <iframe src="<%= '/' + @file.FileURLPath %>"
+          width="80%" height="600px">
+    Your browser does not support iframes.
+    <a href="<%= @file.FileURLPath %>">View Document</a>
+  </iframe>
 </div>
