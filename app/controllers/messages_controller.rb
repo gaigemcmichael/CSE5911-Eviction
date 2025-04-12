@@ -18,7 +18,9 @@ class MessagesController < ApplicationController
       @show_mediation_view = @mediation.present?
       @landlords = User.where(Role: "Landlord").order(:CompanyName) unless @mediation
 
-      render "messages/tenant_index"
+      respond_to do |format|
+        format.html { render "messages/tenant_index" }
+      end
 
     when "Landlord"
       @mediation = PrimaryMessageGroup
@@ -33,7 +35,9 @@ class MessagesController < ApplicationController
 
       @show_mediation_view = @mediation.any?
 
-      render "messages/landlord_index"
+      respond_to do |format|
+        format.html { render "messages/landlord_index" }
+      end
 
     else
       render plain: "Access Denied", status: :forbidden
@@ -97,7 +101,9 @@ class MessagesController < ApplicationController
       end
     end
 
-    render "messages/show"
+    respond_to do |format|
+      format.html { render "messages/show" }
+    end
   end
 
   def request_mediator
