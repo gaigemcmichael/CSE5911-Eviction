@@ -158,6 +158,23 @@ textarea:focus {
   transform: translateY(-50%) rotate(45deg);
 }
 
+/* For mediator's account */
+.status-available {
+  color: green;
+  font-weight: bold;
+}
+
+.status-unavailable {
+  color: red;
+  font-weight: bold;
+}
+
+.checkbox-inline {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
 /* Radio Buttons */
 .form-section input[type="radio"] {
   margin-right: 6px;
