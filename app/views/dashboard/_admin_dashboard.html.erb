@@ -6,3 +6,33 @@
         <li>Update a Mediator's account: <%= link_to "Manage Accounts", admin_accounts_path, class: "dashboard-link" %> </li>
     </ul>
 </div>
+
+<!-- Mediator Availability Table -->
+<div class="dashboard-guide">
+    <h3 class="dashboard-subheading"><i class="fa-solid fa-user-check"></i> Mediator Availability</h3>
+
+    <table class="mediator-table">
+      <thead>
+        <tr>
+          <th>NAME</th>
+          <th>EMAIL</th>
+          <th>STATUS</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% User.includes(:mediator).where(Role: "Mediator").each do |mediator| %>
+          <% available = mediator.mediator&.Available %>
+          <tr>
+            <td><%= "#{mediator.FName} #{mediator.LName}" %></td>
+            <td><%= mediator.Email %></td>
+            <td>
+              <span class="<%= available ? 'status-available' : 'status-unavailable' %>">
+                <%= available ? "Available" : "Not Available" %>
+              </span>
+            </td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+
+</div>
