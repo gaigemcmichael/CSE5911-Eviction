@@ -1,17 +1,27 @@
+<!-- Mediator Availability-->
+<% if @user.Role == "Mediator" && @user.mediator.present? %>
+  <% available = @user.mediator.Available %>
+  <% status_text = available ? "Available" : "Not Available" %>
+  <% status_class = available ? "status-available" : "status-unavailable" %>
+
+  <div class="availability-box">
+    <h3><i class="fa-solid fa-circle-check"></i> Mediator Availability</h3>
+    <p>
+      Your status: 
+      <span class="availability-badge <%= status_class %>"><%= status_text %></span>
+    </p> 
+    <p>
+      You can update it on the <%= link_to "Account", account_path, class: "dashboard-link" %> page.
+    </p>
+  </div>
+<% end %>
+
 <!-- Quick Start Guide -->
 <div class="quick-start">
     <h3>🚀 How to Navigate</h3>
     <ul class="dashboard-list">
-        <li>View and manage your documents on the <%= link_to "Documents", documents_path, class: "dashboard-link" %> page.</li>
-    </ul>
-</div>
-
-<!-- Mediator Quick Guide -->
-<div class="dashboard-guide">
-    <h3 class="dashboard-subheading">📖 Quick Guide</h3>
-    <ul class="dashboard-list">
-        <li>
-            <strong>Accept mediation:</strong>
-        </li>
+        <li>Access assigned mediations on the <%= link_to "Mediations", third_party_mediations_path, class: "dashboard-link" %> page.</li>
+        <li>View account details on the <%= link_to "Account", account_path, class: "dashboard-link" %> page.</li>
+        <li>Update password on the <%= link_to "Account", account_path, class: "dashboard-link" %> page.</li>
     </ul>
 </div>

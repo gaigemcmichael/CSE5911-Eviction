@@ -134,7 +134,62 @@
     font-weight: 600;
     font-size: 1rem;
   }
+
+  .generate-doc-layout {
+    display: flex;
+    height: 90vh;
+    padding: 20px;
+    gap: 20px;
+  }
   
+  /* Scrollable Left Panel (form) */
+  .generate-doc-panel {
+    flex: 1;
+    overflow-y: auto;
+    padding-right: 20px;
+    border-right: 1px solid #ccc;
+  }
+  
+  /* Fixed Right Panel (iframe) */
+  .preview-panel {
+    flex: 2;
+    padding-left: 20px;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .generate-doc-panel h2, .preview-panel h2 {
+    font-size: 2rem;
+    font-weight: bold;
+    margin: 12px;
+    color: #102a4d;
+  }
+
+  .generate-doc-panel p {
+    font-size: 1rem;
+    margin: 12px;
+    color: #102a4d;
+  }
+  
+  .preview-panel iframe {
+    border: 1px solid #ccc;
+    width: 100%;
+    height: 100%;
+    min-height: 500px;
+    flex: 1;
+    border-radius: 4px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  }
+
+  .generate-doc-panel::-webkit-scrollbar {
+    width: 8px;
+  }
+  .generate-doc-panel::-webkit-scrollbar-thumb {
+    background: #ccc;
+    border-radius: 4px;
+  }
+
 /* Responsive Design */
 @media (max-width: 600px) {
   .documents-table {
@@ -182,6 +237,25 @@
     .documents-table td:last-child {
       border-bottom: none;
       text-align: right;
+    }
+
+    .generate-doc-layout {
+      flex-direction: column;
+      height: auto;
+    }
+  
+    .generate-doc-panel,
+    .preview-panel {
+      flex: none;
+      width: 100%;
+      padding: 10px 0;
+      border-right: none;
+    }
+  
+    .preview-panel iframe {
+      height: 400px;
+      min-height: 300px;
+      width: 100%;
     }
 }
   

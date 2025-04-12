@@ -7,7 +7,7 @@
     <%= f.label :email, "Email", class: "required-label"%>
     <div class="input-field">
         <i class="fa-solid fa-envelope"></i>
-      <%= email_field_tag :email, nil, placeholder: "    user@example.com", required: true, id: "email-create" %>
+      <%= email_field_tag :email, nil, placeholder: "user@example.com", required: true, id: "email-create" %>
     </div>
   </div>
 
@@ -16,7 +16,7 @@
     <%= f.label :fname, "First Name", class: "required-label" %>
     <div class="input-field">
         <i class="fa-solid fa-user"></i>
-        <%= text_field_tag :fname, nil, placeholder: "    Enter mediator's first name", required: true %>
+        <%= text_field_tag :fname, nil, placeholder: "Enter mediator's first name", required: true %>
     </div>
   </div>
 
@@ -25,7 +25,7 @@
     <%= f.label :lname, "Last Name", class: "required-label" %>
     <div class="input-field">
         <i class="fa-solid fa-user"></i>
-        <%= text_field_tag :lname, nil,  placeholder: "    Enter mediator's last name",required: true %>
+        <%= text_field_tag :lname, nil,  placeholder: "Enter mediator's last name",required: true %>
     </div>
   </div>
 
@@ -34,7 +34,7 @@
     <%= f.label :password, "Password", class: "required-label" %>
     <div class="input-field">
       <i class="fa-solid fa-lock"></i>
-      <%= password_field_tag :password, nil, placeholder: "    Create a password", required: true, id: "password-create" %>
+      <%= password_field_tag :password, nil, placeholder: "Create a password", required: true, id: "password-create" %>
     </div>
   </div>
 
@@ -43,7 +43,7 @@
     <%= f.label :password_confirmation, "Confirm Password", class: "required-label" %>
     <div class="input-field">
       <i class="fa-solid fa-lock"></i>
-      <%= password_field_tag :password_confirmation, nil, placeholder: "    Confirm your password", required: true, id: "password-confirmation-create" %>
+      <%= password_field_tag :password_confirmation, nil, placeholder: "Confirm your password", required: true, id: "password-confirmation-create" %>
     </div>
     <p id="password-warning-create" style="color: red; display: none;">⚠️ Passwords do not match</p>
   </div>
