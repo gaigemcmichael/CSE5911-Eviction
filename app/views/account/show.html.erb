@@ -82,7 +82,7 @@
                                 <!-- Mediator Status -->
                                 <% status_text = @user.mediator.Available ? "Available" : "Not Available" %>
                                 <% status_class = @user.mediator.Available ? "status-available" : "status-unavailable" %>
-                                <p><strong>Status: <span class="<%= status_class %>"><%= status_text %></span></strong></p>
+                                <p><strong>Status: <span class="availability-badge <%= status_class %>"><%= status_text %></span></strong></p>
                                 
                                 <div class="form-section">
                                   <div class="checkbox-inline">
