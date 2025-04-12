@@ -20,11 +20,19 @@
                   <tr>
                     <th> <i class="fa-solid fa-location-dot"></i> Address</th>
                     <td>
-                      <p>Current: <strong><%= @user.TenantAddress.presence || "Not provided" %></strong></p>
-                      <%= form_with model: @user, url: account_path, method: :patch, local: true, id: "address-form" do |f| %>
-                        <%= f.text_field :TenantAddress, placeholder: "Enter new address", class: "form-control", required: true %><br>
-                        <%= f.submit "Update Address", class: "btn btn-sm btn-primary mt-1" %>
-                      <% end %>
+                      <!-- Current Address Display -->
+                      <p><strong>Current:</strong> <%= @user.TenantAddress.presence || "Not provided" %></p>
+
+                      <div class="form-section">
+                        <!-- Form to Update Address -->
+                        <%= form_with model: @user, url: account_path, method: :patch, local: true, id: "address-form" do |f| %>
+                        <div class="input-field">
+                          <i class="fa-solid fa-location-dot"></i>
+                          <%= f.text_field :TenantAddress, class: "form-control", placeholder: "Enter new address" %>
+                        </div>
+                          <%= f.submit "Update Address" %>
+                        <% end %>
+                      </div>
                     </td>
                   </tr>
                 <% elsif @user.Role == "Landlord"%>
@@ -43,9 +51,15 @@
                     <th> <i class="fa-solid fa-key"></i> Password</th>
                     <td>
                       <%= form_with model: @user, url: account_path, method: :patch, local: true, id: "password-form" do |f| %>
-                        <div>
-                          <%= f.password_field :password, placeholder: "New Password", id: "password" %><br>
-                          <%= f.password_field :password_confirmation, placeholder: "Confirm Password", id: "password_confirmation" %><br>
+                        <div class="form-section">
+                          <div class="input-field">
+                            <i class="fa-solid fa-lock"></i>
+                            <%= f.password_field :password, placeholder: "New Password", id: "password" %><br>
+                          </div>
+                          <div class="input-field">
+                            <i class="fa-solid fa-lock"></i>
+                            <%= f.password_field :password_confirmation, placeholder: "Confirm Password", id: "password_confirmation" %><br>
+                          </div>
                           <%= f.submit "Update Password", class: "btn btn-sm btn-primary mt-1" %>
                         </div>
                         <div id="password-error" class="text-danger mt-1" style="display: none;"></div>
