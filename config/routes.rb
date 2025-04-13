@@ -51,6 +51,7 @@ Rails.application.routes.draw do
   get  "/documents/template_preview/:conversation_id", to: "documents#intake_template_view", as: :intake_template_view
   post "/documents/template_generate", to: "documents#generate_filled_template", as: :generate_filled_template
 
+  post "/documents/:id/sign", to: "documents#sign", as: "sign_file"
 
   # Resources
   resources :messages, only: [ :index, :show, :create, :destroy ] do
