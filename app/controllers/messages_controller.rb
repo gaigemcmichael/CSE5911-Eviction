@@ -84,12 +84,15 @@ class MessagesController < ApplicationController
       (@user.Role == "Landlord" && @mediation.LandlordScreeningID.present?))
 
     if mediator_chat_ready
-      #TODO THIS IS THE MESSAGE HISTORY BUG ORIGIN
       # Load mediator <-> current user side conversation
-      side_group = SideMessageGroup.find_by(
-        UserID: @user.UserID,
-        MediatorID: @mediation.MediatorID
-      )
+
+      # THIS IS THE MESSAGE HISTORY BUG ORIGIN POINT, should be fixed now
+      if @user.Role == "Tenant"
+        side_group = SideMessageGroup.find_by(ConversationID: @mediation.TenantSideConversationID)
+      elsif @user.Role == "Landlord"
+        side_group = SideMessageGroup.find_by(ConversationID: @mediation.LandlordSideConversationID)
+      end
+
 
       if side_group
         @message_string = MessageString.find_by(ConversationID: side_group.ConversationID)
@@ -254,19 +257,19 @@ class MessagesController < ApplicationController
     # Lookup both groups - side_mediation should be empty everytime, but not sure if changing that will mess up anything else (I didnt write it initially)
     @primary_mediation = PrimaryMessageGroup.find_by(ConversationID: params[:id])
     @side_mediation = SideMessageGroup.find_by(ConversationID: params[:id])
-  
+
     # Make sure at least one exists and is closed (deleted_at present)
     if (@primary_mediation.nil? || @primary_mediation.deleted_at.nil?) &&
        (@side_mediation.nil? || @side_mediation.deleted_at.nil?)
       redirect_to messages_path, alert: "Mediation not found or still active."
       return
     end
-  
-    #For some code that already depends on this that I  didnt have time to refactor
+
+    # For some code that already depends on this that I  didnt have time to refactor
     @mediation = @primary_mediation
 
 
-    # Finding the tenant and landlord 
+    # Finding the tenant and landlord
     @tenant = User.find_by(UserID: @primary_mediation.TenantID)
     @landlord = User.find_by(UserID: @primary_mediation.LandlordID)
 
@@ -293,13 +296,13 @@ class MessagesController < ApplicationController
           @mediation.ConversationID,
           @mediation.TenantSideConversationID,
           @mediation.LandlordSideConversationID
-        ]}
+        ] }
       )
       .where(TenantSignature: true, LandlordSignature: true)
       .distinct
       .select("FileDrafts.*, Messages.ConversationID as ConversationID")
 
-  
+
     render "messages/summary"
   end
 
