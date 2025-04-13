@@ -84,6 +84,7 @@ class MessagesController < ApplicationController
       (@user.Role == "Landlord" && @mediation.LandlordScreeningID.present?))
 
     if mediator_chat_ready
+      #TODO THIS IS THE MESSAGE HISTORY BUG ORIGIN
       # Load mediator <-> current user side conversation
       side_group = SideMessageGroup.find_by(
         UserID: @user.UserID,
@@ -140,6 +141,12 @@ class MessagesController < ApplicationController
           UserID: @mediation.LandlordID,
           MediatorID: mediator.UserID,
           ConversationID: side_convo_landlord.ConversationID
+        )
+
+        # Update PrimaryMessageGroup with new side conversation IDs
+        @mediation.update!(
+          TenantSideConversationID: side_convo_tenant.ConversationID,
+          LandlordSideConversationID: side_convo_landlord.ConversationID
         )
 
         # Hide the chatbox for other party upon mediator request
@@ -244,27 +251,54 @@ class MessagesController < ApplicationController
 
   # Allows a user to view summaries of previous mediations
   def summary
-    @mediation = PrimaryMessageGroup.find_by(ConversationID: params[:id])
+    # Lookup both groups - side_mediation should be empty everytime, but not sure if changing that will mess up anything else (I didnt write it initially)
+    @primary_mediation = PrimaryMessageGroup.find_by(ConversationID: params[:id])
+    @side_mediation = SideMessageGroup.find_by(ConversationID: params[:id])
   
-    # If not found in Primary, check SideMessageGroups
-    if @mediation.nil?
-      @mediation = SideMessageGroup.find_by(ConversationID: params[:id])
-    end
-  
-    # If still nil or still active (deleted_at is nil) — redirect
-    if @mediation.nil? || @mediation.deleted_at.nil?
+    # Make sure at least one exists and is closed (deleted_at present)
+    if (@primary_mediation.nil? || @primary_mediation.deleted_at.nil?) &&
+       (@side_mediation.nil? || @side_mediation.deleted_at.nil?)
       redirect_to messages_path, alert: "Mediation not found or still active."
       return
     end
   
-    @tenant = User.find_by(UserID: @mediation.TenantID)
-    @landlord = User.find_by(UserID: @mediation.LandlordID)
-  
-    @fully_signed_files = FileDraft
+    #For some code that already depends on this that I  didnt have time to refactor
+    @mediation = @primary_mediation
+
+
+    # Finding the tenant and landlord 
+    @tenant = User.find_by(UserID: @primary_mediation.TenantID)
+    @landlord = User.find_by(UserID: @primary_mediation.LandlordID)
+
+    # THis is going to be all of the conversation ids we need to check (reduces number of complicated queries needed)
+    conversation_ids = []
+
+    if @primary_mediation.present?
+      # Add Primary id
+      conversation_ids << @primary_mediation.ConversationID
+
+      # Add Side Conversations from the Primary one, if they exist
+      conversation_ids << @primary_mediation.TenantSideConversationID if @primary_mediation.TenantSideConversationID.present?
+      conversation_ids << @primary_mediation.LandlordSideConversationID if @primary_mediation.LandlordSideConversationID.present?
+    elsif @side_mediation.present?
+      # If only a side was found directly, use it. This should never really happen but included just to be safe
+      conversation_ids << @side_mediation.ConversationID
+    end
+
+    # Query to get the signed files, this could be simpler, but that would require some model changes that are going to be annoying too
+    @signed_files = FileDraft
       .joins(file_attachments: :message)
-      .where(messages: { ConversationID: @mediation.ConversationID })
+      .where(
+        messages: { ConversationID: [
+          @mediation.ConversationID,
+          @mediation.TenantSideConversationID,
+          @mediation.LandlordSideConversationID
+        ]}
+      )
       .where(TenantSignature: true, LandlordSignature: true)
       .distinct
+      .select("FileDrafts.*, Messages.ConversationID as ConversationID")
+
   
     render "messages/summary"
   end
