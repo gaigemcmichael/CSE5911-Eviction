@@ -10,7 +10,7 @@
         <%= render partial: "messages/message", locals: { message: message, user: @user } %>
         <% file_attachment = FileAttachment.find_by(MessageID: message.MessageID) %>
 
-        <!-- This can (and probably should) be put into another partial similar to _message.html.erb, but it would be considerably trickier IMO, but I have not thought about it much -->
+        <%# This can (and probably should) be put into another partial similar to _message.html.erb, but it would be considerably trickier IMO, but I have not thought about it much #%>
         <% if file_attachment %>
           <% file = FileDraft.find_by(FileID: file_attachment.FileID) %>
           <div class="chat-message <%= message.SenderID == @user.UserID ? 'sent' : 'received' if message.recipientID == @user.UserID || message.SenderID == @user.UserID %>"
