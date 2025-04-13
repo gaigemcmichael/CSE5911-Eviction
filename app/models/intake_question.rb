@@ -21,4 +21,5 @@ class IntakeQuestion < ApplicationRecord
 
     validates :Section8, :TotalCostOrMonthly, inclusion: { in: [ true, false ] }
     validates :MoneyOwed, presence: true
+    has_one :primary_message_group, foreign_key: "IntakeID"
 end
