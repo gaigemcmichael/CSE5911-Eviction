@@ -11,9 +11,26 @@
   <% tenant_screening = ScreeningQuestion.find_by(ScreeningID: @mediation.TenantScreeningID) %>
   <% landlord_screening = ScreeningQuestion.find_by(ScreeningID: @mediation.LandlordScreeningID) %>
   <% flagged = tenant_screening&.flagged || landlord_screening&.flagged %>
+  <% intake = @mediation.intake_question %>
 
   <% if @mediation.deleted_at.nil? %>
     <% if !flagged %>
+      <% if intake %>
+        <div class="intake-section">
+          <h2>Tenant Intake Responses</h2>
+          <table class="intake-table">
+            <tr><th>Reason for Mediation</th><td><%= intake.Reason %></td></tr>
+            <tr><th>Describe the Cause</th><td><%= intake.DescribeCause.presence || "N/A" %></td></tr>
+            <tr><th>Best Option</th><td><%= intake.BestOption %></td></tr>
+            <tr><th>Uses Section 8</th><td><%= intake.Section8 ? "Yes" : "No" %></td></tr>
+            <tr><th>Money Owed</th><td>$<%= intake.MoneyOwed %></td></tr>
+            <tr><th>Total or Monthly?</th><td><%= intake.TotalCostOrMonthly ? "Monthly" : "Total" %></td></tr>
+            <tr><th>Monthly Rent</th><td>$<%= intake.MonthlyRent || "N/A" %></td></tr>
+            <tr><th>Date Due</th><td><%= intake.DateDue&.strftime("%B %d, %Y") || "N/A" %></td></tr>
+            <tr><th>Payable Today</th><td><%= intake.PayableToday %></td></tr>
+          </table>
+        </div>
+      <% end %>
       <div class="message-page-container mediator-grid">
         <!-- Row 1, Column 1: Tenant Info -->
         <div class="message-column">
