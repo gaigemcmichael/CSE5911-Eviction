@@ -15,23 +15,22 @@ class DocumentsController < ApplicationController
       return render plain: "File not found", status: :not_found
     end
     render :sign
-
   end
-  
+
   def apply_signature
     file = FileDraft.find_by(FileID: params[:id])
     unless file
       return render plain: "File not found", status: :not_found
     end
-  
-    signature = params[:signature] 
-  
+
+    signature = params[:signature]
+
     # Path to original docx
     file_path = Rails.root.join("public", file.FileURLPath.gsub(".pdf", ".docx"))
     unless File.exist?(file_path)
       return render plain: "Original document not found", status: :not_found
     end
-  
+
     # Get the signature ready to sub in, update the DB
     data = {}
     if @user.Role == "Tenant"
@@ -43,16 +42,16 @@ class DocumentsController < ApplicationController
     else
       return render plain: "Not authorized", status: :forbidden
     end
-  
+
     # Regenerate DOCX with signature
     buffer = DocxTemplater.new.replace_file_with_content(file_path.to_s, data)
-  
+
     # Overwrite the original DOCX
     File.open(file_path.to_s, "wb") { |f| f.write(buffer.string) }
-  
+
     # Regenerate PDF, keeps name so DB wont need updated
     Docsplit.extract_pdf(file_path.to_s, output: File.dirname(file_path))
-  
+
     redirect_to documents_path, notice: "Document signed successfully!"
   end
 
@@ -133,7 +132,7 @@ class DocumentsController < ApplicationController
 
     Docsplit.extract_pdf("public/userFiles/#{file_id}.docx", output: "public/userFiles")
 
-    if @user.Role == "Tenant" 
+    if @user.Role == "Tenant"
       FileDraft.create!(
         FileName: "#{file_id}",
         FileTypes: "pdf",
@@ -141,7 +140,7 @@ class DocumentsController < ApplicationController
         CreatorID: @user.UserID,
         TenantSignature: true
       )
-    elsif @user.Role == "Landlord" 
+    elsif @user.Role == "Landlord"
       FileDraft.create!(
         FileName: "#{file_id}",
         FileTypes: "pdf",
@@ -149,7 +148,7 @@ class DocumentsController < ApplicationController
         CreatorID: @user.UserID,
         LandlordSignature: true
       )
-    end 
+    end
 
     redirect_to user_role == "Tenant" ? documents_path : landlord_documents_path, notice: "Document generated successfully."
   end
