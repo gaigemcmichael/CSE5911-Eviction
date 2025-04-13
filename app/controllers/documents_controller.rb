@@ -53,7 +53,8 @@ class DocumentsController < ApplicationController
       tenant_address: params[:address],
       landlord_company: landlord.CompanyName.to_s,
       negotiation_date: params[:negotiation_date],
-      additional_provisions: params[:additional_provisions]
+      additional_provisions: params[:additional_provisions],
+      vacate_date: params[:vacate_date]
     }
 
     if user_role == "Tenant"
@@ -79,11 +80,11 @@ class DocumentsController < ApplicationController
 
     # Save filled document
     File.open(filled_docx_path.to_s, "wb") { |f| f.write(buffer.string) }
-    # unless File.exist?(filled_docx_path)
-    # logger.error "DOCX generation failed"
-    # render plain: "Document generation failed", status: :internal_server_error
-    # return
-    # end
+    unless File.exist?(filled_docx_path)
+      logger.error "DOCX generation failed"
+      render plain: "Document generation failed", status: :internal_server_error
+      return
+    end
 
     Docsplit.extract_pdf("public/userFiles/#{file_id}.docx", output: "public/userFiles")
 
