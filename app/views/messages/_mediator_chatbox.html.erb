@@ -25,9 +25,9 @@
                     <%= link_to "View", document_path(file.FileID), class: "btn btn-link" %> |
                     <%= link_to "Download", download_file_path(file.FileID), class: "btn btn-link" %></p>
                     <% if @user.Role == 'Tenant' && file.TenantSignature == false %>
-                      <%= button_to "Sign as Tenant", sign_file_path(file.FileID), method: :post %>
+                      <%= button_to "Sign as Tenant", sign_document_path(file.FileID), method: :get %>
                     <% elsif @user.Role == 'Landlord' && file.LandlordSignature == false %>
-                      <%= button_to "Sign as Landlord", sign_file_path(file.FileID), method: :post %>
+                      <%= button_to "Sign as Landlord", sign_document_path(file.FileID), method: :get %>
                     <% end %>
               <small class="message-timestamp"><%= message.MessageDate.strftime("%B %d, %Y %I:%M %p") %></small>
             </div>

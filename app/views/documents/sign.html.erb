@@ -5,7 +5,10 @@
 <%= form_with url: apply_signature_document_path(@file.FileID), method: :post do |form| %>
   <div>
     <%= form.label :signature, "Enter your signature:" %><br>
-    <%= form.text_field :signature, required: true %>
+    <%= form.text_field :signature, 
+        required: true, 
+        pattern: "/.+/", 
+        title: "Your signature must start and end with a '/' (example: /John Doe/)" %>
   </div>
 
   <div>
