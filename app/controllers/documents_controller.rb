@@ -9,7 +9,25 @@ class DocumentsController < ApplicationController
 
 
 
+  def sign
+    
+    #This is temporary, but does work (obviously does not update the file rn)
+    file = FileDraft.find_by(FileID: params[:id])
+    unless file
+      return render plain: "File not found", status: :not_found 
+    end
 
+    if @user.Role == "Tenant"
+      file.update(TenantSignature: true)
+    elsif @user.Role == "Landlord"
+      file.update(LandlordSignature: true)
+    else
+      render plain: "Not authorized", status: :forbidden
+      return
+    end
+
+    redirect_back fallback_location: messages_path, notice: "Signed successfully!"
+  end
 
 
 
