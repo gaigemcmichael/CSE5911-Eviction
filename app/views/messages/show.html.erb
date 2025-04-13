@@ -4,7 +4,7 @@
     landlord_screening = ScreeningQuestion.find_by(ScreeningID: @mediation.LandlordScreeningID, deleted_at: nil)
   %>
   <% if @mediation&.deleted_at.nil? && @message_string&.deleted_at.nil? %>
-    <% if @mediation&.MediatorRequested && @mediation&.MediatorAssigned && tenant_screening&.flagged == false && landlord_screening&.flagged == false %>
+    <% if @mediation&.MediatorRequested && @mediation&.MediatorAssigned && (@user.Role == "Tenant" && tenant_screening&.flagged == false) || (@user.Role == "Landlord" && landlord_screening&.flagged == false) %>
       <h1>Mediation Conversation</h1>
       <p>
         A mediator has been requested and assigned to this case. <br>
@@ -20,7 +20,34 @@
         Welcome, <%= @user.FName %>! Here is the negotiation conversation.
       </p>
     <% end %>
-
+    <div class="conversation-details-box">
+      <h3>Conversation Info</h3>
+      <table class="info-table">
+        <tr>
+          <th>Address</th>
+          <td><%= @mediation.tenant.TenantAddress.presence || "N/A" %></td>
+        </tr>
+        <% if @user.Role == "Tenant" %>
+          <tr>
+            <th>Landlord Name</th>
+            <td><%= @mediation.landlord.FName %> <%= @mediation.landlord.LName %></td>
+          </tr>
+          <tr>
+            <th>Landlord Email</th>
+            <td><%= @mediation.landlord.Email %></td>
+          </tr>
+        <% elsif @user.Role == "Landlord" %>
+          <tr>
+            <th>Tenant Name</th>
+            <td><%= @mediation.tenant.FName %> <%= @mediation.tenant.LName %></td>
+          </tr>
+          <tr>
+            <th>Tenant Email</th>
+            <td><%= @mediation.tenant.Email %></td>
+          </tr>
+        <% end %>
+      </table>
+    </div>
     <% mediator_screening_needed = @mediation&.MediatorRequested && @mediation&.MediatorAssigned &&
       ((@user.Role == "Tenant" && @mediation.TenantScreeningID.nil?) ||
       (@user.Role == "Landlord" && @mediation.LandlordScreeningID.nil?)) %>
