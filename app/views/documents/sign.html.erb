@@ -1,0 +1,14 @@
+<h2>Sign Document</h2>
+
+<p>You are signing: <%= @file.FileName %></p>
+
+<%= form_with url: apply_signature_document_path(@file.FileID), method: :post do |form| %>
+  <div>
+    <%= form.label :signature, "Enter your signature:" %><br>
+    <%= form.text_field :signature, required: true %>
+  </div>
+
+  <div>
+    <%= form.submit "Apply Signature" %>
+  </div>
+<% end %>

@@ -10,23 +10,50 @@ class DocumentsController < ApplicationController
 
 
   def sign
-    
-    #This is temporary, but does work (obviously does not update the file rn)
+    @file = FileDraft.find_by(FileID: params[:id])
+    unless @file
+      return render plain: "File not found", status: :not_found
+    end
+    render :sign
+
+  end
+  
+  def apply_signature
     file = FileDraft.find_by(FileID: params[:id])
     unless file
-      return render plain: "File not found", status: :not_found 
+      return render plain: "File not found", status: :not_found
     end
-
+  
+    signature = params[:signature] 
+  
+    # Path to original docx
+    file_path = Rails.root.join("public", file.FileURLPath.gsub(".pdf", ".docx"))
+    unless File.exist?(file_path)
+      return render plain: "Original document not found", status: :not_found
+    end
+  
+    # Get the signature ready to sub in, update the DB
+    data = {}
     if @user.Role == "Tenant"
+      data[:tenant_signature] = signature
       file.update(TenantSignature: true)
     elsif @user.Role == "Landlord"
+      data[:landlord_signature] = signature
       file.update(LandlordSignature: true)
     else
-      render plain: "Not authorized", status: :forbidden
-      return
+      return render plain: "Not authorized", status: :forbidden
     end
-
-    redirect_back fallback_location: messages_path, notice: "Signed successfully!"
+  
+    # Regenerate DOCX with signature
+    buffer = DocxTemplater.new.replace_file_with_content(file_path.to_s, data)
+  
+    # Overwrite the original DOCX
+    File.open(file_path.to_s, "wb") { |f| f.write(buffer.string) }
+  
+    # Regenerate PDF, keeps name so DB wont need updated
+    Docsplit.extract_pdf(file_path.to_s, output: File.dirname(file_path))
+  
+    redirect_to documents_path, notice: "Document signed successfully!"
   end
 
 
