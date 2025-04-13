@@ -27,8 +27,10 @@
 
     <%
       mediator_chat_ready = @mediation&.MediatorRequested && @mediation&.MediatorAssigned &&
-        ((tenant_screening&.flagged == false) &&
-          (landlord_screening&.flagged == false))
+        (
+          (@user.Role == "Tenant" && tenant_screening&.flagged == false) ||
+          (@user.Role == "Landlord" && landlord_screening&.flagged == false)
+        )
     %>
 
     <% if mediator_chat_ready %>
