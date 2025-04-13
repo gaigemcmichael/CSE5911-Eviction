@@ -49,7 +49,7 @@ class DocumentsController < ApplicationController
     # Build data for the docx template
     data = {
       landlord_name: params[:landlord_name],
-      tenant_name: params[:fname],
+      tenant_name: params[:tenant_name],
       tenant_address: params[:address],
       landlord_company: landlord.CompanyName.to_s,
       negotiation_date: params[:negotiation_date],
@@ -88,12 +88,23 @@ class DocumentsController < ApplicationController
 
     Docsplit.extract_pdf("public/userFiles/#{file_id}.docx", output: "public/userFiles")
 
-    FileDraft.create!(
-      FileName: "#{file_id}",
-      FileTypes: "pdf",
-      FileURLPath: "userFiles/#{file_id}.pdf",
-      CreatorID: @user.UserID
-    )
+    if @user.Role == "Tenant" 
+      FileDraft.create!(
+        FileName: "#{file_id}",
+        FileTypes: "pdf",
+        FileURLPath: "userFiles/#{file_id}.pdf",
+        CreatorID: @user.UserID,
+        TenantSignature: true
+      )
+    elsif @user.Role == "Landlord" 
+      FileDraft.create!(
+        FileName: "#{file_id}",
+        FileTypes: "pdf",
+        FileURLPath: "userFiles/#{file_id}.pdf",
+        CreatorID: @user.UserID,
+        LandlordSignature: true
+      )
+    end 
 
     redirect_to user_role == "Tenant" ? documents_path : landlord_documents_path, notice: "Document generated successfully."
   end
