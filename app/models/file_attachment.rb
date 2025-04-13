@@ -3,5 +3,4 @@ class FileAttachment < ApplicationRecord
 
     belongs_to :file_draft, foreign_key: :FileID
     belongs_to :message, foreign_key: :MessageID
-
 end
