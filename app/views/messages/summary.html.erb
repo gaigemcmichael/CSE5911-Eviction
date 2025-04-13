@@ -53,9 +53,17 @@
 
     <div class="summary-section">
       <h2><i class="fa-solid fa-paperclip"></i> Attached Documents</h2>
-      <%# TODO: modify logic to show attached documents here! %>
-      <% if true %>
-        <p>This is where documents will be shown</p>
+      <% if @fully_signed_files.any? %>
+        <ul class="document-list">
+          <% @fully_signed_files.each do |file| %>
+            <li>
+              <i class="fa-solid fa-file-lines"></i>
+              <%= link_to file.FileName, "/#{file.FileURLPath}", target: "_blank" %>
+            </li>
+          <% end %>
+        </ul>
+      <% else %>
+        <p>No documents were signed by both parties during this mediation.</p>
       <% end %>
     </div>
   </div>

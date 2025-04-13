@@ -245,19 +245,32 @@ class MessagesController < ApplicationController
   # Allows a user to view summaries of previous mediations
   def summary
     @mediation = PrimaryMessageGroup.find_by(ConversationID: params[:id])
-
+  
+    # If not found in Primary, check SideMessageGroups
+    if @mediation.nil?
+      @mediation = SideMessageGroup.find_by(ConversationID: params[:id])
+    end
+  
+    # If still nil or still active (deleted_at is nil) — redirect
     if @mediation.nil? || @mediation.deleted_at.nil?
       redirect_to messages_path, alert: "Mediation not found or still active."
       return
     end
-
+  
     @tenant = User.find_by(UserID: @mediation.TenantID)
     @landlord = User.find_by(UserID: @mediation.LandlordID)
-
+  
+    @fully_signed_files = FileDraft
+      .joins(file_attachments: :message)
+      .where(messages: { ConversationID: @mediation.ConversationID })
+      .where(TenantSignature: true, LandlordSignature: true)
+      .distinct
+  
     render "messages/summary"
   end
 
   private
+
 
   def determine_recipient(conversation)
     primary_group = PrimaryMessageGroup.find_by(ConversationID: conversation.ConversationID)
