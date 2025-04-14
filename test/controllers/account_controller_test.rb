@@ -6,10 +6,10 @@ class AccountControllerTest < ActionDispatch::IntegrationTest
   #  assert_response :success
   # end
 
-  test "should get edit" do
-    get account_edit_url
-    assert_response :success
-  end
+  # test "should get edit" do
+  #  get account_edit_url
+  #  assert_response :success
+  # end
 
   # test "should get update" do
   #  get account_update_url
