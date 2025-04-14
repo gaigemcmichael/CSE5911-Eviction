@@ -25,7 +25,7 @@ class DashboardControllerTest < ActionDispatch::IntegrationTest
     assert_equal "You must be logged in to access the dashboard.", flash[:alert]
   end
 
-  test "should get index for landlord" do # have isolated this (and probably the rest of the test cases) issue due to the log_in_as method not actually logging users in. expecting <"dashboard/index"> but rendering with <["sessions/new", "layouts/application"]>
+  test "should get index for landlord" do
     log_in_as(@landlord)
     get dashboard_path
     if response.redirect?
@@ -35,7 +35,7 @@ class DashboardControllerTest < ActionDispatch::IntegrationTest
     assert_template "dashboard/_landlord_dashboard"
   end
 
-  test "should get index for tenant" do # expecting <"dashboard/index"> but rendering with <[]>
+  test "should get index for tenant" do
     log_in_as(@tenant)
     get dashboard_path
     if response.redirect?
@@ -45,7 +45,7 @@ class DashboardControllerTest < ActionDispatch::IntegrationTest
     assert_template "dashboard/_tenant_dashboard"
   end
 
-  test "should get index for admin" do # Not yet implemented
+  test "should get index for admin" do
     log_in_as(@admin)
     get dashboard_path
     if response.redirect?
@@ -55,7 +55,7 @@ class DashboardControllerTest < ActionDispatch::IntegrationTest
     assert_template "dashboard/_admin_dashboard"
   end
 
-  test "should get index for mediator" do # expecting <"dashboard/index"> but rendering with <[]>
+  test "should get index for mediator" do
     log_in_as(@mediator)
     get dashboard_path
     if response.redirect?
@@ -65,14 +65,14 @@ class DashboardControllerTest < ActionDispatch::IntegrationTest
     assert_template "dashboard/_mediator_dashboard"
   end
 
-  test "should deny access for invalid user role" do # Expected response to be a <403: forbidden>, but was a <302: Found> redirect to <http://www.example.com/login>
+  test "should deny access for invalid user role" do
     log_in_as(@invalid_user)
     get dashboard_path
     assert_response :forbidden
     assert_equal "Error: Invalid user role", response.body
   end
 
-  test "should log out and redirect to root" do # Expected response to be a <3XX: redirect>, but was a <404: Not Found>
+  test "should log out and redirect to root" do
     log_in_as(@landlord)
     get logout_path
     assert_redirected_to root_path
