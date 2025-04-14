@@ -2,8 +2,8 @@ require "test_helper"
 
 class MediationsControllerTest < ActionDispatch::IntegrationTest
   setup do
-    @tenant = users(:tenant)
-    @landlord = users(:landlord)
+    @tenant = users(:tenant1)
+    @landlord = users(:landlord1)
     @mediation = primary_message_groups(:one)
   end
 
@@ -11,14 +11,14 @@ class MediationsControllerTest < ActionDispatch::IntegrationTest
     post login_path, params: { session: { email: user.Email, password: user.Password } }
   end
 
-  test "should redirect to messages path on index access" do # chatGPT made this idk what it does
+  test "should redirect to messages path on index access" do
     log_in_as(@tenant)
     get mediations_path
     assert_redirected_to messages_path
     assert_equal "Mediation index is not available. Please use the messages page.", flash[:alert]
   end
 
-  test "tenant can create mediation" do # Ask about in meeting
+  test "tenant can create mediation" do
     log_in_as(@tenant)
     assert_difference("PrimaryMessageGroup.count") do
     post mediations_path, params: { mediation: { LandlordID: @landlord.UserID, TenantID: @tenant.UserID } }
@@ -34,7 +34,6 @@ class MediationsControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "landlord can accept mediation" do
-    log_in_as(@landlord)
     patch accept_mediation_path(@mediation)
     assert @mediation.reload.accepted_by_landlord
     assert_redirected_to mediations_path
@@ -42,7 +41,7 @@ class MediationsControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "unauthorized landlord cannot accept mediation" do
-    another_landlord = users(:landlord_two)
+    another_landlord = users(:landlord2)
     log_in_as(another_landlord)
     patch accept_mediation_path(@mediation)
     assert_redirected_to mediations_path

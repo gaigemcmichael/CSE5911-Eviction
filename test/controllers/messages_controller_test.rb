@@ -2,8 +2,8 @@ require "test_helper"
 
 class MessagesControllerTest < ActionDispatch::IntegrationTest
   def setup
-    @tenant = users(:tenant) # Assume a fixture for a tenant user
-    @landlord = users(:landlord) # Assume a fixture for a landlord user
+    @tenant = users(:tenant1) # Assume a fixture for a tenant user
+    @landlord = users(:landlord1) # Assume a fixture for a landlord user
     @mediation = primary_message_groups(:one) # Assume a fixture for mediation
   end
 
@@ -18,18 +18,18 @@ class MessagesControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "tenant should see tenant_index if mediation exists" do
-    log_in_as(@tenant) # Helper method to simulate login
+    log_in_as(@tenant)
     get messages_path
     assert_response :success
     assert_template "messages/tenant_index"
   end
 
   test "tenant without mediation should see landlords list" do
-    @mediation.destroy # Ensure no mediation exists
+    @mediation.destroy
     log_in_as(@tenant)
     get messages_path
     assert_response :success
-    assert_template "messages/tenant_index" # not too sure what these templates are
+    assert_template "messages/tenant_index"
     assert_not_nil assigns(:landlords)
   end
 
@@ -40,8 +40,8 @@ class MessagesControllerTest < ActionDispatch::IntegrationTest
     assert_template "messages/landlord_index"
   end
 
-  test "unauthorized users should get forbidden response" do # Not sure if this case is even testing anything useful
-    unauthorized_user = users(:random) # Assume a fixture for unauthorized role
+  test "unauthorized users should get forbidden response" do
+    unauthorized_user = users(:random1)
     log_in_as(unauthorized_user)
     get messages_path
     assert_response :forbidden

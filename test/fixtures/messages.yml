@@ -10,11 +10,11 @@ one:
   SenderID: 1
   MessageDate: 2025-01-01 00:00:00
   Contents: lorem ipsum
-  RequiresMediatorReview: 0
+  #RequiresMediatorReview: 0
 two:
   MessageID: 2
   ConversationID: 2
   SenderID: 2
   MessageDate: 2025-01-01 00:00:00
   Contents: lorem ipsum
-  RequiresMediatorReview: 0
+  #RequiresMediatorReview: 0
