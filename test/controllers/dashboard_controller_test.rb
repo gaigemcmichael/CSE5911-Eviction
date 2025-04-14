@@ -11,7 +11,7 @@ class DashboardControllerTest < ActionDispatch::IntegrationTest
 
   def log_in_as(user)
     post login_path, params: {
-      email: user.email,
+      email: user.Email,
       password: "password"
     }
     follow_redirect! if response.redirect?
