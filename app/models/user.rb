@@ -22,7 +22,7 @@ class User < ApplicationRecord
       errors.add(:CompanyName, "is too long")
     end
   end
-  
+
   # Associating a mediator to a user
   has_one :mediator, foreign_key: "UserID", dependent: :destroy
   accepts_nested_attributes_for :mediator
