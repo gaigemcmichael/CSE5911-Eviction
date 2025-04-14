@@ -1,5 +1,4 @@
 # Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
-# TODO: Will add more of everything. Will also add several more invalid cases w/ duplicate emails, passwords, improper use of fields etc.
 landlord1:
   UserID: 1
   Email: MyString1@email.com
