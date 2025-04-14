@@ -3,13 +3,6 @@ class SessionsController < ApplicationController
     end
 
     def create
-      puts "\n⚠️ Login Debug:"
-      puts "Params: #{params.inspect}"
-      user = User.find_by(Email: params[:email])
-      puts "User found? #{!user.nil?}"
-      puts "Expected password: #{user&.Password}"
-      puts "Password matches? #{user&.Password == params[:password]}"
-
         # Find user by email
         user = User.find_by(Email: params[:email])
 
