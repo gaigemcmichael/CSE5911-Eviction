@@ -54,12 +54,14 @@
         <p></p> <!-- Space-->
         <%= f.label :ConsultExplanation, "If yes, describe further:" %>
         <%= f.text_area :ConsultExplanation, placeholder: 'Who do you need to consult?', class: "form-control" %>
-        <p></p> <!-- Space-->
-        <!-- Relationship -->
-        <%= f.label :RelationshipToOtherParty, "How do you know the other party?" %>
-        <%= f.text_field :RelationshipToOtherParty, placeholder: 'Describe your relationship', class: "form-control" %>
       </div>
 
+      <!-- Relationship -->
+      <div class="form-section">
+        <%= f.label :RelationshipToOtherParty, "How do you know the other party? (Tenant/Landlord)", class: "required-label" %>
+        <%= f.text_area :RelationshipToOtherParty, rows:1, placeholder: 'Describe your relationship', class: "form-control", required:true %>
+      </div>
+      
       <!-- Unsafe Mediation -->
       <div class="form-section">
         <%= f.label :Unsafe, "Is there any reason you wouldn’t feel comfortable mediating?", class: "required-label" %><br>

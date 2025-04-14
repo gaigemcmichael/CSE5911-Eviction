@@ -65,3 +65,12 @@ html, body {
     position: relative;
     color: #102a4d;
 }
+
+/* Responsive Design */
+@media (max-width: 600px) {
+    .personal-details-table, .pass-security-table {
+        width: 100%;
+        display: block;
+        overflow-x: auto;
+    }
+}

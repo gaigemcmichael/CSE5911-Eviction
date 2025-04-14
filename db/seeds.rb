@@ -63,7 +63,8 @@ file_draft = FileDraft.create(
   CreatorID: tenant.UserID,
   FileName: 'test document1',
   FileTypes: 'text/plain',
-  FileURLPath: 'userFiles/TestDocument1.pdf'
+  FileURLPath: 'userFiles/TestDocument1.pdf',
+  TenantSignature: 1
 )
 
 puts "Seed data set 1 created successfully! - 4 users (one of each type) and a sample file (already in the system)"
@@ -120,7 +121,8 @@ file_draft2 = FileDraft.create(
   CreatorID: landlord.UserID,
   FileName: 'test document 2',
   FileTypes: 'text/plain',
-  FileURLPath: 'userFiles/testfile2.txt'
+  FileURLPath: 'userFiles/testfile2.txt',
+  LandlordSignature: 1
 )
 
 puts "Seed data set 2 created successfully! - 4 users (one of each type) and a sample file (already in the system)"

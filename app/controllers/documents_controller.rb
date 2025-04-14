@@ -9,7 +9,51 @@ class DocumentsController < ApplicationController
 
 
 
+  def sign
+    @file = FileDraft.find_by(FileID: params[:id])
+    unless @file
+      return render plain: "File not found", status: :not_found
+    end
+    render :sign
+  end
 
+  def apply_signature
+    file = FileDraft.find_by(FileID: params[:id])
+    unless file
+      return render plain: "File not found", status: :not_found
+    end
+
+    signature = params[:signature]
+
+    # Path to original docx
+    file_path = Rails.root.join("public", file.FileURLPath.gsub(".pdf", ".docx"))
+    unless File.exist?(file_path)
+      return render plain: "Original document not found", status: :not_found
+    end
+
+    # Get the signature ready to sub in, update the DB
+    data = {}
+    if @user.Role == "Tenant"
+      data[:tenant_signature] = signature
+      file.update(TenantSignature: true)
+    elsif @user.Role == "Landlord"
+      data[:landlord_signature] = signature
+      file.update(LandlordSignature: true)
+    else
+      return render plain: "Not authorized", status: :forbidden
+    end
+
+    # Regenerate DOCX with signature
+    buffer = DocxTemplater.new.replace_file_with_content(file_path.to_s, data)
+
+    # Overwrite the original DOCX
+    File.open(file_path.to_s, "wb") { |f| f.write(buffer.string) }
+
+    # Regenerate PDF, keeps name so DB wont need updated
+    Docsplit.extract_pdf(file_path.to_s, output: File.dirname(file_path))
+
+    redirect_to documents_path, notice: "Document signed successfully!"
+  end
 
 
 
@@ -49,11 +93,12 @@ class DocumentsController < ApplicationController
     # Build data for the docx template
     data = {
       landlord_name: params[:landlord_name],
-      tenant_name: params[:fname],
+      tenant_name: params[:tenant_name],
       tenant_address: params[:address],
       landlord_company: landlord.CompanyName.to_s,
       negotiation_date: params[:negotiation_date],
-      additional_provisions: params[:additional_provisions]
+      additional_provisions: params[:additional_provisions],
+      vacate_date: params[:vacate_date]
     }
 
     if user_role == "Tenant"
@@ -79,20 +124,31 @@ class DocumentsController < ApplicationController
 
     # Save filled document
     File.open(filled_docx_path.to_s, "wb") { |f| f.write(buffer.string) }
-    # unless File.exist?(filled_docx_path)
-    # logger.error "DOCX generation failed"
-    # render plain: "Document generation failed", status: :internal_server_error
-    # return
-    # end
+    unless File.exist?(filled_docx_path)
+      logger.error "DOCX generation failed"
+      render plain: "Document generation failed", status: :internal_server_error
+      return
+    end
 
     Docsplit.extract_pdf("public/userFiles/#{file_id}.docx", output: "public/userFiles")
 
-    FileDraft.create!(
-      FileName: "#{file_id}",
-      FileTypes: "pdf",
-      FileURLPath: "userFiles/#{file_id}.pdf",
-      CreatorID: @user.UserID
-    )
+    if @user.Role == "Tenant"
+      FileDraft.create!(
+        FileName: "#{file_id}",
+        FileTypes: "pdf",
+        FileURLPath: "userFiles/#{file_id}.pdf",
+        CreatorID: @user.UserID,
+        TenantSignature: true
+      )
+    elsif @user.Role == "Landlord"
+      FileDraft.create!(
+        FileName: "#{file_id}",
+        FileTypes: "pdf",
+        FileURLPath: "userFiles/#{file_id}.pdf",
+        CreatorID: @user.UserID,
+        LandlordSignature: true
+      )
+    end
 
     redirect_to user_role == "Tenant" ? documents_path : landlord_documents_path, notice: "Document generated successfully."
   end
