@@ -53,7 +53,7 @@
     <%= f.label :mediation_cap, "Mediation Cap", class: "required-label" %>
     <div class="input-field">
       <i class="fa-solid fa-scale-balanced"></i>
-      <%= number_field_tag :mediation_cap, nil, placeholder: "    Set the maximum number of mediations this mediator can be assigned at any time", required: true %>
+      <%= number_field_tag :mediation_cap, nil, placeholder: "Set the maximum number of mediations this mediator can be assigned at any time", required: true, class: "signup-input" %>
     </div>
   </div>
   <%= submit_tag "Create Mediator" %>
