@@ -13,18 +13,14 @@ class MediatorCasesController < ApplicationController
       return
     end
 
-    # Get tenant-side conversation
-    tenant_side_group = SideMessageGroup.find_by(
-      UserID: @mediation.TenantID,
-      MediatorID: @mediation.MediatorID
-    )
+    # Get tenant-side conversation, another point of origin for the history bug
+    tenant_side_group = SideMessageGroup.find_by(ConversationID: @mediation.TenantSideConversationID)
+
     tenant_msg_string = tenant_side_group && MessageString.find_by(ConversationID: tenant_side_group.ConversationID)
 
-    # Get landlord-side conversation
-    landlord_side_group = SideMessageGroup.find_by(
-      UserID: @mediation.LandlordID,
-      MediatorID: @mediation.MediatorID
-    )
+    # Get landlord-side conversation, another point of origin for the history bug
+    landlord_side_group = SideMessageGroup.find_by(ConversationID: @mediation.LandlordSideConversationID)
+
     landlord_msg_string = landlord_side_group && MessageString.find_by(ConversationID: landlord_side_group.ConversationID)
 
     @tenant_message_string = tenant_msg_string
