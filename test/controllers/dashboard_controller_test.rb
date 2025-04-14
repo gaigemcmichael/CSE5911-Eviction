@@ -18,7 +18,6 @@ class DashboardControllerTest < ActionDispatch::IntegrationTest
     assert_equal user.UserID, session[:user_id], "Login failed for #{user.Email}"
   end
 
-
   test "should redirect to login if not logged in" do
     get dashboard_path
     assert_redirected_to login_path
@@ -29,7 +28,7 @@ class DashboardControllerTest < ActionDispatch::IntegrationTest
     log_in_as(@landlord)
     get dashboard_path
     if response.redirect?
-      follow_redirect!  # If redirected, follow the redirect
+      follow_redirect!
     end
     assert_response :success
     assert_template "dashboard/_landlord_dashboard"
@@ -39,7 +38,7 @@ class DashboardControllerTest < ActionDispatch::IntegrationTest
     log_in_as(@tenant)
     get dashboard_path
     if response.redirect?
-      follow_redirect!  # If redirected, follow the redirect
+      follow_redirect!
     end
     assert_response :success
     assert_template "dashboard/_tenant_dashboard"
@@ -49,7 +48,7 @@ class DashboardControllerTest < ActionDispatch::IntegrationTest
     log_in_as(@admin)
     get dashboard_path
     if response.redirect?
-      follow_redirect!  # If redirected, follow the redirect
+      follow_redirect!
     end
     assert_response :success
     assert_template "dashboard/_admin_dashboard"
@@ -59,7 +58,7 @@ class DashboardControllerTest < ActionDispatch::IntegrationTest
     log_in_as(@mediator)
     get dashboard_path
     if response.redirect?
-      follow_redirect!  # If redirected, follow the redirect
+      follow_redirect!
     end
     assert_response :success
     assert_template "dashboard/_mediator_dashboard"
