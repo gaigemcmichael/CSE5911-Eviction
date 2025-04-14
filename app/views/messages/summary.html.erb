@@ -52,11 +52,24 @@
     </div>
 
     <div class="summary-section">
-      <h2><i class="fa-solid fa-paperclip"></i> Attached Documents</h2>
-      <%# TODO: modify logic to show attached documents here! %>
-      <% if true %>
-        <p>This is where documents will be shown</p>
+      <h2><i class="fa-solid fa-paperclip"></i> Signed Attached Documents</h2>
+
+      <% @signed_files.each do |file| %>
+        <% conversation_label = case file.ConversationID %>
+          <% when @mediation.ConversationID %>
+            <span class="tag primary">Main Negotiation</span>
+          <% when @mediation.TenantSideConversationID %>
+            <span class="tag tenant-side">Tenant Side Mediation</span>
+          <% when @mediation.LandlordSideConversationID %>
+            <span class="tag landlord-side">Landlord Side Mediation</span>
+          <% else %>
+            <span class="tag unknown">Unknown Group</span>
+        <% end %>
+        <li>
+          <i class="fa-solid fa-file-lines"></i>
+          <%= link_to file.FileName, "/#{file.FileURLPath}", target: "_blank" %>
+          <%= conversation_label.html_safe %>
+        </li>
       <% end %>
-    </div>
   </div>
 </div>
