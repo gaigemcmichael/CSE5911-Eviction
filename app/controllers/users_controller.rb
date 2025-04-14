@@ -14,7 +14,6 @@ class UsersController < ApplicationController
 
         redirect_to dashboard_path, notice: "Account created successfully!"
       else
-        flash.now[:alert] = "There was a problem creating your account."
         render :new
       end
     end
@@ -23,6 +22,6 @@ class UsersController < ApplicationController
 
     # Adjust the permitted parameters to match your Users table column names.
     def user_params
-      params.require(:user).permit(:Email, :password, :password_confirmation, :FName, :LName, :Role, :CompanyName, :TenantAddress, :ProfileDisclaimer)
+      params.require(:user).permit(:Email, :password, :password_confirmation, :FName, :LName, :Role, :CompanyName, :TenantAddress, :PhoneNumber, :ProfileDisclaimer)
     end
 end
