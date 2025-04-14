@@ -4,8 +4,16 @@
     <h2> <i class="fa-solid fa-user-plus"></i> Sign Up</h2>
     <p> Let's create your account. </p>
 
-    <%= form_with model: @user, url: signup_path, local: true, class: "signup-form" do |f| %>
-      
+    <%= form_with model: @user, url: signup_path, local: true, data: { turbo: false }, class: "signup-form" do |f| %>
+      <%# Error handling display #%>
+      <% if @user.errors.any? %>
+        <div class="error-summary">
+          <h4>The following errors occured: </h4>
+            <% @user.errors.full_messages.each do |msg| %>
+              <span><%= msg %></span>
+            <% end %>
+        </div>
+      <% end %>
       <!-- First Name -->
       <div class="input-group">
         <label for="FName">First Name</label>
@@ -31,6 +39,9 @@
           <i class="fa-solid fa-envelope"></i>
           <%= f.email_field :Email, placeholder: "youremail@example.com", required: true, class: "signup-input" %>
         </div>
+        <% if @user.errors[:Email].any? %>
+          <div class="error-text"><%= @user.errors[:Email].first %></div>
+        <% end %>
       </div>
 
       <!-- Password -->
@@ -40,6 +51,9 @@
           <i class="fa-solid fa-lock"></i>
           <%= f.password_field :password, placeholder: "Create a password", required: true, class: "signup-input" %>
         </div>
+        <% if @user.errors[:password].any? %>
+          <div class="error-text"><%= @user.errors[:password].first %></div>
+        <% end %>
       </div>
 
       <!-- Password Confirmation -->
@@ -49,17 +63,20 @@
           <i class="fa-solid fa-lock"></i>
           <%= f.password_field :password_confirmation, placeholder: "Confirm your password", required: true, class: "signup-input" %>
         </div>
+        <% if @user.errors[:password_confirmation].any? %>
+          <div class="error-text"><%= @user.errors[:password_confirmation].first %></div>
+        <% end %>
       </div>
 
       <!-- Role Selection -->
       <div class="role-selection">
         <p>Please select your role:</p>
         <label class="role-option">
-          <%= f.radio_button :Role, "Tenant", id: "role_tenant", checked: @user.Role == "Tenant", class: "signup-radio" %>
+          <%= f.radio_button :Role, "Tenant", id: "role_tenant", class: "signup-radio" %>
           Tenant
         </label>
         <label class="role-option">
-          <%= f.radio_button :Role, "Landlord", id: "role_landlord", checked: @user.Role == "Landlord", class: "signup-radio" %>
+          <%= f.radio_button :Role, "Landlord", id: "role_landlord", class: "signup-radio" %>
           Landlord
         </label>
       </div>
@@ -154,31 +171,42 @@
 </div>
 
 <script>
-  document.addEventListener("DOMContentLoaded", function () {
+  function toggleFields() {
     const tenantRadio = document.getElementById("role_tenant");
     const landlordRadio = document.getElementById("role_landlord");
     const addressField = document.getElementById("address-field");
     const companyField = document.getElementById("company-field");
 
-    // Function to toggle visibility of form fields based on selected radio button
-    function toggleFields() {
-      // Tenant: address field
-      if (tenantRadio.checked) {
-        addressField.style.display = "block";
-        companyField.style.display = "none";
-      } else if (landlordRadio.checked) {
-       // Landlord: company field
-       addressField.style.display = "none";
-        companyField.style.display = "block";
-      } else {
-        addressField.style.display = "none";
-        companyField.style.display = "none";
-      }
+    if (!tenantRadio || !landlordRadio || !addressField || !companyField) return;
+
+    if (tenantRadio.checked) {
+      // If signing up as tenant, show address field, hide company name field
+      addressField.style.display = "block";
+      addressField.querySelector("input").required = true;
+      companyField.style.display = "none";
+      companyField.querySelector("input").required = false;
+    } else if (landlordRadio.checked) {
+      // If signing up as landlord, show company name field, hide address field
+      addressField.style.display = "none";
+      addressField.querySelector("input").required = false;
+      companyField.style.display = "block";
+      companyField.querySelector("input").required = false;
+    } else {
+      addressField.style.display = "none";
+      companyField.style.display = "none";
     }
+  }
 
-    toggleFields();
+  function setupToggleHandlers() {
+    const tenantRadio = document.getElementById("role_tenant");
+    const landlordRadio = document.getElementById("role_landlord");
 
-    tenantRadio.addEventListener("change", toggleFields);
-    landlordRadio.addEventListener("change", toggleFields);
-  });
+    if (tenantRadio) tenantRadio.addEventListener("change", toggleFields);
+    if (landlordRadio) landlordRadio.addEventListener("change", toggleFields);
+
+    toggleFields(); // initial setup
+  }
+
+  document.addEventListener("DOMContentLoaded", setupToggleHandlers);
+  document.addEventListener("turbo:load", setupToggleHandlers); // for Turbo
 </script>
