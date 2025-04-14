@@ -31,6 +31,16 @@
     <h2> <i class="fa-solid fa-right-to-bracket"></i> Log In</h2>
     <p class="login-text"> Welcome back! Please enter your details </p>
 
+    <!-- Display Error Messages -->
+    <% if flash[:error] %>
+      <div class="login-error-msg-holder">
+        <p class="login-error-msg"> 
+          <i class="fa-solid fa-circle-exclamation"></i>
+          <%= flash[:error] %>
+        </p>
+      </div>
+    <% end %>
+    
     <%= form_with url: login_path, method: :post, class: "login-form" do |form| %>
       <!-- Email Input -->
       <div class="input-group">
@@ -54,16 +64,6 @@
 
       <div>
         <%= form.submit "Log In", class: "login-btn" %>
-      </div>
-    <% end %>
-
-    <!-- Display Error Messages -->
-    <% if flash[:error] %>
-      <div class="login-error-msg-holder">
-        <p class="login-error-msg"> 
-          <i class="fa-solid fa-circle-exclamation"></i>
-          <%= flash[:error] %>
-        </p>
       </div>
     <% end %>
 

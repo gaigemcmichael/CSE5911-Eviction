@@ -11,8 +11,8 @@ class SessionsController < ApplicationController
           session[:user_id] = user.UserID
           redirect_to dashboard_path, notice: "Logged in successfully!"
         else
-          flash[:alert] = "Invalid email or password"
-          render :new
+          flash[:error] = "Invalid email or password"
+          render :new, status: :unprocessable_entity, turbo: false
         end
     end
 
