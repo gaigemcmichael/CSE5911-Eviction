@@ -35,7 +35,7 @@
 
   <body>
     <% unless (controller_name == "sessions" && action_name == "new")  || (controller_name == "users" && action_name == "new") %>
-      <%= render "shared/navbar" if @user %>
+      <%= render "shared/navbar" if current_user %>
     <% end %>
     
     <%= yield %>
