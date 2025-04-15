@@ -11,9 +11,10 @@
 # db/seeds.rb
 
 # Creating Users (Landlord, Tenant, Mediator, Admin)
-landlord = User.create(
+landlord = User.create!(
   Email: 'landlord@test.com',
-  password: 'test',
+  password: 'test123',
+  password_confirmation: 'test123',
   FName: 'John',
   LName: 'Doe',
   Role: 'Landlord',
@@ -22,9 +23,10 @@ landlord = User.create(
   PhoneNumber: '555-1234'
 )
 
-tenant = User.create(
+tenant = User.create!(
   Email: 'tenant@test.com',
-  password: 'test',
+  password: 'test123',
+  password_confirmation: 'test123',
   FName: 'Jane',
   LName: 'Smith',
   Role: 'Tenant',
@@ -32,18 +34,20 @@ tenant = User.create(
   PhoneNumber: '555-5678'
 )
 
-mediator = User.create(
+mediator = User.create!(
   Email: 'mediator@test.com',
-  password: 'test',
+  password: 'test123',
+  password_confirmation: 'test123',
   FName: 'Alice',
   LName: 'Johnson',
   Role: 'Mediator',
   PhoneNumber: '555-9876'
 )
 
-admin = User.create(
+admin = User.create!(
   Email: 'admin@test.com',
-  password: 'test',
+  password: 'test123',
+  password_confirmation: 'test123',
   FName: 'Adam',
   LName: 'Admin',
   Role: 'Admin',
@@ -51,7 +55,7 @@ admin = User.create(
 )
 
 # Creating a Mediator
-mediator_user = Mediator.create(
+mediator_user = Mediator.create!(
   UserID: mediator.UserID,
   Available: true,
   ActiveMediations: 0,
@@ -59,7 +63,7 @@ mediator_user = Mediator.create(
 )
 
 # Creating a File Draft
-file_draft = FileDraft.create(
+file_draft = FileDraft.create!(
   CreatorID: tenant.UserID,
   FileName: 'test document1',
   FileTypes: 'text/plain',
@@ -69,9 +73,10 @@ file_draft = FileDraft.create(
 
 puts "Seed data set 1 created successfully! - 4 users (one of each type) and a sample file (already in the system)"
 
-landlord2 = User.create(
+landlord2 = User.create!(
   Email: 'landlord2@test.com',
-  password: 'test',
+  password: 'test123',
+  password_confirmation: 'test123',
   FName: 'John2',
   LName: 'Doe2',
   Role: 'Landlord',
@@ -80,9 +85,10 @@ landlord2 = User.create(
   PhoneNumber: '111-1234'
 )
 
-tenant2 = User.create(
+tenant2 = User.create!(
   Email: 'tenant2@test.com',
-  password: 'test',
+  password: 'test123',
+  password_confirmation: 'test123',
   FName: 'Jane2',
   LName: 'Smith2',
   Role: 'Tenant',
@@ -90,18 +96,20 @@ tenant2 = User.create(
   PhoneNumber: '111-4321'
 )
 
-mediator2 = User.create(
+mediator2 = User.create!(
   Email: 'mediator2@test.com',
-  password: 'test',
+  password: 'test123',
+  password_confirmation: 'test123',
   FName: 'Alice2',
   LName: 'Johnson2',
   Role: 'Mediator',
   PhoneNumber: '555-3333'
 )
 
-admin2 = User.create(
+admin2 = User.create!(
   Email: 'admin2@test.com',
-  password: 'test',
+  password: 'test123',
+  password_confirmation: 'test123',
   FName: 'Adam2',
   LName: 'Admin2',
   Role: 'Admin',
@@ -109,7 +117,7 @@ admin2 = User.create(
 )
 
 # Creating a Mediator
-mediator_user2 = Mediator.create(
+mediator_user2 = Mediator.create!(
   UserID: mediator2.UserID,
   Available: true,
   ActiveMediations: 0,
@@ -117,7 +125,7 @@ mediator_user2 = Mediator.create(
 )
 
 # Creating a File Draft
-file_draft2 = FileDraft.create(
+file_draft2 = FileDraft.create!(
   CreatorID: landlord.UserID,
   FileName: 'test document 2',
   FileTypes: 'text/plain',
@@ -128,32 +136,34 @@ file_draft2 = FileDraft.create(
 puts "Seed data set 2 created successfully! - 4 users (one of each type) and a sample file (already in the system)"
 
 # Create extra mediators
-mediator3 = User.create(
+mediator3 = User.create!(
   Email: 'mediator3@test.com',
-  password: 'test',
+  password: 'test123',
+  password_confirmation: 'test123',
   FName: 'Melony',
   LName: 'Madana',
   Role: 'Mediator',
   PhoneNumber: '324-555-9876'
 )
 
-mediator_user3 = Mediator.create(
+mediator_user3 = Mediator.create!(
   UserID: mediator3.UserID,
   Available: true,
   ActiveMediations: 0,
   MediationCap: 5
 )
 
-mediator4 = User.create(
+mediator4 = User.create!(
   Email: 'mediator4@test.com',
-  password: 'test',
+  password: 'test123',
+  password_confirmation: 'test123',
   FName: 'Patrick',
   LName: 'Mahomes',
   Role: 'Mediator',
   PhoneNumber: '324-599-9876'
 )
 
-mediator_user4 = Mediator.create(
+mediator_user4 = Mediator.create!(
   UserID: mediator4.UserID,
   Available: true,
   ActiveMediations: 0,
