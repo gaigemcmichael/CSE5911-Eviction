@@ -2,7 +2,7 @@
 landlord1:
   UserID: 1
   Email: MyString1@email.com
-  Password: password
+  password_digest: <%= BCrypt::Password.create('password', cost: BCrypt::Engine::MIN_COST) %>
   FName: Jane
   LName: Doe
   Role: Landlord
@@ -13,7 +13,7 @@ landlord1:
 landlord2:
   UserID: 3
   Email: MyString3@email.com
-  Password: password
+  password_digest: <%= BCrypt::Password.create('password', cost: BCrypt::Engine::MIN_COST) %>
   FName: Joe
   LName: Doe
   Role: Landlord
@@ -24,7 +24,7 @@ landlord2:
 tenant1:
   UserID: 2
   Email: MyString2@email.com
-  Password: password
+  password_digest: <%= BCrypt::Password.create('password', cost: BCrypt::Engine::MIN_COST) %>
   FName: John
   LName: Doe
   Role: Tenant
@@ -35,7 +35,7 @@ tenant1:
 tenant2:
   UserID: 9
   Email: MyString9@email.com
-  Password: password
+  password_digest: <%= BCrypt::Password.create('password', cost: BCrypt::Engine::MIN_COST) %>
   FName: Mike
   LName: Doe
   Role: Tenant
@@ -46,7 +46,7 @@ tenant2:
 tenant3:
   UserID: 10
   Email: MyString10@email.com
-  Password: password
+  password_digest: <%= BCrypt::Password.create('password', cost: BCrypt::Engine::MIN_COST) %>
   FName: Rick
   LName: Doe
   Role: Tenant
@@ -57,7 +57,7 @@ tenant3:
 tenant4:
   UserID: 11
   Email: MyString11@email.com
-  Password: password
+  password_digest: <%= BCrypt::Password.create('password', cost: BCrypt::Engine::MIN_COST) %>
   FName: Kyle
   LName: Doe
   Role: Tenant
@@ -68,7 +68,7 @@ tenant4:
 mediator1:
   UserID: 4
   Email: MyString4@email.com
-  Password: password
+  password_digest: <%= BCrypt::Password.create('password', cost: BCrypt::Engine::MIN_COST) %>
   FName: Jim
   LName: Doe
   Role: Mediator
@@ -79,7 +79,7 @@ mediator1:
 mediator2:
   UserID: 8
   Email: MyString8@email.com
-  Password: password
+  password_digest: <%= BCrypt::Password.create('password', cost: BCrypt::Engine::MIN_COST) %>
   FName: Jill
   LName: Doe
   Role: Mediator
@@ -90,7 +90,7 @@ mediator2:
 admin1:
   UserID: 5
   Email: MyString5@email.com
-  Password: password
+  password_digest: <%= BCrypt::Password.create('password', cost: BCrypt::Engine::MIN_COST) %>
   FName: Tim
   LName: Doe
   Role: Admin
@@ -101,7 +101,7 @@ admin1:
 invalid1:
   UserID: 6
   Email: MyString6email.com
-  Password: password
+  password_digest: <%= BCrypt::Password.create('password', cost: BCrypt::Engine::MIN_COST) %>
   FName: Tom
   LName: Doe
   Role: 
@@ -112,7 +112,7 @@ invalid1:
 random1:
   UserID: 7
   Email: MyString7email.com
-  Password: password
+  password_digest: <%= BCrypt::Password.create('password', cost: BCrypt::Engine::MIN_COST) %>
   FName: Alan
   LName: Doe
   Role: 
