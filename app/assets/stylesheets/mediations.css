@@ -105,3 +105,86 @@
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   }
+
+  .signed-documents-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+  
+  .doc-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 14px 18px;
+    margin-bottom: 12px;
+    border-radius: 8px;
+    background-color: #f9fbff;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    transition: box-shadow 0.2s ease-in-out;
+  }
+  
+  .doc-item:hover {
+    box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+  }
+  
+  .doc-link-info {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 1rem;
+    font-weight: 600;
+    color: #1a73e8;
+  }
+  
+  .doc-link-info i {
+    color: #102a4d;
+  }
+  
+  .doc-link {
+    color: #1a73e8;
+    text-decoration: none;
+  }
+  
+  .doc-link:hover {
+    text-decoration: underline;
+    color: #1558b0;
+  }
+  
+  /* Tags for conversation type */
+  .tag {
+    font-size: 0.85rem;
+    font-weight: 600;
+    padding: 4px 12px;
+    border-radius: 20px;
+    display: inline-block;
+    white-space: nowrap;
+    background-color: #f1f3f4;
+    color: #3c4043;
+    border: 1px solid #dadce0;
+  }
+  
+  .tag.primary {
+    background-color: #e8f0fe;
+    color: #1967d2;
+    border-color: #c3d8fd;
+  }
+  
+  .tag.tenant-side {
+    background-color: #d4f5dc;
+    color: #107c41;
+    border-color:#b5e8c6;
+  }
+  
+  .tag.landlord-side {
+    background-color: #f3f2fc;
+    color: #673ab7;
+    border-color: #ddd6f3;
+  }
+  
+  .tag.unknown {
+    background-color: #fef7e0;
+    color: #b26a00;
+    border-color: #f4e5b8;
+  }
+  
