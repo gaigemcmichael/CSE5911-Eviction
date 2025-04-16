@@ -22,8 +22,8 @@
             <div class="message-bubble">
               <p class="message-content"> 
                     File attached: <%= file.FileName %> 
-                    <%= link_to "View", document_path(file.FileID), class: "btn btn-link" %> |
-                    <%= link_to "Download", download_file_path(file.FileID), class: "btn btn-link" %></p>
+                    <%= link_to "View", document_path(file.FileID), class: "chatview-link" %> |
+                    <%= link_to "Download", download_file_path(file.FileID), class: "chatview-link" %></p>
               <small class="message-timestamp"><%= message.MessageDate.strftime("%B %d, %Y %I:%M %p") %></small>
             </div>
           </div>
