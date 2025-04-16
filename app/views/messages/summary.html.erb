@@ -54,22 +54,28 @@
     <div class="summary-section">
       <h2><i class="fa-solid fa-paperclip"></i> Signed Attached Documents</h2>
 
-      <% @signed_files.each do |file| %>
-        <% conversation_label = case file.ConversationID %>
-          <% when @mediation.ConversationID %>
-            <span class="tag primary">Main Negotiation</span>
-          <% when @mediation.TenantSideConversationID %>
-            <span class="tag tenant-side">Tenant Side Mediation</span>
-          <% when @mediation.LandlordSideConversationID %>
-            <span class="tag landlord-side">Landlord Side Mediation</span>
-          <% else %>
-            <span class="tag unknown">Unknown Group</span>
+      <ul class="signed-documents-list">
+        <% @signed_files.each do |file| %>
+          <% tag_class, tag_label = case file.ConversationID
+            when @mediation.ConversationID
+              ['primary', 'Main Negotiation']
+            when @mediation.TenantSideConversationID
+              ['tenant-side', 'Tenant Side Mediation']
+            when @mediation.LandlordSideConversationID
+              ['landlord-side', 'Landlord Side Mediation']
+            else
+              ['unknown', 'Unknown']
+          end %>
+
+          <li class="doc-item">
+            <div class="doc-link-info">
+              <i class="fa-solid fa-file-lines"></i>
+              <%= link_to file.FileName, "/#{file.FileURLPath}", target: "_blank", class: "doc-link" %>
+            </div>
+            <span class="tag <%= tag_class %>"><%= tag_label %></span>
+          </li>
         <% end %>
-        <li>
-          <i class="fa-solid fa-file-lines"></i>
-          <%= link_to file.FileName, "/#{file.FileURLPath}", target: "_blank" %>
-          <%= conversation_label.html_safe %>
-        </li>
-      <% end %>
-  </div>
+      </ul>
+    </div>
+
 </div>
