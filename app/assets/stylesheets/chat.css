@@ -230,6 +230,40 @@
     color: white;
   }
 
+    /* View/download document in chat */
+    .chatview-link {
+      color: #102a4d;
+      text-decoration: none;
+      font-weight: bold;
+      text-align: left;
+  }
+  
+    .chatview-link:hover {
+        text-decoration: underline;
+    } 
+
+  /* Submit Button */
+  .sign-btn {
+    width: fit-content;
+    display: inline-block;
+    padding: 12px 24px;
+    margin: 10px 0;
+    font-size: 0.75rem;
+    font-weight: bold;
+    font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    border-radius: 5px;
+    background: #007bff;
+    color: white;
+    text-decoration: none;
+    border: none;
+    cursor: pointer;
+    transition: background 0.3s ease;
+  }
+
+  .sign-btn:hover {
+    background: #0056b3;
+  }
+
   /* Ensure the chat always shows the latest messages */
   /* .message-list {
     display: flex;
