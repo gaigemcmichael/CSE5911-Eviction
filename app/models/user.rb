@@ -10,7 +10,7 @@ class User < ApplicationRecord
     format: { with: URI::MailTo::EMAIL_REGEXP, message: "must be a valid email address" }
 
   # Password confirmation must match
-  validates :password_confirmation, presence: true
+  validates :password_confirmation, presence: true, if: -> { password.present? }
 
   # Conditional validations for tenant/landlord fields
   validate :role_based_field_requirements
