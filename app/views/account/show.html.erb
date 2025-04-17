@@ -77,24 +77,29 @@
                     <tr>
                         <th>Are you available for Mediation? </th>
                         <td>
-                          <%= form_with model: @user, url: account_path, method: :patch, local: true do |f| %>
-                            <%= f.fields_for :mediator do |m| %>
-                                <!-- Mediator Status -->
-                                <% status_text = @user.mediator.Available ? "Available" : "Not Available" %>
-                                <% status_class = @user.mediator.Available ? "status-available" : "status-unavailable" %>
-                                <p><strong>Status: <span class="availability-badge <%= status_class %>"><%= status_text %></span></strong></p>
-                                
-                                <div class="form-section">
-                                  <div class="checkbox-inline">
-                                    <%= m.check_box :Available, class: "form-check-input", id: "availableCheckbox" %>
-                                    <%= m.label :Available, "Currently Available", class: "form-check-label", for: "availableCheckbox" %>
-                                  </div>
-                                  <% end %>
-                                  <p></p> <!-- Space -->
-                                  <%= f.submit "Update Availability" %>
-                                </div>
+                        <%= form_with model: @user, url: account_path, method: :patch, local: true do |f| %>
+                          <%= f.fields_for :mediator do |m| %>
+                            <% status_text = @user.mediator.Available ? "Available" : "Not Available" %>
+                            <% status_class = @user.mediator.Available ? "status-available" : "status-unavailable" %>
+                            <p>
+                              <strong>Status: 
+                                <span class="availability-badge <%= status_class %>">
+                                  <%= status_text %>
+                                </span>
+                              </strong>
+                            </p>
+                            <div class="form-section">
+                              <div class="checkbox-inline">
+                                <%= m.check_box :Available, class: "form-check-input", id: "availableCheckbox" %>
+                                <%= m.label :Available, "Currently Available", class: "form-check-label", for: "availableCheckbox" %>
+                              </div>
+                      
+                              <p></p> <!-- Space -->
+                              <%= f.submit "Update Availability" %>
+                            </div>
                           <% end %>
-                        </td>
+                        <% end %>
+                      </td>
                     </tr>
                 </table>
             </div>
