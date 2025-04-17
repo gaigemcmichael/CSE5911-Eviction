@@ -65,6 +65,27 @@ class Admin::FlaggedMediationsController < ApplicationController
 
       # Clear associations so users are prompted to fill again
       @mediation.update!(TenantScreeningID: nil, LandlordScreeningID: nil)
+
+      # Make the new message strings -> make the new side groups -> update the primaryg group FKs
+      side_convo_tenant = MessageString.create!(Role: "Side")
+      side_convo_landlord = MessageString.create!(Role: "Side")
+
+      SideMessageGroup.create!(
+        UserID: @mediation.TenantID,
+        MediatorID: new_mediator_id,
+        ConversationID: side_convo_tenant.ConversationID
+      )
+
+      SideMessageGroup.create!(
+        UserID: @mediation.LandlordID,
+        MediatorID: new_mediator_id,
+        ConversationID: side_convo_landlord.ConversationID
+      )
+
+      @mediation.update!(
+      TenantSideConversationID: side_convo_tenant.ConversationID,
+      LandlordSideConversationID: side_convo_landlord.ConversationID
+      )
     end
 
     redirect_to admin_mediations_path, notice: "Mediator reassigned successfully. Parties will be prompted to complete new screening questions."
