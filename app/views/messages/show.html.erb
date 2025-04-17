@@ -4,7 +4,7 @@
     landlord_screening = ScreeningQuestion.find_by(ScreeningID: @mediation.LandlordScreeningID, deleted_at: nil)
   %>
   <% if @mediation&.deleted_at.nil? && @message_string&.deleted_at.nil? %>
-    <% if @mediation&.MediatorRequested && @mediation&.MediatorAssigned && (@user.Role == "Tenant" && tenant_screening&.flagged == false) || (@user.Role == "Landlord" && landlord_screening&.flagged == false) %>
+    <% if @mediation&.MediatorRequested && @mediation&.MediatorAssigned && (tenant_screening&.flagged != true && landlord_screening&.flagged != true) %>
       <h1>Mediation Conversation</h1>
       <p>
         A mediator has been requested and assigned to this case. <br>
@@ -55,8 +55,7 @@
     <%
       mediator_chat_ready = @mediation&.MediatorRequested && @mediation&.MediatorAssigned &&
         (
-          (@user.Role == "Tenant" && tenant_screening&.flagged == false) ||
-          (@user.Role == "Landlord" && landlord_screening&.flagged == false)
+          (tenant_screening&.flagged != true) && (landlord_screening&.flagged != true)
         )
     %>
 
@@ -71,7 +70,7 @@
         } %>
         <%= render 'actions' %>
       </div>
-    <% elsif (tenant_screening&.flagged || landlord_screening&.flagged) %>
+    <% elsif (tenant_screening&.flagged == true || landlord_screening&.flagged == true) %>
       <p class="alert alert-warning">One of the party's screening questions has been flagged and is under review by an administrator. Please wait before continuing mediation.</p>
     <% elsif mediator_screening_needed %>
       
