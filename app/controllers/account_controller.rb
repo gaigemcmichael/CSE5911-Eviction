@@ -13,7 +13,7 @@ class AccountController < ApplicationController
 
   def update
     updated = false
-  
+
     # Password Update
     if params[:user][:password].present?
       if @user.update(password_params)
@@ -24,18 +24,18 @@ class AccountController < ApplicationController
         render :show and return
       end
     end
-  
+
     # Mediator Availability Update
     if @user.Role == "Mediator" && params[:user][:mediator_attributes].present?
       if @user.update(mediator_params)
         flash[:notice] ||= "Availability updated."
         updated = true
-      else 
+      else
         flash.now[:alert] = "Failed to update availability."
         render :show and return
       end
     end
-  
+
     # Address Update
     if @user.Role == "Tenant" && params[:user][:TenantAddress].present? && params[:commit] == "Update Address"
       if @user.update(address_params)
@@ -46,7 +46,7 @@ class AccountController < ApplicationController
         render :show and return
       end
     end
-  
+
     flash[:alert] = "No changes detected." unless updated
     redirect_to account_path
   end
