@@ -60,7 +60,7 @@ To develop and run the Eviction Mediation Platform Ruby on Rails application, th
 
 #### 1\. Install WSL & Ubuntu
 
-Follow the [GoRails Windows 10 setup](https://gorails.com/setup/windows) (including the Rails installation). **Do not follow the database installation steps.**
+Follow the [GoRails Windows 10 setup](https://gorails.com/setup/windows) (including the Rails installation). For Windows 11, see [Windows 11 Setup Guide](https://gorails.com/setup/windows/11)**Do not follow the database installation steps.**
 
 #### 2\. Set Up Visual Studio Code
 
@@ -95,6 +95,8 @@ b. Navigate to the desired folder and run:
 sudo mount -t drvfs D: /mnt/d -o metadata
 sudo umount /mnt/d
 ```
+
+> The above was an issue with a team member's D: drive not having the proper permissions to interact with the Linux subsystem, so replace the "D:" and two "d" with the drive you installed it on. Changes won't take effect until you do the wsl shutdown below.
 
 After this, open Windows PowerShell and execute:
 
@@ -410,8 +412,58 @@ Our project uses the standard Ruby on Rails directory structure. Key points incl
 
 ### 2\. Key Source Files & Functions
 
-*   **MVC Files:** Models, controllers, and views are essential.
-    
+*   As an MVC application, the models, controller, and view files (and the functions contained within) are obviously quite important.
+    1. Controller File Details:
+       - Controllers/admin/accounts_controller
+         - This controller handles the functionality found in the Admin view on the Manage Accounts tab. It allows the admin to create & modify mediator accounts
+       - Controllers/admin/flagged_mediations_controller
+         - This controller handles the functionality found in the Admin view on the  mediatons tab. This allows the admin to resolve mediations that were flagged from the screening questions. Gives the admin the option to reassign the third party mediator or simply unflag the mediation. 
+       - Controllers/Account_controller
+         - This controller handles the functionality found on tenants, landlords, and mediator account pages. It handles the password reset for all, the address change for tenants and the mediator availability change for mediators. 
+       - Controllers/Application_controller
+         - This controller gives a couple of helpers in order to facilitate some of the error handling for signup and login flow. 
+       - Controllers/Dashboard_controller
+         - This controller handles the functionality of rendering the different dashboards based on user role. Also gives the log out functionality. 
+       - Controllers/Documents_controller
+         - This controller handles the functionality allowing tenants and landlords to generate, view, download and sign documents. Also helps show the documents page.
+       - Controllers/Intake_questions_controller
+         - This controller handles the functionality of allowing a tenant to complete the intake form upon requesting negotiation with a landlord. This intake form receives most of the needed information used in document generation (for payment plans)
+       - Controllers/Mediations_controller
+         - This controllers handles the functionality of most mediation/negotiation creation and termination.  Firstly, it allows a tenant to request negotiation (from a backend perspective the table is PrimaryMessageGroups) with a landlord, and also will invite the landlord to the app if they don’t already have an account.  This also allows the landlord to accept the negotiation. This also allows landlords and tenants to end the negotiation, and allows the mediator to end the mediation (if a mediator was requested and assigned). It also has the good faith form feedback logic. Upon a negotiation/mediation being terminated, the tenant and landlord are prompted to fill out a form asking if the other party acted in good faith, and the functionality can be found here. 
+       - Controllers/Mediator_cases_controller
+         - This controller handles the functionality mediators being able to see their assigned cases properly. It makes it possible for the mediator to see the two chat boxes: tenant <-> mediator and landlord <-> mediator. 
+       - Controllers/Mediator_messages_controller
+         - This controller handles the functionality sending the just_mediator_chats. So when a mediator sends a chat message to either the tenant or landlord, it goes through this controller. 
+       - Controllers/Resources_controller
+         - This controller handles the functionality of showing the FAQ sections on the resources tab for Tenant view.
+       - Controllers/ messages_controller
+         - This controller does a lot. It handles the functionality for the following: 
+           - This shows the respective index pages for tenants and landlords. The index pages have their current negotiation(s)/mediation(s) as well as a table of their prior mediations and negotiations. 
+           - This controller also handles the functionality needed to show each instance of negotiation/mediation. 
+           - It also provides the necessary logic for a tenant or landlord to request a third party mediator to turn their negotiation into a mediation.  
+           - This controller also provides the means to create texts to send in the chat box, and contains the action_cable broadcast to make the chat box real-time
+           - This controller also provides the necessary logic to show the negotiation/mediation summaries upon the termination of them. 
+      - Controllers/Screenings_controller
+        - This controller handles the functionality needed for the user to be able to fill out the screening questionnaire that both the tenant and landlord must fill out in order to start communicating with their third party mediator when one is requested. This will also flag the mediation for review by admin if certain answers are given on the screening questionaire. 
+      - Controllers/Sessions_controller
+        - This controller handles the session creation and destruction for when a user logs in or logs out. 
+      - Controllers/Third_party_mediations_controller
+        - This controller handles the logic for allowing a third party mediator to be able to view a table of all of their current assigned cases, and a table of all their previous cases. 
+      - Controllers/Users_controller
+        - This controller enables users to sign up as a tenant or a landlord.
+
+*   Chat box JavaScript files
+     1.	App/javascript/messages_channel.js
+        - This is how tenant <-> landlord chats show up instantly.
+     2.	App/javascript/mediator_messages_channel.js
+        - This is how tenant <-> mediator and landlord <-> mediator chats show up instantly
+     3.	App/assets/javascripts/negotiations_chat.js
+        - This helps messages_channel.js to facilitate the tenant <-> landlord chats. 
+     4.	App/assets/javascritps/mediator_chats.js
+        - This helps mediator_messages_channel.js to faciltate the tenant <-> mediator and landlord <-> mediator chats. 
+
+*   **.env:** Contains mailing server username & password and should also put the database logins here.
+
 *   **routes.rb:** Lays out the routes connecting our views.
     
 *   **schema.rb and database.yml:** While `schema.rb` is typically very important, it is less so in this project because we use an external database. The `database.yml` file connects the project to the external MS SQL Server database (as detailed in the environment setup).
@@ -421,8 +473,9 @@ Our project uses the standard Ruby on Rails directory structure. Key points incl
 
 *   **database.yml:** Connects the local database with the Rails application.
     
-*   **schema.rb:** Remains in sync with the local database to leverage Rails’ MVC structure effectively.
+*   **schema.rb:** Remains in sync with the local database to effectively leverage Rails’ MVC structure.
     
+*   **application.rb** contains much of the application's necessary configuration.
 
 ## Running the Application
 
@@ -560,3 +613,16 @@ One member’s Windows 11 device is still unable to connect to a local instance 
 4.  Implement additional security features as compliance needs evolve.
 
 ## Appendices
+
+### Coding Standards & Guidelines
+
+-	Coding standards were loosely based on the: [MU Coding Standards](https://miamioh.edu/cec/departments/computer-science-software-engineering/student-resources/coding-guidelines.html)
+
+### Useful Resources & References
+
+- [Testing Rails Applications - Ruby on Rails Guides](https://guides.rubyonrails.org/testing.html)
+- [Azure Data Studio](https://learn.microsoft.com/en-us/azure-data-studio/download-azure-data-studio?view=sql-server-ver15&viewFallbackFrom=sql-server-ver15%5D&tabs=win-install%2Cwin-user-install%2Credhat-install%2Cwindows-uninstall%2Credhat-uninstall)
+- [npm](https://nodejs.org/en/download/)
+- [Setting Up a SQL Server on an M1 Mac](mailto:a.%09https://medium.com/@aleksej.gudkov/how-to-set-up-a-local-sql-server-on-an-m1-mac-88d0ff0fed4c)
+- [GoRails macOS 14 Setup](https://gorails.com/setup/macos/14-sonoma)
+- [Windows 11 Setup Guide](https://gorails.com/setup/windows/11)
