@@ -12,37 +12,42 @@ class AccountController < ApplicationController
   end
 
   def update
-    # Update password for tenant, landlord, mediator
+    updated = false
+  
+    # Password Update
     if params[:user][:password].present?
       if @user.update(password_params)
         flash[:notice] = "Password updated successfully."
+        updated = true
       else
         flash.now[:alert] = "Password update failed."
         render :show and return
       end
-
-    # Update Availability for mediator
-    elsif @user.Role == "Mediator" && params[:user][:mediator_attributes]
+    end
+  
+    # Mediator Availability Update
+    if @user.Role == "Mediator" && params[:user][:mediator_attributes].present?
       if @user.update(mediator_params)
-        flash[:notice] = "Availability updated."
-      else
+        flash[:notice] ||= "Availability updated."
+        updated = true
+      else 
         flash.now[:alert] = "Failed to update availability."
         render :show and return
       end
-
-    # Update Address for Tenant
-    elsif params[:commit] == "Update Address" && @user.Role == "Tenant"
+    end
+  
+    # Address Update
+    if @user.Role == "Tenant" && params[:user][:TenantAddress].present? && params[:commit] == "Update Address"
       if @user.update(address_params)
-        flash[:notice] = "Address updated successfully."
+        flash[:notice] ||= "Address updated successfully."
+        updated = true
       else
         flash.now[:alert] = "Address update failed."
         render :show and return
       end
-
-    else
-      flash[:alert] = "No changes detected."
     end
-
+  
+    flash[:alert] = "No changes detected." unless updated
     redirect_to account_path
   end
 
