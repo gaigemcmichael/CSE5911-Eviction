@@ -75,7 +75,7 @@ class Admin::FlaggedMediationsController < ApplicationController
         MediatorID: new_mediator_id,
         ConversationID: side_convo_tenant.ConversationID
       )
-  
+
       SideMessageGroup.create!(
         UserID: @mediation.LandlordID,
         MediatorID: new_mediator_id,
