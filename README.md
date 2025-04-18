@@ -22,3 +22,5 @@ Things you may want to cover:
 * Deployment instructions
 
 * ...
+
+UPDATE: README details have been moved into the developer manual on the docs/posts section.
