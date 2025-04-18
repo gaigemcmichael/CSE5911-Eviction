@@ -40,14 +40,14 @@ c. Mediators
 d. Administrators
 
 * Admin accounts will need to be set up by other admins or directly in the backend environment.
-* These accounts will be able to monitor all user interactions with the system, access demographic data that has been collected, directly alter other user attributes.
+* These accounts will be able to monitor all user interactions with the system, access demographic data that has been collected, and directly alter other user attributes.
 * Additionally, these users will be tasked with addressing issues brought up in our mediation screening questions.
 
 ## Getting Started
 
 ### Accessing the Application
 
-(In Progress)
+There is no permanent link available for the app yet; whenever that is established, more detailed instructions can be provided about accessing the app. As of SP2025, control of the Eviction 1 Github repository has been transferred to Felix, the course’s instructor.
 
 ### Creating an Account
 
@@ -57,8 +57,55 @@ d. Administrators
 
 ### Logging In and Out
 
-1. After creating your account enter your email and password and select the **Log In** button.
+1. After creating your account, enter your email and password and select the **Log In** button.
 2. To log out simply select the **Log Out** button on the dashboard.
+
+### Landlord Navigation
+
+- How to Navigate: 
+  - Check the **Messages** tab for updates on negotiations 
+  - View and manage your documents on the **Documents** tab 
+  - Update your profile & settings from the **Account** tab 
+- Accepting Negotiation from Your Tenant: 
+  - Go to the **Messages** tab. 
+  - Accept the negotiation from your tenant. 
+- If you want to start a Mediation: 
+  - Request a mediator in the **Messages** tab. 
+- If you want to stop a Negotiation/Mediation: 
+  - Go to the **Messages** tab and access your negotiation/mediation to end it.
+ 
+### Tenant Navigation 
+
+- How to Navigate: 
+  - Check the **Messages** tab for updates on negotiations 
+  - Need more information? Visit the **Resources** tab 
+  - View and manage your documents on the **Documents** tab 
+  - Update your profile & settings from the **Account** tab 
+- Start a Negotiation: 
+  - Go to the **Messages** tab. 
+  - Initiate a negotiation with your landlord. 
+- If you want to start a Mediation: 
+  - Request a mediator in the **Messages** tab. 
+- If you want to stop a Negotiation/Mediation: 
+  - Go to the **Messages** tab and access your negotiation/mediation to end it. 
+
+### Mediator Navigation 
+
+- Mediator Availability: 
+  - Your status is listed on the **Home** tab. 
+  - You can update it on the **Account** tab. 
+- How to Navigate: 
+  - Access assigned mediations on the **Mediations** tab. 
+  - View account details on the **Account** tab. 
+  - Update password on the **Account** tab. 
+
+### Admin Navigation 
+
+- Mediator Availability: 
+  - All mediators and their statuses are listed on the **Home** tab. 
+- How to Navigate: 
+  - Check flagged and current mediations in the **Mediations** tab. 
+  - Update a Mediator’s account in the **Manage Accounts** tab. 
 
 ## Appendices
 
