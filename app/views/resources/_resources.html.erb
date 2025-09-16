@@ -1,57 +1,133 @@
-<!-- Table 1: Legal Resources -->
-<div class="resources-legal">
-    <h1>Legal Resources </h1>
-    <div class="resources-table-container">
-        <table class="resources-table">
-            <thead>
-                <tr>
-                    <th>Resource</th>
-                    <th>Description</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td>
-                        <a href="https://www.rentful614.com" target="_blank" rel="noopener noreferrer" class="resource-title">
-                            Rentful614 <i class="fas fa-external-link-alt"></i>
-                        </a>
-                    </td>
-                    <td>This is the Rentful614 page.</td>
-                </tr>
-                <tr>
-                    <td>
-                        <a href="https://municipalcourt.franklincountyohio.gov/Departments-Services/Self-Help-Center" target="_blank" rel="noopener noreferrer" class="resource-title">
-                            Self-Help Center <i class="fas fa-external-link-alt"></i>
-                        </a>
-                    </td>
-                    <td>Visit the Self-Help Center for more support.</td>
-                </tr>
-            </tbody>
-        </table>
-    </div>
-</div>
+<%# 9/16/25 Tim D: Changed Resources Page to have different view for Tenants/Landlords and some system for mediators. Also added space for not logged in user but not sure if we allow that. %>
+<%# Check if a user is logged in first %>
+<% if current_user %>
 
-<!-- Table 2: Other Resources -->
-<div class="resources-other">
-    <h1>Other Resources </h1>
-    <div class="resources-table-container">
-        <table class="resources-table">
-            <thead>
-                <tr>
-                    <th>Resource</th>
-                    <th>Description</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td>
-                        <a href="#" class="resource-title">
-                            Other Resources <i class="fas fa-external-link-alt"></i>
-                        </a>
-                    </td>
-                    <td>more information coming soon</td>
-                </tr>
-            </tbody>
-        </table>
+  <%# Now, check the user's role %>
+  <% if current_user.Role == "Landlord" %>
+    <%# ----- CONTENT FOR LANDLORDS ----- %>
+    <!-- Table 1: Legal Resources -->
+    <div class="resources-legal">
+        <h1>Legal Resources </h1>
+        <div class="resources-table-container">
+            <table class="resources-table">
+                <thead>
+                    <tr>
+                        <th>Resource</th>
+                        <th>Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>
+                            <a href="https://www.rentful614.com" target="_blank" rel="noopener noreferrer" class="resource-title">
+                                Rentful614 <i class="fas fa-external-link-alt"></i>
+                            </a>
+                        </td>
+                        <td>This is the Rentful614 page.</td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <a href="https://municipalcourt.franklincountyohio.gov/Departments-Services/Self-Help-Center" target="_blank" rel="noopener noreferrer" class="resource-title">
+                                Self-Help Center <i class="fas fa-external-link-alt"></i>
+                            </a>
+                        </td>
+                        <td>Visit the Self-Help Center for more support.</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
     </div>
-</div>
+
+    <!-- Table 2: Other Resources -->
+    <div class="resources-other">
+        <h1>Other <%= current_user.Role %> Resources</h1>
+        <div class="resources-table-container">
+            <table class="resources-table">
+                <thead>
+                    <tr>
+                        <th>Resource</th>
+                        <th>Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>
+                            <a href="#" class="resource-title">
+                                Other <%= current_user.Role%> Resources <i class="fas fa-external-link-alt"></i>
+                            </a>
+                        </td>
+                        <td>more information coming soon</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <% elsif current_user.Role == "Tenant" %>
+    <%# ----- CONTENT FOR TENANTS ----- %>
+    <!-- Table 1: Legal Resources -->
+    <div class="resources-legal">
+        <h1>Legal Resources </h1>
+        <div class="resources-table-container">
+            <table class="resources-table">
+                <thead>
+                    <tr>
+                        <th>Resource</th>
+                        <th>Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>
+                            <a href="https://www.rentful614.com" target="_blank" rel="noopener noreferrer" class="resource-title">
+                                Rentful614 <i class="fas fa-external-link-alt"></i>
+                            </a>
+                        </td>
+                        <td>This is the Rentful614 page.</td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <a href="https://municipalcourt.franklincountyohio.gov/Departments-Services/Self-Help-Center" target="_blank" rel="noopener noreferrer" class="resource-title">
+                                Self-Help Center <i class="fas fa-external-link-alt"></i>
+                            </a>
+                        </td>
+                        <td>Visit the Self-Help Center for more support.</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Table 2: Other Resources -->
+    <div class="resources-other">
+        <h1>Other <%= current_user.Role%> Resources </h1>
+        <div class="resources-table-container">
+            <table class="resources-table">
+                <thead>
+                    <tr>
+                        <th>Resource</th>
+                        <th>Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>
+                            <a href="#" class="resource-title">
+                                Other <%= current_user.Role%> Resources <i class="fas fa-external-link-alt"></i>
+                            </a>
+                        </td>
+                        <td>more information coming soon</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <% else %>
+    <%# ----- Eventual content for mediators ----- %>
+     <h1>General Resources</h1>
+     <p>This is the general resource page.</p>
+    <% end %>
+    <% else %>
+  <%# ----- Content for visitors who are not logged in ----- %>
+  <h1>Welcome to Resources</h1>
+  <p>Please log in or sign up to see resources tailored to you.</p>
+<% end %>
