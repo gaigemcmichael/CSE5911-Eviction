@@ -1,87 +1,72 @@
 /* Base Layout */
-.login-container {
+.login-page {
     display: flex;
     flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    min-height: 100vh;
-    padding: 20px;
     background: #102a4d;
+    min-height: 100vh;
+    padding: 15px 20px 0px 20px;
+}
+
+.login-container {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background: #102a4d;
+    padding-top: 10vh;
+}
+
+.login-title {
+    text-align: center;
+    font-size: 50px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    width: 100%;
+    animation: slideUp 3s ease-in;
+    color: #FFFFFF;
 }
 
 /* Banner */
 .login-banner {
     text-align: center;
-    padding: 20px;
     width: 100%;
     max-width: 900px;
     animation: slideUp 3s ease-in;
 }
 
 .login-banner h1 {
-    font-size: 50px;
+    font-size: 25px;
     letter-spacing: 2px;
     color: #FFFFFF;
     font-family: 'Montserrat', sans-serif;
     font-weight: 700;
     margin: 0;
-}
-
-.login-banner p {
-    font-size: 18px;
-    letter-spacing: 2px;
-    font-family: 'Lato', sans-serif;
-    font-weight: 400;
-    color: #E5E7EB;
-    margin-top: 15px;
-}
-
-/* Base Layout */
-.login-container {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    min-height: 100vh;
-    padding: 20px;
-    background: #102a4d;
-}
-
-/* Banner */
-.login-banner {
-    text-align: center;
-    padding: 20px;
-    width: 100%;
-    max-width: 900px;
-    animation: slideUp 3s ease-in;
-}
-
-.login-banner h1 {
-    font-size: 50px;
-    letter-spacing: 2px;
-    color: #FFFFFF;
-    font-family: 'Montserrat', sans-serif;
-    font-weight: 700;
-    margin: 0;
-}
-
-.login-banner p {
-    font-size: 18px;
-    letter-spacing: 2px;
-    font-family: 'Lato', sans-serif;
-    font-weight: 400;
-    color: #E5E7EB;
-    margin-top: 15px;
 }
 
 /* Feature Icons Grid - One Row, Four Columns */
 .features-grid {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
-    gap: 20px;
+    gap: 15px;
     max-width: 800px; 
-    margin: 20px auto;
+    margin: 20px 0 auto;
     text-align: center;
+}
+
+.features {
+    display: flex;
+    flex-direction: column;
+    text-align: center;
+    padding-top: 20px;
+}
+
+.features p {
+    font-size: 18px;
+    letter-spacing: 2px;
+    font-family: 'Lato', sans-serif;
+    font-weight: 400;
+    color: #E5E7EB;
+    margin-top: 15px;
 }
 
 .feature {
@@ -93,6 +78,7 @@
     font-weight: bold;
     color: white;
     transition: transform 0.3s ease-in-out;
+    max-width: 150px;
 }
 
 .feature p {
@@ -122,6 +108,7 @@
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     text-align: center;
     margin: 20px;
+    margin-top: 10px;
 }
 
 /* Input Group */
@@ -219,32 +206,38 @@
 
 /* Responsive Design */
 @media (max-width: 768px) {
+    .login-title {
+        font-size: 35px;
+    }
+
     /* Make layout stacked */
     .login-container {
-        flex-direction: column;
-        justify-content: flex-start;
-        align-items: center;
-        padding: 40px 20px;
+        padding-top: 8vh;
     }
 
     .login-banner {
-        order: 1;
         text-align: center;
-        padding: 10px;
     }
 
     .login-banner h1 {
-        font-size: 32px;
+        font-size: 25px;
     }
 
-    .login-banner p {
+    .features {
+        padding-top: 10px;
+    }
+
+    .features p {
         font-size: 14px;
     }
 
     /* Stack features grid and reduce size */
     .features-grid {
+        display: grid;
         grid-template-columns: repeat(2, 1fr);
         max-width: 500px;
+        justify-items: center;
+        align-items: center; 
     }
 
     .feature i {
@@ -257,10 +250,7 @@
 
     /* Move login card to bottom */
     .login-card {
-        order: 2;
         max-width: 90%;
-        padding: 20px;
-        margin-top: 30px;
     }
 
     .login-btn {
@@ -269,16 +259,24 @@
 }
 
 @media (max-width: 480px) {
+    .login-title {
+        font-size: 30px;
+    }
+
     .login-banner h1 {
-        font-size: 24px;
+        font-size: 18px;
     }
 
     .login-banner p {
         font-size: 12px;
     }
 
-    .features-grid {
-        grid-template-columns: 1fr;
+    .login-container {
+        padding-top: 5vh;
+    }
+
+    .features {
+        padding-top: 0px;
     }
 
     .feature i {
