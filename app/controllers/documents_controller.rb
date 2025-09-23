@@ -1,297 +1,284 @@
-require "docx_templater"
-require "docsplit"
+# app/controllers/documents_controller.rb
+require "fileutils"
+require "pathname"
+require "securerandom"
+require "prawn"
+require "prawn/table"
 
 class DocumentsController < ApplicationController
   before_action :require_login
   before_action :set_user
-  before_action :check_mediation_status, only: [ :generate, :select_template, :proposal_generation ]
-  before_action :prevent_generation_without_screening, only: [ :generate, :select_template, :proposal_generation ]
+  before_action :set_conversation_context, only: [:intake_template_view]
 
-
-
-  def sign
-    @file = FileDraft.find_by(FileID: params[:id])
-    unless @file
-      return render plain: "File not found", status: :not_found
-    end
-    render :sign
-  end
-
-  def apply_signature
-    file = FileDraft.find_by(FileID: params[:id])
-    unless file
-      return render plain: "File not found", status: :not_found
-    end
-
-    signature = params[:signature]
-
-    # Path to original docx
-    file_path = Rails.root.join("public", file.FileURLPath.gsub(".pdf", ".docx"))
-    unless File.exist?(file_path)
-      return render plain: "Original document not found", status: :not_found
-    end
-
-    # Get the signature ready to sub in, update the DB
-    data = {}
-    if @user.Role == "Tenant"
-      data[:tenant_signature] = signature
-      file.update(TenantSignature: true)
-    elsif @user.Role == "Landlord"
-      data[:landlord_signature] = signature
-      file.update(LandlordSignature: true)
-    else
-      return render plain: "Not authorized", status: :forbidden
-    end
-
-    # Regenerate DOCX with signature
-    buffer = DocxTemplater.new.replace_file_with_content(file_path.to_s, data)
-
-    # Overwrite the original DOCX
-    File.open(file_path.to_s, "wb") { |f| f.write(buffer.string) }
-
-    # Regenerate PDF, keeps name so DB wont need updated
-    Docsplit.extract_pdf(file_path.to_s, output: File.dirname(file_path))
-
-    redirect_to documents_path, notice: "Document signed successfully!"
-  end
-
-
-
-  # Renders a document template (like Agreement to Vacate) with a prefilled form from intake data, this form can be updated to change the agreement generation.
+  
   def intake_template_view
-    @conversation = PrimaryMessageGroup.find_by(ConversationID: params[:conversation_id])
-    @landlord = User.find_by(UserID: @conversation.LandlordID)
-    @tenant = User.find_by(UserID: @conversation.TenantID)
-    @intake = IntakeQuestion.find_by(IntakeID: @conversation.IntakeID)
-    render :intake_template_view
   end
+  # delete files
+  def destroy
+    file = FileDraft.find_by(FileID: params[:id], CreatorID: @user[:UserID])
+    return render plain: "File not found", status: :not_found unless file
 
-  # Handles submission of the form and generates the filled document
-  def generate_filled_template
-    conversation = PrimaryMessageGroup.find_by(ConversationID: params[:conversation_id])
-    landlord = User.find_by(UserID: conversation.LandlordID)
-    intake = IntakeQuestion.find_by(IntakeID: conversation.IntakeID)
-    user_role = @user.Role
-
-    # This was is just a test, to see how it would work.
-    file_id = SecureRandom.uuid
-
-    # Choose correct template
-    if intake.BestOption == "Move Out"
-      template_name = "Formatted Agreement to Vacate.docx"
-    elsif intake.BestOption == "Pay Missed Rent"
-      template_name = "Formatted Pay and Stay Negotiated Agreement.docx"
+    
+    if FileDraft.column_names.include?("UserDeletedAt")
+      file.update!(UserDeletedAt: Time.current)
     else
-      render plain: "No template available for this intake option.", status: :unprocessable_entity
-      return
+      delete_physical_file(file)
+      file.destroy!
     end
 
-    template_path = Rails.root.join("public", "templates", template_name)
-    filled_docx_path = Rails.root.join("public", "userFiles", "#{file_id}.docx")
-    filled_pdf_path = Rails.root.join("public", "userFiles", "#{file_id}.pdf")
-
-    # Build data for the docx template
-    data = {
-      landlord_name: params[:landlord_name],
-      tenant_name: params[:tenant_name],
-      tenant_address: params[:address],
-      landlord_company: landlord.CompanyName.to_s,
-      negotiation_date: params[:negotiation_date],
-      additional_provisions: params[:additional_provisions],
-      vacate_date: params[:vacate_date]
-    }
-
-    if user_role == "Tenant"
-      data[:tenant_signature] = params[:tenant_signature]
-    else
-      data[:landlord_signature] = params[:landlord_signature]
-    end
-
-    j = 5
-
-    if intake.BestOption == "Move Out"
-      j = 6
-    end
-
-    # Payment plan
-    (1..j).each do |i|
-      data[:"amount#{i}"] = params[:"amount#{i}"].to_s
-      data[:"date#{i}"] = params[:"date#{i}"].to_s
-    end
-
-    # Fill the DOCX template using the gem's API
-    buffer = DocxTemplater.new.replace_file_with_content(template_path.to_s, data)
-
-    # Save filled document
-    File.open(filled_docx_path.to_s, "wb") { |f| f.write(buffer.string) }
-    unless File.exist?(filled_docx_path)
-      logger.error "DOCX generation failed"
-      render plain: "Document generation failed", status: :internal_server_error
-      return
-    end
-
-    Docsplit.extract_pdf("public/userFiles/#{file_id}.docx", output: "public/userFiles")
-
-    if @user.Role == "Tenant"
-      FileDraft.create!(
-        FileName: "#{file_id}",
-        FileTypes: "pdf",
-        FileURLPath: "userFiles/#{file_id}.pdf",
-        CreatorID: @user.UserID,
-        TenantSignature: true
-      )
-    elsif @user.Role == "Landlord"
-      FileDraft.create!(
-        FileName: "#{file_id}",
-        FileTypes: "pdf",
-        FileURLPath: "userFiles/#{file_id}.pdf",
-        CreatorID: @user.UserID,
-        LandlordSignature: true
-      )
-    end
-
-    redirect_to user_role == "Tenant" ? documents_path : landlord_documents_path, notice: "Document generated successfully."
+    redirect_to documents_path, notice: "Document deleted."
   end
-
-
-
-
 
   def index
-    case @user.Role
-    when "Tenant"
-      @files = FileDraft.where(CreatorID: @user.UserID, UserDeletedAt: nil)# Fetch files not labeled as deleted
-      render "documents/tenant_index"
-    when "Landlord"
-      @files = FileDraft.where(CreatorID: @user.UserID, UserDeletedAt: nil)# Fetch files not labeled as deleted
-      render "documents/landlord_index"
-    else
-      render plain: "Access Denied", status: :forbidden
-    end
-  end
+    scope = FileDraft.where(CreatorID: @user[:UserID])
+    scope = scope.where(UserDeletedAt: nil) if FileDraft.column_names.include?("UserDeletedAt")
 
-  # Alot of errors in the file paths/linking in the show and download methods, I am going to leave the loggers in for now just in case we hit the issues again later - They are not doing any harm anyways
-  # For the most part, my take aways are that the file paths need to be handled in different ways between the inline html presentation and the controllers
-  def download
-    file = FileDraft.find_by(FileID: params[:id], CreatorID: @user.UserID)
-
-    if file
-      # Ensure the path is scoped to 'public' and cleaned
-      sanitized_path = Pathname.new(file.FileURLPath).cleanpath
-      base_path = Rails.root.join("public")
-      file_path = base_path.join(sanitized_path)
-
-      # Prevent directory traversal and ensure the file exists
-      if file_path.to_s.start_with?(base_path.to_s) && File.exist?(file_path)
-
-        # We think this should not be a real threat as long as we sanatize the other input areas.
-        send_file file_path, filename: file.FileURLPath.sub(/^userFiles\//, ""), disposition: "attachment"
+    @files =
+      if FileDraft.column_names.include?("created_at")
+        scope.order(created_at: :desc)
+      elsif FileDraft.column_names.include?("CreatedAt")
+        scope.order(Arel.sql("[CreatedAt] DESC"))
+      elsif FileDraft.column_names.include?("UpdatedAt")
+        scope.order(Arel.sql("[UpdatedAt] DESC"))
       else
-        logger.error "File not found at path: #{file_path}"
-        render plain: "File not found", status: :not_found
+        scope.order(Arel.sql("[FileID] DESC"))
       end
-    else
-      logger.error "FileDraft not found for ID: #{params[:id]} and CreatorID: #{@user.UserID}"
-      render plain: "File not found", status: :not_found
-    end
   end
 
+  def new; end
+
+  # Upload handler 
+  def create
+    uploaded = params[:file] || params.dig(:document, :file)
+    unless uploaded
+      redirect_to new_document_path, alert: "Please choose a file to upload." and return
+    end
+
+    ext = File.extname(uploaded.original_filename).downcase
+    allowed = %w[
+      .pdf .doc .docx .txt .csv .xlsx .xls .ppt .pptx .rtf
+      .png .jpg .jpeg .gif .bmp .tiff .heic
+      .zip .rar .7z .json .xml .md .mp3 .mp4 .wav .mov .avi
+    ]
+    unless allowed.include?(ext)
+      redirect_to new_document_path, alert: "Unsupported file type (#{ext})." and return
+    end
+    if uploaded.size.to_i > 25.megabytes
+      redirect_to new_document_path, alert: "File too large (max 25 MB)." and return
+    end
+
+    file_id = SecureRandom.uuid
+    dir = Rails.root.join("public", "userFiles")
+    FileUtils.mkdir_p(dir)
+    dest = dir.join("#{file_id}#{ext}")
+    File.open(dest, "wb") { |f| f.write(uploaded.read) }
+    pk_name, pk_value = next_filedraft_pk_value
+    attrs = {
+      
+      FileName:     File.basename(uploaded.original_filename, ".*"),
+      FileTypes:    ext.delete("."),
+      FileURLPath:  "userFiles/#{file_id}#{ext}",
+      CreatorID:    @user[:UserID],
+      TenantSignature: false,
+      LandlordSignature: false
+    }
+    attrs[pk_name] = pk_value if pk_name && pk_value
+
+    FileDraft.create!(attrs)
+
+    redirect_to documents_path, notice: "File uploaded."
+  end
 
   def show
-    @file = FileDraft.find_by(FileID: params[:id])
+    @file = FileDraft.find_by(FileID: params[:id], CreatorID: @user[:UserID], UserDeletedAt: nil)
+    render plain: "File not found", status: :not_found unless @file
+  end
 
-    if @file
-      # Correct file path by joining with 'public' (no leading / needed)
-      file_path = Rails.root.join("public", @file.FileURLPath)
+  # download of the stored file
+  def download
+    file = FileDraft.find_by(FileID: params[:id], CreatorID: @user[:UserID], UserDeletedAt: nil)
+    return render plain: "File not found (record)", status: :not_found unless file
 
-      if File.exist?(file_path)
-        render "documents/show"
-      else
-        render plain: "File not found", status: :not_found
+    base_path = Rails.root.join("public")
+    rel_path  = Pathname.new(file.FileURLPath).cleanpath
+    path      = base_path.join(rel_path)
+
+    size = File.exist?(path) ? File.size(path) : -1
+    Rails.logger.info "[DL] path=#{path} exists=#{File.exist?(path)} size=#{size}"
+
+    unless path.to_s.start_with?(base_path.to_s) && File.exist?(path)
+      return render plain: "File not found (#{path})", status: :not_found
+    end
+    if size <= 0
+      return render plain: "Generated file is empty (#{path})", status: :unprocessable_entity
+    end
+
+    send_file path,
+              filename: "#{file.FileName}#{File.extname(path)}",
+              type: "application/pdf",
+              disposition: "inline"
+  end
+
+  
+def generate_filled_template
+  
+  conv_id   = params[:conversation_id]
+  landlord  = params[:landlord_name].to_s
+  tenant    = params[:tenant_name].to_s
+  address   = params[:address].to_s
+  nego_date = (params[:negotiation_date].presence || Date.today).to_date rescue Date.today
+  best      = (@intake&.BestOption || params[:best_option]).to_s
+
+  # payment schedule
+  schedule = []
+  params.to_unsafe_h.each do |k, v|
+    if k.to_s =~ /\Aamount(\d+)\z/
+      i = $1.to_i
+      amt = v.to_s
+      dat = params["date#{i}"]
+      schedule << [i, amt, dat]
+    end
+  end
+  schedule.sort_by! { |i, _, _| i }
+
+  additional = params[:additional_provisions].presence || "None"
+  tenant_sig = params[:tenant_signature].to_s
+  land_sig   = params[:landlord_signature].to_s
+
+  
+  file_id = SecureRandom.uuid
+  ext     = ".pdf"
+  dir     = Rails.root.join("public", "userFiles")
+  FileUtils.mkdir_p(dir)
+  dest    = dir.join("#{file_id}#{ext}")
+
+  # Generate the PDF 
+  require "prawn"
+  Prawn::Document.generate(dest.to_s, margin: 54) do |pdf|
+    pdf.text (best == "Move Out" ? "Agreement to Vacate" : "Pay and Stay Agreement"),
+             size: 20, style: :bold, align: :center
+    pdf.move_down 14
+
+    pdf.text "Date: #{nego_date.strftime('%B %d, %Y')}"
+    pdf.move_down 8
+
+    pdf.text "Landlord: #{landlord}"
+    pdf.text "Tenant:   #{tenant}"
+    pdf.text "Address:  #{address}"
+    pdf.move_down 14
+
+    
+  if best == "Move Out"
+    vacate_date = params[:vacate_date].present? ? (Date.parse(params[:vacate_date]) rescue nil) : nil
+    pdf.text "Vacate Date: #{vacate_date ? vacate_date.strftime('%B %d, %Y') : 'N/A'}"
+    pdf.move_down 10
+  end
+
+
+
+    if schedule.any?
+      pdf.text "Payment Schedule", style: :bold
+      pdf.move_down 6
+      data = [["#", "Amount (USD)", "Due Date"]] +
+             schedule.map do |i, amt, dat|
+               d = (dat.present? ? (Date.parse(dat) rescue dat) : "")
+               [i.to_s, (amt.presence || ""), (d.is_a?(Date) ? d.strftime('%Y-%m-%d') : d)]
+             end
+      pdf.table(data, header: true, width: pdf.bounds.width) do
+        row(0).font_style = :bold
       end
-    else
-      render plain: "File not found", status: :not_found
-    end
-  end
-
-
-  # I think something is wrong with this set of methods (generate, select_template, and proposal_generation) but I am unsure what to do here
-  def generate
-    render "documents/generate"
-  end
-
-  def select_template
-    # Get the template selected by the user
-    @template = params[:template]
-
-    # Depending on the template, you can now load the appropriate form or questions
-    case @template
-    when "a"
-      @template_name = "Payment Plan Proposal A"
-      # You can also define the questions or data needed to generate the PDF here.
-    when "b"
-      @template_name = "Payment Plan Proposal B"
-    when "c"
-      @template_name = "Payment Plan Proposal C"
-    else
-      @template_name = "Unknown Template"
+      pdf.move_down 12
     end
 
-    # Render a view to ask financial questions to generate a proposal
-    redirect_to proposal_generation_path(template: @template)
-  end
+    pdf.text "Additional Provisions", style: :bold
+    pdf.move_down 4
+    pdf.text additional
+    pdf.move_down 18
 
-  def proposal_generation
-    @template = params[:template]
+    pdf.stroke_horizontal_rule
+    pdf.move_down 10
 
-    case @template
-    when "a"
-      @template_name = "Payment Plan Proposal A"
-    when "b"
-      @template_name = "Payment Plan Proposal B"
-    when "c"
-      @template_name = "Payment Plan Proposal C"
-    else
-      @template_name = "Unknown Template"
+    # Signatures 
+    if tenant_sig.present?
+      pdf.text "Tenant Signature: #{tenant_sig}"
+    end
+    if land_sig.present?
+      pdf.text "Landlord Signature: #{land_sig}"
     end
 
-    # Here we can add logic to actually begin the payment plan info filling
+    pdf.move_down 8
+    pdf.text "Conversation ID: #{conv_id}", size: 9, color: "555555" if conv_id.present?
   end
+
+  pk_name, pk_value = next_filedraft_pk_value
+
+  attrs = {
+
+  
+    
+    FileID: file_id,
+    FileName: "Generated Agreement",
+    FileTypes: "pdf",
+    FileURLPath: "userFiles/#{file_id}#{ext}",
+    CreatorID: @user[:UserID],
+    TenantSignature: tenant_sig.present?,
+    LandlordSignature: land_sig.present?
+  }
+
+  attrs[pk_name] = pk_value if pk_name && pk_value
+
+  FileDraft.create!(attrs)
+
+  redirect_to documents_path, notice: "Document generated."
+end
+
 
   private
 
-  # Prevent user from creating document if mediation has ended (edge case)
-  def check_mediation_status
-    mediation = PrimaryMessageGroup.find_by(TenantID: @user.UserID) ||
-                       PrimaryMessageGroup.find_by(LandlordID: @user.UserID)
-    if mediation.deleted_at.nil?
-      redirect_to mediation_ended_prompt_path(mediation.ConversationID)
+  def delete_physical_file(file)
+    rel = Pathname.new(file.FileURLPath.to_s).cleanpath
+    base = Rails.root.join("public")
+    path = base.join(rel)
+    if path.to_s.start_with?(base.to_s) && File.exist?(path)
+      File.delete(path) rescue nil
     end
   end
 
+  def next_filedraft_pk_value
+    pk = FileDraft.primary_key                           
+    return [nil, nil] if pk.blank?
 
-  # Prevents a user from generating a file prior to filling out screening questions if mediator is assigned
-  def prevent_generation_without_screening
-    if @user.Role == "Tenant"
-      mediation = PrimaryMessageGroup.where(TenantID: @user.UserID, deleted_at: nil).first
-    elsif @user.Role == "Landlord"
-      mediation = PrimaryMessageGroup.where(LandlordID: @user.UserID, deleted_at: nil).first
+    col = FileDraft.columns_hash[pk]
+    if col && [:integer, :bigint].include?(col.type)
+      next_val = (FileDraft.maximum(pk) || 0) + 1
+      [pk, next_val]
+    else
+      [nil, nil]
     end
-    if mediation && (mediation.MediatorRequested || mediation.MediatorAssigned)
-      if (@user.Role == "Tenant" && mediation.TenantScreeningID.nil?) ||
-         (@user.Role == "Landlord" && mediation.LandlordScreeningID.nil?)
-        redirect_to message_path(mediation.ConversationID)
-      end
-    end
+  end
+
+  def next_file_draft_id
+    (FileDraft.maximum('ID') || 0) + 1
+  end
+
+  def set_conversation_context
+    conv_id = params[:conversation_id].presence || params[:id]
+    return unless conv_id
+
+    @conversation = ::MessageString.find_by(ConversationID: conv_id) rescue nil
+    @pmg          = ::PrimaryMessageGroup.find_by(ConversationID: conv_id) rescue nil
+
+    @landlord = ::User.find_by(UserID: @pmg&.LandlordID)
+    @tenant   = ::User.find_by(UserID: @pmg&.TenantID)
+    @intake   = ::IntakeQuestion.find_by(IntakeID: @pmg&.IntakeID)
   end
 
   def require_login
-    unless session[:user_id]
-      redirect_to login_path, alert: "You must be logged in to access the dashboard."
-    end
+    redirect_to login_path, alert: "You must be logged in." unless session[:user_id]
   end
 
   def set_user
-    @user = User.find(session[:user_id])
+    @user = ::User.find_by(UserID: session[:user_id])
+    redirect_to login_path, alert: "Please log in." unless @user
   end
 end
