@@ -5,8 +5,9 @@
     grid-template-columns: auto 1fr auto;
     align-items: center;
     gap: 0;
-    padding: 10px 20px;
-    width: 97vw;
+    padding: 10px 0px;
+    width: 100%;
+    box-sizing: border-box;
     position: sticky;
     top: 0;
     z-index: 1000;
@@ -83,6 +84,7 @@
     justify-self: start; /* left aligned */
     display: flex;
     align-items: center;
+    padding-left: 10px;
 }
 
 .navbar-title {
@@ -106,6 +108,7 @@
     gap: 12px;
     margin-left: 0;
     margin-right: 0;
+    padding-right: 10px;
 }
 
 .navbar-logout-mobile {
@@ -123,7 +126,7 @@
 }
 
 /* Responsive Design for Mobile */
-@media (max-width: 810px) {
+@media (max-width: 850px) {
     .navbar {
         grid-template-columns: 1fr auto;
         grid-auto-rows: auto;
