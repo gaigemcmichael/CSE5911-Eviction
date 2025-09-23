@@ -1,2 +1,45 @@
-<h1>Documents#index</h1>
-<p>Find me in app/views/documents/index.html.erb</p>
+<div class="docs-wrapper">
+  <h1 class="docs-title">Documents</h1>
+  <p class="docs-subtitle">Upload, store, and download your files securely.</p>
+
+  <div class="docs-actions">
+    <%= link_to "Upload a document", new_document_path, class: "btn btn-primary" %>
+  </div>
+
+  <% if @files.blank? %>
+    <p class="empty-state">No documents yet. Upload your first document above.</p>
+  <% else %>
+    <table class="docs-table">
+      <thead>
+        <tr>
+          <th>File</th>
+          <th>Type</th>
+          <th>Uploaded</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+      <tbody>
+  <% @files.each do |f| %>
+    <% t = (f.respond_to?(:uploaded_at) && f.uploaded_at.present?) ? f.uploaded_at : nil %>
+    <tr>
+      <td><strong><%= f.FileName.presence || File.basename(f.FileURLPath.to_s) %></strong></td>
+      <td><span class="badge"><%= f.FileTypes.to_s.upcase %></span></td>
+      <td><%= t ? t.strftime("%b %d, %Y %l:%M %p") : "-" %></td>
+      <td class="docs-actions-cell">
+        <%= link_to "Download",
+                    download_document_path(f.FileID),
+                    class: "btn btn-secondary btn-sm" %>
+
+        <%= link_to "Delete",
+                    document_path(f.FileID),
+                    data: { turbo_method: :delete,
+                            turbo_confirm: "Delete \"#{f.FileName.presence || File.basename(f.FileURLPath.to_s)}\"?" },
+                    class: "btn btn-danger btn-sm" %>
+      </td>
+    </tr>
+  <% end %>
+</tbody>
+
+    </table>
+  <% end %>
+</div>

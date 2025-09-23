@@ -1,25 +1,33 @@
 <div class="generate-doc-layout">
-  <!-- Left side: Scrollable Form Panel -->
   <div class="generate-doc-panel scrollable-form">
     <h2>Customize Document</h2>
     <p>Please review and complete the form before generating your agreement.</p>
 
-    <%= form_with url: generate_filled_template_path, method: :post do %>
-      <%= hidden_field_tag :conversation_id, @conversation.ConversationID %>
+    <%= form_with url: generate_filled_template_path,
+                  method: :post,
+                  authenticity_token: true,
+                  data: { turbo: false },
+                  html: { novalidate: true } do %>
+
+      <%= hidden_field_tag :conversation_id, (params[:conversation_id] || params[:id] || @pmg&.ConversationID) %>
 
       <div class="form-section">
         <%= label_tag :landlord_name, "Landlord Name", class: "required-label" %>
-        <%= text_field_tag :landlord_name, "#{@landlord.FName} #{@landlord.LName}", class: "form-control" %>
+        <%= text_field_tag :landlord_name,
+              [@landlord&.FName, @landlord&.LName].compact.join(" "),
+              class: "form-control" %>
       </div>
 
       <div class="form-section">
         <%= label_tag :tenant_name, "Tenant Name", class: "required-label" %>
-        <%= text_field_tag :tenant_name, "#{@tenant.FName} #{@tenant.LName}", class: "form-control" %>
+        <%= text_field_tag :tenant_name,
+              [@tenant&.FName, @tenant&.LName].compact.join(" "),
+              class: "form-control" %>
       </div>
 
       <div class="form-section">
         <%= label_tag :tenant_address, "Tenant Address", class: "required-label" %>
-        <%= text_field_tag :address, @tenant.TenantAddress, class: "form-control" %>
+        <%= text_field_tag :address, (@tenant&.TenantAddress || ""), class: "form-control" %>
       </div>
 
       <div class="form-section">
@@ -27,24 +35,32 @@
         <%= date_field_tag :negotiation_date, Date.today, class: "form-control" %>
       </div>
 
-      <% if @intake.BestOption == "Move Out" %>
+      <% best = @intake&.BestOption %>
+
+      <% if best == "Move Out" %>
         <div class="form-section">
           <%= label_tag :vacate_date, "Vacate Date", class: "required-label" %>
           <%= date_field_tag :vacate_date, 2.weeks.from_now.to_date, class: "form-control" %>
         </div>
       <% end %>
 
-      <% number_of_payments = @intake.BestOption == "Move Out" ? 6 : @intake.BestOption == "Pay Missed Rent" ? 5 : 0 %>
-      <% total_due = @intake.try(:MoneyOwed).to_f %>
-      <% base_amount = (total_due / number_of_payments).round(2) %>
+      <% number_of_payments =
+           case best
+           when "Move Out" then 6
+           when "Pay Missed Rent" then 5
+           else 0
+           end %>
+
+      <% total_due   = (@intake&.MoneyOwed).to_f %>
+      <% base_amount = number_of_payments.positive? ? (total_due / number_of_payments).round(2) : 0.0 %>
 
       <% number_of_payments.times do |i| %>
         <div class="form-section">
           <%= label_tag "amount#{i+1}", "Amount #{i+1} ($)", class: "required-label" %>
-          <%= number_field_tag "amount#{i+1}", '%.2f' % base_amount, step: 0.01, class: "form-control" %>
+          <%= number_field_tag "amount#{i+1}", ('%.2f' % base_amount), step: 0.01, class: "form-control" %>
 
           <%= label_tag "date#{i+1}", "Due Date #{i+1}", class: "required-label" %>
-          <%= date_field_tag "date#{i+1}", Date.today + ((i + 1) * 14), class: "form-control" %>
+          <%= date_field_tag "date#{i+1}", (Date.today + ((i + 1) * 14)), class: "form-control" %>
         </div>
       <% end %>
 
@@ -53,15 +69,23 @@
         <%= text_area_tag :additional_provisions, "None", class: "form-control" %>
       </div>
 
-      <% if @user.Role == 'Tenant' %>
+      <% if @user&.Role == 'Tenant' %>
         <div class="form-section">
           <%= label_tag :tenant_signature, "Tenant Signature (start/end with '/')" %>
-          <%= text_field_tag :tenant_signature, nil, pattern: '^/.+/$', required: true, class: "form-control" %>
+          <%= text_field_tag :tenant_signature, nil,
+                pattern: '^/.+/$', required: false,
+                placeholder: "/Your Name/",
+                title: "Signature must start and end with /, e.g., /John Doe/",
+                class: "form-control" %>
         </div>
-      <% elsif @user.Role == 'Landlord' %>
+      <% elsif @user&.Role == 'Landlord' %>
         <div class="form-section">
           <%= label_tag :landlord_signature, "Landlord Signature (start/end with '/')" %>
-          <%= text_field_tag :landlord_signature, nil, pattern: '^/.+/$', required: true, class: "form-control" %>
+          <%= text_field_tag :landlord_signature, nil,
+                pattern: '^/.+/$', required: false,
+                placeholder: "/Your Name/",
+                title: "Signature must start and end with /, e.g., /John Doe/",
+                class: "form-control" %>
         </div>
       <% end %>
 
@@ -71,15 +95,19 @@
     <% end %>
   </div>
 
-  <!-- Right side: PDF Preview -->
-  <div class="preview-panel">
-    <h2>Document Preview</h2>
-    <% if @intake.BestOption == "Move Out" %>
-      <iframe src="/templates/Agreement to Vacate.pdf"></iframe>
-    <% elsif @intake.BestOption == "Pay Missed Rent" %>
-      <iframe src="/templates/Pay and Stay Agreement.pdf"></iframe>
-    <% else %>
-      <p>No document preview available for this option: <%= @intake.BestOption %></p>
-    <% end %>
-  </div>
+  <% vacate = "/templates/#{ERB::Util.url_encode('Agreement to Vacate.pdf')}" %>
+<% pay    = "/templates/#{ERB::Util.url_encode('Pay and Stay Agreement.pdf')}" %>
+
+<div class="preview-panel">
+  <h2>Document Preview</h2>
+  <% case (@intake&.BestOption) %>
+  <% when "Move Out" %>
+    <iframe src="<%= vacate %>"></iframe>
+  <% when "Pay Missed Rent" %>
+    <iframe src="<%= pay %>"></iframe>
+  <% else %>
+    <p>No document preview available for this option: <%= @intake&.BestOption || "N/A" %></p>
+  <% end %>
 </div>
+</div>
+
