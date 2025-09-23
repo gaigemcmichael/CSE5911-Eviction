@@ -21,6 +21,15 @@ import "channels";
     if (menuLink) {
       const menu = document.querySelector('.navbar-menu');
       if (menu) menu.classList.remove('active');
+      return;
+    }
+
+    // click outside closes the menu
+    const menu = document.querySelector('.navbar-menu');
+    if (menu && menu.classList.contains('active')) {
+      if (!e.target.closest('.navbar-menu') && !e.target.closest('#navbar-toggle')) {
+        menu.classList.remove('active');
+      }
     }
   }
 
