@@ -1,5 +1,6 @@
 class IntakeQuestion < ApplicationRecord
     self.table_name = "IntakeQuestions"
+    self.primary_key = "IntakeID"
 
     belongs_to :user, foreign_key: "UserID"
 
