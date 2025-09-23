@@ -62,7 +62,14 @@ Rails.application.routes.draw do
   resources :mediator_messages, only: [ :create ]
 
 
-  resources :documents, only: [ :index, :show, :create, :destroy ]
+  
+resources :documents, only: [:index, :new, :create, :show, :destroy] do
+  member do
+    get  :download
+    post :generate_filled_template   
+  end
+end
+
   resources :resources, only: [ :index ]
 
   # System Data
@@ -96,7 +103,7 @@ Rails.application.routes.draw do
     # Admin Mediator Accounts Controller
     resources :accounts, only: [ :index, :create, :update ], controller: "accounts"
 
-    # This matches the /mediations path in the navbar
+    
     get "mediations", to: "flagged_mediations#index"
     get "mediations/:id", to: "flagged_mediations#show", as: "flagged_mediation"
     patch "mediations/:id/reassign", to: "flagged_mediations#reassign", as: "reassign_mediator"
