@@ -11,9 +11,8 @@
     <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&family=Poppins:wght@600;700&display=swap" rel="stylesheet">
 
-    <%# Load Global Stylesheets %>
-    <%= stylesheet_link_tag "base.css", media: "all" %>
-    <%= stylesheet_link_tag "navbar.css", media: "all" %>
+  <%# Load Global Stylesheets %>
+  <%= stylesheet_link_tag "base", "login", "signup", "navbar", "dashboard", "chat", "messages_tenant", "messages_landlord", "screening_questions", "action", "mediator_screening_view", "mediations", "documents", "resources", "account_view", media: "all", "data-turbo-track": "reload" %>
 
     <%= yield :head %>
 
@@ -27,9 +26,6 @@
     <link rel="icon" href="/icon.svg" type="image/svg+xml">
     <link rel="apple-touch-icon" href="/icon.png">
 
-    <%# Includes all stylesheet files in app/assets/stylesheets %>
-    <%= stylesheet_link_tag :app, "data-turbo-track": "reload" %>
-    <%= javascript_importmap_tags %>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
   </head>
 
