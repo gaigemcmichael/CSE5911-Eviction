@@ -169,7 +169,8 @@ jobs:
       # Build & Push
       - name: Build and Push Docker image
         run: |
-          IMAGE_NAME=ghcr.io/${{ github.repository }}/rails-app
+          REPO_LOWERCASE=$(echo "${{ github.repository }}" | tr '[:upper:]' '[:lower:]')
+          IMAGE_NAME=ghcr.io/${REPO_LOWERCASE}/rails-app
           docker build -t $IMAGE_NAME:${{ github.sha }} .
           docker push $IMAGE_NAME:${{ github.sha }}
 
@@ -188,7 +189,7 @@ jobs:
               volumes:
                 - ./SQLData:/var/opt/mssql
             web:
-              image: ghcr.io/${{ github.repository }}/rails-app:${{ github.sha }}
+              image: ghcr.io/$(echo "${{ github.repository }}" | tr '[:upper:]' '[:lower:]')/rails-app:${{ github.sha }}
               command: bundle exec rails s -b 0.0.0.0 -p 3000
               ports:
                 - "3000:3000"
