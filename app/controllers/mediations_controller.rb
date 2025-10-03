@@ -5,7 +5,7 @@ class MediationsController < ApplicationController
   before_action :require_any_user_role, only: [ :end_conversation ]
 
   def index
-    redirect_to messages_path, alert: "Negotiation index is not available. Please use the messages page."
+    redirect_to messages_url, alert: "Negotiation index is not available. Please use the messages page."
   end
 
   # lets a landlord accept a mediation request
