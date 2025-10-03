@@ -8,6 +8,7 @@ Rails.application.routes.draw do
   get "/login", to: "sessions#new"
   post "/login", to: "sessions#create"
   get "/logout", to: "sessions#destroy"
+  resources :sessions
 
   # Dashboard Pages
   get "/dashboard", to: "dashboard#index", as: "dashboard"
@@ -19,6 +20,7 @@ Rails.application.routes.draw do
   # User Signup and Account Management
   get "/signup", to: "users#new"
   post "/signup", to: "users#create"
+  resources :users
 
   get "/account", to: "account#show"
   get "/account/edit", to: "account#edit"
@@ -62,21 +64,22 @@ Rails.application.routes.draw do
   resources :mediator_messages, only: [ :create ]
 
 
-  
-resources :documents, only: [:index, :new, :create, :show, :destroy] do
+
+resources :documents, only: [ :index, :new, :create, :show, :destroy ] do
   member do
     get  :download
-    post :generate_filled_template   
+    post :generate_filled_template
   end
 end
 
   resources :resources, only: [ :index ]
+  resources :applications
 
   # System Data
   resource :system_data, only: [ :show ]
 
   # Mediations and Related Actions
-  resources :mediations, only: [ :new, :create, :edit, :update, :destroy ] do
+  resources :mediations, only: [ :index, :new, :create, :edit, :update, :destroy ] do
     post :accept, on: :member
     post :respond, on: :member
   end
@@ -97,15 +100,15 @@ end
   resources :third_party_mediations, only: [ :index ]
   resources :mediator_cases, only: [ :show ]
 
-  resources :screenings, only: [ :new, :create ]
+  resources :screenings
 
   namespace :admin do
     # Admin Mediator Accounts Controller
     resources :accounts, only: [ :index, :create, :update ], controller: "accounts"
 
-    
-    get "mediations", to: "flagged_mediations#index"
-    get "mediations/:id", to: "flagged_mediations#show", as: "flagged_mediation"
+
+    get "mediations", to: "flagged_mediations#index", as: "mediations"
+    get "mediations/:id", to: "flagged_mediations#show", as: "mediation"
     patch "mediations/:id/reassign", to: "flagged_mediations#reassign", as: "reassign_mediator"
   end
 

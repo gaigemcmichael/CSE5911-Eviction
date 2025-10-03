@@ -119,3 +119,14 @@ random1:
   CreatedAt: 2025-02-01 19:26:12
   CompanyName:
   TenantAddress:
+
+one:
+  UserID: 100
+  Email: test@example.com
+  password_digest: <%= BCrypt::Password.create('password', cost: BCrypt::Engine::MIN_COST) %>
+  FName: Test
+  LName: User
+  Role: Tenant
+  CreatedAt: 2025-01-01 00:00:00
+  CompanyName:
+  TenantAddress: 123 Test St

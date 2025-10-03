@@ -11,5 +11,10 @@ module ActiveSupport
     fixtures :all
 
     # Add more helper methods to be used by all tests here...
+
+    # Global authentication helper for integration tests
+    def log_in_as(user)
+      post login_path, params: { email: user.Email, password: "password" }
+    end
   end
 end
