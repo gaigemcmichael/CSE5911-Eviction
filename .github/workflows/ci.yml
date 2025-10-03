@@ -55,8 +55,15 @@ jobs:
           ruby-version: 3.3.4
           bundler-cache: true
           
-      - name: Install FreeTDS
-        run: sudo apt-get update && sudo apt-get install -y freetds-dev
+      - name: Install build deps for tiny_tds
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install --no-install-recommends -y \
+            build-essential \
+            git \
+            pkg-config \
+            freetds-dev \
+            unixodbc-dev
 
       - name: Wait for SQL Server
         run: |
