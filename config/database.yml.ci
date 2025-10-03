@@ -10,4 +10,4 @@ default: &default
 
 test:
   <<: *default
-  database: EVICTION_TEST_CI
+  database: EVICTION_TEST
