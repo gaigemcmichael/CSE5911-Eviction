@@ -109,7 +109,8 @@
               recipient: @mediation.tenant,
               messages: @tenant_messages,
               message_string: @tenant_message_string,
-              user: @user
+              current_user: @user,
+              participants: @conversation_participants
             }) %>
           <% end %>
         </div>
@@ -125,7 +126,8 @@
               recipient: @mediation.landlord,
               messages: @landlord_messages,
               message_string: @landlord_message_string,
-              user: @user
+              current_user: @user,
+              participants: @conversation_participants
             }) %>
           <% end %>
         </div>

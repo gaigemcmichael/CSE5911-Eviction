@@ -81,7 +81,10 @@ class MessagesController < ApplicationController
       return
     end
 
-    @messages = Message.where(ConversationID: @message_string.ConversationID).order(:MessageDate)
+    @messages = Message
+      .where(ConversationID: @message_string.ConversationID)
+      .includes(file_attachments: :file_draft)
+      .order(:MessageDate)
 
     mediator_chat_ready = @mediation&.MediatorRequested && @mediation&.MediatorAssigned &&
       ((@user.Role == "Tenant" && @mediation.TenantScreeningID.present?) ||
@@ -100,10 +103,22 @@ class MessagesController < ApplicationController
 
       if side_group
         @message_string = MessageString.find_by(ConversationID: side_group.ConversationID)
-        @messages = Message.where(ConversationID: @message_string.ConversationID).order(:MessageDate)
+        @messages = Message
+          .where(ConversationID: @message_string.ConversationID)
+          .includes(file_attachments: :file_draft)
+          .order(:MessageDate)
         @mediator = User.find_by(UserID: @mediation.MediatorID)
       end
     end
+
+    participant_ids = [
+      @user.UserID,
+      @mediation.TenantID,
+      @mediation.LandlordID,
+      @mediation.MediatorID
+    ].compact.uniq
+
+    @conversation_participants = User.where(UserID: participant_ids).index_by(&:UserID)
 
     respond_to do |format|
       format.html { render "messages/show" }
@@ -227,6 +242,31 @@ class MessagesController < ApplicationController
       end
 
       if @message.save
+        attachments_payload = @message
+          .file_attachments
+          .includes(:file_draft)
+          .map do |attachment|
+            file = attachment.file_draft
+            next unless file
+
+            extension = File.extname(file.FileURLPath.to_s).delete(".")
+            {
+              file_id: file.FileID,
+              file_name: file.FileName,
+              preview_url: view_file_path(file.FileID),
+              download_url: download_file_path(file.FileID),
+              view_url: view_file_path(file.FileID),
+              sign_url: sign_document_path(file.FileID),
+              tenant_signature_required: file.respond_to?(:TenantSignature) ? !file.TenantSignature : false,
+              landlord_signature_required: file.respond_to?(:LandlordSignature) ? !file.LandlordSignature : false,
+              extension: extension.presence || file.FileTypes
+            }
+          end
+          .compact
+
+  sender_name = [ @user.FName, @user.LName ].compact.join(" ").squeeze(" ").strip
+        sender_name = @user.CompanyName.presence || @user.Email if sender_name.blank?
+
         # Broadcast to ActionCable for both sender and receiver
         ActionCable.server.broadcast(
           "messages_#{conversation.ConversationID}",
@@ -236,7 +276,9 @@ class MessagesController < ApplicationController
             sender_id: @message.SenderID,
             recipient_id: @message.recipientID,
             message_date: @message.MessageDate.strftime("%B %d, %Y %I:%M %p"),
-            sender_role: @user.Role
+            sender_role: @user.Role,
+            sender_name: sender_name,
+            attachments: attachments_payload
           }
         )
 

@@ -49,9 +49,15 @@ document.addEventListener("turbo:load", () => {
             if (!isSender && !isRecipient) return;
 
             const messageClass = isSender ? "sent" : "received";
+            const formattedRole = (data.sender_role || "").toString().replace(/_/g, " ");
+            const senderName = data.sender_name || (isSender ? "You" : formattedRole || "Participant");
             const messageHtml = `
-              <div class="chat-message ${messageClass}">
+              <div class="chat-message ${messageClass}" data-message-id="${data.message_id}" data-sender-role="${formattedRole}" data-sender-id="${data.sender_id}" data-current-user-id="${currentUserId}">
                 <div class="message-bubble">
+                  <div class="message-meta">
+                    <span class="message-author">${senderName}</span>
+                    ${formattedRole ? `<span class="message-role">${formattedRole}</span>` : ""}
+                  </div>
                   <p class="message-content">${data.contents}</p>
                   <small class="message-timestamp">${data.message_date}</small>
                 </div>
