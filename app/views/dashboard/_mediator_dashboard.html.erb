@@ -3,36 +3,39 @@
   <% active_cases = @user.mediator.ActiveMediations || 0 %>
   <% capacity = @user.mediator.MediationCap || 0 %>
 
-  <!-- Availability Status -->
-  <div class="availability-status-card">
-    <div class="status-indicator <%= available ? 'available' : 'unavailable' %>">
-      <i class="fas <%= available ? 'fa-check-circle' : 'fa-pause-circle' %>"></i>
+  <!-- Status and Workload Grid -->
+  <div class="mediator-status-grid">
+    <!-- Availability Status -->
+    <div class="availability-status-card">
+      <div class="status-indicator <%= available ? 'available' : 'unavailable' %>">
+        <i class="fas <%= available ? 'fa-check-circle' : 'fa-pause-circle' %>"></i>
+      </div>
+      <div class="status-content">
+        <h3>Current Status: <%= available ? "Available" : "Unavailable" %></h3>
+        <p>You can update your availability in your account settings</p>
+        <%= link_to "Update Status", account_path, class: "status-btn" %>
+      </div>
     </div>
-    <div class="status-content">
-      <h3>Current Status: <%= available ? "Available" : "Unavailable" %></h3>
-      <p>You can update your availability in your account settings</p>
-      <%= link_to "Update Status", account_path, class: "status-btn" %>
-    </div>
-  </div>
 
-  <!-- Workload Overview -->
-  <div class="workload-card">
-    <div class="workload-header">
-      <h3><i class="fas fa-tasks"></i> Current Workload</h3>
-    </div>
-    <div class="workload-stats">
-      <div class="workload-stat">
-        <div class="stat-number"><%= active_cases %></div>
-        <div class="stat-label">Active Cases</div>
+    <!-- Workload Overview -->
+    <div class="workload-card">
+      <div class="workload-header">
+        <h3><i class="fas fa-tasks"></i> Current Workload</h3>
       </div>
-      <div class="workload-divider">/</div>
-      <div class="workload-stat">
-        <div class="stat-number"><%= capacity %></div>
-        <div class="stat-label">Capacity</div>
+      <div class="workload-stats">
+        <div class="workload-stat">
+          <div class="stat-number"><%= active_cases %></div>
+          <div class="stat-label">Active Cases</div>
+        </div>
+        <div class="workload-divider">/</div>
+        <div class="workload-stat">
+          <div class="stat-number"><%= capacity %></div>
+          <div class="stat-label">Capacity</div>
+        </div>
       </div>
-    </div>
-    <div class="workload-bar">
-      <div class="workload-progress" style="width: <%= capacity > 0 ? (active_cases.to_f / capacity * 100).round(1) : 0 %>%"></div>
+      <div class="workload-bar">
+        <div class="workload-progress" style="width: <%= capacity > 0 ? (active_cases.to_f / capacity * 100).round(1) : 0 %>%"></div>
+      </div>
     </div>
   </div>
 <% end %>
