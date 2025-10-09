@@ -2,8 +2,8 @@ source "https://rubygems.org"
 
 # Bundle edge Rails instead: gem "rails", github: "rails/rails", branch: "main"
 gem "rails", "~> 8.0.1"
-# The modern asset pipeline for Rails [https://github.com/rails/propshaft]
-gem "propshaft"
+# Use Sprockets for better CSS asset management
+gem "sprockets-rails"
 # Use sql server as the database for Active Record
 gem "tiny_tds", ">= 3.1.0"
 gem "activerecord-sqlserver-adapter", ">= 8.0"
@@ -108,13 +108,13 @@ gem "docx_templater"
 # For docx into pdf conversion
 gem "docsplit"
 
-gem 'sqlite3', '>= 2.1'
+gem "sqlite3", ">= 2.1"
 
 gem "prawn"
 
 gem "prawn-table"
-gem "rubocop", "~> 1.71", :groups => [:development, :test]
+gem "rubocop", "~> 1.71", groups: [ :development, :test ]
 
-gem "ruby-lsp", "~> 0.26.1", :group => :development
+gem "ruby-lsp", "~> 0.26.1", group: :development
 
-gem "rubocop-rspec", "~> 3.4", :groups => [:development, :test]
+gem "rubocop-rspec", "~> 3.4", groups: [ :development, :test ]

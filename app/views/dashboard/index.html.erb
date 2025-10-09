@@ -1,16 +1,52 @@
-<div class="dashboard">
-  <h2 class="dashboard-welcome">Welcome, <%= @user.FName %> <%= @user.LName %>!</h2>
+<div class="modern-dashboard">
+  <!-- Hero Section -->
+  <div class="dashboard-hero">
+    <div class="hero-content">
+      <div class="welcome-section">
+        <h1 class="welcome-title">Welcome back, <%= @user.FName %>!</h1>
+        <p class="welcome-subtitle">
+          <% case @user.Role %>
+            <% when "Tenant" %>
+              Your tenant portal for eviction mediation and resources
+            <% when "Landlord" %>
+              Your landlord portal for property management and mediation
+            <% when "Admin" %>
+              Administrative dashboard for managing mediations
+            <% when "Mediator" %>
+              Your mediation cases and availability center
+          <% end %>
+        </p>
+      </div>
+      
+      <!-- Role Badge -->
+      <div class="role-badge <%= @user.Role.downcase %>-badge">
+        <i class="fas <%= case @user.Role
+          when 'Tenant' then 'fa-home'
+          when 'Landlord' then 'fa-building'
+          when 'Admin' then 'fa-shield-alt'
+          when 'Mediator' then 'fa-balance-scale'
+          end %>"></i>
+        <%= @user.Role %>
+      </div>
+    </div>
+  </div>
 
-  <% case @user.Role %>
-    <% when "Landlord" %>
-      <%= render "landlord_dashboard" %>
-    <% when "Tenant" %>
-      <%= render "tenant_dashboard" %>
-    <% when "Admin" %>
-      <%= render "admin_dashboard" %>
-    <% when "Mediator" %>
-      <%= render "mediator_dashboard" %>
-    <% else %>
-      <p class="error-text">"Error: User has an Invalid role."</p>
-  <% end %>
+  <!-- Dashboard Content -->
+  <div class="dashboard-content">
+    <% case @user.Role %>
+      <% when "Landlord" %>
+        <%= render "landlord_dashboard" %>
+      <% when "Tenant" %>
+        <%= render "tenant_dashboard" %>
+      <% when "Admin" %>
+        <%= render "admin_dashboard" %>
+      <% when "Mediator" %>
+        <%= render "mediator_dashboard" %>
+      <% else %>
+        <div class="error-card">
+          <i class="fas fa-exclamation-triangle"></i>
+          <p>Error: User has an invalid role.</p>
+        </div>
+    <% end %>
+  </div>
 </div>

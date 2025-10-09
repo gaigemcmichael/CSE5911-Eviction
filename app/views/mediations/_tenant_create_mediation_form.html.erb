@@ -26,6 +26,11 @@
     const emailField = document.getElementById("landlord-email");
 
     function toggleEmailField() {
+      // Check if elements exist before trying to access them
+      if (!landlordSelect || !emailField) {
+        return;
+      }
+      
       if (landlordSelect.value) {
         emailField.disabled = true;
         emailField.placeholder = "Disabled while landlord is selected";
@@ -35,10 +40,13 @@
       }
     }
 
-    // Run once on page load in case a landlord is already selected
-    toggleEmailField();
+    // Only run if elements exist on the page
+    if (landlordSelect && emailField) {
+      // Run once on page load in case a landlord is already selected
+      toggleEmailField();
 
-    // Also run when user changes the selection
-    landlordSelect.addEventListener("change", toggleEmailField);
+      // Also run when user changes the selection
+      landlordSelect.addEventListener("change", toggleEmailField);
+    }
   });
 </script>

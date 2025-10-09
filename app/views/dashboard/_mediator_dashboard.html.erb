@@ -1,27 +1,105 @@
-<!-- Mediator Availability-->
 <% if @user.Role == "Mediator" && @user.mediator.present? %>
   <% available = @user.mediator.Available %>
-  <% status_text = available ? "Available" : "Not Available" %>
-  <% status_class = available ? "status-available" : "status-unavailable" %>
+  <% active_cases = @user.mediator.ActiveMediations || 0 %>
+  <% capacity = @user.mediator.MediationCap || 0 %>
 
-  <div class="availability-box">
-    <h3><i class="fa-solid fa-circle-check"></i> Mediator Availability</h3>
-    <p>
-      Your status: 
-      <span class="availability-badge <%= status_class %>"><%= status_text %></span>
-    </p> 
-    <p>
-      You can update it on the <%= link_to "Account", account_path, class: "dashboard-link" %> page.
-    </p>
+  <!-- Availability Status -->
+  <div class="availability-status-card">
+    <div class="status-indicator <%= available ? 'available' : 'unavailable' %>">
+      <i class="fas <%= available ? 'fa-check-circle' : 'fa-pause-circle' %>"></i>
+    </div>
+    <div class="status-content">
+      <h3>Current Status: <%= available ? "Available" : "Unavailable" %></h3>
+      <p>You can update your availability in your account settings</p>
+      <%= link_to "Update Status", account_path, class: "status-btn" %>
+    </div>
+  </div>
+
+  <!-- Workload Overview -->
+  <div class="workload-card">
+    <div class="workload-header">
+      <h3><i class="fas fa-tasks"></i> Current Workload</h3>
+    </div>
+    <div class="workload-stats">
+      <div class="workload-stat">
+        <div class="stat-number"><%= active_cases %></div>
+        <div class="stat-label">Active Cases</div>
+      </div>
+      <div class="workload-divider">/</div>
+      <div class="workload-stat">
+        <div class="stat-number"><%= capacity %></div>
+        <div class="stat-label">Capacity</div>
+      </div>
+    </div>
+    <div class="workload-bar">
+      <div class="workload-progress" style="width: <%= capacity > 0 ? (active_cases.to_f / capacity * 100).round(1) : 0 %>%"></div>
+    </div>
   </div>
 <% end %>
 
-<!-- Quick Start Guide -->
-<div class="quick-start">
-    <h3>🚀 How to Navigate</h3>
-    <ul class="dashboard-list">
-        <li>Access assigned mediations on the <%= link_to "Mediations", third_party_mediations_path, class: "dashboard-link" %> page.</li>
-        <li>View account details on the <%= link_to "Account", account_path, class: "dashboard-link" %> page.</li>
-        <li>Update password on the <%= link_to "Account", account_path, class: "dashboard-link" %> page.</li>
-    </ul>
+<!-- Quick Actions -->
+<div class="action-cards-grid">
+  <div class="action-card primary">
+    <div class="card-icon">
+      <i class="fas fa-clipboard-list"></i>
+    </div>
+    <div class="card-content">
+      <h3>My Mediations</h3>
+      <p>View and manage your assigned mediation cases</p>
+      <%= link_to "View Cases", third_party_mediations_path, class: "card-btn btn-primary" %>
+    </div>
+  </div>
+
+  <div class="action-card">
+    <div class="card-icon">
+      <i class="fas fa-user-edit"></i>
+    </div>
+    <div class="card-content">
+      <h3>Account Settings</h3>
+      <p>Update your profile, availability, and preferences</p>
+      <%= link_to "Manage Account", account_path, class: "card-btn" %>
+    </div>
+  </div>
+</div>
+
+<!-- Mediation Tips -->
+<div class="info-section">
+  <div class="info-header">
+    <h2><i class="fas fa-lightbulb"></i> Effective Mediation Tips</h2>
+    <p>Best practices for successful landlord-tenant mediation sessions</p>
+  </div>
+
+  <div class="tips-grid">
+    <div class="tip-card">
+      <div class="tip-icon">
+        <i class="fas fa-ear-listen"></i>
+      </div>
+      <h4>Active Listening</h4>
+      <p>Listen carefully to both parties' concerns and acknowledge their perspectives before proposing solutions.</p>
+    </div>
+
+    <div class="tip-card">
+      <div class="tip-icon">
+        <i class="fas fa-balance-scale"></i>
+      </div>
+      <h4>Stay Neutral</h4>
+      <p>Maintain impartiality and avoid taking sides. Focus on facilitating communication rather than imposing solutions.</p>
+    </div>
+
+    <div class="tip-card">
+      <div class="tip-icon">
+        <i class="fas fa-handshake"></i>
+      </div>
+      <h4>Find Common Ground</h4>
+      <p>Identify shared interests and goals to build momentum toward mutually acceptable agreements.</p>
+    </div>
+
+    <div class="tip-card">
+      <div class="tip-icon">
+        <i class="fas fa-file-signature"></i>
+      </div>
+      <h4>Document Agreements</h4>
+      <p>Ensure all agreements are clearly documented and understood by both parties before concluding.</p>
+    </div>
+  </div>
 </div>
