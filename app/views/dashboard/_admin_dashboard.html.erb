@@ -1,38 +1,88 @@
-<!-- Quick Start Guide -->
-<div class="quick-start">
-    <h3>🚀 How to Navigate</h3>
-    <ul class="dashboard-list">
-        <li>Check flagged and current mediations: <%= link_to "Mediations", admin_mediations_path, class: "dashboard-link" %> </li>
-        <li>Update a Mediator's account: <%= link_to "Manage Accounts", admin_accounts_path, class: "dashboard-link" %> </li>
-    </ul>
+<!-- Admin Actions -->
+<div class="action-cards-grid">
+  <div class="action-card primary">
+    <div class="card-icon">
+      <i class="fas fa-gavel"></i>
+    </div>
+    <div class="card-content">
+      <h3>Mediations</h3>
+      <p>Monitor flagged cases and ongoing mediations</p>
+      <%= link_to "Manage Mediations", admin_mediations_path, class: "card-btn btn-primary" %>
+    </div>
+  </div>
+
+  <div class="action-card">
+    <div class="card-icon">
+      <i class="fas fa-users-cog"></i>
+    </div>
+    <div class="card-content">
+      <h3>Account Management</h3>
+      <p>Update mediator accounts and user settings</p>
+      <%= link_to "Manage Accounts", admin_accounts_path, class: "card-btn" %>
+    </div>
+  </div>
 </div>
 
-<!-- Mediator Availability Table -->
-<div class="dashboard-guide">
-    <h3 class="dashboard-subheading"><i class="fa-solid fa-user-check"></i> Mediator Availability</h3>
+<!-- System Overview -->
+<div class="stats-grid">
+  <div class="stat-card">
+    <div class="stat-icon">
+      <i class="fas fa-balance-scale"></i>
+    </div>
+    <div class="stat-content">
+      <h3><%= User.includes(:mediator).where(Role: "Mediator").count %></h3>
+      <p>Total Mediators</p>
+    </div>
+  </div>
 
-    <table class="mediator-table">
-      <thead>
-        <tr>
-          <th>NAME</th>
-          <th>EMAIL</th>
-          <th>STATUS</th>
-        </tr>
-      </thead>
-      <tbody>
-        <% User.includes(:mediator).where(Role: "Mediator").each do |mediator| %>
-          <% available = mediator.mediator&.Available %>
-          <tr>
-            <td><%= "#{mediator.FName} #{mediator.LName}" %></td>
-            <td><%= mediator.Email %></td>
-            <td>
-              <span class="<%= available ? 'status-available' : 'status-unavailable' %>">
-                <%= available ? "Available" : "Not Available" %>
-              </span>
-            </td>
-          </tr>
-        <% end %>
-      </tbody>
-    </table>
+  <div class="stat-card">
+    <div class="stat-icon available">
+      <i class="fas fa-check-circle"></i>
+    </div>
+    <div class="stat-content">
+      <h3><%= User.includes(:mediator).where(Role: "Mediator").joins(:mediator).where(mediators: { Available: true }).count %></h3>
+      <p>Available Now</p>
+    </div>
+  </div>
 
+  <div class="stat-card">
+    <div class="stat-icon busy">
+      <i class="fas fa-clock"></i>
+    </div>
+    <div class="stat-content">
+      <h3><%= User.includes(:mediator).where(Role: "Mediator").joins(:mediator).where(mediators: { Available: false }).count %></h3>
+      <p>Currently Busy</p>
+    </div>
+  </div>
+</div>
+
+<!-- Mediator Availability -->
+<div class="info-section">
+  <div class="info-header">
+    <h2><i class="fas fa-user-check"></i> Mediator Availability</h2>
+    <p>Current status of all mediators in the system</p>
+  </div>
+
+  <div class="mediator-grid">
+    <% User.includes(:mediator).where(Role: "Mediator").each do |mediator| %>
+      <% available = mediator.mediator&.Available %>
+      <div class="mediator-card">
+        <div class="mediator-info">
+          <div class="mediator-avatar">
+            <%= mediator.FName.first.upcase %><%= mediator.LName.first.upcase %>
+          </div>
+          <div class="mediator-details">
+            <h4><%= "#{mediator.FName} #{mediator.LName}" %></h4>
+            <p><%= mediator.Email %></p>
+          </div>
+        </div>
+        <div class="mediator-status">
+          <span class="status-badge <%= available ? 'available' : 'unavailable' %>">
+            <i class="fas <%= available ? 'fa-check-circle' : 'fa-times-circle' %>"></i>
+            <%= available ? "Available" : "Busy" %>
+          </span>
+        </div>
+      </div>
+    <% end %>
+  </div>
 </div>

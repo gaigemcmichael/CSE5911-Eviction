@@ -1,37 +1,108 @@
-<!-- Quick Start Guide -->
-<div class="quick-start">
-    <h3>🚀 How to Navigate</h3>
-    <ul class="dashboard-list">
-        <li>Check your <%= link_to "Messages", messages_path, class: "dashboard-link" %> for updates on negotiations.</li>
-        <li>View and manage your documents on the <%= link_to "Documents", documents_path, class: "dashboard-link" %> page.</li>
-        <li>Update your profile and settings from the <%= link_to "Account", account_path, class: "dashboard-link" %> page.</li>
-    </ul>
+<!-- Quick Actions -->
+<div class="action-cards-grid">
+  <div class="action-card primary">
+    <div class="card-icon">
+      <i class="fas fa-envelope-open-text"></i>
+    </div>
+    <div class="card-content">
+      <h3>Messages</h3>
+      <p>Respond to tenant requests and manage negotiations</p>
+      <%= link_to "View Messages", messages_path, class: "card-btn btn-primary" %>
+    </div>
+  </div>
+
+  <div class="action-card">
+    <div class="card-icon">
+      <i class="fas fa-file-contract"></i>
+    </div>
+    <div class="card-content">
+      <h3>Documents</h3>
+      <p>Access agreements and important documentation</p>
+      <%= link_to "View Documents", documents_path, class: "card-btn" %>
+    </div>
+  </div>
+
+  <div class="action-card">
+    <div class="card-icon">
+      <i class="fas fa-book-open"></i>
+    </div>
+    <div class="card-content">
+      <h3>Resources</h3>
+      <p>Learn about mediation best practices and legal guidance</p>
+      <%= link_to "Explore Resources", resources_path, class: "card-btn" %>
+    </div>
+  </div>
+
+  <div class="action-card">
+    <div class="card-icon">
+      <i class="fas fa-user-tie"></i>
+    </div>
+    <div class="card-content">
+      <h3>Account</h3>
+      <p>Update your profile and company information</p>
+      <%= link_to "Manage Account", account_path, class: "card-btn" %>
+    </div>
+  </div>
 </div>
 
-<!-- Landlord Quick Guide -->
-<div class="dashboard-guide">
-    <h3 class="dashboard-subheading">📖 Quick Guide</h3>
-    <ul class="dashboard-list">
-        <li>
-            <strong>Accept a Negotiation from your tenant:</strong>
-            <ul>
-                <li>Go to the <%= link_to "Messages", messages_path, class: "dashboard-link" %> page.</li>
-                <li>Accept the negotiation from your tenant.</li>
-            </ul>
-        </li>
+<!-- Property Management Guide -->
+<div class="info-section">
+  <div class="info-header">
+    <h2><i class="fas fa-handshake"></i> Effective Mediation</h2>
+    <p>Resolve tenant disputes efficiently while maintaining positive relationships and avoiding costly legal proceedings.</p>
+  </div>
 
-        <li>
-            <strong>If you want to start a Mediation:</strong>
-            <ul>
-                <li>Request for a Mediator in <%= link_to "Messages", messages_path, class: "dashboard-link" %>.</li>
-            </ul>
-        </li>
+  <div class="process-steps">
+    <div class="step">
+      <div class="step-number">1</div>
+      <div class="step-content">
+        <h4>Receive Tenant Request</h4>
+        <p>When tenants initiate conversations, respond promptly to show good faith in resolving the issue.</p>
+      </div>
+    </div>
 
-        <li>
-            <strong>If you want to stop a negotiation/mediation:</strong>
-            <ul>
-                <li>Go to <%= link_to "Messages", messages_path, class: "dashboard-link" %> and access your negotiation/mediation to end it.</li>
-            </ul>
-        </li>
-    </ul>
+    <div class="step">
+      <div class="step-number">2</div>
+      <div class="step-content">
+        <h4>Engage in Dialogue</h4>
+        <p>Work directly with tenants to understand their concerns and explore mutually beneficial solutions.</p>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-number">3</div>
+      <div class="step-content">
+        <h4>Use Mediation When Needed</h4>
+        <p>If direct negotiation stalls, request a neutral mediator to help facilitate productive discussions.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Benefits Highlight -->
+<div class="highlight-section landlord-highlight">
+  <div class="highlight-content">
+    <h3><i class="fas fa-chart-line"></i> Benefits of Mediation</h3>
+    <div class="benefits-list">
+      <div class="benefit-item">
+        <i class="fas fa-clock"></i>
+        <span>Faster resolution than court proceedings</span>
+      </div>
+      <div class="benefit-item">
+        <i class="fas fa-dollar-sign"></i>
+        <span>Lower costs than legal action</span>
+      </div>
+      <div class="benefit-item">
+        <i class="fas fa-user-friends"></i>
+        <span>Preserves landlord-tenant relationships</span>
+      </div>
+      <div class="benefit-item">
+        <i class="fas fa-balance-scale"></i>
+        <span>Fair outcomes for all parties</span>
+      </div>
+    </div>
+  </div>
+  <div class="highlight-visual">
+    <i class="fas fa-building"></i>
+  </div>
 </div>
