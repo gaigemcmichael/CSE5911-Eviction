@@ -46,7 +46,7 @@ COPY . .
 # Precompile bootsnap + assets
 RUN bundle exec bootsnap precompile app/ lib/
 COPY config/database.yml.docker config/database.yml
-RUN chmod +x ./bin/rails
+RUN chmod +x ./bin/*
 RUN SECRET_KEY_BASE_DUMMY=1 ./bin/rails assets:precompile
 
 # ----------------------------
