@@ -94,6 +94,37 @@ class DocumentsController < ApplicationController
     render plain: "File not found", status: :not_found unless @file
   end
 
+  # GET /documents/:id/sign
+def sign
+  @file = FileDraft.where(FileID: params[:id])
+  @file = @file.where(UserDeletedAt: nil) if FileDraft.column_names.include?("UserDeletedAt")
+  @file = @file.first
+
+  return redirect_to documents_path, alert: "File not found or not available." unless @file
+end
+
+# POST /documents/:id/apply_signature
+def apply_signature
+  file_scope = FileDraft.where(FileID: params[:id])
+  file_scope = file_scope.where(UserDeletedAt: nil) if FileDraft.column_names.include?("UserDeletedAt")
+  file = file_scope.first
+  return redirect_to documents_path, alert: "File not found or not available." unless file
+
+  case @user.Role
+  when "Tenant"
+    file.update!(TenantSignature: true) unless file.TenantSignature
+    msg = "Tenant signature applied."
+  when "Landlord"
+    file.update!(LandlordSignature: true) unless file.LandlordSignature
+    msg = "Landlord signature applied."
+  else
+    return redirect_to documents_path, alert: "Only tenants or landlords can sign."
+  end
+
+  redirect_to documents_path, notice: msg
+end
+
+
   # download of the stored file
   def download
     file = find_file_for_user(params[:id])

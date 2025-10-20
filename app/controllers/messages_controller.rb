@@ -1,6 +1,8 @@
 class MessagesController < ApplicationController
   before_action :require_login
   before_action :set_user
+  before_action :load_attachable_files, only: [:show, :index, :create]
+
 
   def index
     case @user.Role
@@ -386,4 +388,19 @@ class MessagesController < ApplicationController
   def set_user
     @user = User.find(session[:user_id])
   end
+  def load_attachable_files
+    scope = FileDraft.where(CreatorID: @user[:UserID])
+    scope = scope.where(UserDeletedAt: nil) if FileDraft.column_names.include?("UserDeletedAt")
+
+    @attachable_files =
+      if FileDraft.column_names.include?("created_at")
+        scope.order(created_at: :desc)
+      elsif FileDraft.column_names.include?("CreatedAt")
+        scope.order(Arel.sql("[CreatedAt] DESC"))
+      else
+        scope.order(Arel.sql("[FileID] DESC"))
+      end
+  end
 end
+
+
