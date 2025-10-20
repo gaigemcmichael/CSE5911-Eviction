@@ -20,11 +20,10 @@
       </thead>
       <tbody>
   <% @files.each do |f| %>
-    <% t = (f.respond_to?(:uploaded_at) && f.uploaded_at.present?) ? f.uploaded_at : nil %>
-    <tr>
+      <% t = f.try(:created_at) || f.try(:CreatedAt) || f.try(:UpdatedAt) %>   
       <td><strong><%= f.FileName.presence || File.basename(f.FileURLPath.to_s) %></strong></td>
       <td><span class="badge"><%= f.FileTypes.to_s.upcase %></span></td>
-      <td><%= t ? t.strftime("%b %d, %Y %l:%M %p") : "-" %></td>
+      <td><%= t ? t.in_time_zone(Time.zone).strftime("%b %d, %Y %l:%M %p") : "-" %></td>
       <td class="docs-actions-cell">
         <%= link_to "Download",
                     download_document_path(f.FileID),
