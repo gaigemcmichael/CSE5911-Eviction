@@ -1,0 +1,84 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: sqlserver-pvc
+  namespace: eviction-meditation
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 5Gi
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: sqlserver-secret
+  namespace: eviction-meditation
+type: Opaque
+stringData:
+  SA_PASSWORD: "StrongPassword1"
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: sqlserver
+  namespace: eviction-meditation
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: sqlserver
+  template:
+    metadata:
+      labels:
+        app: sqlserver
+    spec:
+      securityContext:
+        fsGroup: 10001
+      containers:
+      - name: sqlserver
+        image: mcr.microsoft.com/azure-sql-edge:latest
+        securityContext:
+          runAsUser: 10001
+          runAsNonRoot: true
+          allowPrivilegeEscalation: false
+        ports:
+        - containerPort: 1433
+          name: sqlserver
+        env:
+        - name: ACCEPT_EULA
+          value: "Y"
+        - name: MSSQL_SA_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: sqlserver-secret
+              key: SA_PASSWORD
+        volumeMounts:
+        - name: sqlserver-data
+          mountPath: /var/opt/mssql
+        resources:
+          requests:
+            memory: "2Gi"
+            cpu: "500m"
+          limits:
+            memory: "4Gi"
+            cpu: "1000m"
+      volumes:
+      - name: sqlserver-data
+        persistentVolumeClaim:
+          claimName: sqlserver-pvc
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: sqlserver-service
+  namespace: eviction-meditation
+spec:
+  selector:
+    app: sqlserver
+  ports:
+  - protocol: TCP
+    port: 1433
+    targetPort: 1433
+  type: ClusterIP
