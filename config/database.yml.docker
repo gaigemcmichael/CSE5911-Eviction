@@ -1,14 +1,29 @@
 default: &default
-  adapter: sqlite3
-  database: db/dummy.sqlite3
+  adapter: <%= ENV.fetch("DB_ADAPTER", "sqlserver") %>
+  host: <%= ENV.fetch("DB_HOST", "localhost") %>
+  port: <%= ENV.fetch("DB_PORT", "1433") %>
+  username: <%= ENV.fetch("DB_USERNAME", "sa") %>
+  password: <%= ENV.fetch("DB_PASSWORD", "") %>
   pool: 5
-  timeout: 5000
 
 development:
   <<: *default
+  database: EVICTION_DEVELOPMENT
 
 test:
   <<: *default
+  database: EVICTION_TEST
 
 production:
-  <<: *default
+  primary:
+    <<: *default
+    database: <%= ENV.fetch("DB_NAME", "EVICTION_PRODUCTION") %>
+  cable:
+    <<: *default
+    database: <%= ENV.fetch("DB_NAME", "EVICTION_PRODUCTION") %>
+  queue:
+    <<: *default
+    database: <%= ENV.fetch("DB_NAME", "EVICTION_PRODUCTION") %>
+  cache:
+    <<: *default
+    database: <%= ENV.fetch("DB_NAME", "EVICTION_PRODUCTION") %>
