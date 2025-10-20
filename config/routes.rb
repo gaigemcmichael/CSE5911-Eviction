@@ -22,10 +22,6 @@ Rails.application.routes.draw do
   post "/signup", to: "users#create"
   resources :users
   
-  get 'sms_two_factor', to: 'sms_two_factor#show', as: 'sms_two_factor'
-  post 'sms_two_factor/verify', to: 'sms_two_factor#verify', as: 'sms_two_factor_verify'
-  post 'sms_two_factor/resend', to: 'sms_two_factor#resend', as: 'sms_two_factor_resend'
-  
   get "/account", to: "account#show", as: "account"
   get "/account/edit", to: "account#edit"
   patch "/account", to: "account#update"
