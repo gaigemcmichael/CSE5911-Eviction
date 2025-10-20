@@ -8,7 +8,8 @@
 
   <div class="upload-card">
     <%= form_with url: documents_path, method: :post, html: { multipart: true, class: "upload-form" } do %>
-      <label class="dropzone" for="file" role="button" tabindex="0">
+      
+      <label class="dropzone" for="file" role="button" tabindex="0" data-file-preview-target="dropzone">
         <span class="dz-icon" aria-hidden="true">⬆️</span>
         <span class="dz-title">Drag & drop your file here</span>
         <span class="dz-subtitle">or click to browse</span>
@@ -23,7 +24,7 @@
 
 
       <!-- preview box + fallback -->
-      <div id="selected-file" class="selected-file" data-file-preview-target="box" hidden></div>
+      
       <div class="filename" data-file-preview-target="fallback">No file selected</div>
 
       <div class="form-actions">
@@ -34,6 +35,7 @@
   </div>
 </div>
 
+  <!-- `file-preview` Stimulus controller handles drag and drop and file preview -->
 <%= javascript_tag nonce: true do %>
 document.addEventListener("turbo:load", function () {
   const input = document.getElementById("file");

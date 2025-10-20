@@ -4,6 +4,15 @@ class ApplicationController < ActionController::Base
 
   private
 
+  def use_user_time_zone(&block)
+    tz = nil
+    if defined?(@user) && @user.present?
+      tz = @user.try(:time_zone) || @user.try(:TimeZone) || @user.try(:Timezone)
+    end
+    tz ||= Rails.application.config.time_zone
+    Time.use_zone(tz, &block)
+  end
+
   def set_current_user
     @user = User.find(session[:user_id]) if session[:user_id]
   end

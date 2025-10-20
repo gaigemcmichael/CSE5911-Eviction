@@ -43,4 +43,7 @@ import "channels";
   document.addEventListener('DOMContentLoaded', init);
   document.addEventListener('turbo:load', init);
   document.addEventListener('turbolinks:load', init);
+  document.addEventListener('dragover',  e => e.preventDefault(), false);
+  document.addEventListener('drop',      e => e.preventDefault(), false);
+
 })();
