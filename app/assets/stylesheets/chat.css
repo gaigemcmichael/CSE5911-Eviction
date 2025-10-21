@@ -647,7 +647,7 @@
     border-radius: 16px;
     background: linear-gradient(135deg, #0f9d58 0%, #34c07a 100%);
     color: #ffffff;
-    padding: 0 clamp(1.25rem, 2.4vw, 1.65rem);
+    padding: 0.35rem clamp(1.25rem, 2.4vw, 1.65rem);
     min-width: 120px;
     font-size: 1rem;
     font-weight: 700;
@@ -656,10 +656,8 @@
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    /* min-height: clamp(2.75rem, 5vw, 3.4rem);
-    height: clamp(2.75rem, 5vw, 3.4rem); */
+    line-height: 1;
     min-height: 38px; /* Match the textarea height */
-	  height: 38px;     /* Match the textarea height */
   }
 
   .send-msg-btn.is-ready {
@@ -1357,12 +1355,12 @@
     }
 
     .send-msg-btn {
-      padding: 0 1.25rem;
+      padding: clamp(0.4rem, 2vw, 0.6rem) clamp(1.25rem, 4vw, 1.75rem);
       min-width: 100px;
       font-size: 0.95rem;
       flex-shrink: 0;
       min-height: clamp(3rem, 12vw, 4.5rem);
-      height: clamp(3rem, 12vw, 4.5rem);
+      line-height: 1;
     }
 
     .message-composer {
@@ -1594,11 +1592,11 @@
     }
 
     .send-msg-btn {
-      padding: 0 1rem;
+      padding: clamp(0.35rem, 3vw, 0.55rem) clamp(1rem, 4vw, 1.5rem);
       min-width: 85px;
       font-size: 0.9rem;
       min-height: clamp(2.85rem, 18vw, 4.25rem);
-      height: clamp(2.85rem, 18vw, 4.25rem);
+      line-height: 1;
     }
 
     .message-composer {
