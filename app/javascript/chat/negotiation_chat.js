@@ -118,11 +118,37 @@ const handleNegotiationSubmit = (event) => {
     },
     body: new FormData(form)
   })
-    .then((response) => {
-      if (!response.ok) throw new Error("Failed to send message");
-      return response.json();
+    .then(async (response) => {
+      if (!response.ok && response.status !== 204) {
+        throw new Error("Failed to send message");
+      }
+
+      const contentType = response.headers.get("content-type") || "";
+      let payload = null;
+
+      if (contentType.includes("application/json")) {
+        try {
+          payload = await response.json();
+        } catch (parseError) {
+          if (response.status !== 204) {
+            throw parseError;
+          }
+        }
+      }
+
+      return { payload, status: response.status };
     })
-    .then(() => {
+    .then(({ payload, status }) => {
+      const isDuplicate = payload && payload.duplicate;
+
+      if (isDuplicate) {
+        if (submitButton) {
+          submitButton.disabled = false;
+        }
+        updateButtonState();
+        return;
+      }
+
       if (textarea) {
         textarea.value = "";
         textarea.style.height = MIN_HEIGHT;
