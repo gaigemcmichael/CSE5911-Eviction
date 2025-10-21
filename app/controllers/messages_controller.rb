@@ -213,7 +213,11 @@ class MessagesController < ApplicationController
 
       if duplicate_exists
         Rails.logger.info "Duplicate message detected, blocking it."
-        return render status: :no_content, body: nil
+        respond_to do |format|
+          format.html { head :no_content }
+          format.json { render json: { duplicate: true }, status: :accepted }
+        end
+        return
       end
 
       # Create a new message
