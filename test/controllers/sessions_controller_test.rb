@@ -1,48 +1,44 @@
 require "test_helper"
-# Just a scaffold, will need filled in
+
 class SessionsControllerTest < ActionDispatch::IntegrationTest
   setup do
-    @session = sessions(:one)
+    @user = users(:landlord1)
   end
 
-  test "should get index" do
-    get sessions_url
+  test "renders the login page" do
+    get login_url
     assert_response :success
   end
 
-  test "should get new" do
-    get new_session_url
+  test "creates a session with valid credentials" do
+    post login_url, params: { email: @user[:Email], password: "password" }
+
+    assert_redirected_to dashboard_url
+    assert_equal @user[:UserID], session[:user_id]
+
+    follow_redirect!
     assert_response :success
   end
 
-  test "should create session" do
-    assert_difference("Session.count") do
-      post sessions_url, params: { session: {} }
-    end
+  test "rejects invalid credentials" do
+    post login_url, params: { email: @user[:Email], password: "wrong-password" }
 
-    assert_redirected_to session_url(Session.last)
+    assert_response :unprocessable_entity
+    assert_nil session[:user_id]
+    assert_equal "Invalid email or password", flash[:error]
   end
 
-  test "should show session" do
-    get session_url(@session)
+  test "logs out and clears the session" do
+    post login_url, params: { email: @user[:Email], password: "password" }
+    assert_equal @user[:UserID], session[:user_id]
+
+    get logout_url
+
+    assert_redirected_to root_url
+    assert_nil session[:user_id]
+    assert_equal "Logged out successfully!", flash[:notice]
+
+    follow_redirect!
     assert_response :success
-  end
-
-  test "should get edit" do
-    get edit_session_url(@session)
-    assert_response :success
-  end
-
-  test "should update session" do
-    patch session_url(@session), params: { session: {} }
-    assert_redirected_to session_url(@session)
-  end
-
-  test "should destroy session" do
-    assert_difference("Session.count", -1) do
-      delete session_url(@session)
-    end
-
-    assert_redirected_to sessions_url
   end
 end

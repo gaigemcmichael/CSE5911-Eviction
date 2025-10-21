@@ -1,48 +1,49 @@
 require "test_helper"
-# Just a scaffold, will need filled in
+
 class UsersControllerTest < ActionDispatch::IntegrationTest
+  include ActiveJob::TestHelper
+
   setup do
-    @user = users(:one)
+    clear_enqueued_jobs
   end
 
-  test "should get index" do
-    get users_url
+  test "renders the signup form" do
+    get signup_url
+
     assert_response :success
+    assert_select "form"
   end
 
-  test "should get new" do
-    get new_user_url
-    assert_response :success
-  end
+  test "creates a user with valid data" do
+    params = {
+      Email: "new-tenant@example.com",
+      password: "Password!23",
+      password_confirmation: "Password!23",
+      FName: "New",
+      LName: "Tenant",
+      Role: "Tenant",
+      TenantAddress: "123 Main St",
+      ProfileDisclaimer: "yes"
+    }
 
-  test "should create user" do
-    assert_difference("User.count") do
-      post users_url, params: { user: {} }
+    assert_enqueued_jobs 1 do
+      assert_difference("User.count", 1) do
+        post signup_url, params: { user: params }
+      end
     end
 
-    assert_redirected_to user_url(User.last)
+    created_user = User.find_by(Email: "new-tenant@example.com")
+    assert_redirected_to dashboard_url
+    assert_equal created_user.UserID, session[:user_id]
+    assert_equal "Account created successfully!", flash[:notice]
   end
 
-  test "should show user" do
-    get user_url(@user)
-    assert_response :success
-  end
-
-  test "should get edit" do
-    get edit_user_url(@user)
-    assert_response :success
-  end
-
-  test "should update user" do
-    patch user_url(@user), params: { user: {} }
-    assert_redirected_to user_url(@user)
-  end
-
-  test "should destroy user" do
-    assert_difference("User.count", -1) do
-      delete user_url(@user)
+  test "re-renders the form when data is invalid" do
+    assert_no_difference("User.count") do
+      post signup_url, params: { user: { Email: "", password: "", ProfileDisclaimer: "no" } }
     end
 
-    assert_redirected_to users_url
+    assert_response :success
+    assert_select "form"
   end
 end

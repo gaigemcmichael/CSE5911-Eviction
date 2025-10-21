@@ -7,8 +7,11 @@ class MessagesControllerTest < ActionDispatch::IntegrationTest
     @mediation = primary_message_groups(:one) # Assume a fixture for mediation
   end
 
-  def log_in_as(user)
-    post login_path, params: { session: { email: user.Email, password: user.Password } }
+  def log_in_as(user, expect_success: true)
+    post login_path, params: { email: user[:Email], password: "password" }
+    assert_redirected_to dashboard_url
+    follow_redirect!
+    assert_response(:success) if expect_success
   end
 
   test "should redirect to login if not logged in" do
@@ -21,28 +24,27 @@ class MessagesControllerTest < ActionDispatch::IntegrationTest
     log_in_as(@tenant)
     get messages_path
     assert_response :success
-    assert_template "messages/tenant_index"
+    assert_select "h1", "Tenant Negotiation & Messages"
   end
 
   test "tenant without mediation should see landlords list" do
-    @mediation.destroy
+    @mediation.update!(deleted_at: Time.current)
     log_in_as(@tenant)
     get messages_path
     assert_response :success
-    assert_template "messages/tenant_index"
-    assert_not_nil assigns(:landlords)
+    assert_select "p.mediation-status", text: /No negotiations exist/i
   end
 
   test "landlord should see landlord_index if mediation exists" do
     log_in_as(@landlord)
     get messages_path
     assert_response :success
-    assert_template "messages/landlord_index"
+    assert_select "h1", "Landlord Negotiation & Messages"
   end
 
   test "unauthorized users should get forbidden response" do
     unauthorized_user = users(:random1)
-    log_in_as(unauthorized_user)
+    log_in_as(unauthorized_user, expect_success: false)
     get messages_path
     assert_response :forbidden
     assert_match "Access Denied", response.body

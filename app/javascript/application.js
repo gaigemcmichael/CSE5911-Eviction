@@ -188,6 +188,55 @@ import "channels";
     });
   };
 
+  const initMediatorModal = () => {
+    document.querySelectorAll('[data-chat-actions]').forEach((actions) => {
+      const modal = actions.querySelector('[data-mediator-modal]');
+      const openButton = actions.querySelector('[data-mediator-modal-open]');
+      if (!modal || !openButton) return;
+
+      const closeButtons = modal.querySelectorAll('[data-mediator-modal-close]');
+
+      const openModal = () => {
+        modal.hidden = false;
+        modal.classList.add('is-open');
+        modal.focus();
+        updateBodyModalState();
+      };
+
+      const closeModal = () => {
+        modal.classList.remove('is-open');
+        modal.hidden = true;
+        updateBodyModalState();
+      };
+
+      if (!modal.dataset.boundMediatorModal) {
+        modal.dataset.boundMediatorModal = 'true';
+        modal.setAttribute('tabindex', '-1');
+        modal.addEventListener('click', (event) => {
+          if (event.target === modal) {
+            closeModal();
+          }
+        });
+        modal.addEventListener('keydown', (event) => {
+          if (event.key === 'Escape') {
+            closeModal();
+          }
+        });
+      }
+
+      if (!openButton.dataset.boundMediatorModalOpen) {
+        openButton.dataset.boundMediatorModalOpen = 'true';
+        openButton.addEventListener('click', openModal);
+      }
+
+      closeButtons.forEach((button) => {
+        if (button.dataset.boundMediatorModalClose) return;
+        button.dataset.boundMediatorModalClose = 'true';
+        button.addEventListener('click', closeModal);
+      });
+    });
+  };
+
   const documentPreview = (() => {
     let overlay;
     let dialog;
@@ -306,6 +355,7 @@ import "channels";
     initConversationInfoPanel();
     initAttachmentMenus();
     initEndModal();
+    initMediatorModal();
     documentPreview.init();
   };
 

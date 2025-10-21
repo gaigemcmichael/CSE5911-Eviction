@@ -118,3 +118,149 @@
 2025-09-22 14:31:39.89 Server      Configuring Always Encrypted enclave in asynchronous mode.
 2025-09-22 14:32:23.52 spid52      Attempting to load library 'xplog70.dll' into memory. This is an informational message only. No user action is required.
 2025-09-22 14:32:23.86 spid52      Using 'xplog70.dll' version '2019.150.2000' to execute extended stored procedure 'xp_msver'. This is an informational message only; no user action is required.
+2025-10-16 16:26:31.90 spid51      Setting database option SINGLE_USER to ON for database 'EVICTION_TEST_TEST'.
+2025-10-16 16:26:32.38 spid51      [RbIoForwarderMgr::StopThrottling] Throttling is not running, no need to proceed  (PhysicalDbId: [EVICTION_TEST_TEST])
+2025-10-16 16:26:32.83 spid51      Refresh DEK for DBID: [6] File Id: [1] - Copying encryption state
+2025-10-16 16:26:32.84 spid51      DBID: [6] File Header for File Id: [1] was read with state = 0.
+2025-10-16 16:26:32.84 spid51      DBID: [6] No DEK update for File Id: [1] while existing DEK is null.
+2025-10-16 16:26:32.90 spid51      Refresh DEK for DBID: [6] File Id: [2] - Copying encryption state
+2025-10-16 16:26:32.90 spid51      DBID: [6] File Header for File Id: [2] was read with state = 0.
+2025-10-16 16:26:32.90 spid51      DBID: [6] No DEK update for File Id: [2] while existing DEK is null.
+2025-10-16 16:26:32.94 spid51      [6]. Feature Status: PVS: 0. CTR: 0. ConcurrentPFSUpdate: 1. ConcurrentGAMUpdate: 0. CleanupUnderUserTransaction: 0.
+2025-10-16 16:26:32.95 spid51      Starting up database 'EVICTION_TEST_TEST'.
+2025-10-16 16:26:33.07 spid51      Refresh DEK for DBID: [6] File Id: [1] - Copying encryption state
+2025-10-16 16:26:33.07 spid51      DBID: [6] File Header for File Id: [1] was read with state = 0.
+2025-10-16 16:26:33.07 spid51      DBID: [6] No DEK update for File Id: [1] while existing DEK is null.
+2025-10-16 16:26:33.18 spid51      Refresh DEK for DBID: [6] File Id: [2] - Copying encryption state
+2025-10-16 16:26:33.18 spid51      DBID: [6] File Header for File Id: [2] was read with state = 0.
+2025-10-16 16:26:33.18 spid51      DBID: [6] No DEK update for File Id: [2] while existing DEK is null.
+2025-10-16 16:26:33.22 spid51      Parallel redo is started for database 'EVICTION_TEST_TEST' with worker pool size [4].
+2025-10-16 16:26:33.24 spid51      Parallel redo is shutdown for database 'EVICTION_TEST_TEST' with worker pool size [4].
+2025-10-16 16:26:35.30 spid60      Refresh DEK for DBID: [9] File Id: [1] - Copying encryption state
+2025-10-16 16:26:35.30 spid60      DBID: [9] File Header for File Id: [1] was read with state = 0.
+2025-10-16 16:26:35.31 spid60      DBID: [9] No DEK update for File Id: [1] while existing DEK is null.
+2025-10-16 16:26:35.37 spid60      Refresh DEK for DBID: [9] File Id: [2] - Copying encryption state
+2025-10-16 16:26:35.37 spid60      DBID: [9] File Header for File Id: [2] was read with state = 0.
+2025-10-16 16:26:35.37 spid60      DBID: [9] No DEK update for File Id: [2] while existing DEK is null.
+2025-10-16 16:26:35.39 spid60      [9]. Feature Status: PVS: 0. CTR: 0. ConcurrentPFSUpdate: 1. ConcurrentGAMUpdate: 0. CleanupUnderUserTransaction: 0.
+2025-10-16 16:26:35.40 spid60      Starting up database 'EVICTION_TEST_TEST-3'.
+2025-10-16 16:26:35.53 spid60      Refresh DEK for DBID: [9] File Id: [1] - Copying encryption state
+2025-10-16 16:26:35.53 spid60      DBID: [9] File Header for File Id: [1] was read with state = 0.
+2025-10-16 16:26:35.54 spid60      DBID: [9] No DEK update for File Id: [1] while existing DEK is null.
+2025-10-16 16:26:35.59 spid62      Refresh DEK for DBID: [10] File Id: [1] - Copying encryption state
+2025-10-16 16:26:35.59 spid62      DBID: [10] File Header for File Id: [1] was read with state = 0.
+2025-10-16 16:26:35.60 spid62      DBID: [10] No DEK update for File Id: [1] while existing DEK is null.
+2025-10-16 16:26:35.66 spid62      Refresh DEK for DBID: [10] File Id: [2] - Copying encryption state
+2025-10-16 16:26:35.66 spid62      DBID: [10] File Header for File Id: [2] was read with state = 0.
+2025-10-16 16:26:35.66 spid62      DBID: [10] No DEK update for File Id: [2] while existing DEK is null.
+2025-10-16 16:26:35.67 spid60      Refresh DEK for DBID: [9] File Id: [2] - Copying encryption state
+2025-10-16 16:26:35.67 spid60      DBID: [9] File Header for File Id: [2] was read with state = 0.
+2025-10-16 16:26:35.67 spid60      DBID: [9] No DEK update for File Id: [2] while existing DEK is null.
+2025-10-16 16:26:35.69 spid62      [10]. Feature Status: PVS: 0. CTR: 0. ConcurrentPFSUpdate: 1. ConcurrentGAMUpdate: 0. CleanupUnderUserTransaction: 0.
+2025-10-16 16:26:35.69 spid62      Starting up database 'EVICTION_TEST_TEST-1'.
+2025-10-16 16:26:35.70 spid60      Parallel redo is started for database 'EVICTION_TEST_TEST-3' with worker pool size [4].
+2025-10-16 16:26:35.73 spid60      Parallel redo is shutdown for database 'EVICTION_TEST_TEST-3' with worker pool size [4].
+2025-10-16 16:26:35.89 spid62      Refresh DEK for DBID: [10] File Id: [1] - Copying encryption state
+2025-10-16 16:26:35.89 spid62      DBID: [10] File Header for File Id: [1] was read with state = 0.
+2025-10-16 16:26:35.89 spid62      DBID: [10] No DEK update for File Id: [1] while existing DEK is null.
+2025-10-16 16:26:35.97 spid61      Refresh DEK for DBID: [7] File Id: [1] - Copying encryption state
+2025-10-16 16:26:35.97 spid61      DBID: [7] File Header for File Id: [1] was read with state = 0.
+2025-10-16 16:26:35.97 spid61      DBID: [7] No DEK update for File Id: [1] while existing DEK is null.
+2025-10-16 16:26:36.03 spid62      Refresh DEK for DBID: [10] File Id: [2] - Copying encryption state
+2025-10-16 16:26:36.04 spid62      DBID: [10] File Header for File Id: [2] was read with state = 0.
+2025-10-16 16:26:36.04 spid62      DBID: [10] No DEK update for File Id: [2] while existing DEK is null.
+2025-10-16 16:26:36.05 spid61      Refresh DEK for DBID: [7] File Id: [2] - Copying encryption state
+2025-10-16 16:26:36.05 spid61      DBID: [7] File Header for File Id: [2] was read with state = 0.
+2025-10-16 16:26:36.05 spid61      DBID: [7] No DEK update for File Id: [2] while existing DEK is null.
+2025-10-16 16:26:36.06 spid62      Parallel redo is started for database 'EVICTION_TEST_TEST-1' with worker pool size [4].
+2025-10-16 16:26:36.07 spid61      [7]. Feature Status: PVS: 0. CTR: 0. ConcurrentPFSUpdate: 1. ConcurrentGAMUpdate: 0. CleanupUnderUserTransaction: 0.
+2025-10-16 16:26:36.08 spid61      Starting up database 'EVICTION_TEST_TEST-4'.
+2025-10-16 16:26:36.08 spid62      Parallel redo is shutdown for database 'EVICTION_TEST_TEST-1' with worker pool size [4].
+2025-10-16 16:26:36.22 spid61      Refresh DEK for DBID: [7] File Id: [1] - Copying encryption state
+2025-10-16 16:26:36.22 spid61      DBID: [7] File Header for File Id: [1] was read with state = 0.
+2025-10-16 16:26:36.22 spid61      DBID: [7] No DEK update for File Id: [1] while existing DEK is null.
+2025-10-16 16:26:36.28 spid64      Refresh DEK for DBID: [12] File Id: [1] - Copying encryption state
+2025-10-16 16:26:36.28 spid64      DBID: [12] File Header for File Id: [1] was read with state = 0.
+2025-10-16 16:26:36.28 spid64      DBID: [12] No DEK update for File Id: [1] while existing DEK is null.
+2025-10-16 16:26:36.41 spid64      Refresh DEK for DBID: [12] File Id: [2] - Copying encryption state
+2025-10-16 16:26:36.42 spid64      DBID: [12] File Header for File Id: [2] was read with state = 0.
+2025-10-16 16:26:36.42 spid64      DBID: [12] No DEK update for File Id: [2] while existing DEK is null.
+2025-10-16 16:26:36.45 spid61      Refresh DEK for DBID: [7] File Id: [2] - Copying encryption state
+2025-10-16 16:26:36.46 spid61      DBID: [7] File Header for File Id: [2] was read with state = 0.
+2025-10-16 16:26:36.46 spid61      DBID: [7] No DEK update for File Id: [2] while existing DEK is null.
+2025-10-16 16:26:36.50 spid61      Parallel redo is started for database 'EVICTION_TEST_TEST-4' with worker pool size [4].
+2025-10-16 16:26:36.51 spid64      [12]. Feature Status: PVS: 0. CTR: 0. ConcurrentPFSUpdate: 1. ConcurrentGAMUpdate: 0. CleanupUnderUserTransaction: 0.
+2025-10-16 16:26:36.51 spid64      Starting up database 'EVICTION_TEST_TEST-2'.
+2025-10-16 16:26:36.52 spid61      Parallel redo is shutdown for database 'EVICTION_TEST_TEST-4' with worker pool size [4].
+2025-10-16 16:26:36.66 spid64      Refresh DEK for DBID: [12] File Id: [1] - Copying encryption state
+2025-10-16 16:26:36.66 spid64      DBID: [12] File Header for File Id: [1] was read with state = 0.
+2025-10-16 16:26:36.66 spid64      DBID: [12] No DEK update for File Id: [1] while existing DEK is null.
+2025-10-16 16:26:36.72 spid65      Refresh DEK for DBID: [13] File Id: [1] - Copying encryption state
+2025-10-16 16:26:36.72 spid65      DBID: [13] File Header for File Id: [1] was read with state = 0.
+2025-10-16 16:26:36.72 spid65      DBID: [13] No DEK update for File Id: [1] while existing DEK is null.
+2025-10-16 16:26:36.79 spid64      Refresh DEK for DBID: [12] File Id: [2] - Copying encryption state
+2025-10-16 16:26:36.79 spid65      Refresh DEK for DBID: [13] File Id: [2] - Copying encryption state
+2025-10-16 16:26:36.79 spid64      DBID: [12] File Header for File Id: [2] was read with state = 0.
+2025-10-16 16:26:36.80 spid65      DBID: [13] File Header for File Id: [2] was read with state = 0.
+2025-10-16 16:26:36.80 spid64      DBID: [12] No DEK update for File Id: [2] while existing DEK is null.
+2025-10-16 16:26:36.80 spid65      DBID: [13] No DEK update for File Id: [2] while existing DEK is null.
+2025-10-16 16:26:36.82 spid65      [13]. Feature Status: PVS: 0. CTR: 0. ConcurrentPFSUpdate: 1. ConcurrentGAMUpdate: 0. CleanupUnderUserTransaction: 0.
+2025-10-16 16:26:36.82 spid64      Parallel redo is started for database 'EVICTION_TEST_TEST-2' with worker pool size [4].
+2025-10-16 16:26:36.82 spid65      Starting up database 'EVICTION_TEST_TEST-5'.
+2025-10-16 16:26:36.83 spid64      Parallel redo is shutdown for database 'EVICTION_TEST_TEST-2' with worker pool size [4].
+2025-10-16 16:26:36.97 spid65      Refresh DEK for DBID: [13] File Id: [1] - Copying encryption state
+2025-10-16 16:26:36.97 spid65      DBID: [13] File Header for File Id: [1] was read with state = 0.
+2025-10-16 16:26:36.97 spid65      DBID: [13] No DEK update for File Id: [1] while existing DEK is null.
+2025-10-16 16:26:37.04 spid59      Refresh DEK for DBID: [8] File Id: [1] - Copying encryption state
+2025-10-16 16:26:37.04 spid59      DBID: [8] File Header for File Id: [1] was read with state = 0.
+2025-10-16 16:26:37.04 spid59      DBID: [8] No DEK update for File Id: [1] while existing DEK is null.
+2025-10-16 16:26:37.12 spid65      Refresh DEK for DBID: [13] File Id: [2] - Copying encryption state
+2025-10-16 16:26:37.12 spid59      Refresh DEK for DBID: [8] File Id: [2] - Copying encryption state
+2025-10-16 16:26:37.12 spid65      DBID: [13] File Header for File Id: [2] was read with state = 0.
+2025-10-16 16:26:37.12 spid59      DBID: [8] File Header for File Id: [2] was read with state = 0.
+2025-10-16 16:26:37.12 spid65      DBID: [13] No DEK update for File Id: [2] while existing DEK is null.
+2025-10-16 16:26:37.12 spid59      DBID: [8] No DEK update for File Id: [2] while existing DEK is null.
+2025-10-16 16:26:37.14 spid65      Parallel redo is started for database 'EVICTION_TEST_TEST-5' with worker pool size [4].
+2025-10-16 16:26:37.15 spid59      [8]. Feature Status: PVS: 0. CTR: 0. ConcurrentPFSUpdate: 1. ConcurrentGAMUpdate: 0. CleanupUnderUserTransaction: 0.
+2025-10-16 16:26:37.15 spid59      Starting up database 'EVICTION_TEST_TEST-0'.
+2025-10-16 16:26:37.16 spid65      Parallel redo is shutdown for database 'EVICTION_TEST_TEST-5' with worker pool size [4].
+2025-10-16 16:26:37.29 spid59      Refresh DEK for DBID: [8] File Id: [1] - Copying encryption state
+2025-10-16 16:26:37.29 spid59      DBID: [8] File Header for File Id: [1] was read with state = 0.
+2025-10-16 16:26:37.29 spid59      DBID: [8] No DEK update for File Id: [1] while existing DEK is null.
+2025-10-16 16:26:37.36 spid63      Refresh DEK for DBID: [11] File Id: [1] - Copying encryption state
+2025-10-16 16:26:37.37 spid63      DBID: [11] File Header for File Id: [1] was read with state = 0.
+2025-10-16 16:26:37.37 spid63      DBID: [11] No DEK update for File Id: [1] while existing DEK is null.
+2025-10-16 16:26:37.43 spid59      Refresh DEK for DBID: [8] File Id: [2] - Copying encryption state
+2025-10-16 16:26:37.43 spid59      DBID: [8] File Header for File Id: [2] was read with state = 0.
+2025-10-16 16:26:37.43 spid59      DBID: [8] No DEK update for File Id: [2] while existing DEK is null.
+2025-10-16 16:26:37.43 spid63      Refresh DEK for DBID: [11] File Id: [2] - Copying encryption state
+2025-10-16 16:26:37.44 spid63      DBID: [11] File Header for File Id: [2] was read with state = 0.
+2025-10-16 16:26:37.44 spid63      DBID: [11] No DEK update for File Id: [2] while existing DEK is null.
+2025-10-16 16:26:37.45 spid63      [11]. Feature Status: PVS: 0. CTR: 0. ConcurrentPFSUpdate: 1. ConcurrentGAMUpdate: 0. CleanupUnderUserTransaction: 0.
+2025-10-16 16:26:37.46 spid59      Parallel redo is started for database 'EVICTION_TEST_TEST-0' with worker pool size [4].
+2025-10-16 16:26:37.46 spid63      Starting up database 'EVICTION_TEST_TEST-6'.
+2025-10-16 16:26:37.47 spid59      Parallel redo is shutdown for database 'EVICTION_TEST_TEST-0' with worker pool size [4].
+2025-10-16 16:26:37.60 spid63      Refresh DEK for DBID: [11] File Id: [1] - Copying encryption state
+2025-10-16 16:26:37.60 spid63      DBID: [11] File Header for File Id: [1] was read with state = 0.
+2025-10-16 16:26:37.60 spid63      DBID: [11] No DEK update for File Id: [1] while existing DEK is null.
+2025-10-16 16:26:37.67 spid66      Refresh DEK for DBID: [14] File Id: [1] - Copying encryption state
+2025-10-16 16:26:37.67 spid66      DBID: [14] File Header for File Id: [1] was read with state = 0.
+2025-10-16 16:26:37.67 spid66      DBID: [14] No DEK update for File Id: [1] while existing DEK is null.
+2025-10-16 16:26:37.74 spid66      Refresh DEK for DBID: [14] File Id: [2] - Copying encryption state
+2025-10-16 16:26:37.74 spid66      DBID: [14] File Header for File Id: [2] was read with state = 0.
+2025-10-16 16:26:37.74 spid66      DBID: [14] No DEK update for File Id: [2] while existing DEK is null.
+2025-10-16 16:26:37.74 spid63      Refresh DEK for DBID: [11] File Id: [2] - Copying encryption state
+2025-10-16 16:26:37.74 spid63      DBID: [11] File Header for File Id: [2] was read with state = 0.
+2025-10-16 16:26:37.74 spid63      DBID: [11] No DEK update for File Id: [2] while existing DEK is null.
+2025-10-16 16:26:37.76 spid63      Parallel redo is started for database 'EVICTION_TEST_TEST-6' with worker pool size [4].
+2025-10-16 16:26:37.78 spid66      [14]. Feature Status: PVS: 0. CTR: 0. ConcurrentPFSUpdate: 1. ConcurrentGAMUpdate: 0. CleanupUnderUserTransaction: 0.
+2025-10-16 16:26:37.79 spid66      Starting up database 'EVICTION_TEST_TEST-7'.
+2025-10-16 16:26:37.79 spid63      Parallel redo is shutdown for database 'EVICTION_TEST_TEST-6' with worker pool size [4].
+2025-10-16 16:26:38.09 spid66      Refresh DEK for DBID: [14] File Id: [1] - Copying encryption state
+2025-10-16 16:26:38.09 spid66      DBID: [14] File Header for File Id: [1] was read with state = 0.
+2025-10-16 16:26:38.09 spid66      DBID: [14] No DEK update for File Id: [1] while existing DEK is null.
+2025-10-16 16:26:38.21 spid66      Refresh DEK for DBID: [14] File Id: [2] - Copying encryption state
+2025-10-16 16:26:38.21 spid66      DBID: [14] File Header for File Id: [2] was read with state = 0.
+2025-10-16 16:26:38.21 spid66      DBID: [14] No DEK update for File Id: [2] while existing DEK is null.
+2025-10-16 16:26:38.24 spid66      Parallel redo is started for database 'EVICTION_TEST_TEST-7' with worker pool size [4].
+2025-10-16 16:26:38.25 spid66      Parallel redo is shutdown for database 'EVICTION_TEST_TEST-7' with worker pool size [4].
