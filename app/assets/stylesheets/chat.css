@@ -233,10 +233,19 @@
     scroll-behavior: auto;
     background: linear-gradient(180deg, rgba(255, 255, 255, 0.95) 0%, rgba(247, 249, 252, 0.85) 70%, rgba(247, 249, 252, 1) 100%);
     -webkit-overflow-scrolling: touch;
+    scrollbar-width: thin;
+    scrollbar-color: transparent transparent;
   }
 
   .message-list-container.use-smooth-scroll {
     scroll-behavior: smooth;
+  }
+
+  .message-list-container:hover,
+  .message-list-container:focus,
+  .message-list-container:active,
+  .message-list-container:focus-within {
+    scrollbar-color: rgba(16, 42, 77, 0.35) rgba(16, 42, 77, 0.08);
   }
 
   .message-list {
@@ -256,19 +265,36 @@
   /* Scrollbar Styles */
   .message-list-container::-webkit-scrollbar {
     width: 8px;
+    background: transparent;
   }
 
   .message-list-container::-webkit-scrollbar-track {
-    background: rgba(16, 42, 77, 0.04);
+    background: transparent;
     border-radius: 10px;
+    transition: background 0.25s ease;
   }
 
   .message-list-container::-webkit-scrollbar-thumb {
-    background: rgba(16, 42, 77, 0.2);
+    background: transparent;
     border-radius: 10px;
+    transition: background-color 0.25s ease;
   }
 
-  .message-list-container::-webkit-scrollbar-thumb:hover {
+  .message-list-container:hover::-webkit-scrollbar-track,
+  .message-list-container:focus-within::-webkit-scrollbar-track,
+  .message-list-container:active::-webkit-scrollbar-track {
+    background: rgba(16, 42, 77, 0.04);
+  }
+
+  .message-list-container:hover::-webkit-scrollbar-thumb,
+  .message-list-container:focus-within::-webkit-scrollbar-thumb,
+  .message-list-container:active::-webkit-scrollbar-thumb {
+    background: rgba(16, 42, 77, 0.2);
+  }
+
+  .message-list-container:hover::-webkit-scrollbar-thumb:hover,
+  .message-list-container:focus-within::-webkit-scrollbar-thumb:hover,
+  .message-list-container:active::-webkit-scrollbar-thumb:hover {
     background: rgba(16, 42, 77, 0.3);
   }
 
@@ -1228,6 +1254,14 @@
 
     .conversation-info-trigger {
       margin: 0 0 clamp(0.4rem, 0.8vw, 0.6rem);
+    }
+
+    .message-textarea {
+      scrollbar-width: none;
+    }
+
+    .message-textarea::-webkit-scrollbar {
+      display: none;
     }
   }
 
