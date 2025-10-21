@@ -76,6 +76,9 @@ const buildAttachmentHtml = (attachment, currentUserRole) => {
   `;
 };
 
+// Track if we've already scrolled on initial load for this conversation
+let hasScrolledOnLoad = new Set();
+
 document.addEventListener('turbo:load', () => {
   const messagesContainer = document.querySelector('.message-list-container'); // Correctly target the scrollable container
   const messagesList = document.getElementById('messages'); // Message list within the container
@@ -154,24 +157,48 @@ document.addEventListener('turbo:load', () => {
 
               messagesList.insertAdjacentHTML('beforeend', messageHtml);
 
-            // Automatically scroll to the bottom of the message list container
-              messagesContainer.scrollTo({
-                top: messagesContainer.scrollHeight,
-                behavior: 'smooth' // Smooth scrolling animation
-              });
+              // Apply entering animation to the new message
+              const newMessageElement = messagesList.lastElementChild;
+              if (newMessageElement) {
+                newMessageElement.classList.add('is-entering');
+                newMessageElement.addEventListener('animationend', () => {
+                  newMessageElement.classList.remove('is-entering');
+                }, { once: true });
+              }
+
+            // Automatically scroll to the bottom instantly
+              messagesContainer.scrollTop = messagesContainer.scrollHeight;
             }
           }
         });
       }
-      // Initial scroll to bottom when the page loads
-      messagesContainer.scrollTo({
-        top: messagesContainer.scrollHeight,
-        behavior: 'auto' // Instantly jumps to bottom on load
-      });
+      
+      // Initial scroll to bottom ONLY on first true page load
+      if (!hasScrolledOnLoad.has(conversationId)) {
+        hasScrolledOnLoad.add(conversationId);
+        messagesContainer.classList.add("use-smooth-scroll");
+        requestAnimationFrame(() => {
+          messagesContainer.scrollTo({
+            top: messagesContainer.scrollHeight,
+            behavior: "smooth"
+          });
+          setTimeout(() => {
+            messagesContainer.classList.remove("use-smooth-scroll");
+          }, 450);
+        });
+      } else {
+        // On subsequent turbo:load events, just jump to bottom instantly
+        messagesContainer.scrollTop = messagesContainer.scrollHeight;
+      }
     } else {
       console.error("No conversation ID found in message list!");
     }
   }
+});
+
+// Clear the tracking when navigating away
+document.addEventListener('turbo:before-visit', () => {
+  hasScrolledOnLoad.clear();
 });
 
 document.addEventListener('turbo:load', () => {

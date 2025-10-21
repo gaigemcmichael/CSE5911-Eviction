@@ -1,48 +1,62 @@
 require "test_helper"
-# Just a scaffold, will need filled in
+
 class ScreeningsControllerTest < ActionDispatch::IntegrationTest
   setup do
-    @screening = screenings(:one)
+    @tenant = users(:tenant1)
+    @mediation = primary_message_groups(:one)
   end
 
-  test "should get index" do
-    get screenings_url
+  def log_in_as(user, expect_success: true)
+    post login_path, params: { email: user[:Email], password: "password" }
+    assert_redirected_to dashboard_url
+    follow_redirect!
+    assert_response(:success) if expect_success
+  end
+
+  test "requires login to access screening form" do
+    get new_screening_url(@mediation.ConversationID)
+
+    assert_redirected_to login_path
+    assert_equal "You must be logged in to access the dashboard.", flash[:alert]
+  end
+
+  test "tenant can view screening form" do
+    log_in_as(@tenant)
+
+    get new_screening_url(@mediation.ConversationID)
+
     assert_response :success
+    assert_select "form"
   end
 
-  test "should get new" do
-    get new_screening_url
-    assert_response :success
-  end
+  test "tenant can submit screening responses" do
+    log_in_as(@tenant)
 
-  test "should create screening" do
-    assert_difference("Screening.count") do
-      post screenings_url, params: { screening: {} }
+    params = {
+      screening_question: {
+        UserID: @tenant[:UserID],
+        InterpreterNeeded: false,
+        DisabilityAccommodation: false,
+        DisabilityExplanation: "",
+        ConflictOfInterest: false,
+        SpeakOnOwnBehalf: true,
+        NeedToConsult: false,
+        ConsultExplanation: "",
+        RelationshipToOtherParty: "Landlord",
+        Unsafe: false,
+        UnsafeExplanation: ""
+      },
+      conversation_id: @mediation.ConversationID
+    }
+
+    assert_difference("ScreeningQuestion.count", 1) do
+      post screenings_path, params: params
     end
 
-    assert_redirected_to screening_url(Screening.last)
-  end
+    @mediation.reload
 
-  test "should show screening" do
-    get screening_url(@screening)
-    assert_response :success
-  end
-
-  test "should get edit" do
-    get edit_screening_url(@screening)
-    assert_response :success
-  end
-
-  test "should update screening" do
-    patch screening_url(@screening), params: { screening: {} }
-    assert_redirected_to screening_url(@screening)
-  end
-
-  test "should destroy screening" do
-    assert_difference("Screening.count", -1) do
-      delete screening_url(@screening)
-    end
-
-    assert_redirected_to screenings_url
+    assert_redirected_to message_path(@mediation.ConversationID)
+    assert_not_nil @mediation.TenantScreeningID
+    assert_equal "Screening completed successfully.", flash[:notice]
   end
 end

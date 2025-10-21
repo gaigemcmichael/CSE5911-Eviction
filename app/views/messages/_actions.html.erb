@@ -1,70 +1,102 @@
+<% mediation_requested = @mediation&.MediatorRequested.present? %>
+<% mediation_assigned = @mediation&.MediatorRequested && @mediation&.MediatorAssigned %>
+<% can_request_mediator = @mediation && !mediation_requested && !mediation_assigned %>
+
 <div class="conversation-actions" data-chat-actions>
-  <div class="conversation-actions__card">
-    <% if @mediation && !@mediation.MediatorRequested && !@mediation.MediatorAssigned %>
-      <div class="conversation-actions__section">
-        <%= button_to "<i class='fa-solid fa-handshake'></i> Request a Mediator".html_safe,
-                request_mediator_message_path(@mediation.id),
-                method: :patch,
-                class: "conversation-action conversation-action--primary" %>
-        <p class="conversation-action__hint">
-          If negotiations stall, invite a neutral mediator to join and help move things forward.
-        </p>
-      </div>
-    <% elsif @mediation && @mediation.MediatorRequested && !@mediation.MediatorAssigned %>
-      <div class="conversation-actions__section">
-        <p class="conversation-status conversation-status--info">
+  <% show_status_card = @mediation.present? && (mediation_assigned || mediation_requested) %>
+
+  <% if show_status_card %>
+    <div class="conversation-card">
+      <% if mediation_assigned %>
+        <div class="conversation-status conversation-status--success">
+          <i class="fa-solid fa-handshake" aria-hidden="true"></i>
+          Mediator assigned and ready to assist.
+        </div>
+        <div class="conversation-card__details">
+          <%= render 'mediator_details' %>
+        </div>
+      <% elsif mediation_requested %>
+        <div class="conversation-status conversation-status--info">
           <i class="fa-solid fa-clock" aria-hidden="true"></i>
           Mediator requested. We'll notify you when someone is assigned.
-        </p>
+        </div>
+      <% end %>
+    </div>
+  <% elsif @mediation.blank? %>
+    <div class="conversation-card conversation-card--warning">
+      <div class="conversation-status conversation-status--warning">
+        We couldn't load mediation details. Please refresh.
       </div>
-    <% elsif @mediation && @mediation.MediatorRequested && @mediation.MediatorAssigned %>
-      <div class="conversation-actions__section">
-        <%= render 'mediator_details' %>
-        <% if @user.Role == "Tenant" && @mediation.TenantScreeningID.nil? %>
-          <div class="conversation-alert">
-            <h3>Next step</h3>
-            <p>Complete your screening questions to keep mediation moving.</p>
-            <%= link_to "Complete screening", new_screening_path(conversation_id: @message_string.ConversationID), class: "conversation-link" %>
-          </div>
-        <% elsif @user.Role == "Landlord" && @mediation.LandlordScreeningID.nil? %>
-          <div class="conversation-alert">
-            <h3>Next step</h3>
-            <p>Complete your screening questions to keep mediation moving.</p>
-            <%= link_to "Complete screening", new_screening_path(conversation_id: @message_string.ConversationID), class: "conversation-link" %>
-          </div>
-        <% end %>
-      </div>
+    </div>
+  <% end %>
+
+  <div class="conversation-actions__button-stack">
+    <% if can_request_mediator %>
+      <button type="button"
+              class="conversation-cta conversation-cta--primary"
+              data-mediator-modal-open>
+        <span class="conversation-cta__icon"><i class="fa-solid fa-handshake"></i></span>
+        <span class="conversation-cta__label">Request a mediator</span>
+      </button>
     <% else %>
-      <p class="conversation-status conversation-status--warning">We couldn't load mediation details. Please refresh.</p>
+      <button type="button"
+              class="conversation-cta conversation-cta--primary is-disabled"
+              disabled>
+        <span class="conversation-cta__icon"><i class="fa-solid fa-handshake-angle"></i></span>
+        <span class="conversation-cta__label"><%= mediation_assigned ? "Mediator assigned" : "Mediator requested" %></span>
+      </button>
     <% end %>
 
-    <div class="conversation-actions__footer">
-      <button type="button" class="conversation-action conversation-action--danger" data-end-modal-open>
-        <span class="conversation-action__icon">❌</span>
-        <span>End <%= @mediation.MediatorRequested && @mediation.MediatorAssigned ? 'Mediation' : 'Negotiation' %></span>
-      </button>
-    </div>
+    <button type="button"
+            class="conversation-cta conversation-cta--danger"
+            data-end-modal-open>
+      <span class="conversation-cta__icon"><i class="fa-solid fa-circle-xmark"></i></span>
+      <span class="conversation-cta__label">End <%= mediation_assigned ? 'Mediation' : 'Negotiation' %></span>
+    </button>
   </div>
 
-  <div class="conversation-modal" data-end-modal hidden role="dialog" aria-modal="true" aria-labelledby="end-modal-title">
-    <div class="conversation-modal__content">
-      <div class="conversation-modal__header">
-        <h3 id="end-modal-title">End <%= @mediation.MediatorRequested && @mediation.MediatorAssigned ? 'Mediation' : 'Negotiation' %>?</h3>
-        <button type="button" class="conversation-modal__close" data-end-modal-close aria-label="Close end confirmation">
-          <i class="fa-solid fa-xmark" aria-hidden="true"></i>
-        </button>
-      </div>
-      <p class="conversation-modal__body">
-        This will permanently close the <%= @mediation.MediatorRequested && @mediation.MediatorAssigned ? 'mediation' : 'negotiation' %>. You'll be prompted to share feedback about the other party's good faith efforts.
-      </p>
-      <div class="conversation-modal__actions">
-        <%= button_to "Confirm end",
-            end_mediation_path(@mediation.ConversationID),
-            method: :patch,
-            data: { turbo: false },
-            class: "conversation-action conversation-action--danger" %>
-        <button type="button" class="conversation-action conversation-action--ghost" data-end-modal-close>Cancel</button>
+  <% if @mediation.present? %>
+    <div class="conversation-modal" data-mediator-modal hidden role="dialog" aria-modal="true" aria-labelledby="mediator-modal-title">
+      <div class="conversation-modal__content">
+        <div class="conversation-modal__header">
+          <h3 id="mediator-modal-title">Request a mediator?</h3>
+          <button type="button" class="conversation-modal__close" data-mediator-modal-close aria-label="Close mediator request confirmation">
+            <i class="fa-solid fa-xmark" aria-hidden="true"></i>
+          </button>
+        </div>
+        <p class="conversation-modal__body">
+          A mediator can guide the conversation and help both parties reach an agreement. Do you want to submit this request now?
+        </p>
+        <div class="conversation-modal__actions">
+          <%= button_to "Confirm request",
+              request_mediator_message_path(@mediation.id),
+              method: :patch,
+              class: "conversation-action conversation-action--primary" %>
+          <button type="button" class="conversation-action conversation-action--ghost" data-mediator-modal-close>Cancel</button>
+        </div>
       </div>
     </div>
-  </div>
+
+    <div class="conversation-modal" data-end-modal hidden role="dialog" aria-modal="true" aria-labelledby="end-modal-title">
+      <div class="conversation-modal__content">
+        <div class="conversation-modal__header">
+          <h3 id="end-modal-title">End <%= mediation_assigned ? 'Mediation' : 'Negotiation' %>?</h3>
+          <button type="button" class="conversation-modal__close" data-end-modal-close aria-label="Close end confirmation">
+            <i class="fa-solid fa-xmark" aria-hidden="true"></i>
+          </button>
+        </div>
+        <p class="conversation-modal__body">
+          This will permanently close the <%= mediation_assigned ? 'mediation' : 'negotiation' %>. You'll be prompted to share feedback about the other party's good faith efforts.
+        </p>
+        <div class="conversation-modal__actions">
+          <%= button_to "Confirm end",
+              end_mediation_path(@mediation.ConversationID),
+              method: :patch,
+              data: { turbo: false },
+              class: "conversation-action conversation-action--danger" %>
+          <button type="button" class="conversation-action conversation-action--ghost" data-end-modal-close>Cancel</button>
+        </div>
+      </div>
+    </div>
+  <% end %>
 </div>
