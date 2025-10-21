@@ -1174,7 +1174,7 @@
     .message-page-container.chat-layout {
       flex-direction: row;
       align-items: stretch;
-      gap: clamp(1.5rem, 2vw, 2.5rem);
+      gap: clamp(0.9rem, 1.4vw, 1.6rem);
       max-width: calc(900px + clamp(220px, 18vw, 260px) + clamp(1.5rem, 2vw, 2.5rem));
       width: 100%;
       margin: 0 auto;
@@ -1213,6 +1213,7 @@
     .message-page-container.chat-layout {
       /* max-width rule removed from here */
       flex-direction: column;
+      gap: clamp(0.6rem, 1.2vw, 1.1rem);
     }
 
     .chat-panel-wrapper {
@@ -1223,6 +1224,10 @@
       width: 100%;
       padding: 0 clamp(0.75rem, 2vw, 1.25rem) clamp(1.25rem, 2vw, 2rem);
       margin-top: clamp(0.75rem, 1.5vw, 1.75rem);
+    }
+
+    .conversation-info-trigger {
+      margin: 0 0 clamp(0.4rem, 0.8vw, 0.6rem);
     }
   }
 
@@ -1344,9 +1349,9 @@
       order: 2;
       padding: 0 clamp(0.75rem, 4vw, 1.35rem) clamp(1.5rem, 4vw, 2.5rem);
       margin-top: 0;
-      background: transparent;
-      align-items: center;
       width: 100%;
+      align-items: stretch;
+      background: transparent;
     }
 
     .conversation-actions {
@@ -1407,16 +1412,16 @@
     }
 
     .chat-actions-column .conversation-actions {
-      background: #ffffff;
-      border-radius: clamp(16px, 4vw, 20px);
-      padding: clamp(0.9rem, 3vw, 1.35rem);
-      box-shadow: 0 14px 32px rgba(16, 42, 77, 0.14);
-      border: 1px solid rgba(16, 42, 77, 0.08);
-      max-width: min(540px, 100%);
-      margin: 0;
       width: 100%;
+      max-width: 100%;
+      margin: 0;
+      padding: 0;
+      background: transparent;
+      border: none;
+      border-radius: 0;
+      box-shadow: none;
       box-sizing: border-box;
-      gap: clamp(0.75rem, 3vw, 1.15rem);
+      gap: clamp(0.85rem, 3vw, 1.25rem);
     }
 
     .chat-actions-column .conversation-card {
