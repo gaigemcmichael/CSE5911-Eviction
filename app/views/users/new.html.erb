@@ -1,8 +1,17 @@
 <!-- Sign Up Page -->
-<div class="signup-container">
-  <div class="signup-card">
-    <h2> <i class="fa-solid fa-user-plus"></i> Sign Up</h2>
-    <p> Let's create your account. </p>
+<div class="signup-page">
+  <div class="signup-title">Eviction Mediation</div>
+  
+  <div class="signup-container">
+    <!-- Banner -->
+    <div class="signup-banner">
+      <h1>Create your account</h1>
+      <p>Join our platform to resolve rental disputes effectively</p>
+    </div>
+
+    <div class="signup-card">
+      <h2> <i class="fa-solid fa-user-plus"></i> Sign Up</h2>
+      <p class="signup-text"> Let's create your account. </p>
 
     <%= form_with model: @user, url: signup_path, local: true, data: { turbo: false }, class: "signup-form" do |f| %>
       <%# Error handling display #%>
@@ -167,6 +176,33 @@
       <!-- Sign Up Button -->
       <%= f.submit "Sign Up", class: "signup-btn" %>
     <% end %>
+
+    <p class="signup-text">Already have an account? 
+      <%= link_to "Log in", root_path, class: "signup-link" %></p>
+    </div>
+
+    <!-- Features Section -->
+    <div class="features">
+      <div class="features-grid">
+        <div class="feature">
+          <i class="fa-solid fa-scale-balanced"></i>
+          <p>Early Mediation</p>
+        </div>
+        <div class="feature">
+          <i class="fa-solid fa-comments"></i>
+          <p>Text-Based Communication</p>
+        </div>
+        <div class="feature">
+          <i class="fa-solid fa-file-signature"></i>
+          <p>Digital Agreements</p>
+        </div>
+        <div class="feature">
+          <i class="fa-solid fa-calculator"></i>
+          <p>Payment Planning</p>
+        </div>
+      </div>
+      <p>Communicate early. Avoid court. Find fair solutions.</p>
+    </div>
   </div>
 </div>
 
