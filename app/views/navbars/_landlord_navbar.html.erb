@@ -4,11 +4,11 @@
     </div>
     
     <ul class="navbar-menu" id="navbar-menu">
-        <li><a href="/dashboard" title="Home"><i class="fas fa-home"></i> Home</a></li>
-        <li><a href="/messages" title="Messages"><i class="fas fa-envelope"></i> Messages</a></li>
-        <li><a href="/documents" title="Documents"><i class="fas fa-file-alt"></i> Documents</a></li>
-        <li><a href="/resources" title="Resources"><i class="fas fa-book"></i> Resources</a></li>
-        <li><a href="/account" title="Account"><i class="fas fa-user"></i> Account</a></li>
+        <li><a href="/dashboard" title="Home" class="<%= 'active' if current_page?('/dashboard') %>"><i class="fas fa-home"></i> Home</a></li>
+        <li><a href="/messages" title="Messages" class="<%= 'active' if current_page?('/messages') %>"><i class="fas fa-envelope"></i> Messages</a></li>
+        <li><a href="/documents" title="Documents" class="<%= 'active' if current_page?('/documents') %>"><i class="fas fa-file-alt"></i> Documents</a></li>
+        <li><a href="/resources" title="Resources" class="<%= 'active' if current_page?('/resources') %>"><i class="fas fa-book"></i> Resources</a></li>
+        <li><a href="/account" title="Account" class="<%= 'active' if current_page?('/account') %>"><i class="fas fa-user"></i> Account</a></li>
         <li><%= link_to "Log Out", logout_path, method: :delete, class: "logout-btn navbar-logout-mobile" %></li>
     </ul>        
 
