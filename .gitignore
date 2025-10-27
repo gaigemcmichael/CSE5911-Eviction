@@ -43,3 +43,5 @@ db/schema1.rb
 #.env generally should be ignored but for now this is okay.k8s/create-secrets.sh
 
 create-secrets.sh
+
+/config/credentials/development.key

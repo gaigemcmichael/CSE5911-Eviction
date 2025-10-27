@@ -1,0 +1,18 @@
+current directory: /Users/khalid/CSE5911-Eviction/vendor/bundle/ruby/3.3.0/gems/stringio-3.1.2/ext/stringio
+/opt/homebrew/opt/ruby/bin/ruby extconf.rb
+creating Makefile
+
+current directory: /Users/khalid/CSE5911-Eviction/vendor/bundle/ruby/3.3.0/gems/stringio-3.1.2/ext/stringio
+make DESTDIR\= sitearchdir\=./.gem.20251026-54048-ozktkp sitelibdir\=./.gem.20251026-54048-ozktkp clean
+
+current directory: /Users/khalid/CSE5911-Eviction/vendor/bundle/ruby/3.3.0/gems/stringio-3.1.2/ext/stringio
+make DESTDIR\= sitearchdir\=./.gem.20251026-54048-ozktkp sitelibdir\=./.gem.20251026-54048-ozktkp
+compiling stringio.c
+linking shared-object stringio.bundle
+
+current directory: /Users/khalid/CSE5911-Eviction/vendor/bundle/ruby/3.3.0/gems/stringio-3.1.2/ext/stringio
+make DESTDIR\= sitearchdir\=./.gem.20251026-54048-ozktkp sitelibdir\=./.gem.20251026-54048-ozktkp install
+/usr/bin/install -c -m 0755 stringio.bundle ./.gem.20251026-54048-ozktkp
+
+current directory: /Users/khalid/CSE5911-Eviction/vendor/bundle/ruby/3.3.0/gems/stringio-3.1.2/ext/stringio
+make DESTDIR\= sitearchdir\=./.gem.20251026-54048-ozktkp sitelibdir\=./.gem.20251026-54048-ozktkp clean

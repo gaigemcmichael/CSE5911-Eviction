@@ -1,0 +1,10 @@
++ /usr/bin/install -d /Users/khalid/CSE5911-Eviction/vendor/bundle/ruby/3.3.0/gems/sqlite3-2.7.4/ports/arm64-apple-darwin24.1.0/sqlite3/3.50.4/lib
+/usr/bin/install -m 0644 libsqlite3.a "/Users/khalid/CSE5911-Eviction/vendor/bundle/ruby/3.3.0/gems/sqlite3-2.7.4/ports/arm64-apple-darwin24.1.0/sqlite3/3.50.4/lib"
++ /usr/bin/install -d /Users/khalid/CSE5911-Eviction/vendor/bundle/ruby/3.3.0/gems/sqlite3-2.7.4/ports/arm64-apple-darwin24.1.0/sqlite3/3.50.4/bin
+/usr/bin/install sqlite3 "/Users/khalid/CSE5911-Eviction/vendor/bundle/ruby/3.3.0/gems/sqlite3-2.7.4/ports/arm64-apple-darwin24.1.0/sqlite3/3.50.4/bin"
++ /usr/bin/install -d /Users/khalid/CSE5911-Eviction/vendor/bundle/ruby/3.3.0/gems/sqlite3-2.7.4/ports/arm64-apple-darwin24.1.0/sqlite3/3.50.4/include
+/usr/bin/install -m 0644 /Users/khalid/CSE5911-Eviction/vendor/bundle/ruby/3.3.0/gems/sqlite3-2.7.4/ext/sqlite3/tmp/arm64-apple-darwin24.1.0/ports/sqlite3/3.50.4/sqlite-autoconf-3500400/sqlite3.h /Users/khalid/CSE5911-Eviction/vendor/bundle/ruby/3.3.0/gems/sqlite3-2.7.4/ext/sqlite3/tmp/arm64-apple-darwin24.1.0/ports/sqlite3/3.50.4/sqlite-autoconf-3500400/sqlite3ext.h "/Users/khalid/CSE5911-Eviction/vendor/bundle/ruby/3.3.0/gems/sqlite3-2.7.4/ports/arm64-apple-darwin24.1.0/sqlite3/3.50.4/include"
++ /usr/bin/install -d /Users/khalid/CSE5911-Eviction/vendor/bundle/ruby/3.3.0/gems/sqlite3-2.7.4/ports/arm64-apple-darwin24.1.0/sqlite3/3.50.4/lib/pkgconfig
+/usr/bin/install -m 0644 sqlite3.pc "/Users/khalid/CSE5911-Eviction/vendor/bundle/ruby/3.3.0/gems/sqlite3-2.7.4/ports/arm64-apple-darwin24.1.0/sqlite3/3.50.4/lib/pkgconfig"
++ /usr/bin/install -d /Users/khalid/CSE5911-Eviction/vendor/bundle/ruby/3.3.0/gems/sqlite3-2.7.4/ports/arm64-apple-darwin24.1.0/sqlite3/3.50.4/share/man/man1
+/usr/bin/install -m 0644 /Users/khalid/CSE5911-Eviction/vendor/bundle/ruby/3.3.0/gems/sqlite3-2.7.4/ext/sqlite3/tmp/arm64-apple-darwin24.1.0/ports/sqlite3/3.50.4/sqlite-autoconf-3500400/sqlite3.1 "/Users/khalid/CSE5911-Eviction/vendor/bundle/ruby/3.3.0/gems/sqlite3-2.7.4/ports/arm64-apple-darwin24.1.0/sqlite3/3.50.4/share/man/man1"

@@ -1,0 +1,19 @@
+current directory: /Users/khalid/CSE5911-Eviction/vendor/bundle/ruby/3.3.0/gems/debug-1.10.0/ext/debug
+/opt/homebrew/opt/ruby/bin/ruby extconf.rb
+creating Makefile
+
+current directory: /Users/khalid/CSE5911-Eviction/vendor/bundle/ruby/3.3.0/gems/debug-1.10.0/ext/debug
+make DESTDIR\= sitearchdir\=./.gem.20251026-54048-7liqns sitelibdir\=./.gem.20251026-54048-7liqns clean
+
+current directory: /Users/khalid/CSE5911-Eviction/vendor/bundle/ruby/3.3.0/gems/debug-1.10.0/ext/debug
+make DESTDIR\= sitearchdir\=./.gem.20251026-54048-7liqns sitelibdir\=./.gem.20251026-54048-7liqns
+compiling debug.c
+compiling iseq_collector.c
+linking shared-object debug/debug.bundle
+
+current directory: /Users/khalid/CSE5911-Eviction/vendor/bundle/ruby/3.3.0/gems/debug-1.10.0/ext/debug
+make DESTDIR\= sitearchdir\=./.gem.20251026-54048-7liqns sitelibdir\=./.gem.20251026-54048-7liqns install
+/usr/bin/install -c -m 0755 debug.bundle ./.gem.20251026-54048-7liqns/debug
+
+current directory: /Users/khalid/CSE5911-Eviction/vendor/bundle/ruby/3.3.0/gems/debug-1.10.0/ext/debug
+make DESTDIR\= sitearchdir\=./.gem.20251026-54048-7liqns sitelibdir\=./.gem.20251026-54048-7liqns clean

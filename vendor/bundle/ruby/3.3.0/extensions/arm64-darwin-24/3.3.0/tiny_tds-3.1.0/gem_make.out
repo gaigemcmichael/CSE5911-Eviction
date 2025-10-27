@@ -1,0 +1,39 @@
+current directory: /Users/khalid/CSE5911-Eviction/vendor/bundle/ruby/3.3.0/gems/tiny_tds-3.1.0/ext/tiny_tds
+/opt/homebrew/opt/ruby/bin/ruby extconf.rb --with-openssl-dir\=/opt/homebrew/opt/openssl@3 --with-freetds-dir\=/opt/homebrew/opt/freetds
+looking for freetds headers in the following directories:
+ - /opt/homebrew/include
+ - /opt/homebrew/include/freetds
+ - /opt/local/include
+ - /opt/local/include/freetds
+ - /usr/local/include
+ - /usr/local/include/freetds
+looking for freetds library in the following directories:
+ - /opt/homebrew/lib
+ - /opt/homebrew/lib/freetds
+ - /opt/local/lib
+ - /opt/local/lib/freetds
+ - /usr/local/lib
+ - /usr/local/lib/freetds
+checking for sybfront.h... yes
+checking for sybdb.h... yes
+checking for tdsdbopen() in -lsybdb... yes
+checking for dbanydatecrack() in -lsybdb... yes
+creating Makefile
+
+current directory: /Users/khalid/CSE5911-Eviction/vendor/bundle/ruby/3.3.0/gems/tiny_tds-3.1.0/ext/tiny_tds
+make DESTDIR\= sitearchdir\=./.gem.20251026-54048-ymkw6b sitelibdir\=./.gem.20251026-54048-ymkw6b clean
+
+current directory: /Users/khalid/CSE5911-Eviction/vendor/bundle/ruby/3.3.0/gems/tiny_tds-3.1.0/ext/tiny_tds
+make DESTDIR\= sitearchdir\=./.gem.20251026-54048-ymkw6b sitelibdir\=./.gem.20251026-54048-ymkw6b
+compiling client.c
+compiling result.c
+compiling tiny_tds_ext.c
+linking shared-object tiny_tds/tiny_tds.bundle
+ld: warning: ignoring duplicate libraries: '-lsybdb'
+
+current directory: /Users/khalid/CSE5911-Eviction/vendor/bundle/ruby/3.3.0/gems/tiny_tds-3.1.0/ext/tiny_tds
+make DESTDIR\= sitearchdir\=./.gem.20251026-54048-ymkw6b sitelibdir\=./.gem.20251026-54048-ymkw6b install
+/usr/bin/install -c -m 0755 tiny_tds.bundle ./.gem.20251026-54048-ymkw6b/tiny_tds
+
+current directory: /Users/khalid/CSE5911-Eviction/vendor/bundle/ruby/3.3.0/gems/tiny_tds-3.1.0/ext/tiny_tds
+make DESTDIR\= sitearchdir\=./.gem.20251026-54048-ymkw6b sitelibdir\=./.gem.20251026-54048-ymkw6b clean
