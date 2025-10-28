@@ -4,7 +4,7 @@
  * logical path `application.css` still find a valid asset.
  */
  
- * This is a manifest file that'll be compiled into application.css.
+ /* This is a manifest file that'll be compiled into application.css.
  *
  * With Propshaft, assets are served efficiently without preprocessing steps. You can still include
  * application-wide styles in this file, but keep in mind that CSS precedence will follow the standard
