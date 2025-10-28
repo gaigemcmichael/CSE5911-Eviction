@@ -78,6 +78,8 @@ const buildAttachmentHtml = (attachment, currentUserRole) => {
 
 // Track if we've already scrolled on initial load for this conversation
 let hasScrolledOnLoad = new Set();
+let activeSubscription = null;
+let activeConversationId = null;
 
 const initializeMessagesChannel = () => {
   const messagesContainer = document.querySelector('.message-list-container');
@@ -97,83 +99,82 @@ const initializeMessagesChannel = () => {
   console.log(`Checking for existing subscriptions before subscribing to conversation ID: ${conversationId}`);
   console.log("Active subscriptions before cleanup:", consumer.subscriptions.subscriptions);
 
-  const matchingSubscriptions = consumer.subscriptions.subscriptions.filter((subscription) =>
-    subscription.identifier.includes(`"conversation_id":"${conversationId}"`)
-  );
+  if (activeSubscription) {
+    consumer.subscriptions.remove(activeSubscription);
+    activeSubscription = null;
+    activeConversationId = null;
+  }
 
-  if (matchingSubscriptions.length > 1) {
-    matchingSubscriptions.slice(1).forEach((subscription) => {
-      console.log("Removing duplicate subscription:", subscription);
+  consumer.subscriptions.subscriptions
+    .filter((subscription) => subscription.identifier.includes(`"conversation_id":"${conversationId}"`))
+    .forEach((subscription) => {
+      console.log("Removing existing subscription before reinitializing:", subscription);
       consumer.subscriptions.remove(subscription);
     });
-  }
 
-  const existingSubscription = consumer.subscriptions.subscriptions.find((subscription) =>
-    subscription.identifier.includes(`"conversation_id":"${conversationId}"`)
-  );
-
-  if (!existingSubscription) {
-    consumer.subscriptions.create({ channel: "MessagesChannel", conversation_id: conversationId }, {
-      initialized() {
-        console.log(`Initializing subscription for conversation ID: ${conversationId}`);
-      },
-      connected() {
-        console.log(`Connected to conversation ID: ${conversationId}`);
-      },
-      received(data) {
-        if (data.type === 'mediator_assigned') {
-          const messageFormContainer = document.getElementById('new_message_form');
-          if (messageFormContainer) {
-            messageFormContainer.style.display = 'none';
-            console.log("Mediator assigned, message input form hidden.");
-          }
-          return;
+  const subscription = consumer.subscriptions.create({ channel: "MessagesChannel", conversation_id: conversationId }, {
+    initialized() {
+      console.log(`Initializing subscription for conversation ID: ${conversationId}`);
+    },
+    connected() {
+      console.log(`Connected to conversation ID: ${conversationId}`);
+    },
+    received(data) {
+      if (data.type === 'mediator_assigned') {
+        const messageFormContainer = document.getElementById('new_message_form');
+        if (messageFormContainer) {
+          messageFormContainer.style.display = 'none';
+          console.log("Mediator assigned, message input form hidden.");
         }
-
-        const isSender = data.sender_id.toString() === currentUserId;
-        const isRecipient = data.recipient_id.toString() === currentUserId;
-
-        if (!(isSender || isRecipient)) return;
-
-        const messageClass = isSender ? 'sent' : 'received';
-        const formattedRole = titleize(data.sender_role);
-        const senderName = escapeHtml(data.sender_name || (isSender ? 'You' : formattedRole || 'Participant'));
-        const messageContents = formatMessageContents(data.contents);
-        const attachments = Array.isArray(data.attachments) ? data.attachments : [];
-
-        const attachmentsHtml = attachments
-          .map((attachment) => buildAttachmentHtml(attachment, currentUserRole))
-          .filter(Boolean)
-          .join('');
-
-        const messageHtml = `
-          <div class="chat-message ${messageClass}" data-message-id="${escapeAttribute(data.message_id)}" data-sender-role="${escapeAttribute(formattedRole)}" data-sender-id="${escapeAttribute(data.sender_id)}" data-current-user-id="${escapeAttribute(currentUserId)}">
-            <div class="message-bubble">
-              <div class="message-meta">
-                <span class="message-author">${senderName}</span>
-                ${formattedRole ? `<span class="message-role">${escapeHtml(formattedRole)}</span>` : ''}
-              </div>
-              ${messageContents ? `<p class="message-content">${messageContents}</p>` : ''}
-              ${attachmentsHtml ? `<div class="message-attachments">${attachmentsHtml}</div>` : ''}
-              <small class="message-timestamp">${escapeHtml(data.message_date)}</small>
-            </div>
-          </div>
-        `;
-
-        messagesList.insertAdjacentHTML('beforeend', messageHtml);
-
-        const newMessageElement = messagesList.lastElementChild;
-        if (newMessageElement) {
-          newMessageElement.classList.add('is-entering');
-          newMessageElement.addEventListener('animationend', () => {
-            newMessageElement.classList.remove('is-entering');
-          }, { once: true });
-        }
-
-        messagesContainer.scrollTop = messagesContainer.scrollHeight;
+        return;
       }
-    });
-  }
+
+      const isSender = data.sender_id.toString() === currentUserId;
+      const isRecipient = data.recipient_id.toString() === currentUserId;
+
+      if (!(isSender || isRecipient)) return;
+
+      const messageClass = isSender ? 'sent' : 'received';
+      const formattedRole = titleize(data.sender_role);
+      const senderName = escapeHtml(data.sender_name || (isSender ? 'You' : formattedRole || 'Participant'));
+      const messageContents = formatMessageContents(data.contents);
+      const attachments = Array.isArray(data.attachments) ? data.attachments : [];
+
+      const attachmentsHtml = attachments
+        .map((attachment) => buildAttachmentHtml(attachment, currentUserRole))
+        .filter(Boolean)
+        .join('');
+
+      const messageHtml = `
+        <div class="chat-message ${messageClass}" data-message-id="${escapeAttribute(data.message_id)}" data-sender-role="${escapeAttribute(formattedRole)}" data-sender-id="${escapeAttribute(data.sender_id)}" data-current-user-id="${escapeAttribute(currentUserId)}">
+          <div class="message-bubble">
+            <div class="message-meta">
+              <span class="message-author">${senderName}</span>
+              ${formattedRole ? `<span class="message-role">${escapeHtml(formattedRole)}</span>` : ''}
+            </div>
+            ${messageContents ? `<p class="message-content">${messageContents}</p>` : ''}
+            ${attachmentsHtml ? `<div class="message-attachments">${attachmentsHtml}</div>` : ''}
+            <small class="message-timestamp">${escapeHtml(data.message_date)}</small>
+          </div>
+        </div>
+      `;
+
+      messagesList.insertAdjacentHTML('beforeend', messageHtml);
+
+      const newMessageElement = messagesList.lastElementChild;
+      if (newMessageElement) {
+        newMessageElement.classList.add('is-entering');
+        newMessageElement.addEventListener('animationend', () => {
+          newMessageElement.classList.remove('is-entering');
+        }, { once: true });
+      }
+
+      messagesContainer.scrollTop = messagesContainer.scrollHeight;
+    }
+  });
+
+  activeSubscription = subscription;
+  activeConversationId = conversationId;
 
   if (!hasScrolledOnLoad.has(conversationId)) {
     hasScrolledOnLoad.add(conversationId);
@@ -223,4 +224,17 @@ document.addEventListener('turbo:frame-load', (event) => {
 // Clear the tracking when navigating away
 document.addEventListener('turbo:before-visit', () => {
   hasScrolledOnLoad.clear();
+  if (activeSubscription) {
+    consumer.subscriptions.remove(activeSubscription);
+    activeSubscription = null;
+    activeConversationId = null;
+  }
+});
+
+document.addEventListener('turbo:before-cache', () => {
+  if (activeSubscription) {
+    consumer.subscriptions.remove(activeSubscription);
+    activeSubscription = null;
+    activeConversationId = null;
+  }
 });

@@ -43,6 +43,7 @@ db/schema1.rb
 #.env generally should be ignored but for now this is okay.
 
 # Ignore SQL Server data/log artifacts generated during local testing
-/SQLData/k8s/create-secrets.sh
+/SQLData
+
 
 create-secrets.sh
