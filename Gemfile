@@ -108,7 +108,7 @@ gem "docx_templater"
 # For docx into pdf conversion
 gem "docsplit"
 
-gem 'sqlite3', '>= 2.1'
+gem "sqlite3", ">= 2.1"
 
 gem "prawn"
 

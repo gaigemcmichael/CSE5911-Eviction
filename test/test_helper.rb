@@ -4,8 +4,8 @@ require "rails/test_help"
 
 module ActiveSupport
   class TestCase
-  # Run tests sequentially; SQL Server doesn't support parallel truncate in our test setup.
-  # parallelize(workers: :number_of_processors)
+    # Run tests sequentially; SQL Server doesn't support parallel truncate in our test setup.
+    # parallelize(workers: :number_of_processors)
 
     # Setup all fixtures in test/fixtures/*.yml for all tests in alphabetical order.
     fixtures :all

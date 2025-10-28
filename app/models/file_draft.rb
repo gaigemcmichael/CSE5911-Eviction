@@ -1,5 +1,5 @@
 class FileDraft < ApplicationRecord
-  self.table_name  = 'FileDrafts'   
+  self.table_name  = "FileDrafts"
   # self.primary_key = 'FileID'
 
   def uploaded_at
