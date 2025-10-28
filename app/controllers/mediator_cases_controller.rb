@@ -28,6 +28,15 @@ class MediatorCasesController < ApplicationController
 
     @tenant_messages = tenant_msg_string ? Message.where(ConversationID: tenant_msg_string.ConversationID).order(:MessageDate) : []
     @landlord_messages = landlord_msg_string ? Message.where(ConversationID: landlord_msg_string.ConversationID).order(:MessageDate) : []
+
+    participant_ids = [
+      @user.UserID,
+      @mediation.TenantID,
+      @mediation.LandlordID,
+      @mediation.MediatorID
+    ].compact.uniq
+
+    @conversation_participants = User.where(UserID: participant_ids).index_by(&:UserID)
   end
 
 
