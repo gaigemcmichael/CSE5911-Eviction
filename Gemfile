@@ -108,7 +108,7 @@ gem "docx_templater"
 # For docx into pdf conversion
 gem "docsplit"
 
-gem 'sqlite3', '>= 2.1'
+gem "sqlite3", ">= 2.1"
 
 gem "prawn"
 
@@ -118,3 +118,4 @@ gem "rubocop", "~> 1.71", :groups => [:development, :test]
 gem "ruby-lsp", "~> 0.26.1", :group => :development
 
 gem "rubocop-rspec", "~> 3.4", :groups => [:development, :test]
+
