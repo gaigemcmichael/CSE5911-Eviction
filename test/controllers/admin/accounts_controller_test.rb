@@ -41,7 +41,7 @@ class Admin::AccountsControllerTest < ActionDispatch::IntegrationTest
       mediation_cap: 4
     }
 
-    assert_difference(["User.count", "Mediator.count"], 1) do
+    assert_difference([ "User.count", "Mediator.count" ], 1) do
       post admin_accounts_path, params: params
     end
 

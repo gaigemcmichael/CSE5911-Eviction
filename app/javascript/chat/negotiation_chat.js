@@ -168,7 +168,7 @@ const handleNegotiationSubmit = (event) => {
     });
 };
 
-document.addEventListener("turbo:load", () => {
+const initializeNegotiationChat = () => {
   setupTextareaAutoExpand();
   setupComposerForm();
 
@@ -176,4 +176,20 @@ document.addEventListener("turbo:load", () => {
     document.addEventListener("submit", handleNegotiationSubmit);
     negotiationSubmitListenerBound = true;
   }
+};
+
+const eagerInitializeNegotiationChat = () => {
+  if (document.readyState === "complete" || document.readyState === "interactive") {
+    initializeNegotiationChat();
+  }
+};
+
+document.addEventListener("turbo:load", initializeNegotiationChat);
+document.addEventListener("turbo:frame-load", (event) => {
+  const frame = event.target;
+  if (frame && typeof frame.querySelector === "function" && frame.querySelector("#new_message_form")) {
+    initializeNegotiationChat();
+  }
 });
+
+eagerInitializeNegotiationChat();

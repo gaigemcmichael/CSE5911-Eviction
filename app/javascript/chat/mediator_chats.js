@@ -162,7 +162,23 @@ const setupMediatorForms = () => {
   });
 };
 
-document.addEventListener("turbo:load", () => {
+const initializeMediatorChat = () => {
   setupTextareaAutoExpand();
   setupMediatorForms();
+};
+
+const eagerInitializeMediatorChat = () => {
+  if (document.readyState === "complete" || document.readyState === "interactive") {
+    initializeMediatorChat();
+  }
+};
+
+document.addEventListener("turbo:load", initializeMediatorChat);
+document.addEventListener("turbo:frame-load", (event) => {
+  const frame = event.target;
+  if (frame && typeof frame.querySelector === "function" && frame.querySelector(".mediator-message-form")) {
+    initializeMediatorChat();
+  }
 });
+
+eagerInitializeMediatorChat();

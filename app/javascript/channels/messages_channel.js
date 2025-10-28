@@ -79,129 +79,120 @@ const buildAttachmentHtml = (attachment, currentUserRole) => {
 // Track if we've already scrolled on initial load for this conversation
 let hasScrolledOnLoad = new Set();
 
-document.addEventListener('turbo:load', () => {
-  const messagesContainer = document.querySelector('.message-list-container'); // Correctly target the scrollable container
-  const messagesList = document.getElementById('messages'); // Message list within the container
+const initializeMessagesChannel = () => {
+  const messagesContainer = document.querySelector('.message-list-container');
+  const messagesList = document.getElementById('messages');
 
-  if (messagesContainer && messagesList) {
-    const conversationId = messagesList.dataset.conversationId;
-    const currentUserId = messagesList.dataset.currentUserId;
-    const currentUserRole = messagesList.dataset.currentUserRole;
+  if (!messagesContainer || !messagesList) return;
 
-    if (conversationId) {
-      console.log(`Checking for existing subscriptions before subscribing to conversation ID: ${conversationId}`);
-      
-      console.log("Active subscriptions before cleanup:", consumer.subscriptions.subscriptions);
+  const conversationId = messagesList.dataset.conversationId;
+  const currentUserId = messagesList.dataset.currentUserId;
+  const currentUserRole = messagesList.dataset.currentUserRole;
 
-      // Unsubscribe from existing subscriptions to avoid double messages
-      consumer.subscriptions.subscriptions.forEach((subscription) => {
-        if (subscription.identifier.includes(`"conversation_id":"${conversationId}"`)) {
-          console.log("Removing duplicate subscription:", subscription);
-          consumer.subscriptions.remove(subscription);
-        }
-      });
+  if (!conversationId) {
+    console.error("No conversation ID found in message list!");
+    return;
+  }
 
-      console.log("Active subscriptions after cleanup:", consumer.subscriptions.subscriptions);
+  console.log(`Checking for existing subscriptions before subscribing to conversation ID: ${conversationId}`);
+  console.log("Active subscriptions before cleanup:", consumer.subscriptions.subscriptions);
 
-      // **Check if a subscription already exists**
-      const existingSubscription = consumer.subscriptions.subscriptions.find((subscription) =>
-        subscription.identifier.includes(`"conversation_id":"${conversationId}"`)
-      );
-      
-      if (!existingSubscription) {
-        consumer.subscriptions.create({ channel: "MessagesChannel", conversation_id: conversationId }, {
-          initialized() {
-            console.log(`Initializing subscription for conversation ID: ${conversationId}`);
-          },
-          connected() {
-            console.log(`Connected to conversation ID: ${conversationId}`);
-          },
-          received(data) {
-            if (data.type === 'mediator_assigned') {
-              const messageFormContainer = document.getElementById('new_message_form');
-              if (messageFormContainer) {
-                messageFormContainer.style.display = 'none';
-                console.log("Mediator assigned, message input form hidden.");
-              }
-              return; // Stop further processing
-            }
+  const matchingSubscriptions = consumer.subscriptions.subscriptions.filter((subscription) =>
+    subscription.identifier.includes(`"conversation_id":"${conversationId}"`)
+  );
 
-            const isSender = data.sender_id.toString() === currentUserId;
-            const isRecipient = data.recipient_id.toString() === currentUserId;
-            
-            if (isSender || isRecipient) {
-              const messageClass = isSender ? 'sent' : 'received';
-              const formattedRole = titleize(data.sender_role);
-              const senderName = escapeHtml(data.sender_name || (isSender ? 'You' : formattedRole || 'Participant'));
-              const messageContents = formatMessageContents(data.contents);
-              const attachments = Array.isArray(data.attachments) ? data.attachments : [];
+  if (matchingSubscriptions.length > 1) {
+    matchingSubscriptions.slice(1).forEach((subscription) => {
+      console.log("Removing duplicate subscription:", subscription);
+      consumer.subscriptions.remove(subscription);
+    });
+  }
 
-              const attachmentsHtml = attachments
-                .map((attachment) => buildAttachmentHtml(attachment, currentUserRole))
-                .filter(Boolean)
-                .join('');
+  const existingSubscription = consumer.subscriptions.subscriptions.find((subscription) =>
+    subscription.identifier.includes(`"conversation_id":"${conversationId}"`)
+  );
 
-              const messageHtml = `
-                <div class="chat-message ${messageClass}" data-message-id="${escapeAttribute(data.message_id)}" data-sender-role="${escapeAttribute(formattedRole)}" data-sender-id="${escapeAttribute(data.sender_id)}" data-current-user-id="${escapeAttribute(currentUserId)}">
-                  <div class="message-bubble">
-                    <div class="message-meta">
-                      <span class="message-author">${senderName}</span>
-                      ${formattedRole ? `<span class="message-role">${escapeHtml(formattedRole)}</span>` : ''}
-                    </div>
-                    ${messageContents ? `<p class="message-content">${messageContents}</p>` : ''}
-                    ${attachmentsHtml ? `<div class="message-attachments">${attachmentsHtml}</div>` : ''}
-                    <small class="message-timestamp">${escapeHtml(data.message_date)}</small>
-                  </div>
-                </div>
-            `;
-
-              messagesList.insertAdjacentHTML('beforeend', messageHtml);
-
-              // Apply entering animation to the new message
-              const newMessageElement = messagesList.lastElementChild;
-              if (newMessageElement) {
-                newMessageElement.classList.add('is-entering');
-                newMessageElement.addEventListener('animationend', () => {
-                  newMessageElement.classList.remove('is-entering');
-                }, { once: true });
-              }
-
-            // Automatically scroll to the bottom instantly
-              messagesContainer.scrollTop = messagesContainer.scrollHeight;
-            }
+  if (!existingSubscription) {
+    consumer.subscriptions.create({ channel: "MessagesChannel", conversation_id: conversationId }, {
+      initialized() {
+        console.log(`Initializing subscription for conversation ID: ${conversationId}`);
+      },
+      connected() {
+        console.log(`Connected to conversation ID: ${conversationId}`);
+      },
+      received(data) {
+        if (data.type === 'mediator_assigned') {
+          const messageFormContainer = document.getElementById('new_message_form');
+          if (messageFormContainer) {
+            messageFormContainer.style.display = 'none';
+            console.log("Mediator assigned, message input form hidden.");
           }
-        });
-      }
-      
-      // Initial scroll to bottom ONLY on first true page load
-      if (!hasScrolledOnLoad.has(conversationId)) {
-        hasScrolledOnLoad.add(conversationId);
-        messagesContainer.classList.add("use-smooth-scroll");
-        requestAnimationFrame(() => {
-          messagesContainer.scrollTo({
-            top: messagesContainer.scrollHeight,
-            behavior: "smooth"
-          });
-          setTimeout(() => {
-            messagesContainer.classList.remove("use-smooth-scroll");
-          }, 450);
-        });
-      } else {
-        // On subsequent turbo:load events, just jump to bottom instantly
+          return;
+        }
+
+        const isSender = data.sender_id.toString() === currentUserId;
+        const isRecipient = data.recipient_id.toString() === currentUserId;
+
+        if (!(isSender || isRecipient)) return;
+
+        const messageClass = isSender ? 'sent' : 'received';
+        const formattedRole = titleize(data.sender_role);
+        const senderName = escapeHtml(data.sender_name || (isSender ? 'You' : formattedRole || 'Participant'));
+        const messageContents = formatMessageContents(data.contents);
+        const attachments = Array.isArray(data.attachments) ? data.attachments : [];
+
+        const attachmentsHtml = attachments
+          .map((attachment) => buildAttachmentHtml(attachment, currentUserRole))
+          .filter(Boolean)
+          .join('');
+
+        const messageHtml = `
+          <div class="chat-message ${messageClass}" data-message-id="${escapeAttribute(data.message_id)}" data-sender-role="${escapeAttribute(formattedRole)}" data-sender-id="${escapeAttribute(data.sender_id)}" data-current-user-id="${escapeAttribute(currentUserId)}">
+            <div class="message-bubble">
+              <div class="message-meta">
+                <span class="message-author">${senderName}</span>
+                ${formattedRole ? `<span class="message-role">${escapeHtml(formattedRole)}</span>` : ''}
+              </div>
+              ${messageContents ? `<p class="message-content">${messageContents}</p>` : ''}
+              ${attachmentsHtml ? `<div class="message-attachments">${attachmentsHtml}</div>` : ''}
+              <small class="message-timestamp">${escapeHtml(data.message_date)}</small>
+            </div>
+          </div>
+        `;
+
+        messagesList.insertAdjacentHTML('beforeend', messageHtml);
+
+        const newMessageElement = messagesList.lastElementChild;
+        if (newMessageElement) {
+          newMessageElement.classList.add('is-entering');
+          newMessageElement.addEventListener('animationend', () => {
+            newMessageElement.classList.remove('is-entering');
+          }, { once: true });
+        }
+
         messagesContainer.scrollTop = messagesContainer.scrollHeight;
       }
-    } else {
-      console.error("No conversation ID found in message list!");
-    }
+    });
   }
-});
 
-// Clear the tracking when navigating away
-document.addEventListener('turbo:before-visit', () => {
-  hasScrolledOnLoad.clear();
-});
+  if (!hasScrolledOnLoad.has(conversationId)) {
+    hasScrolledOnLoad.add(conversationId);
+    messagesContainer.classList.add("use-smooth-scroll");
+    requestAnimationFrame(() => {
+      messagesContainer.scrollTo({
+        top: messagesContainer.scrollHeight,
+        behavior: "smooth"
+      });
+      setTimeout(() => {
+        messagesContainer.classList.remove("use-smooth-scroll");
+      }, 450);
+    });
+  } else {
+    messagesContainer.scrollTop = messagesContainer.scrollHeight;
+  }
+};
 
-document.addEventListener('turbo:load', () => {
+const hideMessageFormIfMediatorAssigned = () => {
   if (window.mediatorAssigned === true || window.mediatorAssigned === 'true') {
     const messageFormContainer = document.getElementById('new_message_form');
     if (messageFormContainer) {
@@ -209,4 +200,27 @@ document.addEventListener('turbo:load', () => {
       console.log("Mediator already assigned, message input form hidden.");
     }
   }
+};
+
+if (document.readyState === 'interactive' || document.readyState === 'complete') {
+  initializeMessagesChannel();
+  hideMessageFormIfMediatorAssigned();
+}
+
+document.addEventListener('turbo:load', () => {
+  initializeMessagesChannel();
+  hideMessageFormIfMediatorAssigned();
+});
+
+document.addEventListener('turbo:frame-load', (event) => {
+  const frame = event.target;
+  if (frame instanceof HTMLElement && typeof frame.querySelector === 'function' && frame.querySelector('#messages')) {
+    initializeMessagesChannel();
+    hideMessageFormIfMediatorAssigned();
+  }
+});
+
+// Clear the tracking when navigating away
+document.addEventListener('turbo:before-visit', () => {
+  hasScrolledOnLoad.clear();
 });
