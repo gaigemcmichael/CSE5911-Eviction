@@ -49,3 +49,9 @@ db/schema1.rb
 create-secrets.sh
 
 /config/credentials/development.key
+
+# Ignore vendored gems
+/vendor/bundle
+
+# ignore environment-specific encrypted credentials
+/config/credentials/*.yml.enc
