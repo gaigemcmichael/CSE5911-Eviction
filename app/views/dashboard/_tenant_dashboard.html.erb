@@ -1,38 +1,92 @@
-<!-- Quick Start Guide -->
-<div class="quick-start">
-    <h3>🚀 How to Navigate</h3>
-    <ul class="dashboard-list">
-        <li>Check your <%= link_to "Messages", messages_path, class: "dashboard-link" %> for updates on negotiations.</li>
-        <li>Need more information? Visit the <%= link_to "Resources", resources_path, class: "dashboard-link" %> page.</li>
-        <li>View and manage your documents on the <%= link_to "Documents", documents_path, class: "dashboard-link" %> page.</li>
-        <li>Update your profile and settings from the <%= link_to "Account", account_path, class: "dashboard-link" %> page.</li>
-    </ul>
+<!-- Quick Actions -->
+<div class="action-cards-grid">
+  <div class="action-card primary">
+    <div class="card-icon">
+      <i class="fas fa-comments"></i>
+    </div>
+    <div class="card-content">
+      <h3>Messages</h3>
+      <p>Start or continue negotiations with your landlord</p>
+      <%= link_to "View Messages", messages_path, class: "card-btn btn-primary" %>
+    </div>
+  </div>
+
+  <div class="action-card">
+    <div class="card-icon">
+      <i class="fas fa-book-open"></i>
+    </div>
+    <div class="card-content">
+      <h3>Resources</h3>
+      <p>Learn about mediation, your rights, and get help</p>
+      <%= link_to "Explore Resources", resources_path, class: "card-btn" %>
+    </div>
+  </div>
+
+  <div class="action-card">
+    <div class="card-icon">
+      <i class="fas fa-file-alt"></i>
+    </div>
+    <div class="card-content">
+      <h3>Documents</h3>
+      <p>Manage your agreements and important files</p>
+      <%= link_to "View Documents", documents_path, class: "card-btn" %>
+    </div>
+  </div>
+
+  <div class="action-card">
+    <div class="card-icon">
+      <i class="fas fa-user-cog"></i>
+    </div>
+    <div class="card-content">
+      <h3>Account</h3>
+      <p>Update your profile and settings</p>
+      <%= link_to "Manage Account", account_path, class: "card-btn" %>
+    </div>
+  </div>
 </div>
 
-<!-- Tenant Quick Guide -->
-<div class="dashboard-guide">
-    <h3 class="dashboard-subheading">📖 Quick Guide</h3>
-    <ol class="dashboard-list">
-        <li>
-            <strong>Start a Negotiation:</strong>
-            <ul>
-                <li>Go to the <%= link_to "Messages", messages_path, class: "dashboard-link" %> page.</li>
-                <li>Initiate a negotiation with your landlord.</li>
-            </ul>
-        </li>
+<!-- Getting Started Guide -->
+<div class="info-section">
+  <div class="info-header">
+    <h2><i class="fas fa-lightbulb"></i> Getting Started</h2>
+    <p>New to eviction mediation? Here's how to get help resolving your housing dispute.</p>
+  </div>
 
-        <li>
-            <strong>If you want to start a Mediation:</strong>
-            <ul>
-                <li>Request for a Mediator in <%= link_to "Messages", messages_path, class: "dashboard-link" %>.</li>
-            </ul>
-        </li>
+  <div class="process-steps">
+    <div class="step">
+      <div class="step-number">1</div>
+      <div class="step-content">
+        <h4>Start a Conversation</h4>
+        <p>Use the Messages page to initiate a discussion with your landlord about your situation.</p>
+      </div>
+    </div>
 
-        <li>
-            <strong>If you want to stop a negotiation/mediation:</strong>
-            <ul>
-                <li>Go to <%= link_to "Messages", messages_path, class: "dashboard-link" %> and access your negotiation/mediation to end it.</li>
-            </ul>
-        </li>
-    </ol>
+    <div class="step">
+      <div class="step-number">2</div>
+      <div class="step-content">
+        <h4>Request Mediation</h4>
+        <p>If direct negotiation isn't working, request a neutral mediator to help facilitate the conversation.</p>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-number">3</div>
+      <div class="step-content">
+        <h4>Reach Agreement</h4>
+        <p>Work together to find a solution that works for both parties and avoid eviction proceedings.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Resources Highlight -->
+<div class="highlight-section">
+  <div class="highlight-content">
+    <h3><i class="fas fa-graduation-cap"></i> Learn About Your Rights</h3>
+    <p>Understanding tenant rights and the mediation process can help you achieve better outcomes. Our comprehensive resources include guides, videos, and FAQs.</p>
+    <%= link_to "Access Learning Center", resources_path, class: "highlight-btn" %>
+  </div>
+  <div class="highlight-visual">
+    <i class="fas fa-shield-alt"></i>
+  </div>
 </div>
