@@ -1,8 +1,14 @@
 class UserMailer < ApplicationMailer
-  default from: ENV["GMAIL_USERNAME"] # Change To Sender's Email
+  # Default sender email pulled securely from Rails credentials
+  default from: Rails.application.credentials.dig(:smtp, :from) || "Eviction Mediation <no-reply@example.com>"
 
   def welcome_email(user)
     @user = user
-    mail(to: @user.Email, subject: "Welcome to Eviction1 Site!")
+    @app_name = "Eviction Mediation"
+    @dashboard_url = root_url
+    mail(
+      to: @user.Email,
+      subject: "Welcome to #{@app_name}"
+    )
   end
 end
