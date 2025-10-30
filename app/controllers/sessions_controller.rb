@@ -7,7 +7,7 @@ class SessionsController < ApplicationController
         # Find user by email
         user = User.find_by(Email: params[:email])
 
-        if user && user.authenticate(params[:password])
+        if user && user.authenticate(params[:password]) # Match encrypted password
           if user.sms_2fa_enabled?
             session[:pre_sms_user_id] = user.UserID
             
@@ -23,14 +23,14 @@ class SessionsController < ApplicationController
                 redirect_to sms_two_factor_path, notice: "Please enter the verification code sent to your phone"
               else
                 user.update!(twilio_verification_sid: result[:sid], twilio_verification_status: result[:status], twilio_verification_sent_at: Time.current)
-                redirect_to sms_two_factor_path, notice: "Please enter the verification code sent to your phone"
               end
             else
               code = user.generate_sms_otp
               Rails.logger.info "SMS Code for #{user.phone_number}: #{code}"
               puts "*** SMS CODE: #{code} for #{user.phone_number} ***"
-              redirect_to sms_two_factor_path, notice: "Please enter the verification code sent to your phone"
             end
+            
+            redirect_to sms_two_factor_path, notice: "Please enter the verification code sent to your phone"
           else
             session[:user_id] = user.UserID
             redirect_to dashboard_path, notice: "Logged in successfully!"

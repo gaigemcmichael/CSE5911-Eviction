@@ -64,6 +64,7 @@ class User < ApplicationRecord
     valid = BCrypt::Password.new(sms_otp_digest) == input_code.to_s
     if valid
       self.sms_otp_digest = nil
+      self.sms_otp_sent_at = nil
       self.sms_otp_expires_at = nil
       self.sms_otp_attempts = 0
       save!

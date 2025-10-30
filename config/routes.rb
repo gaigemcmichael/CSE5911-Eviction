@@ -22,11 +22,11 @@ Rails.application.routes.draw do
   post "/signup", to: "users#create"
   resources :users
   
-  get  'sms_two_factor', to: 'sms_two_factor#show', as: 'sms_two_factor'
+  get 'sms_two_factor', to: 'sms_two_factor#show', as: 'sms_two_factor'
   post 'sms_two_factor/verify', to: 'sms_two_factor#verify', as: 'sms_two_factor_verify'
   post 'sms_two_factor/resend', to: 'sms_two_factor#resend', as: 'sms_two_factor_resend'
   
-  get "/account", to: "account#show"
+  get "/account", to: "account#show", as: "account"
   get "/account/edit", to: "account#edit"
   patch "/account", to: "account#update"
   
@@ -38,6 +38,11 @@ Rails.application.routes.draw do
   post "/account/disable_sms_2fa", to: "account#disable_sms_2fa", as: "disable_sms_2fa"
   post "/account/send_test_sms", to: "account#send_test_sms", as: "send_test_sms"
   get "/account/phone_verify", to: "account#phone_verify", as: "phone_verify_account"
+
+  # SMS Two-Factor Authentication
+  get "/sms_two_factor", to: "sms_two_factor#show", as: "sms_two_factor"
+  post "/sms_two_factor/verify", to: "sms_two_factor#verify", as: "verify_sms_two_factor"
+  post "/sms_two_factor/resend", to: "sms_two_factor#resend", as: "resend_sms_two_factor"
 
   get "messages/tenant_show/:conversation_id", to: "messages#show", as: "tenant_show"
   get "messages/landlord_show/:conversation_id", to: "messages#show", as: "landlord_show"
