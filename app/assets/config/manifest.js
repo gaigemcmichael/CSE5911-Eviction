@@ -1,9 +1,11 @@
 //= link_tree ../images
-//= link_directory ../stylesheets .css
-//= link_tree ../javascripts .js
+// Prevent double-linking `application.css` (application.css + application.css.erb).
+// Use explicit per-file links below instead of linking the aggregated file.
+// Note: we do not use `app/assets/javascripts` here; use `app/javascript`.
+// (Keeps Propshaft/importmap layout stable across branches.)
 //= link_tree ../../javascript .js
 //= link application.js
-//= link application.css
+// Do not link `application.css` here (see note above).
 
 // Individual stylesheet links
 //= link base.css
