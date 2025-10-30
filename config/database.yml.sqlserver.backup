@@ -1,0 +1,17 @@
+default: &default
+  adapter: sqlserver
+  host: 127.0.0.1
+  port: 1433
+  username: sa
+  password: StrongPassword1
+  pool: 5
+  timeout: 5000
+  trust_server_certificate: true
+
+development:
+  <<: *default
+  database: EVICTION_TEST
+
+test:
+  <<: *default
+  database: EVICTION_TEST_TEST

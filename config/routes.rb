@@ -21,15 +21,22 @@ Rails.application.routes.draw do
   get "/signup", to: "users#new"
   post "/signup", to: "users#create"
   resources :users
-
+  
+  get  'sms_two_factor', to: 'sms_two_factor#show', as: 'sms_two_factor'
+  post 'sms_two_factor/verify', to: 'sms_two_factor#verify', as: 'sms_two_factor_verify'
+  post 'sms_two_factor/resend', to: 'sms_two_factor#resend', as: 'sms_two_factor_resend'
+  
   get "/account", to: "account#show"
   get "/account/edit", to: "account#edit"
   patch "/account", to: "account#update"
+  post "/account/sms/send_verification", to: "account#send_sms_verification", as: "account_send_sms_verification"
+  post "/account/sms/enable", to: "account#enable_sms_2fa", as: "account_enable_sms_2fa"
+  post "/account/sms/disable", to: "account#disable_sms_2fa", as: "account_disable_sms_2fa"
 
   get "messages/tenant_show/:conversation_id", to: "messages#show", as: "tenant_show"
   get "messages/landlord_show/:conversation_id", to: "messages#show", as: "landlord_show"
 
-  # get '/complete_screening', to: 'screenings#complete_screening'
+  
 
   get "screenings/new/:conversation_id", to: "screenings#new", as: "new_screening"
 

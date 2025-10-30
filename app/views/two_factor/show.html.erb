@@ -1,0 +1,18 @@
+<div class="two-factor">
+  <h1>Two-factor authentication</h1>
+  <p>Enter the 6-digit code from your authenticator app.</p>
+
+  <% if flash[:error] %>
+    <div class="flash is-alert"><%= flash[:error] %></div>
+  <% end %>
+
+  <%= form_with url: two_factor_verify_path, method: :post do %>
+    <div class="field">
+      <%= label_tag :otp_code, "Authentication code" %>
+      <%= text_field_tag :otp_code, nil, autofocus: true, autocomplete: "one-time-code" %>
+    </div>
+    <div class="actions">
+      <%= submit_tag "Verify", class: "btn btn-primary" %>
+    </div>
+  <% end %>
+</div>

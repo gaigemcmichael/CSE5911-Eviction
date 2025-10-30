@@ -1,0 +1,292 @@
+/* SMS 2FA Page Styles */
+.sms-2fa-page {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    background: linear-gradient(135deg, #102a4d 0%, #1a365d 100%);
+    padding: 20px;
+    font-family: 'Montserrat', sans-serif;
+}
+
+.sms-2fa-container {
+    background: #ffffff;
+    border-radius: 16px;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+    padding: 40px;
+    max-width: 450px;
+    width: 100%;
+    text-align: center;
+    animation: slideIn 0.6s ease-out;
+}
+
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+
+.sms-2fa-header {
+    margin-bottom: 30px;
+}
+
+.sms-icon {
+    width: 80px;
+    height: 80px;
+    background: linear-gradient(135deg, #4F46E5, #7C3AED);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 20px;
+    box-shadow: 0 8px 20px rgba(79, 70, 229, 0.3);
+}
+
+.sms-icon i {
+    font-size: 32px;
+    color: white;
+}
+
+.sms-2fa-title {
+    font-size: 28px;
+    font-weight: 700;
+    color: #1f2937;
+    margin: 0 0 10px 0;
+    letter-spacing: -0.5px;
+}
+
+.sms-2fa-subtitle {
+    font-size: 16px;
+    color: #6b7280;
+    margin: 0;
+    line-height: 1.5;
+}
+
+
+.alert {
+    padding: 15px 20px;
+    border-radius: 8px;
+    margin-bottom: 25px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-weight: 500;
+}
+
+.alert-error {
+    background: #fef2f2;
+    color: #dc2626;
+    border: 1px solid #fecaca;
+}
+
+.alert-success {
+    background: #f0fdf4;
+    color: #16a34a;
+    border: 1px solid #bbf7d0;
+}
+
+.alert i {
+    font-size: 18px;
+}
+
+
+.sms-2fa-form-container {
+    margin-bottom: 30px;
+}
+
+.form-group {
+    margin-bottom: 25px;
+    text-align: center;
+}
+
+.form-label {
+    display: block;
+    font-weight: 600;
+    color: #374151;
+    margin-bottom: 8px;
+    font-size: 14px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    text-align: center;
+}
+
+.otp-input {
+    width: 280px;
+    max-width: 90%;
+    margin: 0 auto;
+    display: block;
+    padding: 14px 16px;
+    font-size: 22px;
+    font-weight: 600;
+    text-align: center;
+    letter-spacing: 6px;
+    border: 2px solid #e5e7eb;
+    border-radius: 12px;
+    background: #f9fafb;
+    transition: all 0.3s ease;
+    font-family: 'Courier New', monospace;
+}
+
+.otp-input:focus {
+    outline: none;
+    border-color: #4f46e5;
+    background: white;
+    box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
+}
+
+.otp-input::placeholder {
+    color: #d1d5db;
+    letter-spacing: 8px;
+}
+
+
+.btn {
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 600;
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
+
+.btn-verify {
+    width: 100%;
+    padding: 16px 24px;
+    background: linear-gradient(135deg, #4f46e5, #7c3aed);
+    color: white;
+    font-size: 16px;
+    box-shadow: 0 4px 12px rgba(79, 70, 229, 0.4);
+}
+
+.btn-verify:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(79, 70, 229, 0.5);
+}
+
+.btn-verify:active {
+    transform: translateY(0);
+}
+
+.btn-resend {
+    background: transparent;
+    color: #6b7280;
+    padding: 12px 20px;
+    font-size: 14px;
+    border: 2px solid #e5e7eb;
+    border-radius: 8px;
+}
+
+.btn-resend:hover:not(:disabled) {
+    background: #f9fafb;
+    border-color: #d1d5db;
+    color: #374151;
+}
+
+.btn-resend:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+
+.resend-section {
+    margin-top: 25px;
+    padding-top: 25px;
+    border-top: 1px solid #e5e7eb;
+}
+
+.resend-text {
+    font-size: 14px;
+    color: #6b7280;
+    margin: 0 0 15px 0;
+}
+
+
+.help-section {
+    margin-top: 30px;
+    padding-top: 20px;
+    border-top: 1px solid #f3f4f6;
+}
+
+.help-text {
+    font-size: 13px;
+    color: #9ca3af;
+    margin: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    line-height: 1.4;
+}
+
+.help-text i {
+    font-size: 14px;
+    color: #6b7280;
+}
+
+
+@media (max-width: 480px) {
+    .sms-2fa-page {
+        padding: 15px;
+    }
+    
+    .sms-2fa-container {
+        padding: 30px 25px;
+    }
+    
+    .sms-2fa-title {
+        font-size: 24px;
+    }
+    
+    .sms-icon {
+        width: 70px;
+        height: 70px;
+    }
+    
+    .sms-icon i {
+        font-size: 28px;
+    }
+    
+    .otp-input {
+        width: 240px;
+        font-size: 20px;
+        letter-spacing: 5px;
+        padding: 12px 14px;
+    }
+    
+    .otp-input::placeholder {
+        letter-spacing: 6px;
+    }
+}
+
+
+.btn-verify.loading {
+    position: relative;
+    color: transparent;
+}
+
+.btn-verify.loading::after {
+    content: '';
+    position: absolute;
+    width: 20px;
+    height: 20px;
+    border: 2px solid transparent;
+    border-top: 2px solid white;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}

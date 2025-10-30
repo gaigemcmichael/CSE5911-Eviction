@@ -16,6 +16,7 @@ class User < ApplicationRecord
   accepts_nested_attributes_for :mediator
 
   before_validation :normalize_email
+  before_validation :normalize_phone_number
 
   def display_name
     first = self[:FirstName]
@@ -31,6 +32,59 @@ class User < ApplicationRecord
   def landlord? = self[:Role] == "Landlord"
   def mediator? = self[:Role] == "Mediator"
   def admin?    = self[:Role] == "Admin"
+
+  validate :phone_number_must_be_valid
+
+  private
+
+  def normalize_phone_number
+    return if self[:phone_number].blank?
+    parsed = Phonelib.parse(self[:phone_number])
+    if parsed.valid?
+      self[:phone_number] = parsed.e164
+    end
+  end
+
+  def phone_number_must_be_valid
+    return if self[:phone_number].blank?
+    unless Phonelib.valid?(self[:phone_number])
+      errors.add(:phone_number, 'is not a valid phone number')
+    end
+  end
+
+  
+  public
+
+  SMS_OTP_TTL = 10.minutes
+  SMS_OTP_MAX_ATTEMPTS = 5
+  SMS_RESEND_INTERVAL = 60 
+
+  def generate_sms_otp
+    code = SecureRandom.random_number(10**6).to_s.rjust(6, '0')
+    digest = BCrypt::Password.create(code)
+    update!(sms_otp_digest: digest, sms_otp_sent_at: Time.current, sms_otp_expires_at: SMS_OTP_TTL.from_now, sms_otp_attempts: 0, last_sms_sent_at: Time.current)
+    code
+  end
+
+  def verify_sms_otp(code)
+    return false if sms_otp_digest.blank? || sms_otp_expires_at.blank?
+    return false if Time.current > sms_otp_expires_at
+    return false if sms_otp_attempts.to_i >= SMS_OTP_MAX_ATTEMPTS
+
+    valid = BCrypt::Password.new(sms_otp_digest) == code
+    increment!(:sms_otp_attempts)
+    if valid
+      update!(sms_otp_digest: nil, sms_otp_expires_at: nil, sms_otp_attempts: 0)
+      true
+    else
+      false
+    end
+  end
+
+  def can_send_sms_otp?
+    return true if last_sms_sent_at.blank?
+    (Time.current - last_sms_sent_at) >= SMS_RESEND_INTERVAL
+  end
 
   private
 

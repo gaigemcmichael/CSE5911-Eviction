@@ -34,7 +34,7 @@
   </head>
 
   <body>
-    <% unless (controller_name == "sessions" && action_name == "new")  || (controller_name == "users" && action_name == "new") %>
+    <% unless (controller_name == "sessions" && action_name == "new") || (controller_name == "users" && action_name == "new") || controller_name == "sms_two_factor" %>
       <% if current_user %>
         <div class="navbar-container">
           <%= render "shared/navbar" %>
