@@ -47,3 +47,10 @@ db/schema1.rb
 
 
 create-secrets.sh
+SQLData/
+*.gdmp
+*.mdmp
+*.bak
+*.ldf
+*.mdf
+*.ndf
