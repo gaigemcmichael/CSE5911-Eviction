@@ -1,31 +1,44 @@
 require "test_helper"
-# Just a scaffold, will need filled in
+
 class SessionsControllerTest < ActionDispatch::IntegrationTest
-  test "should get index" do
-    skip "SessionsController uses custom routes, not RESTful - this is scaffold-generated test"
+  setup do
+    @user = users(:landlord1)
   end
 
-  test "should get new" do
-    skip "SessionsController uses custom routes, not RESTful - this is scaffold-generated test"
+  test "renders the login page" do
+    get login_url
+    assert_response :success
   end
 
-  test "should create session" do
-    skip "SessionsController uses custom routes, not RESTful - this is scaffold-generated test"
+  test "creates a session with valid credentials" do
+    post login_url, params: { email: @user[:Email], password: "password" }
+
+    assert_redirected_to dashboard_url
+    assert_equal @user[:UserID], session[:user_id]
+
+    follow_redirect!
+    assert_response :success
   end
 
-  test "should show session" do
-    skip "SessionsController uses custom routes, not RESTful - this is scaffold-generated test"
+  test "rejects invalid credentials" do
+    post login_url, params: { email: @user[:Email], password: "wrong-password" }
+
+    assert_response :unprocessable_entity
+    assert_nil session[:user_id]
+    assert_equal "Invalid email or password", flash[:error]
   end
 
-  test "should get edit" do
-    skip "SessionsController uses custom routes, not RESTful - this is scaffold-generated test"
-  end
+  test "logs out and clears the session" do
+    post login_url, params: { email: @user[:Email], password: "password" }
+    assert_equal @user[:UserID], session[:user_id]
 
-  test "should update session" do
-    skip "SessionsController uses custom routes, not RESTful - this is scaffold-generated test"
-  end
+    get logout_url
 
-  test "should destroy session" do
-    skip "SessionsController uses custom routes, not RESTful - this is scaffold-generated test"
+    assert_redirected_to root_url
+    assert_nil session[:user_id]
+    assert_equal "Logged out successfully!", flash[:notice]
+
+    follow_redirect!
+    assert_response :success
   end
 end
