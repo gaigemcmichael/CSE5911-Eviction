@@ -14,7 +14,7 @@ class ApplicationController < ActionController::Base
   end
 
   def set_current_user
-    @user = User.find(session[:user_id]) if session[:user_id]
+    @user = User.find_by(UserID: session[:user_id]) if session[:user_id]
   end
 
   helper_method :current_user
