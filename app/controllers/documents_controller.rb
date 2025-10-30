@@ -8,9 +8,9 @@ require "prawn/table"
 class DocumentsController < ApplicationController
   before_action :require_login
   before_action :set_user
-  before_action :set_conversation_context, only: [:intake_template_view]
+  before_action :set_conversation_context, only: [ :intake_template_view ]
 
-  
+
   def intake_template_view
   end
   # delete files
@@ -18,7 +18,7 @@ class DocumentsController < ApplicationController
     file = FileDraft.find_by(FileID: params[:id], CreatorID: @user[:UserID])
     return render plain: "File not found", status: :not_found unless file
 
-    
+
     if FileDraft.column_names.include?("UserDeletedAt")
       file.update!(UserDeletedAt: Time.current)
     else
@@ -47,7 +47,7 @@ class DocumentsController < ApplicationController
 
   def new; end
 
-  # Upload handler 
+  # Upload handler
   def create
     uploaded = params[:file] || params.dig(:document, :file)
     unless uploaded
@@ -74,7 +74,7 @@ class DocumentsController < ApplicationController
     File.open(dest, "wb") { |f| f.write(uploaded.read) }
     pk_name, pk_value = next_filedraft_pk_value
     attrs = {
-      
+
       FileName:     File.basename(uploaded.original_filename, ".*"),
       FileTypes:    ext.delete("."),
       FileURLPath:  "userFiles/#{file_id}#{ext}",
@@ -90,13 +90,13 @@ class DocumentsController < ApplicationController
   end
 
   def show
-    @file = FileDraft.find_by(FileID: params[:id], CreatorID: @user[:UserID], UserDeletedAt: nil)
+    @file = find_file_for_user(params[:id])
     render plain: "File not found", status: :not_found unless @file
   end
 
   # download of the stored file
   def download
-    file = FileDraft.find_by(FileID: params[:id], CreatorID: @user[:UserID], UserDeletedAt: nil)
+    file = find_file_for_user(params[:id])
     return render plain: "File not found (record)", status: :not_found unless file
 
     base_path = Rails.root.join("public")
@@ -113,124 +113,120 @@ class DocumentsController < ApplicationController
       return render plain: "Generated file is empty (#{path})", status: :unprocessable_entity
     end
 
+    mime_type = begin
+      Marcel::MimeType.for(path.to_path, extension: File.extname(path))
+    rescue StandardError
+      nil
+    end
+    disposition = mime_type == "application/pdf" ? "inline" : "attachment"
+
     send_file path,
               filename: "#{file.FileName}#{File.extname(path)}",
-              type: "application/pdf",
-              disposition: "inline"
+              type: mime_type || "application/octet-stream",
+              disposition: disposition
   end
 
-  
-def generate_filled_template
-  
-  conv_id   = params[:conversation_id]
-  landlord  = params[:landlord_name].to_s
-  tenant    = params[:tenant_name].to_s
-  address   = params[:address].to_s
-  nego_date = (params[:negotiation_date].presence || Date.today).to_date rescue Date.today
-  best      = (@intake&.BestOption || params[:best_option]).to_s
-
-  # payment schedule
-  schedule = []
-  params.to_unsafe_h.each do |k, v|
-    if k.to_s =~ /\Aamount(\d+)\z/
-      i = $1.to_i
-      amt = v.to_s
-      dat = params["date#{i}"]
-      schedule << [i, amt, dat]
+  def generate_filled_template
+    conv_id   = params[:conversation_id]
+    landlord  = params[:landlord_name].to_s
+    tenant    = params[:tenant_name].to_s
+    address   = params[:address].to_s
+    nego_date = begin
+      (params[:negotiation_date].presence || Date.today).to_date
+    rescue StandardError
+      Date.today
     end
-  end
-  schedule.sort_by! { |i, _, _| i }
+    best      = (@intake&.BestOption || params[:best_option]).to_s
 
-  additional = params[:additional_provisions].presence || "None"
-  tenant_sig = params[:tenant_signature].to_s
-  land_sig   = params[:landlord_signature].to_s
+    # payment schedule
+    schedule = []
+    params.to_unsafe_h.each do |key, value|
+      next unless key.to_s =~ /\Aamount(\d+)\z/
 
-  
-  file_id = SecureRandom.uuid
-  ext     = ".pdf"
-  dir     = Rails.root.join("public", "userFiles")
-  FileUtils.mkdir_p(dir)
-  dest    = dir.join("#{file_id}#{ext}")
+      index = Regexp.last_match(1).to_i
+      amount = value.to_s
+      due_on = params["date#{index}"]
+      schedule << [ index, amount, due_on ]
+    end
+    schedule.sort_by! { |i, _, _| i }
 
-  # Generate the PDF 
-  require "prawn"
-  Prawn::Document.generate(dest.to_s, margin: 54) do |pdf|
-    pdf.text (best == "Move Out" ? "Agreement to Vacate" : "Pay and Stay Agreement"),
-             size: 20, style: :bold, align: :center
-    pdf.move_down 14
+    additional = params[:additional_provisions].presence || "None"
+    tenant_sig = params[:tenant_signature].to_s
+    land_sig   = params[:landlord_signature].to_s
 
-    pdf.text "Date: #{nego_date.strftime('%B %d, %Y')}"
-    pdf.move_down 8
+    file_id = SecureRandom.uuid
+    ext     = ".pdf"
+    dir     = Rails.root.join("public", "userFiles")
+    FileUtils.mkdir_p(dir)
+    dest    = dir.join("#{file_id}#{ext}")
 
-    pdf.text "Landlord: #{landlord}"
-    pdf.text "Tenant:   #{tenant}"
-    pdf.text "Address:  #{address}"
-    pdf.move_down 14
+    # Generate the PDF
+    require "prawn"
+    Prawn::Document.generate(dest.to_s, margin: 54) do |pdf|
+      pdf.text (best == "Move Out" ? "Agreement to Vacate" : "Pay and Stay Agreement"),
+               size: 20, style: :bold, align: :center
+      pdf.move_down 14
 
-    
-  if best == "Move Out"
-    vacate_date = params[:vacate_date].present? ? (Date.parse(params[:vacate_date]) rescue nil) : nil
-    pdf.text "Vacate Date: #{vacate_date ? vacate_date.strftime('%B %d, %Y') : 'N/A'}"
-    pdf.move_down 10
-  end
+      pdf.text "Date: #{nego_date.strftime('%B %d, %Y')}"
+      pdf.move_down 8
 
+      pdf.text "Landlord: #{landlord}"
+      pdf.text "Tenant:   #{tenant}"
+      pdf.text "Address:  #{address}"
+      pdf.move_down 14
 
-
-    if schedule.any?
-      pdf.text "Payment Schedule", style: :bold
-      pdf.move_down 6
-      data = [["#", "Amount (USD)", "Due Date"]] +
-             schedule.map do |i, amt, dat|
-               d = (dat.present? ? (Date.parse(dat) rescue dat) : "")
-               [i.to_s, (amt.presence || ""), (d.is_a?(Date) ? d.strftime('%Y-%m-%d') : d)]
-             end
-      pdf.table(data, header: true, width: pdf.bounds.width) do
-        row(0).font_style = :bold
+      if best == "Move Out"
+        vacate_date = params[:vacate_date].present? ? (Date.parse(params[:vacate_date]) rescue nil) : nil
+        pdf.text "Vacate Date: #{vacate_date ? vacate_date.strftime('%B %d, %Y') : 'N/A'}"
+        pdf.move_down 10
       end
-      pdf.move_down 12
+
+      if schedule.any?
+        pdf.text "Payment Schedule", style: :bold
+        pdf.move_down 6
+        data = [ [ "#", "Amount (USD)", "Due Date" ] ] +
+               schedule.map do |i, amt, dat|
+                 d = (dat.present? ? (Date.parse(dat) rescue dat) : "")
+                 [ i.to_s, (amt.presence || ""), (d.is_a?(Date) ? d.strftime("%Y-%m-%d") : d) ]
+               end
+        pdf.table(data, header: true, width: pdf.bounds.width) do
+          row(0).font_style = :bold
+        end
+        pdf.move_down 12
+      end
+
+      pdf.text "Additional Provisions", style: :bold
+      pdf.move_down 4
+      pdf.text additional
+      pdf.move_down 18
+
+      pdf.stroke_horizontal_rule
+      pdf.move_down 10
+
+      pdf.text "Tenant Signature: #{tenant_sig}" if tenant_sig.present?
+      pdf.text "Landlord Signature: #{land_sig}" if land_sig.present?
+
+      pdf.move_down 8
+      pdf.text "Conversation ID: #{conv_id}", size: 9, color: "555555" if conv_id.present?
     end
 
-    pdf.text "Additional Provisions", style: :bold
-    pdf.move_down 4
-    pdf.text additional
-    pdf.move_down 18
+    pk_name, pk_value = next_filedraft_pk_value
 
-    pdf.stroke_horizontal_rule
-    pdf.move_down 10
+    attrs = {
+      FileID: file_id,
+      FileName: "Generated Agreement",
+      FileTypes: "pdf",
+      FileURLPath: "userFiles/#{file_id}#{ext}",
+      CreatorID: @user[:UserID],
+      TenantSignature: tenant_sig.present?,
+      LandlordSignature: land_sig.present?
+    }
+    attrs[pk_name] = pk_value if pk_name && pk_value
 
-    # Signatures 
-    if tenant_sig.present?
-      pdf.text "Tenant Signature: #{tenant_sig}"
-    end
-    if land_sig.present?
-      pdf.text "Landlord Signature: #{land_sig}"
-    end
+    FileDraft.create!(attrs)
 
-    pdf.move_down 8
-    pdf.text "Conversation ID: #{conv_id}", size: 9, color: "555555" if conv_id.present?
+    redirect_to documents_path, notice: "Document generated."
   end
-
-  pk_name, pk_value = next_filedraft_pk_value
-
-  attrs = {
-
-  
-    
-    FileID: file_id,
-    FileName: "Generated Agreement",
-    FileTypes: "pdf",
-    FileURLPath: "userFiles/#{file_id}#{ext}",
-    CreatorID: @user[:UserID],
-    TenantSignature: tenant_sig.present?,
-    LandlordSignature: land_sig.present?
-  }
-
-  attrs[pk_name] = pk_value if pk_name && pk_value
-
-  FileDraft.create!(attrs)
-
-  redirect_to documents_path, notice: "Document generated."
-end
 
 
   private
@@ -244,21 +240,42 @@ end
     end
   end
 
+  def find_file_for_user(id)
+    scope = FileDraft.where(FileID: id)
+    scope = scope.where(UserDeletedAt: nil) if FileDraft.column_names.include?("UserDeletedAt")
+
+    file = scope.first
+    return unless file
+    return file if file.CreatorID == @user[:UserID]
+
+    attachments = FileAttachment.where(FileID: file.FileID)
+    return unless attachments.exists?
+
+    message_ids = attachments.select(:MessageID)
+    messages = Message.where(MessageID: message_ids)
+
+    message_table = Message.arel_table
+    participant_condition = message_table[:SenderID].eq(@user[:UserID])
+                             .or(message_table[:recipientID].eq(@user[:UserID]))
+
+    messages.where(participant_condition).exists? ? file : nil
+  end
+
   def next_filedraft_pk_value
-    pk = FileDraft.primary_key                           
-    return [nil, nil] if pk.blank?
+    pk = FileDraft.primary_key
+    return [ nil, nil ] if pk.blank?
 
     col = FileDraft.columns_hash[pk]
-    if col && [:integer, :bigint].include?(col.type)
+    if col && [ :integer, :bigint ].include?(col.type)
       next_val = (FileDraft.maximum(pk) || 0) + 1
-      [pk, next_val]
+      [ pk, next_val ]
     else
-      [nil, nil]
+      [ nil, nil ]
     end
   end
 
   def next_file_draft_id
-    (FileDraft.maximum('ID') || 0) + 1
+    (FileDraft.maximum("ID") || 0) + 1
   end
 
   def set_conversation_context

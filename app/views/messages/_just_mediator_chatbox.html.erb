@@ -1,64 +1,97 @@
-<div class="message-list-container <%= recipient.Role == 'Tenant' ? 'tenant-message-list-container' : 'landlord-message-list-container' %> mediator-chat-box"
-     data-conversation-id="<%= message_string&.ConversationID %>"
-     data-user-id="<%= @user.UserID %>">
-
-  <div class="message-list"
-       id="mediator-messages-<%= recipient.UserID %>">
-    
-    <% if messages.any? %>
-      <% messages.each do |message| %>
-        <%= render partial: "messages/message", locals: { message: message, user: @user } %>
-        <% file_attachment = FileAttachment.find_by(MessageID: message.MessageID) %>
-
-        <!-- This can (and probably should) be put into another partial similar to _message.html.erb, but it would be considerably trickier IMO, but I have not thought about it much -->
-        <% if file_attachment %>
-          <% file = FileDraft.find_by(FileID: file_attachment.FileID) %>
-          <div class="chat-message <%= message.SenderID == @user.UserID ? 'sent' : 'received' if message.recipientID == @user.UserID || message.SenderID == @user.UserID %>"
-            data-message-id="<%= message.MessageID %>"
-            data-sender-id="<%= message.SenderID %>"
-            data-current-user-id="<%= @user.UserID %>"
-            data-sender-role="<%= @user.Role %>">
-
-            <div class="message-bubble">
-              <p class="message-content"> 
-                    File attached: <%= file.FileName %> 
-                    <%= link_to "View", document_path(file.FileID), class: "chatview-link" %> |
-                    <%= link_to "Download", download_file_path(file.FileID), class: "chatview-link" %></p>
-              <small class="message-timestamp"><%= message.MessageDate.strftime("%B %d, %Y %I:%M %p") %></small>
+<section class="chat-panel mediator-chat-box <%= recipient.Role == 'Tenant' ? 'tenant-message-list-container' : 'landlord-message-list-container' %>"
+         data-conversation-id="<%= message_string&.ConversationID %>"
+         data-user-id="<%= current_user.UserID %>">
+  <div class="message-list-container" data-message-scroll>
+    <div class="message-list"
+         id="mediator-messages-<%= recipient.UserID %>">
+      <% if messages.any? %>
+        <% messages.each do |message| %>
+          <% sender = participants[message.SenderID] %>
+          <%= render partial: "messages/message", locals: {
+                message: message,
+                current_user: current_user,
+                sender: sender,
+                participants: participants
+              } %>
+          <% file_attachment = FileAttachment.find_by(MessageID: message.MessageID) %>
+          <% if file_attachment %>
+            <% file = FileDraft.find_by(FileID: file_attachment.FileID) %>
+            <% sender_role = sender&.Role || "Unknown" %>
+            <div class="chat-message <%= message.SenderID == current_user.UserID ? 'sent' : 'received' if message.recipientID == current_user.UserID || message.SenderID == current_user.UserID %>"
+                 data-message-id="<%= message.MessageID %>"
+                 data-sender-id="<%= message.SenderID %>"
+                 data-current-user-id="<%= current_user.UserID %>"
+                 data-sender-role="<%= sender_role %>">
+              <div class="message-bubble">
+                <div class="message-meta">
+                  <span class="message-author"><%= sender_role %></span>
+                  <span class="message-role">Document</span>
+                </div>
+                <p class="message-content">
+                  File attached: <strong><%= file.FileName %></strong><br>
+                  <%= link_to "View", document_path(file.FileID), class: "chatview-link" %>
+                  <span aria-hidden="true">·</span>
+                  <%= link_to "Download", download_file_path(file.FileID), class: "chatview-link" %>
+                </p>
+                <small class="message-timestamp"><%= message.MessageDate.strftime("%B %d, %Y %I:%M %p") %></small>
+              </div>
             </div>
-          </div>
+          <% end %>
         <% end %>
-
+      <% else %>
+        <p class="no-messages">No messages yet.</p>
       <% end %>
-    <% else %>
-      <p class="no-messages">No messages yet.</p>
-    <% end %>
+    </div>
   </div>
 
-  <div class="message-input-form">
+  <div class="message-composer">
     <%= form_with url: mediator_messages_path, method: :post, data: { turbo: "false" }, html: { class: "mediator-message-form" } do |f| %>
-      <div class="message-input">
-        <%= f.hidden_field :conversation_id, value: message_string&.ConversationID %>
-        <%= f.hidden_field :recipient_id, value: recipient.UserID %>
-        
-        <!-- Message Box -->
-        <%= f.text_area :Contents, placeholder: "Message #{recipient.FName}...", id: "message_contents", class: "message-textarea", rows:3 %>
+      <%= f.hidden_field :conversation_id, value: message_string&.ConversationID %>
+      <%= f.hidden_field :recipient_id, value: recipient.UserID %>
 
-        <!-- Dropdown for selecting a file from FileDrafts -->
+      <div class="composer-field">
+        <%= f.text_area :Contents,
+          placeholder: "Message #{recipient.FName}...",
+          class: "message-textarea",
+          rows: 3 %>
+      </div>
+
+      <div class="composer-toolbar">
+        <button type="button" class="composer-action" data-attachment-toggle>
+          <i class="fa-solid fa-paperclip" aria-hidden="true"></i>
+          <span>Documents</span>
+        </button>
+        <%= f.submit "Send", class: "send-msg-btn" %>
+      </div>
+
+      <div class="composer-attachments" data-attachment-menu hidden>
         <div class="file-dropdown-wrapper">
-          <%= f.label :file_id, "Select a file to attach", class: "file-label" %>
+          <%= f.label :file_id, "Attach an existing file", class: "file-label" %>
           <div class="custom-select-wrapper">
-            <%= f.collection_select :file_id, 
-               (FileDraft.where(FileID: FileAttachment.where(MessageID: (@tenant_messages + @landlord_messages).pluck(:MessageID)).pluck(:FileID))).uniq, 
-               :FileID, :FileName, 
-               { prompt: "Choose a file" }, { class: "form-control", required: false } %>            
+            <%= f.collection_select :file_id,
+                  FileDraft.where(
+                    FileID: FileAttachment.where(
+                      MessageID: (@tenant_messages + @landlord_messages).pluck(:MessageID)
+                    ).pluck(:FileID)
+                  ).uniq,
+                  :FileID,
+                  :FileName,
+                  { prompt: "Choose a file" },
+                  { class: "form-control", required: false } %>
             <i class="arrow down"></i>
           </div>
         </div>
-
-        <!-- Send Button -->
-        <%= f.submit "Send Message", class: "send-msg-btn" %>
+        <div class="composer-attachment-links">
+          <%= link_to new_document_path, class: "attachment-link" do %>
+            <i class="fa-solid fa-upload" aria-hidden="true"></i>
+            Upload a new document
+          <% end %>
+          <%= link_to generate_file_path, class: "attachment-link" do %>
+            <i class="fa-solid fa-file-circle-plus" aria-hidden="true"></i>
+            Generate a document
+          <% end %>
+        </div>
       </div>
     <% end %>
   </div>
-</div>
+</section>

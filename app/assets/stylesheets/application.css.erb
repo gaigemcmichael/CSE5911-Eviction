@@ -1,0 +1,32 @@
+/*
+ * This is a manifest file that'll be compiled into application.css.
+ *
+ * With Propshaft, assets are served efficiently without preprocessing steps. You can still include
+ * application-wide styles in this file, but keep in mind that CSS precedence will follow the standard
+ * cascading order, meaning styles declared later in the document or manifest will override earlier ones,
+ * depending on specificity.
+ *
+ * Consider organizing styles into separate files for maintainability.
+ */
+
+@import url("<%= asset_path 'base.css' %>");
+
+@import url("<%= asset_path 'login.css' %>");
+@import url("<%= asset_path 'signup.css' %>");
+@import url("<%= asset_path 'navbar.css' %>");
+@import url("<%= asset_path 'dashboard.css' %>");
+
+@import url("<%= asset_path 'chat.css' %>");
+@import url("<%= asset_path 'messages_tenant.css' %>");
+@import url("<%= asset_path 'messages_landlord.css' %>");
+@import url("<%= asset_path 'screening_questions.css' %>");
+@import url("<%= asset_path 'action.css' %>");
+@import url("<%= asset_path 'mediator_screening_view.css' %>");
+
+@import url("<%= asset_path 'mediations.css' %>");
+@import url("<%= asset_path 'documents.css' %>");
+
+@import url("<%= asset_path 'resources.css' %>");
+
+@import url("<%= asset_path 'account_view.css' %>");
+ 
