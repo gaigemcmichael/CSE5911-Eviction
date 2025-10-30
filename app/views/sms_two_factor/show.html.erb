@@ -1,48 +1,69 @@
-<div class="sms-2fa-page">
-  <div class="sms-2fa-container">
-    <!-- Header Section -->
-    <div class="sms-2fa-header">
-      <div class="sms-icon">
-        <i class="fa-solid fa-mobile-screen"></i>
-      </div>
-      <h1 class="sms-2fa-title">SMS Verification</h1>
-      <p class="sms-2fa-subtitle">We've sent a verification code to your phone</p>
-    </div>
+<% content_for :title, "SMS Verification" %>
+<%= stylesheet_link_tag 'sms_two_factor' %>
 
-    <!-- Alert Messages -->
-    <% if flash[:error] %>
-      <div class="alert alert-error">
-        <i class="fa-solid fa-exclamation-triangle"></i>
-        <%= flash[:error] %>
-      </div>
-    <% end %>
-
-    <% if flash[:notice] %>
-      <div class="alert alert-success">
-        <i class="fa-solid fa-check-circle"></i>
-        <%= flash[:notice] %>
-      </div>
-    <% end %>
-
-    <!-- Verification Form -->
-    <div class="sms-2fa-form-container">
-      <%= form_with url: sms_two_factor_verify_path, method: :post, class: "sms-2fa-form" do %>
-        <div class="form-group">
-          <%= label_tag :otp_code, "Enter 6-digit code", class: "form-label" %>
-          <%= text_field_tag :otp_code, nil, 
-                autofocus: true, 
-                autocomplete: "one-time-code",
-                placeholder: "000000",
-                maxlength: 6,
-                pattern: "[0-9]{6}",
-                class: "otp-input",
-                id: "otp-code-input" %>
+<div class="sms-verification-container">
+  <div class="sms-verification-card">
+    <div class="sms-card-content">
+      <!-- Header Section -->
+      <div class="sms-header">
+        <div class="sms-icon-container">
+          <i class="fas fa-mobile-alt sms-icon"></i>
         </div>
-        
-        <div class="form-actions">
-          <%= submit_tag "Verify Code", class: "btn btn-verify" %>
+        <h2 class="sms-title">SMS Verification</h2>
+        <p class="sms-subtitle">
+          We've sent a verification code to
+        </p>
+        <p class="sms-phone-number">
+          <%= @user&.phone_number || "your phone" %>
+        </p>
+      </div>
+
+      <!-- Flash Messages -->
+      <% if flash[:error] %>
+        <div class="sms-alert sms-alert-error" role="alert">
+          <i class="fas fa-exclamation-circle"></i>
+          <%= flash[:error] %>
         </div>
       <% end %>
+
+      <% if flash[:notice] %>
+        <div class="sms-alert sms-alert-success" role="alert">
+          <i class="fas fa-check-circle"></i>
+          <%= flash[:notice] %>
+        </div>
+      <% end %>
+
+      <!-- Verification Form -->
+      <div class="sms-form">
+        <%= form_with url: verify_sms_two_factor_path, method: :post, local: true, class: "sms-verification-form" do |f| %>
+          <div class="sms-input-group">
+            <%= label_tag :otp_code, "Enter Verification Code", class: "sms-label" %>
+            <%= text_field_tag :otp_code, nil, 
+                class: "sms-code-input", 
+                placeholder: "000000",
+                maxlength: 6,
+                pattern: "\\d{6}",
+                required: true,
+                autocomplete: "off",
+                id: "otp-code-input" %>
+            <div class="sms-input-error">
+              <i class="fas fa-exclamation-triangle"></i>
+              Please enter a valid 6-digit verification code.
+            </div>
+            <div class="sms-input-info">
+              <i class="fas fa-info-circle"></i>
+              Code expires in 10 minutes
+            </div>
+          </div>
+          
+          <div class="sms-button-group">
+            <%= f.submit "Verify Code", 
+                class: "sms-btn-primary",
+                data: { "disable-with": '<i class="sms-spinner"></i>Verifying...' } %>
+          </div>
+        <% end %>
+      </div>
+
       <!-- Resend Section -->
       <div class="sms-resend-section">
         <p class="sms-resend-text">Didn't receive the code?</p>
@@ -59,20 +80,26 @@
           You can resend in <span id="countdown">30</span> seconds
         </div>
       </div>
-    </div>
 
-    <!-- Help Text -->
-    <div class="help-section">
-      <p class="help-text">
-        <i class="fa-solid fa-info-circle"></i>
-        The code may take up to 30 seconds to arrive. Check your text messages.
-      </p>
-    </div>
+      <!-- Help Text -->
+      <div class="help-section">
+        <p class="help-text">
+          <i class="fa-solid fa-info-circle"></i>
+          The code may take up to 30 seconds to arrive. Check your text messages.
+        </p>
+      </div>
 
-    <!-- Back to Login -->
-    <div class="sms-back-link">
-      <%= link_to new_session_path, class: "sms-link" do %>
-        <i class="fas fa-arrow-left"></i>Back to Login
+      <!-- Back to Login -->
+      <div class="sms-back-link">
+        <%= link_to new_session_path, class: "sms-link" do %>
+          <i class="fas fa-arrow-left"></i>Back to Login
+        <% end %>
+      </div>
+
+      <!-- Security Notice -->
+      <div class="sms-security-notice">
+        <i class="fas fa-shield-alt"></i>
+        This is a security measure to protect your account
       </div>
     </div>
   </div>
@@ -82,8 +109,8 @@
 document.addEventListener('DOMContentLoaded', function() {
   const otpInput = document.getElementById('otp-code-input');
   const resendBtn = document.getElementById('resend-btn');
-  const verifyBtn = document.querySelector('.btn-verify');
-  const form = document.querySelector('.sms-2fa-form');
+  const verifyBtn = document.querySelector('.sms-btn-primary');
+  const form = document.querySelector('.sms-verification-form');
   
   // Auto-format OTP input
   otpInput.addEventListener('input', function(e) {
@@ -153,3 +180,5 @@ document.addEventListener('DOMContentLoaded', function() {
   20%, 40%, 60%, 80% { transform: translateX(5px); }
 }
 </style>
+
+<%= javascript_include_tag 'sms_two_factor' %>

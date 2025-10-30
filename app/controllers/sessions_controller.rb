@@ -10,7 +10,6 @@ class SessionsController < ApplicationController
         if user && user.authenticate(params[:password]) # Match encrypted password
           if user.sms_2fa_enabled?
             session[:pre_sms_user_id] = user.UserID
-            
             verifier = TwilioVerifyService.new
             if verifier.configured?
               result = verifier.start_verification(to: user.phone_number)

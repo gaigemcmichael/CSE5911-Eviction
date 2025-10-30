@@ -209,6 +209,7 @@ class AccountController < ApplicationController
 
     @user.phone_number = formatted_phone
     @user.save
+    
     verifier = TwilioVerifyService.new
     if verifier.configured?
       result = verifier.start_verification(to: formatted_phone)

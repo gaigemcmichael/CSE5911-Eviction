@@ -94,6 +94,22 @@
                   <%= submit_tag "Send Code", class: "btn btn-primary" %>
                 </div>
               <% end %>
+              
+              <!-- Test SMS Section -->
+              <div class="form-section">
+                <p class="help-text">Test SMS delivery before enabling:</p>
+                <%= form_with url: send_test_sms_path, method: :post, remote: true, id: "test-sms-form" do |f| %>
+                  <div class="form-row">
+                    <div class="input-group">
+                      <i class="input-icon fa-solid fa-phone"></i>
+                      <%= telephone_field_tag :phone_number, @user.phone_number, 
+                          placeholder: "+1 (555) 555-0123", required: true, class: "form-input" %>
+                    </div>
+                    <%= f.submit "Send Test SMS", class: "btn btn-secondary" %>
+                  </div>
+                <% end %>
+                <div id="test-sms-result" style="margin-top: 10px;"></div>
+              </div>
             </div>
           </div>
 
