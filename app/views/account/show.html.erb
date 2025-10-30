@@ -69,6 +69,61 @@
             </table>
         </div>
 
+        <!-- SMS Two-Factor Authentication Section -->
+        <div class="security-section">
+            <h1> <i class="fa-solid fa-mobile-screen"></i> SMS Two-Factor Authentication</h1>
+            <table class="pass-security-table">
+                <tr>
+                    <th> <i class="fa-solid fa-phone"></i> Phone Number</th>
+                    <td>
+                        <p><strong>Current:</strong> <%= @user.phone_number.present? ? @user.phone_number_formatted : "Not provided" %></p>
+                    </td>
+                </tr>
+                <tr>
+                    <th> <i class="fa-solid fa-shield-halved"></i> 2FA Status</th>
+                    <td>
+                        <% if @user.sms_2fa_enabled? %>
+                            <span class="status-enabled">
+                                <i class="fa-solid fa-check-circle"></i> Enabled
+                            </span>
+                            <div class="form-section">
+                                <%= form_with url: disable_sms_2fa_path, method: :post, local: true do |f| %>
+                                    <%= f.submit "Disable SMS 2FA", class: "btn-danger" %>
+                                <% end %>
+                            </div>
+                        <% else %>
+                            <span class="status-disabled">
+                                <i class="fa-solid fa-exclamation-triangle"></i> Disabled
+                            </span>
+                            <div class="form-section">
+                                <%= form_with url: enable_sms_2fa_path, method: :post, local: true do |f| %>
+                                    <div class="input-field">
+                                        <i class="fa-solid fa-phone"></i>
+                                        <%= telephone_field_tag :phone_number, @user.phone_number, 
+                                            placeholder: "+1 (555) 555-0123", required: true %>
+                                    </div>
+                                    <%= f.submit "Enable SMS 2FA", class: "btn-primary" %>
+                                <% end %>
+                                
+                                <div class="form-section">
+                                    <p class="help-text">Test SMS delivery before enabling:</p>
+                                    <%= form_with url: send_test_sms_path, method: :post, remote: true, id: "test-sms-form" do |f| %>
+                                        <div class="input-field">
+                                            <i class="fa-solid fa-phone"></i>
+                                            <%= telephone_field_tag :phone_number, @user.phone_number, 
+                                                placeholder: "+1 (555) 555-0123", required: true %>
+                                            <%= f.submit "Send Test SMS", class: "btn-secondary" %>
+                                        </div>
+                                    <% end %>
+                                    <div id="test-sms-result" style="margin-top: 10px;"></div>
+                                </div>
+                            </div>
+                        <% end %>
+                    </td>
+                </tr>
+            </table>
+        </div>
+
         <% if @user.Role == "Mediator" %>
             <!-- Mediator Availability -->
             <div class="profile-section">
@@ -138,5 +193,26 @@
         event.preventDefault();
       }
     });
+  });
+
+  // SMS Test functionality
+  document.addEventListener("turbo:load", function () {
+    const testForm = document.getElementById("test-sms-form");
+    const resultDiv = document.getElementById("test-sms-result");
+    
+    if (testForm && resultDiv) {
+      testForm.addEventListener("ajax:success", function(event) {
+        const response = event.detail[0];
+        if (response.success) {
+          resultDiv.innerHTML = '<p style="color: green;"><i class="fa-solid fa-check"></i> ' + response.message + '</p>';
+        } else {
+          resultDiv.innerHTML = '<p style="color: red;"><i class="fa-solid fa-exclamation"></i> ' + response.error + '</p>';
+        }
+      });
+      
+      testForm.addEventListener("ajax:error", function(event) {
+        resultDiv.innerHTML = '<p style="color: red;"><i class="fa-solid fa-exclamation"></i> Failed to send test SMS</p>';
+      });
+    }
   });
 </script>

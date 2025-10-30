@@ -25,6 +25,17 @@ Rails.application.routes.draw do
   get "/account", to: "account#show"
   get "/account/edit", to: "account#edit"
   patch "/account", to: "account#update"
+  
+  # Account SMS 2FA Management
+  post "/account/enable_sms_2fa", to: "account#enable_sms_2fa", as: "enable_sms_2fa"
+  post "/account/disable_sms_2fa", to: "account#disable_sms_2fa", as: "disable_sms_2fa"
+  post "/account/send_test_sms", to: "account#send_test_sms", as: "send_test_sms"
+  get "/account/phone_verify", to: "account#phone_verify", as: "phone_verify_account"
+
+  # SMS Two-Factor Authentication
+  get "/sms_two_factor", to: "sms_two_factor#show", as: "sms_two_factor"
+  post "/sms_two_factor/verify", to: "sms_two_factor#verify", as: "verify_sms_two_factor"
+  post "/sms_two_factor/resend", to: "sms_two_factor#resend", as: "resend_sms_two_factor"
 
   get "messages/tenant_show/:conversation_id", to: "messages#show", as: "tenant_show"
   get "messages/landlord_show/:conversation_id", to: "messages#show", as: "landlord_show"

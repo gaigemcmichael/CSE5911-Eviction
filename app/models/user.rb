@@ -32,6 +32,60 @@ class User < ApplicationRecord
   def mediator? = self[:Role] == "Mediator"
   def admin?    = self[:Role] == "Admin"
 
+  
+  def sms_2fa_enabled?
+    phone_number.present? && sms_2fa_enabled == true
+  end
+
+  def generate_sms_otp
+    code = rand(100000..999999).to_s
+    
+    self.sms_otp_digest = BCrypt::Password.create(code)
+    self.sms_otp_sent_at = Time.current
+    self.sms_otp_expires_at = 10.minutes.from_now
+    self.sms_otp_attempts = 0
+    save!
+    code
+  end
+
+  def verify_sms_otp(input_code)
+    return false if sms_otp_digest.blank? || sms_otp_sent_at.blank?
+    return false if sms_otp_expires_at < Time.current 
+    return false if sms_otp_attempts >= 3 
+    
+    
+    self.sms_otp_attempts += 1
+    save!
+    
+    
+    if BCrypt::Password.new(sms_otp_digest) == input_code.to_s
+      
+      self.sms_otp_digest = nil
+      self.sms_otp_sent_at = nil
+      self.sms_otp_expires_at = nil
+      self.sms_otp_attempts = 0
+      save!
+      true
+    else
+      false
+    end
+  end
+
+  def phone_number_formatted
+    return nil unless phone_number.present?
+    
+    phone_number.to_s.gsub(/(\d{1})(\d{3})(\d{3})(\d{4})/, '+\1 (\2) \3-\4')
+  end
+
+  def can_send_sms_otp?
+    return false unless phone_number.present?
+    return false if sms_otp_attempts && sms_otp_attempts >= 3
+    
+   
+    return true if sms_otp_sent_at.blank?
+    sms_otp_sent_at < 30.seconds.ago
+  end
+
   private
 
   def normalize_email

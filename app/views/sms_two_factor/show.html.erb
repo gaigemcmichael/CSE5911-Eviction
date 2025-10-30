@@ -1,0 +1,102 @@
+<% content_for :title, "SMS Verification" %>
+<%= stylesheet_link_tag 'sms_two_factor' %>
+
+<div class="sms-verification-container">
+  <div class="sms-verification-card">
+    <div class="sms-card-content">
+      <!-- Header Section -->
+      <div class="sms-header">
+        <div class="sms-icon-container">
+          <i class="fas fa-mobile-alt sms-icon"></i>
+        </div>
+        <h2 class="sms-title">SMS Verification</h2>
+        <p class="sms-subtitle">
+          We've sent a verification code to
+        </p>
+        <p class="sms-phone-number">
+          <%= @user&.phone_number || "your phone" %>
+        </p>
+      </div>
+
+      <!-- Flash Messages -->
+      <% if flash[:error] %>
+        <div class="sms-alert sms-alert-error" role="alert">
+          <i class="fas fa-exclamation-circle"></i>
+          <%= flash[:error] %>
+        </div>
+      <% end %>
+
+      <% if flash[:notice] %>
+        <div class="sms-alert sms-alert-success" role="alert">
+          <i class="fas fa-check-circle"></i>
+          <%= flash[:notice] %>
+        </div>
+      <% end %>
+
+      <!-- Verification Form -->
+      <div class="sms-form">
+        <%= form_with url: verify_sms_two_factor_path, method: :post, local: true, class: "sms-verification-form" do |f| %>
+          <div class="sms-input-group">
+            <%= label_tag :otp_code, "Enter Verification Code", class: "sms-label" %>
+            <%= text_field_tag :otp_code, nil, 
+                class: "sms-code-input", 
+                placeholder: "000000",
+                maxlength: 6,
+                pattern: "\\d{6}",
+                required: true,
+                autocomplete: "off",
+                id: "verification-code" %>
+            <div class="sms-input-error">
+              <i class="fas fa-exclamation-triangle"></i>
+              Please enter a valid 6-digit verification code.
+            </div>
+            <div class="sms-input-info">
+              <i class="fas fa-info-circle"></i>
+              Code expires in 10 minutes
+            </div>
+          </div>
+          
+          <div class="sms-button-group">
+            <%= f.submit "Verify Code", 
+                class: "sms-btn-primary",
+                data: { "disable-with": '<i class="sms-spinner"></i>Verifying...' } %>
+          </div>
+        <% end %>
+      </div>
+
+      <!-- Resend Section -->
+      <div class="sms-resend-section">
+        <p class="sms-resend-text">Didn't receive the code?</p>
+        
+        <%= form_with url: resend_sms_two_factor_path, method: :post, local: true, class: "sms-resend-form", id: "resend-form" do |f| %>
+          <%= f.submit "Resend Code", 
+              class: "sms-btn-secondary",
+              id: "resend-btn",
+              data: { "disable-with": '<i class="sms-spinner"></i>Sending...' } %>
+        <% end %>
+        
+        <div id="resend-timer" class="sms-resend-timer" style="display: none;">
+          <i class="fas fa-clock"></i>
+          You can resend in <span id="countdown">30</span> seconds
+        </div>
+      </div>
+
+      <!-- Back to Login -->
+      <div class="sms-back-link">
+        <%= link_to new_session_path, class: "sms-link" do %>
+          <i class="fas fa-arrow-left"></i>Back to Login
+        <% end %>
+      </div>
+
+      <!-- Security Notice -->
+      <div class="sms-security-notice">
+        <i class="fas fa-shield-alt"></i>
+        This is a security measure to protect your account
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+<%= javascript_include_tag 'sms_two_factor' %>
