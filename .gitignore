@@ -63,3 +63,6 @@ SQLData/
 
 # Ignore uploaded user files
 /public/userFiles/
+
+# Ignore SQL Server data directory
+/SQLData/
