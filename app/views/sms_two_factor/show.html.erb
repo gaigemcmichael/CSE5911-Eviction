@@ -45,7 +45,7 @@
                 pattern: "\\d{6}",
                 required: true,
                 autocomplete: "off",
-                id: "otp-code-input" %>
+                id: "verification-code" %>
             <div class="sms-input-error">
               <i class="fas fa-exclamation-triangle"></i>
               Please enter a valid 6-digit verification code.
@@ -81,14 +81,6 @@
         </div>
       </div>
 
-      <!-- Help Text -->
-      <div class="help-section">
-        <p class="help-text">
-          <i class="fa-solid fa-info-circle"></i>
-          The code may take up to 30 seconds to arrive. Check your text messages.
-        </p>
-      </div>
-
       <!-- Back to Login -->
       <div class="sms-back-link">
         <%= link_to new_session_path, class: "sms-link" do %>
@@ -96,85 +88,15 @@
         <% end %>
       </div>
 
-      
+      <!-- Security Notice -->
+      <div class="sms-security-notice">
+        <i class="fas fa-shield-alt"></i>
+        This is a security measure to protect your account
+      </div>
     </div>
   </div>
 </div>
 
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-  const otpInput = document.getElementById('otp-code-input');
-  const resendBtn = document.getElementById('resend-btn');
-  const verifyBtn = document.querySelector('.sms-btn-primary');
-  const form = document.querySelector('.sms-verification-form');
-  
-  // Auto-format OTP input
-  otpInput.addEventListener('input', function(e) {
-    // Remove non-numeric characters
-    e.target.value = e.target.value.replace(/[^0-9]/g, '');
-    
-    // Auto-submit when 6 digits are entered
-    if (e.target.value.length === 6) {
-      verifyBtn.classList.add('loading');
-      setTimeout(() => {
-        form.submit();
-      }, 800); // Slight delay for better UX
-    }
-  });
-  
-  // Prevent form submission with incomplete code
-  form.addEventListener('submit', function(e) {
-    if (otpInput.value.length !== 6) {
-      e.preventDefault();
-      otpInput.focus();
-      // Add shake animation for invalid input
-      otpInput.style.animation = 'shake 0.5s';
-      setTimeout(() => {
-        otpInput.style.animation = '';
-      }, 500);
-      return false;
-    }
-    verifyBtn.classList.add('loading');
-  });
-  
-  // Resend cooldown
-  let cooldownTime = 30;
-  function startCooldown() {
-    resendBtn.disabled = true;
-    resendBtn.innerHTML = `<i class="fa-solid fa-clock"></i> Resend in ${cooldownTime}s`;
-    
-    const countdown = setInterval(() => {
-      cooldownTime--;
-      resendBtn.innerHTML = `<i class="fa-solid fa-clock"></i> Resend in ${cooldownTime}s`;
-      
-      if (cooldownTime <= 0) {
-        clearInterval(countdown);
-        resendBtn.disabled = false;
-        resendBtn.innerHTML = '<i class="fa-solid fa-paper-plane"></i> Resend Code';
-        cooldownTime = 30;
-      }
-    }, 1000);
-  }
-  
-  // Start cooldown on page load (assume code was just sent)
-  startCooldown();
-  
-  // Restart cooldown when resend is clicked
-  resendBtn.addEventListener('click', function() {
-    startCooldown();
-  });
-  
-  // Focus input on load
-  otpInput.focus();
-});
-</script>
 
-<style>
-@keyframes shake {
-  0%, 100% { transform: translateX(0); }
-  10%, 30%, 50%, 70%, 90% { transform: translateX(-5px); }
-  20%, 40%, 60%, 80% { transform: translateX(5px); }
-}
-</style>
 
 <%= javascript_include_tag 'sms_two_factor' %>

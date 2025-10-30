@@ -69,123 +69,59 @@
             </table>
         </div>
 
-        <div class="sms-2fa-section">
-          <h1> <i class="fa-solid fa-mobile-screen"></i> SMS Two-Factor Authentication</h1>
-          
-          <!-- Phone Number Card -->
-          <div class="sms-2fa-card">
-            <div class="card-header">
-              <h3><i class="fa-solid fa-phone"></i> Phone Number</h3>
-            </div>
-            <div class="card-content">
-              <div class="current-phone">
-                <span class="label">Current:</span>
-                <span class="value"><%= @user.phone_number.presence || "Not provided" %></span>
-              </div>
-              
-              <%= form_with url: account_send_sms_verification_path, method: :post, local: true do |f| %>
-                <div class="form-row">
-                  <div class="input-group">
-                    <i class="input-icon fa-solid fa-phone"></i>
-                    <%= text_field_tag :phone_number, @user.phone_number, 
-                        placeholder: "+1 (555) 555-0123", 
-                        class: "form-input" %>
-                  </div>
-                  <%= submit_tag "Send Code", class: "btn btn-primary" %>
-                </div>
-              <% end %>
-              
-              <!-- Test SMS Section -->
-              <div class="form-section">
-                <p class="help-text">Test SMS delivery before enabling:</p>
-                <%= form_with url: send_test_sms_path, method: :post, remote: true, id: "test-sms-form" do |f| %>
-                  <div class="form-row">
-                    <div class="input-group">
-                      <i class="input-icon fa-solid fa-phone"></i>
-                      <%= telephone_field_tag :phone_number, @user.phone_number, 
-                          placeholder: "+1 (555) 555-0123", required: true, class: "form-input" %>
-                    </div>
-                    <%= f.submit "Send Test SMS", class: "btn btn-secondary" %>
-                  </div>
-                <% end %>
-                <div id="test-sms-result" style="margin-top: 10px;"></div>
-              </div>
-            </div>
-          </div>
-
-          <!-- 2FA Status Card -->
-          <div class="sms-2fa-card">
-            <div class="card-header">
-              <h3><i class="fa-solid fa-shield-halved"></i> Two-Factor Authentication</h3>
-              <div class="status-badge">
-                <% if @user.sms_2fa_enabled? %>
-                  <span class="badge badge-enabled">
-                    <i class="fa-solid fa-check-circle"></i> Enabled
-                  </span>
-                <% else %>
-                  <span class="badge badge-disabled">
-                    <i class="fa-solid fa-exclamation-triangle"></i> Disabled
-                  </span>
-                <% end %>
-              </div>
-            </div>
-            <div class="card-content">
-              <% if @user.sms_2fa_enabled? %>
-                <!-- Disable Options -->
-                <div class="disable-section">
-                  <!-- Password Method -->
-                  <div class="disable-method">
-                    <h4><i class="fa-solid fa-key"></i> Disable with Password</h4>
-                    <%= form_with url: account_disable_sms_2fa_path, method: :post, local: true do |f| %>
-                      <div class="form-row">
-                        <div class="input-group">
-                          <i class="input-icon fa-solid fa-lock"></i>
-                          <%= password_field_tag :password, nil, 
-                              placeholder: "Confirm password", 
-                              class: "form-input" %>
-                        </div>
-                        <%= submit_tag "Disable", class: "btn btn-danger" %>
-                      </div>
-                    <% end %>
-                  </div>
-
-                  <!-- SMS Code Method -->
-                  <div class="disable-method">
-                    <h4><i class="fa-solid fa-sms"></i> Disable with SMS Code</h4>
-                    <p class="help-text">Can't remember your password? Use a verification code sent to your phone.</p>
-                    <%= form_with url: account_disable_sms_2fa_path, method: :post, local: true do |f| %>
-                      <div class="form-row">
-                        <div class="input-group">
-                          <i class="input-icon fa-solid fa-hashtag"></i>
-                          <%= text_field_tag :sms_code, nil, 
-                              placeholder: "6-digit code", 
-                              class: "form-input code-input" %>
-                        </div>
-                        <%= submit_tag "Disable", class: "btn btn-danger" %>
-                      </div>
-                    <% end %>
-                  </div>
-                </div>
-              <% else %>
-                <!-- Enable Section -->
-                <div class="enable-section">
-                  <h4><i class="fa-solid fa-shield-check"></i> Enable Two-Factor Authentication</h4>
-                  <p class="help-text">Enter the verification code sent to your phone number.</p>
-                  <%= form_with url: account_enable_sms_2fa_path, method: :post, local: true do |f| %>
-                    <div class="form-row">
-                      <div class="input-group">
-                        <i class="input-icon fa-solid fa-hashtag"></i>
-                        <%= text_field_tag :sms_code, nil, 
-                            placeholder: "6-digit code", 
-                            class: "form-input code-input" %>
-                      </div>
-                      <%= submit_tag "Enable 2FA", class: "btn btn-success" %>
-                    </div>
-                  <% end %>
-                </div>
-              <% end %>
-            </div>
-          </div>
+        <!-- SMS Two-Factor Authentication Section -->
+        <div class="security-section">
+            <h1> <i class="fa-solid fa-mobile-screen"></i> SMS Two-Factor Authentication</h1>
+            <table class="pass-security-table">
+                <tr>
+                    <th> <i class="fa-solid fa-phone"></i> Phone Number</th>
+                    <td>
+                        <p><strong>Current:</strong> <%= @user.phone_number.present? ? @user.phone_number_formatted : "Not provided" %></p>
+                    </td>
+                </tr>
+                <tr>
+                    <th> <i class="fa-solid fa-shield-halved"></i> 2FA Status</th>
+                    <td>
+                        <% if @user.sms_2fa_enabled? %>
+                            <span class="status-enabled">
+                                <i class="fa-solid fa-check-circle"></i> Enabled
+                            </span>
+                            <div class="form-section">
+                                <%= form_with url: disable_sms_2fa_path, method: :post, local: true do |f| %>
+                                    <%= f.submit "Disable SMS 2FA", class: "btn-danger" %>
+                                <% end %>
+                            </div>
+                        <% else %>
+                            <span class="status-disabled">
+                                <i class="fa-solid fa-exclamation-triangle"></i> Disabled
+                            </span>
+                            <div class="form-section">
+                                <%= form_with url: enable_sms_2fa_path, method: :post, local: true do |f| %>
+                                    <div class="input-field">
+                                        <i class="fa-solid fa-phone"></i>
+                                        <%= telephone_field_tag :phone_number, @user.phone_number, 
+                                            placeholder: "+1 (555) 555-0123", required: true %>
+                                    </div>
+                                    <%= f.submit "Enable SMS 2FA", class: "btn-primary" %>
+                                <% end %>
+                                
+                                <div class="form-section">
+                                    <p class="help-text">Test SMS delivery before enabling:</p>
+                                    <%= form_with url: send_test_sms_path, method: :post, remote: true, id: "test-sms-form" do |f| %>
+                                        <div class="input-field">
+                                            <i class="fa-solid fa-phone"></i>
+                                            <%= telephone_field_tag :phone_number, @user.phone_number, 
+                                                placeholder: "+1 (555) 555-0123", required: true %>
+                                            <%= f.submit "Send Test SMS", class: "btn-secondary" %>
+                                        </div>
+                                    <% end %>
+                                    <div id="test-sms-result" style="margin-top: 10px;"></div>
+                                </div>
+                            </div>
+                        <% end %>
+                    </td>
+                </tr>
+            </table>
         </div>
 
         <% if @user.Role == "Mediator" %>

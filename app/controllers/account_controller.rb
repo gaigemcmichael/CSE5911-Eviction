@@ -125,6 +125,17 @@ class AccountController < ApplicationController
     end
 
     # Handle phone number submission
+          redirect_to account_path, notice: "SMS 2FA enabled successfully! Your phone number has been verified."
+        else
+          redirect_to account_path, alert: "Failed to enable SMS 2FA"
+        end
+      else
+        redirect_to phone_verify_account_path, alert: "Invalid or expired verification code. Please try again."
+      end
+      return
+    end
+
+    # Handle phone number submission
     phone = params[:phone_number]&.strip
     if phone.blank?
       redirect_to account_path, alert: "Phone number is required"

@@ -25,6 +25,15 @@ class SessionsController < ApplicationController
               end
             else
               code = user.generate_sms_otp
+=======
+                
+                code = user.generate_sms_otp
+                # Log SMS code in development for testing
+                Rails.logger.info "SMS Code for #{user.phone_number}: #{code}"
+                user.update!(twilio_verification_sid: result[:sid], twilio_verification_status: result[:status], twilio_verification_sent_at: Time.current)
+              end
+            else
+              code = user.generate_sms_otp
               Rails.logger.info "SMS Code for #{user.phone_number}: #{code}"
               puts "*** SMS CODE: #{code} for #{user.phone_number} ***"
             end
