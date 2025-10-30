@@ -12,16 +12,10 @@ class MediatorMessagesController < ApplicationController
       MessageDate: Time.current
     )
 
-
-
     if @message.save
-
-      # Handle file attachment if present
       if params[:file_id].present?
-        # Find the selected FileDraft by FileID
         file_draft = FileDraft.find_by(FileID: params[:file_id])
 
-        # Create a file attachment
         if file_draft
           FileAttachment.create!(
             MessageID: @message.MessageID,
@@ -32,6 +26,31 @@ class MediatorMessagesController < ApplicationController
         end
       end
 
+      attachments_payload = @message
+        .file_attachments
+        .includes(:file_draft)
+        .map do |attachment|
+          file = attachment.file_draft
+          next unless file
+
+          extension = File.extname(file.FileURLPath.to_s).delete(".")
+          {
+            file_id: file.FileID,
+            file_name: file.FileName,
+            preview_url: view_file_path(file.FileID),
+            download_url: download_file_path(file.FileID),
+            view_url: view_file_path(file.FileID),
+            sign_url: sign_document_path(file.FileID),
+            tenant_signature_required: file.respond_to?(:TenantSignature) ? !file.TenantSignature : false,
+            landlord_signature_required: file.respond_to?(:LandlordSignature) ? !file.LandlordSignature : false,
+            extension: extension.presence || file.FileTypes
+          }
+        end
+        .compact
+
+  sender_name = [ @user.FName, @user.LName ].compact.join(" ").squeeze(" ").strip
+      sender_name = @user.CompanyName.presence || @user.Email if sender_name.blank?
+
       ActionCable.server.broadcast(
         "side_messages_#{@side_group.ConversationID}",
         {
@@ -40,12 +59,15 @@ class MediatorMessagesController < ApplicationController
           sender_id: @message.SenderID,
           recipient_id: @message.recipientID,
           message_date: @message.MessageDate.strftime("%B %d, %Y %I:%M %p"),
-          sender_role: @user.Role
+          sender_role: @user.Role,
+          sender_name: sender_name,
+          attachments: attachments_payload
         }
       )
+
       respond_to do |format|
         format.json { render json: { success: true } }
-        format.html { head :ok } # fallback
+        format.html { head :ok }
       end
     else
       respond_to do |format|

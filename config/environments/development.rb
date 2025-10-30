@@ -78,7 +78,10 @@ Rails.application.configure do
 
   # ActionCable for messages
   config.action_cable.mount_path = "/cable"
-  config.action_cable.allowed_request_origins = [ "http://localhost:3000" ]
+  config.action_cable.allowed_request_origins = [
+    %r{\Ahttp://(localhost|127\.0\.0\.1)(:\d+)?\z},
+    %r{\Ahttps://(localhost|127\.0\.0\.1)(:\d+)?\z}
+  ]
   config.action_cable.disable_request_forgery_protection = true
 
   # Raise error when a before_action's only/except options reference missing actions.
