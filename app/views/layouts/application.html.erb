@@ -19,8 +19,26 @@
     <link rel="icon" href="/icon.svg" type="image/svg+xml">
     <link rel="apple-touch-icon" href="/icon.png">
 
-    <%# Main Stylesheet - includes all CSS files %>
-    <%= stylesheet_link_tag "application", "data-turbo-track": "reload" %>
+  <%# Main Stylesheet - include per-page styles explicitly so Propshaft/importmap
+    and different branches load the expected files. This avoids relying on
+    Sprockets `require_tree` which can be brittle across branches. %>
+  <%= stylesheet_link_tag "base", "data-turbo-track": "reload" %>
+  <%= stylesheet_link_tag "navbar", "data-turbo-track": "reload" %>
+  <%= stylesheet_link_tag "login", "data-turbo-track": "reload" %>
+  <%= stylesheet_link_tag "signup", "data-turbo-track": "reload" %>
+  <%= stylesheet_link_tag "dashboard", "data-turbo-track": "reload" %>
+  <%= stylesheet_link_tag "chat", "data-turbo-track": "reload" %>
+  <%= stylesheet_link_tag "messages_tenant", "data-turbo-track": "reload" %>
+  <%= stylesheet_link_tag "messages_landlord", "data-turbo-track": "reload" %>
+  <%= stylesheet_link_tag "screening_questions", "data-turbo-track": "reload" %>
+  <%= stylesheet_link_tag "action", "data-turbo-track": "reload" %>
+  <%= stylesheet_link_tag "mediator_screening_view", "data-turbo-track": "reload" %>
+  <%= stylesheet_link_tag "mediations", "data-turbo-track": "reload" %>
+  <%= stylesheet_link_tag "documents", "data-turbo-track": "reload" %>
+  <%= stylesheet_link_tag "resources", "data-turbo-track": "reload" %>
+  <%= stylesheet_link_tag "account_view", "data-turbo-track": "reload" %>
+  <%# Fallback: include application manifest for any miscellaneous rules %>
+  <%= stylesheet_link_tag "application", "data-turbo-track": "reload" %>
     
     <%= yield :head %>
 
