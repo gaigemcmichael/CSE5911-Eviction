@@ -34,16 +34,18 @@ Rails.application.configure do
   # Use smtp for mailing
   config.action_mailer.delivery_method = :smtp
 
-  # Configuring smpt settings, will need changed to proper MSA.
-  config.action_mailer.smtp_settings = {
-    address: "smtp.gmail.com",
-    port: 587,
-    domain: "gmail.com",
-    authentication: "plain",
-    enable_starttls_auto: true,
-    user_name: ENV["GMAIL_USERNAME"], # Use environment variables for security
-    password: ENV["GMAIL_PASSWORD"]   # Use environment variables for security
-  }
+  # Configuring smtp settings. Wrap credential access in a rescue so a
+  # corrupted/incorrect credentials file won't prevent the server from
+  # booting during development. If credentials can't be decrypted we
+  # fall back to an empty hash (so ActionMailer can be configured later).
+  begin
+    smtp_cfg = Rails.application.credentials.dig(:smtp)
+    config.action_mailer.smtp_settings = smtp_cfg.present? ? smtp_cfg.symbolize_keys : {}
+  rescue ActiveSupport::MessageEncryptor::InvalidMessage, OpenSSL::Cipher::CipherError => e
+    # Avoid raising during boot — log and continue with empty settings.
+    warn "[dev config] Could not decrypt credentials for SMTP: #{e.class} - #{e.message}"
+    config.action_mailer.smtp_settings = {}
+  end
 
   # Show error if mailer can't send
   config.action_mailer.raise_delivery_errors = true
@@ -72,6 +74,9 @@ Rails.application.configure do
   # Highlight code that enqueued background job in logs.
   config.active_job.verbose_enqueue_logs = true
 
+  # Run background jobs inline for dev so deliver_later works
+  config.active_job.queue_adapter = :async
+
   # Raises error for missing translations.
   # config.i18n.raise_on_missing_translations = true
 
@@ -83,7 +88,10 @@ Rails.application.configure do
 
   # ActionCable for messages
   config.action_cable.mount_path = "/cable"
-  config.action_cable.allowed_request_origins = [ "http://localhost:3000" ]
+  config.action_cable.allowed_request_origins = [
+    %r{\Ahttp://(localhost|127\.0\.0\.1)(:\d+)?\z},
+    %r{\Ahttps://(localhost|127\.0\.0\.1)(:\d+)?\z}
+  ]
   config.action_cable.disable_request_forgery_protection = true
 
   # Raise error when a before_action's only/except options reference missing actions.

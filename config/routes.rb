@@ -107,8 +107,8 @@ end
     resources :accounts, only: [ :index, :create, :update ], controller: "accounts"
 
 
-    get "mediations", to: "flagged_mediations#index", as: "mediations"
-    get "mediations/:id", to: "flagged_mediations#show", as: "mediation"
+    get "mediations", to: "flagged_mediations#index"
+    get "mediations/:id", to: "flagged_mediations#show", as: "flagged_mediation"
     patch "mediations/:id/reassign", to: "flagged_mediations#reassign", as: "reassign_mediator"
   end
 

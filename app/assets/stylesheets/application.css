@@ -1,6 +1,10 @@
 /*
- * This is a manifest file that'll be compiled into application.css, which will include
- * all the files listed below.
+ * Individual stylesheets are linked from the application layout.
+ * This file intentionally left minimal so helpers expecting the
+ * logical path `application.css` still find a valid asset.
+ */
+ 
+ /* This is a manifest file that'll be compiled into application.css.
  *
  * Any CSS file within this directory, lib/assets/stylesheets, or any plugin's
  * vendor/assets/stylesheets directory can be referenced here using a relative path.
@@ -8,3 +12,5 @@
  *= require_tree .
  *= require_self
  */
+
+/* Global styles can go here */

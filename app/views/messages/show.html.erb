@@ -14,39 +14,55 @@
       <h1>Mediation Conversation</h1>
     <% else %>
       <h1>
-        Negotiation Conversation with <%= @user.Role == "Tenant" ? "Landlord" : "Tenant" %>
+        Negotiation with <%= @user.Role == "Tenant" ? "Landlord" : "Tenant" %>
       </h1>
-      <p>
-        Welcome, <%= @user.FName %>! Here is the negotiation conversation.
-      </p>
     <% end %>
-    <div class="conversation-details-box">
-      <h3>Conversation Info</h3>
-      <table class="info-table">
-        <tr>
-          <th>Address</th>
-          <td><%= @mediation.tenant.TenantAddress.presence || "N/A" %></td>
-        </tr>
-        <% if @user.Role == "Tenant" %>
-          <tr>
-            <th>Landlord Name</th>
-            <td><%= @mediation.landlord.FName %> <%= @mediation.landlord.LName %></td>
-          </tr>
-          <tr>
-            <th>Landlord Email</th>
-            <td><%= @mediation.landlord.Email %></td>
-          </tr>
-        <% elsif @user.Role == "Landlord" %>
-          <tr>
-            <th>Tenant Name</th>
-            <td><%= @mediation.tenant.FName %> <%= @mediation.tenant.LName %></td>
-          </tr>
-          <tr>
-            <th>Tenant Email</th>
-            <td><%= @mediation.tenant.Email %></td>
-          </tr>
-        <% end %>
-      </table>
+    <div class="chat-page-wrapper">
+      <div class="conversation-info-trigger">
+        <button type="button" class="conversation-cta conversation-cta--info" data-conversation-info-toggle>
+          <span class="conversation-cta__icon" aria-hidden="true"><i class="fa-solid fa-circle-info"></i></span>
+          <span class="conversation-cta__label">Conversation details</span>
+          <span class="conversation-cta__chevron" aria-hidden="true"><i class="fa-solid fa-chevron-right"></i></span>
+        </button>
+      </div>
+
+      <div class="conversation-info-panel" data-conversation-info-panel hidden role="dialog" aria-modal="true">
+        <div class="conversation-info-card">
+          <div class="conversation-info-card__header">
+            <h3>Conversation details</h3>
+            <button type="button" class="info-close-btn" data-conversation-info-close aria-label="Close conversation details">
+              <i class="fa-solid fa-xmark" aria-hidden="true"></i>
+            </button>
+          </div>
+          <div class="conversation-info-card__body">
+            <table class="info-table">
+              <tr>
+                <th>Address</th>
+                <td><%= @mediation.tenant.TenantAddress.presence || "N/A" %></td>
+              </tr>
+              <% if @user.Role == "Tenant" %>
+                <tr>
+                  <th>Landlord Name</th>
+                  <td><%= @mediation.landlord.FName %> <%= @mediation.landlord.LName %></td>
+                </tr>
+                <tr>
+                  <th>Landlord Email</th>
+                  <td><%= @mediation.landlord.Email %></td>
+                </tr>
+              <% elsif @user.Role == "Landlord" %>
+                <tr>
+                  <th>Tenant Name</th>
+                  <td><%= @mediation.tenant.FName %> <%= @mediation.tenant.LName %></td>
+                </tr>
+                <tr>
+                  <th>Tenant Email</th>
+                  <td><%= @mediation.tenant.Email %></td>
+                </tr>
+              <% end %>
+            </table>
+          </div>
+        </div>
+      </div>
     </div>
     <% mediator_screening_needed = @mediation&.MediatorRequested && @mediation&.MediatorAssigned &&
       ((@user.Role == "Tenant" && @mediation.TenantScreeningID.nil?) ||
@@ -61,14 +77,19 @@
 
     <% if mediator_chat_ready %>
       <!-- Mediator Chatbox -->
-      <div class="message-page-container">
-        <%= render partial: "mediator_chatbox", locals: {
-          recipient: @mediator,
-          messages: @messages,
-          message_string: @message_string,
-          user: @user
-        } %>
-        <%= render 'actions' %>
+      <div class="message-page-container chat-layout">
+        <section class="chat-panel-wrapper">
+          <%= render partial: "mediator_chatbox", locals: {
+            recipient: @mediator,
+            messages: @messages,
+            message_string: @message_string,
+            current_user: @user,
+            participants: @conversation_participants
+          } %>
+        </section>
+          <div class="chat-actions-column">
+          <%= render 'actions' %>
+          </div>
       </div>
     <% elsif (tenant_screening&.flagged == true || landlord_screening&.flagged == true) %>
       <p class="alert alert-warning">One of the party's screening questions has been flagged and is under review by an administrator. Please wait before continuing mediation.</p>
@@ -78,9 +99,13 @@
       
     <% else %>
       <!-- Normal Chatbox and Actions Side-by-side Layout -->
-      <div class="message-page-container">
-        <%= render 'negotiation_chatbox' %>
-        <%= render 'actions' %>
+      <div class="message-page-container chat-layout">
+        <section class="chat-panel-wrapper">
+          <%= render 'negotiation_chatbox', participants: @conversation_participants, current_user: @user %>
+        </section>
+          <div class="chat-actions-column">
+          <%= render 'actions' %>
+          </div>
       </div>
     <% end %>
   <% else %>
@@ -93,7 +118,42 @@
   window.mediatorAssigned = <%= @mediation&.MediatorRequested && @mediation&.MediatorAssigned ? 'true' : 'false' %>;
 </script>
 
-<%= javascript_include_tag "negotiation_chat" %>
-<%= javascript_include_tag "mediator_chats" %>
+<script type="module">
+  import "chat/negotiation_chat";
+  import "chat/mediator_chats";
+</script>
 
 
+<script>
+console.log("=== ACTIONCABLE DEBUG ===");
+console.log("ActionCable available:", typeof ActionCable !== 'undefined');
+console.log("App object:", typeof App !== 'undefined');
+
+// Test direct ActionCable connection
+if (typeof ActionCable !== 'undefined') {
+  const cable = ActionCable.createConsumer();
+  console.log("ActionCable consumer created:", cable);
+  
+  const messagesElement = document.getElementById('messages');
+  if (messagesElement) {
+    const conversationId = messagesElement.dataset.conversationId;
+    console.log("Conversation ID found:", conversationId);
+    
+    if (conversationId) {
+      const subscription = cable.subscriptions.create(
+        { channel: "MessagesChannel", conversation_id: conversationId },
+        {
+          connected() { console.log("✅ WebSocket connected!"); },
+          disconnected() { console.log("❌ WebSocket disconnected"); },
+          received(data) { 
+            console.log("📨 Message received:", data);
+            // Just log for now, don't try to insert
+          }
+        }
+      );
+    }
+  }
+} else {
+  console.log("❌ ActionCable not available");
+}
+</script>

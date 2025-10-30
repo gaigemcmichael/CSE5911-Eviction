@@ -1,7 +1,25 @@
-<!DOCTYPE html>
+<!doctype html>
 <html>
-  <body>
-    <h1>Welcome, <%= @user.FName %>!</h1>
-    <p>Thank you for signing up. We're excited to have you!</p>
+  <body style="margin:0;padding:0;background:#f5f7fb;font-family:Arial,sans-serif;">
+    <div style="max-width:600px;margin:auto;background:#fff;border-radius:10px;overflow:hidden;box-shadow:0 2px 10px rgba(0,0,0,0.1)">
+      <div style="background:#0b2b4b;color:white;padding:20px;text-align:center;font-size:22px;font-weight:bold;">
+        Eviction Mediation
+      </div>
+      <div style="padding:25px;">
+        <h2 style="color:#333;">Welcome, <%= (@user.try(:FName) || @user.try(:first_name)).presence || "there" %>!</h2>
+        <p style="font-size:16px;color:#555;">
+          We're glad to have you on <strong><%= @app_name %></strong>.
+          Your account is all set — you can log in anytime to manage mediation requests and messages.
+        </p>
+        <div style="margin:30px 0;text-align:center;">
+          <a href="<%= @dashboard_url %>" style="background:#1f6feb;color:white;text-decoration:none;padding:12px 20px;border-radius:6px;font-weight:bold;">Go to Dashboard</a>
+        </div>
+        <p style="font-size:14px;color:#777;">If you have any questions, just reply to this email.</p>
+        <p style="font-size:14px;color:#777;">— The Eviction Mediation Team</p>
+      </div>
+      <div style="background:#f1f4f8;color:#888;padding:12px;text-align:center;font-size:12px;">
+        © <%= Time.current.year %> Eviction Mediation. All rights reserved.
+      </div>
+    </div>
   </body>
 </html>

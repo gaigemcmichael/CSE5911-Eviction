@@ -1,15 +1,32 @@
 require "test_helper"
 
 class Admin::FlaggedMediationsControllerTest < ActionDispatch::IntegrationTest
-  test "should get index" do
-    log_in_as(users(:admin1))
-    get admin_mediations_url
+  setup do
+    @admin = users(:admin1)
+    @mediation = primary_message_groups(:one)
+
+    ScreeningQuestion.find(@mediation.TenantScreeningID)&.update!(flagged: true)
+    ScreeningQuestion.find(@mediation.LandlordScreeningID)&.update!(flagged: true)
+
+    post login_url, params: { email: @admin[:Email], password: "password" }
+    assert_redirected_to dashboard_url
+    follow_redirect!
     assert_response :success
   end
 
-  test "should get show" do
-    log_in_as(users(:admin1))
-    get admin_mediation_url(id: 1)
+  test "lists flagged mediations for admins" do
+    get admin_mediations_url
+
     assert_response :success
+    assert_select "h1", "Flagged Mediations"
+    assert_select "table.mediation-table tbody tr", minimum: 1
+  end
+
+  test "shows a specific flagged mediation" do
+    get admin_flagged_mediation_url(@mediation)
+
+    assert_response :success
+    assert_select "h1", "Flagged Mediation Details"
+    assert_select ".summary-section h2", text: /Tenant Info|Mediator Info/
   end
 end

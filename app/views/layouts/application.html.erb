@@ -13,6 +13,16 @@
 
     <!-- FontAwesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+  <%# Load Global Stylesheets %>
+  <%= stylesheet_link_tag "base", "login", "signup", "navbar", "dashboard", "chat", "messages_tenant", "messages_landlord", "screening_questions", "action", "mediator_screening_view", "mediations", "documents", "resources", "account_view", media: "all", "data-turbo-track": "reload" %>
+
+    <%= yield :head %>
+
+    <%# Enable PWA manifest for installable apps (make sure to enable in config/routes.rb too!) %>
+    <%#= tag.link rel: "manifest", href: pwa_manifest_path(format: :json) %>
+
+    <%= turbo_include_tags %>
+    <%= javascript_importmap_tags %>
 
     <!-- App Icons -->
     <link rel="icon" href="/icon.png" type="image/png">
@@ -37,14 +47,14 @@
   <%= stylesheet_link_tag "documents", "data-turbo-track": "reload" %>
   <%= stylesheet_link_tag "resources", "data-turbo-track": "reload" %>
   <%= stylesheet_link_tag "account_view", "data-turbo-track": "reload" %>
-  <%# Fallback: include application manifest for any miscellaneous rules %>
-  <%= stylesheet_link_tag "application", "data-turbo-track": "reload" %>
+  <%# Removed fallback to `application.css` to avoid double-link with .erb %>
     
     <%= yield :head %>
 
     <%# JavaScript %>
     <%= turbo_include_tags %>
     <%= javascript_importmap_tags %>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
   </head>
 
   <body>

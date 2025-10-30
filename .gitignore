@@ -40,6 +40,18 @@ app/DBInitTest.sql
 
 db/schema.rb
 db/schema1.rb
-#.env generally should be ignored but for now this is okay.k8s/create-secrets.sh
+#.env generally should be ignored but for now this is okay.
+
+# Ignore SQL Server data/log artifacts generated during local testing
+/SQLData
+
 
 create-secrets.sh
+
+/config/credentials/development.key
+
+# Ignore vendored gems
+/vendor/bundle
+
+# ignore environment-specific encrypted credentials
+/config/credentials/*.yml.enc
