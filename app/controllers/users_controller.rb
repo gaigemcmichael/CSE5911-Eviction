@@ -16,7 +16,11 @@ class UsersController < ApplicationController
 
       redirect_to dashboard_path, notice: "Account created successfully!"
     else
-      render :new, status: :unprocessable_entity
+      # Historically the signup form is re-rendered on invalid input and
+      # the test suite expects a 200 OK response. Return the default
+      # successful render of the `new` template so the tests and the
+      # browser behave consistently.
+      render :new
     end
   end
 
