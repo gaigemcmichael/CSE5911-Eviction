@@ -33,6 +33,59 @@ class User < ApplicationRecord
   def mediator? = self[:Role] == "Mediator"
   def admin?    = self[:Role] == "Admin"
 
+  def sms_2fa_enabled?
+    phone_number.present? && sms_2fa_enabled == true
+  end
+
+  # SMS OTP Configuration
+  SMS_OTP_TTL = 10.minutes
+  SMS_OTP_MAX_ATTEMPTS = 5
+  SMS_RESEND_INTERVAL = 30.seconds
+
+  def generate_sms_otp
+    code = SecureRandom.random_number(10**6).to_s.rjust(6, '0')
+    digest = BCrypt::Password.create(code)
+    self.sms_otp_digest = digest
+    self.sms_otp_sent_at = Time.current
+    self.sms_otp_expires_at = SMS_OTP_TTL.from_now
+    self.sms_otp_attempts = 0
+    save!
+    code
+  end
+
+  def verify_sms_otp(input_code)
+    return false if sms_otp_digest.blank? || sms_otp_expires_at.blank?
+    return false if Time.current > sms_otp_expires_at
+    return false if sms_otp_attempts.to_i >= SMS_OTP_MAX_ATTEMPTS
+
+    self.sms_otp_attempts = (sms_otp_attempts || 0) + 1
+    save!
+
+    valid = BCrypt::Password.new(sms_otp_digest) == input_code.to_s
+    if valid
+      self.sms_otp_digest = nil
+      self.sms_otp_expires_at = nil
+      self.sms_otp_attempts = 0
+      save!
+      true
+    else
+      false
+    end
+  end
+
+  def phone_number_formatted
+    return nil unless phone_number.present?
+    phone_number.to_s.gsub(/(\d{1})(\d{3})(\d{3})(\d{4})/, '+\1 (\2) \3-\4')
+  end
+
+  def can_send_sms_otp?
+    return false unless phone_number.present?
+    return false if sms_otp_attempts && sms_otp_attempts >= SMS_OTP_MAX_ATTEMPTS
+    
+    return true if sms_otp_sent_at.blank?
+    sms_otp_sent_at < SMS_RESEND_INTERVAL.ago
+  end
+
   validate :phone_number_must_be_valid
 
   private
@@ -50,40 +103,6 @@ class User < ApplicationRecord
     unless Phonelib.valid?(self[:phone_number])
       errors.add(:phone_number, 'is not a valid phone number')
     end
-  end
-
-  
-  public
-
-  SMS_OTP_TTL = 10.minutes
-  SMS_OTP_MAX_ATTEMPTS = 5
-  SMS_RESEND_INTERVAL = 60 
-
-  def generate_sms_otp
-    code = SecureRandom.random_number(10**6).to_s.rjust(6, '0')
-    digest = BCrypt::Password.create(code)
-    update!(sms_otp_digest: digest, sms_otp_sent_at: Time.current, sms_otp_expires_at: SMS_OTP_TTL.from_now, sms_otp_attempts: 0, last_sms_sent_at: Time.current)
-    code
-  end
-
-  def verify_sms_otp(code)
-    return false if sms_otp_digest.blank? || sms_otp_expires_at.blank?
-    return false if Time.current > sms_otp_expires_at
-    return false if sms_otp_attempts.to_i >= SMS_OTP_MAX_ATTEMPTS
-
-    valid = BCrypt::Password.new(sms_otp_digest) == code
-    increment!(:sms_otp_attempts)
-    if valid
-      update!(sms_otp_digest: nil, sms_otp_expires_at: nil, sms_otp_attempts: 0)
-      true
-    else
-      false
-    end
-  end
-
-  def can_send_sms_otp?
-    return true if last_sms_sent_at.blank?
-    (Time.current - last_sms_sent_at) >= SMS_RESEND_INTERVAL
   end
 
   private

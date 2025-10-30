@@ -1,3 +1,298 @@
+/* Header Styling */
+.mediation-container h1 {
+  font-size: 2rem;
+  color: #102a4d;
+  margin-bottom: 10px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* Welcome Message */
+.mediation-container p {
+  font-size: 1rem;
+  margin-bottom: 20px;
+  color: black;
+}
+
+/* Centering the Message Page Container */
+.message-page-container {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(400px, 1fr));
+  gap: 20px;
+  max-width: 1200px;
+  margin: 0 auto;
+  height: 100%;
+  padding: 20px;
+  box-sizing: border-box;
+  overflow-x: hidden;
+}
+
+/* Container for the entire chat area */
+.messages-container {
+    flex: 0 1 50%;
+    max-width: 1200px;
+    margin: 40px auto;
+    padding: 20px;
+    background-color: #f9f9f9;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    height: 80vh;
+    display: flex;
+    flex-direction: column;
+    text-align: center;
+    font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    overflow-x: hidden;
+  }
+
+  /* Container to handle scrolling */
+  .message-list-container {
+    width: 100%;
+    min-width: 400px; /* Prevents excessive shrinking */
+    max-width: 570px;
+    overflow-y: auto;
+    border: 1px solid #ddd;
+    background-color: #f9f9f9;
+    padding: 10px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    max-height: 60vh;
+    overflow-x: hidden;
+    box-sizing: border-box;
+}
+
+
+  /* Scrollable message area, Previous chat history */
+  .message-list {
+    display: flex ;
+    flex-direction: column;
+    justify-content: flex-end;
+    gap: 10px;
+    scroll-behavior: smooth;
+    overflow-y: auto;
+   }
+
+  /* Individual chat message styling */
+  .chat-message {
+    display: flex;
+    max-width: 70%;
+    padding: 2px;
+    position: relative;
+    flex-shrink: 0;
+  }
+
+  /* Sent messages (right-aligned) */
+  .chat-message.sent {
+    align-self: flex-end;
+    justify-content: flex-end;
+  }
+
+  /* Received messages (left-aligned) */
+  .chat-message.received {
+    align-self: flex-start;
+    justify-content: flex-start;
+  }
+
+  /* Message bubble styling */
+  .message-bubble {
+    padding: 6px 10px;
+    border-radius: 20px;
+    font-size: 14px;
+    line-height: 1.4;
+    max-width: 100%;
+    word-wrap: break-word;
+    position: relative;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+
+  /* Bubble colors */
+  .chat-message.sent .message-bubble {
+    background-color: #006bb7; /* Cbus Colors */
+    border-radius: 20px 20px 0 20px;
+  }
+
+  .chat-message.received .message-bubble {
+    background-color: #ffffff; /* default white? */
+    border: 1px solid #ddd;
+    border-radius: 20px 20px 20px 0;
+  }
+
+    /* Message content styling for sent messages */
+  .chat-message.sent .message-content {
+    color: white; /* White text for sent messages */
+  }
+
+  /* Message content styling for received messages */
+  .chat-message.received .message-content {
+    color: #333; /* Default text color for received messages */
+  }
+
+  /* Message timestamp styling */
+  .message-timestamp {
+    display: block;
+    font-size: 10px;
+    color: #888;
+    margin-top: 5px;
+    text-align: right;
+  }
+
+  .message-textarea {
+    width: 100%;
+    padding: 12px 20px;
+    margin: 8px 0;
+    font-size: 1rem;
+    border: 1px solid #dadce0;
+    border-radius: 8px;
+    background-color: #fff;
+    color: #202124;
+    box-sizing: border-box;
+    resize: vertical;
+    min-height: 80px;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+  }
+  
+  .message-textarea:focus {
+    border-color: #4285f4;
+    outline: none;
+    box-shadow: 0 0 0 2px rgba(66, 133, 244, 0.2);
+  }
+  
+/* File dropdown layout */
+.file-dropdown-wrapper {
+  margin: 12px 0;
+}
+
+.file-label {
+  font-weight: bold;
+  color: #333;
+  font-size: 0.95rem;
+  display: block;
+  margin-bottom: 6px;
+}
+
+/* Wrap the select for arrow styling */
+.custom-select-wrapper {
+  position: relative;
+}
+
+.custom-select-wrapper select {
+  width: 100%;
+  padding: 10px 16px;
+  padding-right: 44px; /* space for arrow */
+  font-size: 1rem;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  background-color: #fff;
+  color: #333;
+  appearance: none;
+  cursor: pointer;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.custom-select-wrapper select:focus {
+  border-color: #4285f4;
+  box-shadow: 0 0 0 2px rgba(66, 133, 244, 0.2);
+  outline: none;
+}
+
+/* The custom dropdown arrow */
+.custom-select-wrapper .arrow.down {
+  position: absolute;
+  right: 16px;
+  top: 50%;
+  transform: translateY(-50%) rotate(45deg);
+  pointer-events: none;
+  border: solid #666;
+  border-width: 0 2px 2px 0;
+  display: inline-block;
+  padding: 4px;
+}
+
+  .send-msg-btn[type="submit"] {
+    width: fit-content;
+    padding: 12px 24px;
+    margin: 10px 0;
+    font-size: 1rem;
+    font-weight: bold;
+    font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    border-radius: 6px;
+    background-color: #28a745;
+    color: white;
+    text-decoration: none;
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+    text-align: center;
+  }
+  
+  .send-msg-btn:hover {
+    background-color: #109864 !important;
+    color: white;
+  }
+
+    /* View/download document in chat */
+    .chatview-link {
+      color: #102a4d;
+      text-decoration: none;
+      font-weight: bold;
+      text-align: left;
+  }
+  
+    .chatview-link:hover {
+        text-decoration: underline;
+    } 
+
+  /* Submit Button */
+  .sign-btn {
+    width: fit-content;
+    display: inline-block;
+    padding: 12px 24px;
+    margin: 10px 0;
+    font-size: 0.75rem;
+    font-weight: bold;
+    font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    border-radius: 5px;
+    background: #007bff;
+    color: white;
+    text-decoration: none;
+    border: none;
+    cursor: pointer;
+    transition: background 0.3s ease;
+  }
+
+  .sign-btn:hover {
+    background: #0056b3;
+  }
+
+  /* Ensure the chat always shows the latest messages */
+  /* .message-list {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+  } */
+
+  /* no messages exist */
+  .no-messages {
+    color: #666;
+    font-style: italic;
+    text-align: center;
+    padding: 20px;
+  }
+
+  @media (max-width: 900px) {
+    .message-page-container {
+      grid-template-columns: 1fr;
+      max-width: 600px;
+    }
+
+    .message-list-container {
+        width: 100%;
+        max-width: 100%;
+        min-width: 100%;
+        margin-bottom: 20px;
+    }
+}
+
 /* ==========================================================================
     1. General Page & Typography Styles
     ========================================================================== */
@@ -1712,3 +2007,4 @@
       flex-shrink: 0;
     }
   }
+}

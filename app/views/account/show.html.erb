@@ -242,4 +242,25 @@
       }
     });
   });
+
+  // SMS Test functionality
+  document.addEventListener("turbo:load", function () {
+    const testForm = document.getElementById("test-sms-form");
+    const resultDiv = document.getElementById("test-sms-result");
+    
+    if (testForm && resultDiv) {
+      testForm.addEventListener("ajax:success", function(event) {
+        const response = event.detail[0];
+        if (response.success) {
+          resultDiv.innerHTML = '<p style="color: green;"><i class="fa-solid fa-check"></i> ' + response.message + '</p>';
+        } else {
+          resultDiv.innerHTML = '<p style="color: red;"><i class="fa-solid fa-exclamation"></i> ' + response.error + '</p>';
+        }
+      });
+      
+      testForm.addEventListener("ajax:error", function(event) {
+        resultDiv.innerHTML = '<p style="color: red;"><i class="fa-solid fa-exclamation"></i> Failed to send test SMS</p>';
+      });
+    }
+  });
 </script>

@@ -1,0 +1,150 @@
+<% content_for :title, "Verify Phone Number" %>
+
+<div class="phone-verify-container">
+  <div class="phone-verify-card">
+    <div class="phone-verify-content">
+      <!-- Header Section -->
+      <div class="phone-verify-header">
+        <div class="phone-verify-icon-container">
+          <i class="fas fa-mobile-alt phone-verify-icon"></i>
+        </div>
+        <h2 class="phone-verify-title">Verify Phone Number</h2>
+        <p class="phone-verify-subtitle">
+          We've sent a verification code to your phone number. Please enter the code below to complete the verification process.
+        </p>
+      </div>
+
+      <!-- Flash Messages -->
+      <% if notice %>
+        <div class="phone-verify-alert phone-verify-alert-success" role="alert">
+          <i class="fas fa-check-circle"></i>
+          <%= notice %>
+        </div>
+      <% end %>
+
+      <% if alert %>
+        <div class="phone-verify-alert phone-verify-alert-error" role="alert">
+          <i class="fas fa-exclamation-circle"></i>
+          <%= alert %>
+        </div>
+      <% end %>
+
+      <!-- Verification Form -->
+      <div class="phone-verify-form">
+        <%= form_with url: enable_sms_2fa_path, method: :post, local: true, class: "phone-verify-form-inner" do |form| %>
+          <div class="phone-verify-input-group">
+            <%= form.label :verification_code, "Enter Verification Code", class: "phone-verify-label" %>
+            <%= form.text_field :verification_code, 
+                  class: "phone-verify-code-input", 
+                  placeholder: "000000",
+                  maxlength: 6,
+                  pattern: "\\d{6}",
+                  required: true,
+                  autocomplete: "off",
+                  id: "verification-code" %>
+            <div class="phone-verify-input-error">
+              <i class="fas fa-exclamation-triangle"></i>
+              Please enter a valid 6-digit verification code.
+            </div>
+            <div class="phone-verify-input-info">
+              <i class="fas fa-info-circle"></i>
+              Code expires in 10 minutes
+            </div>
+          </div>
+          
+          <div class="phone-verify-button-group">
+            <%= form.submit "Verify Phone Number", 
+                class: "phone-verify-btn-primary",
+                data: { "disable-with": '<i class="phone-verify-spinner"></i>Verifying...' } %>
+          </div>
+        <% end %>
+      </div>
+
+      <!-- Resend Section -->
+      <div class="phone-verify-resend-section">
+        <p class="phone-verify-resend-text">Didn't receive the code?</p>
+        
+        <%= form_with url: send_test_sms_path, method: :post, local: true, class: "phone-verify-resend-form", id: "resend-form" do |form| %>
+          <%= form.hidden_field :phone_number, value: current_user.phone_number %>
+          <%= form.submit "Resend Code", 
+              class: "phone-verify-btn-secondary",
+              id: "resend-btn",
+              data: { "disable-with": '<i class="phone-verify-spinner"></i>Sending...' } %>
+        <% end %>
+        
+        <div id="resend-timer" class="phone-verify-resend-timer" style="display: none;">
+          <i class="fas fa-clock"></i>
+          You can resend in <span id="countdown">30</span> seconds
+        </div>
+      </div>
+
+      <!-- Back to Account -->
+      <div class="phone-verify-back-link">
+        <%= link_to account_path, class: "phone-verify-link" do %>
+          <i class="fas fa-arrow-left"></i>Back to Account Settings
+        <% end %>
+      </div>
+
+      <!-- Security Notice -->
+      <div class="phone-verify-security-notice">
+        <i class="fas fa-shield-alt"></i>
+        This verification helps secure your account
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  // Auto-format verification code input
+  document.addEventListener('DOMContentLoaded', function() {
+    const codeInput = document.getElementById('verification-code');
+    if (codeInput) {
+      codeInput.addEventListener('input', function(e) {
+        // Remove any non-digit characters
+        this.value = this.value.replace(/\D/g, '');
+        
+        // Limit to 6 digits
+        if (this.value.length > 6) {
+          this.value = this.value.slice(0, 6);
+        }
+        
+        // Auto-submit when 6 digits are entered
+        if (this.value.length === 6) {
+          // Add a small delay to show the complete code
+          setTimeout(() => {
+            this.closest('form').submit();
+          }, 500);
+        }
+      });
+      
+      // Focus the input when page loads
+      codeInput.focus();
+    }
+    
+    // Resend timer functionality
+    const resendBtn = document.getElementById('resend-btn');
+    const resendTimer = document.getElementById('resend-timer');
+    const countdown = document.getElementById('countdown');
+    
+    if (resendBtn && resendTimer && countdown) {
+      resendBtn.addEventListener('click', function() {
+        // Show timer and hide button
+        resendBtn.style.display = 'none';
+        resendTimer.style.display = 'flex';
+        
+        let timeLeft = 30;
+        const timer = setInterval(() => {
+          timeLeft--;
+          countdown.textContent = timeLeft;
+          
+          if (timeLeft <= 0) {
+            clearInterval(timer);
+            resendBtn.style.display = 'inline-block';
+            resendTimer.style.display = 'none';
+            countdown.textContent = '30';
+          }
+        }, 1000);
+      });
+    }
+  });
+</script>

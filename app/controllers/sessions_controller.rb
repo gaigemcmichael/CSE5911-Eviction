@@ -1,4 +1,5 @@
 class SessionsController < ApplicationController
+    
     def new
     end
 
@@ -9,21 +10,26 @@ class SessionsController < ApplicationController
         if user && user.authenticate(params[:password])
           if user.sms_2fa_enabled?
             session[:pre_sms_user_id] = user.UserID
+            
             verifier = TwilioVerifyService.new
             if verifier.configured?
               result = verifier.start_verification(to: user.phone_number)
               if result[:error]
                 Rails.logger.error "Twilio verify start error: #{result[:error]}"
-                flash[:alert] = 'Unable to send verification, please try again later.'
-                redirect_to new_session_path and return
+                # Fallback to local OTP generation
+                code = user.generate_sms_otp
+                Rails.logger.info "SMS Code for #{user.phone_number}: #{code}"
+                puts "*** SMS CODE: #{code} for #{user.phone_number} ***"
+                redirect_to sms_two_factor_path, notice: "Please enter the verification code sent to your phone"
               else
                 user.update!(twilio_verification_sid: result[:sid], twilio_verification_status: result[:status], twilio_verification_sent_at: Time.current)
-                redirect_to sms_two_factor_path and return
+                redirect_to sms_two_factor_path, notice: "Please enter the verification code sent to your phone"
               end
             else
               code = user.generate_sms_otp
-              SmsSender.send_sms(to: user.phone_number, body: "Your verification code is: #{code}")
-              redirect_to sms_two_factor_path and return
+              Rails.logger.info "SMS Code for #{user.phone_number}: #{code}"
+              puts "*** SMS CODE: #{code} for #{user.phone_number} ***"
+              redirect_to sms_two_factor_path, notice: "Please enter the verification code sent to your phone"
             end
           else
             session[:user_id] = user.UserID
@@ -40,3 +46,5 @@ class SessionsController < ApplicationController
       redirect_to root_path, notice: "Logged out successfully!"
     end
 end
+
+              

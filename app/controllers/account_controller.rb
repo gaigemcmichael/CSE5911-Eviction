@@ -1,4 +1,5 @@
 class AccountController < ApplicationController
+  
   before_action :require_login
   before_action :set_user
 
@@ -51,7 +52,6 @@ class AccountController < ApplicationController
     redirect_to account_path
   end
 
-  
   def send_sms_verification
     unless @user
       redirect_to login_path, alert: 'Please sign in' and return
@@ -81,45 +81,71 @@ class AccountController < ApplicationController
       end
     else
       code = @user.generate_sms_otp
-      SmsSender.send_sms(to: @user.phone_number, body: "Your verification code is: #{code}")
+      Rails.logger.info "SMS Code for #{@user.phone_number}: #{code}"
+      puts "*** SMS CODE: #{code} for #{@user.phone_number} ***"
       flash[:notice] = 'Verification code sent to your phone.'
     end
     redirect_to account_path
   end
 
-  
   def enable_sms_2fa
     unless @user
       redirect_to login_path, alert: 'Please sign in' and return
     end
-    verifier = TwilioVerifyService.new
-    if verifier.configured?
-      res = verifier.check_verification(to: @user.phone_number, code: params[:sms_code])
-      if res[:error]
-        Rails.logger.error "Twilio verify check error: #{res[:error]}"
-        flash[:alert] = 'Verification failed due to an internal error.'
-      elsif res[:valid]
-        @user.update!(sms_2fa_enabled: true, twilio_verification_sid: res[:sid], twilio_verification_status: res[:status])
-        flash[:notice] = 'SMS two-factor enabled.'
+
+    # Handle verification code submission
+    if params[:verification_code].present? || params[:sms_code].present?
+      verification_code = (params[:verification_code] || params[:sms_code]).strip
+      
+      verifier = TwilioVerifyService.new
+      verified = false
+      
+      if verifier.configured? && @user.phone_number.present?
+        result = verifier.check_verification(to: @user.phone_number, code: verification_code)
+        if result[:error]
+          Rails.logger.error "Twilio verify check error: #{result[:error]}"
+          flash[:alert] = 'Verification failed due to an internal error.'
+        elsif result[:valid]
+          verified = true
+        else
+          flash[:alert] = 'Invalid or expired verification code.'
+        end
       else
-        flash[:alert] = 'Invalid or expired verification code.'
+        verified = @user.verify_sms_otp(verification_code)
+        flash[:alert] = 'Invalid or expired verification code.' unless verified
       end
-    else
-      if @user.verify_sms_otp(params[:sms_code])
+      
+      if verified
         @user.update!(sms_2fa_enabled: true)
-        flash[:notice] = 'SMS two-factor enabled.'
-      else
-        flash[:alert] = 'Invalid or expired verification code.'
+        flash[:notice] = 'SMS two-factor enabled successfully!'
       end
+      
+      redirect_to account_path
+      return
     end
-    redirect_to account_path
+
+    # Handle phone number submission
+    phone = params[:phone_number]&.strip
+    if phone.blank?
+      redirect_to account_path, alert: "Phone number is required"
+      return
+    end
+
+    @user.phone_number = phone
+    @user.sms_2fa_enabled = true
+    
+    if @user.save
+      redirect_to account_path, notice: "SMS 2FA enabled successfully"
+    else
+      redirect_to account_path, alert: "Failed to enable SMS 2FA"
+    end
   end
 
-  
   def disable_sms_2fa
     unless @user
       redirect_to login_path, alert: 'Please sign in' and return
     end
+    
     Rails.logger.debug "Account#disable_sms_2fa called for user=#{@user.UserID} password_present=#{params[:password].present?} sms_code_present=#{params[:sms_code].present?}"
 
     disabled = false
@@ -155,8 +181,11 @@ class AccountController < ApplicationController
         end
       end
     else
-      Rails.logger.info "Account#disable_sms_2fa authentication failed for user=#{@user.UserID} - no valid credential provided"
-      flash[:alert] = 'Please provide your password or a verification code to disable SMS 2FA.'
+      # Simple disable (fallback for basic UI)
+      disabled = @user.update(sms_2fa_enabled: false)
+      unless disabled
+        flash[:alert] = "Failed to disable SMS 2FA"
+      end
     end
 
     if disabled && flash[:notice].blank?
@@ -165,7 +194,69 @@ class AccountController < ApplicationController
     redirect_to account_path
   end
 
+  def send_test_sms
+    phone = params[:phone_number]&.strip
+    if phone.blank?
+      render json: { success: false, error: "Phone number is required" }
+      return
+    end
+
+    formatted_phone = format_phone_number(phone)
+    if formatted_phone.nil?
+      redirect_to phone_verify_account_path, alert: 'Invalid phone number format. Please use format: +1234567890'
+      return
+    end
+
+    @user.phone_number = formatted_phone
+    @user.save
+    
+    verifier = TwilioVerifyService.new
+    if verifier.configured?
+      result = verifier.start_verification(to: formatted_phone)
+      if result[:error]
+        code = @user.generate_sms_otp
+        Rails.logger.info "SMS Code for #{formatted_phone}: #{code}"
+        puts "*** SMS CODE: #{code} for #{formatted_phone} ***"
+        puts "*** Twilio Error: #{result[:error] || 'Unknown error'} ***"
+        redirect_to phone_verify_account_path, notice: 'Verification code generated (check console - Twilio error).'
+      else
+        Rails.logger.info "SMS sent successfully via Twilio Verify to #{formatted_phone}"
+        puts "*** SMS SENT via Twilio Verify to #{formatted_phone} ***"
+        redirect_to phone_verify_account_path, notice: 'Verification code sent to your phone via Twilio Verify.'
+      end
+    else
+      code = @user.generate_sms_otp
+      Rails.logger.info "SMS Code for #{formatted_phone}: #{code}"
+      puts "*** SMS CODE: #{code} for #{formatted_phone} ***"
+      puts "*** Configure Twilio Verify Service credentials to send actual SMS messages ***"
+      redirect_to phone_verify_account_path, notice: 'Verification code generated (check console - configure Twilio Verify).'
+    end
+  end
+
+  def phone_verify
+  end
+
   private
+
+  def format_phone_number(phone)
+    
+    digits = phone.gsub(/\D/, '')
+    
+    
+    if digits.length == 10
+      
+      return "+1#{digits}"
+    elsif digits.length == 11 && digits.start_with?('1')
+      
+      return "+#{digits}"
+    elsif phone.start_with?('+')
+     
+      return phone
+    else
+      
+      return nil
+    end
+  end
 
   def address_params
     params.require(:user).permit(:TenantAddress)

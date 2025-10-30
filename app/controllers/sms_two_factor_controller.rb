@@ -63,11 +63,14 @@ class SmsTwoFactorController < ApplicationController
         end
       else
         code = @user.generate_sms_otp
-        SmsSender.send_sms(to: @user.phone_number, body: "Your verification code is: #{code}")
+        Rails.logger.info "SMS Code for #{@user.phone_number}: #{code}"
+        puts "*** SMS CODE: #{code} for #{@user.phone_number} ***"
         redirect_to sms_two_factor_path, notice: 'Code resent'
       end
     else
-      redirect_to sms_two_factor_path, alert: 'Please wait before requesting another code'
+      wait_time = (@user.sms_otp_sent_at + 30.seconds - Time.current).to_i if @user.sms_otp_sent_at
+      message = wait_time > 0 ? "Please wait #{wait_time} seconds before requesting another code" : 'Cannot send code at this time'
+      redirect_to sms_two_factor_path, alert: message
     end
   end
 end
