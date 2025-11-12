@@ -1,25 +1,79 @@
 import consumer from "channels/consumer";
 
+const escapeHtml = (value) => {
+  if (value === null || value === undefined) return "";
+  return String(value)
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#39;");
+};
+
+const escapeAttribute = (value) => {
+  if (value === null || value === undefined) return "";
+  return String(value)
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#39;");
+};
+
+const titleize = (value) => {
+  if (!value) return "";
+  return value
+    .toString()
+    .replace(/_/g, " ")
+    .split(/\s+/)
+    .filter(Boolean)
+    .map((token) => token.charAt(0).toUpperCase() + token.slice(1).toLowerCase())
+    .join(" ");
+};
+
+const formatMessageContents = (contents) => {
+  if (!contents) return "";
+  const sanitized = escapeHtml(contents);
+  return sanitized.replace(/(\r\n|\n|\r)/g, "<br>");
+};
+
+const buildAttachmentHtml = (attachment) => {
+  if (!attachment) return "";
+
+  const fileId = escapeAttribute(attachment.file_id);
+  const fileName = escapeHtml(attachment.file_name || "Document");
+  const previewUrl = escapeAttribute(attachment.preview_url || attachment.view_url || attachment.download_url || "#");
+  const downloadUrl = escapeAttribute(attachment.download_url || attachment.view_url || "#");
+  const extension = escapeAttribute(attachment.extension || "");
+
+  return `
+    <div class="message-attachment" data-attachment-id="${fileId}" data-attachment-type="${extension}">
+      <div class="attachment-icon" aria-hidden="true">
+        <i class="fa-solid fa-file-lines"></i>
+      </div>
+      <div class="attachment-body">
+        <div class="attachment-name">${fileName}</div>
+        <div class="attachment-actions">
+          <button type="button" class="attachment-link" data-document-preview-trigger data-preview-url="${previewUrl}" data-file-name="${fileName}">View</button>
+          <span aria-hidden="true" class="attachment-dot">·</span>
+          <a href="${downloadUrl}" class="attachment-link">Download</a>
+        </div>
+      </div>
+    </div>
+  `;
+};
+
 // Track if we've already scrolled on initial load for this conversation
 let hasScrolledOnLoad = new Set();
 
 document.addEventListener("turbo:load", () => {
-  const messagesContainer = document.querySelector('.message-list-container');
   document.querySelectorAll(".mediator-chat-box").forEach((box) => {
     const conversationId = box.dataset.conversationId;
     const currentUserId = box.dataset.userId;
     const messagesList = box.querySelector(".message-list");
+    const messagesContainer = box.querySelector(".message-list-container");
 
-    if (!conversationId || !currentUserId || !messagesList) return;
-    
-    // Select correct chatbox for scrolling from mediator perspective
-    const containerSelector = box.classList.contains("tenant-message-list-container")
-      ? ".tenant-message-list-container"
-      : ".landlord-message-list-container";
-
-    const messagesContainer = document.querySelector(containerSelector);
-
-    if (!messagesContainer) return;
+    if (!conversationId || !currentUserId || !messagesList || !messagesContainer) return;
 
     // Cleanup old subscriptions
     consumer.subscriptions.subscriptions.forEach((subscription) => {
@@ -52,17 +106,29 @@ document.addEventListener("turbo:load", () => {
             if (!isSender && !isRecipient) return;
 
             const messageClass = isSender ? "sent" : "received";
-            const formattedRole = (data.sender_role || "").toString().replace(/_/g, " ");
-            const senderName = data.sender_name || (isSender ? "You" : formattedRole || "Participant");
+            const formattedRole = titleize(data.sender_role);
+            const senderName = escapeHtml(data.sender_name || (isSender ? "You" : formattedRole || "Participant"));
+            const messageContents = formatMessageContents(data.contents);
+            const attachments = Array.isArray(data.attachments) ? data.attachments : [];
+
+            const attachmentsHtml = attachments
+              .map((attachment) => buildAttachmentHtml(attachment))
+              .filter(Boolean)
+              .join("");
+
+            const contentHtml = messageContents ? `<p class="message-content">${messageContents}</p>` : "";
+            const attachmentsBlock = attachmentsHtml ? `<div class="message-attachments">${attachmentsHtml}</div>` : "";
+
             const messageHtml = `
-              <div class="chat-message ${messageClass}" data-message-id="${data.message_id}" data-sender-role="${formattedRole}" data-sender-id="${data.sender_id}" data-current-user-id="${currentUserId}">
+              <div class="chat-message ${messageClass}" data-message-id="${escapeAttribute(data.message_id)}" data-sender-role="${escapeHtml(formattedRole)}" data-sender-id="${escapeAttribute(data.sender_id)}" data-current-user-id="${escapeAttribute(currentUserId)}">
                 <div class="message-bubble">
                   <div class="message-meta">
                     <span class="message-author">${senderName}</span>
-                    ${formattedRole ? `<span class="message-role">${formattedRole}</span>` : ""}
+                    ${formattedRole ? `<span class="message-role">${escapeHtml(formattedRole)}</span>` : ""}
                   </div>
-                  <p class="message-content">${data.contents}</p>
-                  <small class="message-timestamp">${data.message_date}</small>
+                  ${contentHtml}
+                  ${attachmentsBlock}
+                  <small class="message-timestamp">${escapeHtml(data.message_date)}</small>
                 </div>
               </div>
             `;

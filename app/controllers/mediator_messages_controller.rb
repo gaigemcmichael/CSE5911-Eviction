@@ -1,11 +1,28 @@
 class MediatorMessagesController < ApplicationController
   before_action :require_login
   before_action :set_user
-  before_action :set_or_create_side_group
+  before_action :set_side_conversation
 
   def create
+    duplicate_exists = Message
+      .where(
+        SenderID: @user.UserID,
+        ConversationID: @message_string.ConversationID,
+        Contents: params[:Contents]
+      )
+      .where("MessageDate >= ?", 2.seconds.ago)
+      .exists?
+
+    if duplicate_exists
+      respond_to do |format|
+        format.json { render json: { duplicate: true }, status: :accepted }
+        format.html { head :no_content }
+      end
+      return
+    end
+
     @message = Message.new(
-      ConversationID: @side_group.ConversationID,
+      ConversationID: @message_string.ConversationID,
       SenderID: @user.UserID,
       recipientID: @recipient_id,
       Contents: params[:Contents],
@@ -48,11 +65,13 @@ class MediatorMessagesController < ApplicationController
         end
         .compact
 
-  sender_name = [ @user.FName, @user.LName ].compact.join(" ").squeeze(" ").strip
+      sender_name = [ @user.FName, @user.LName ].compact.join(" ").squeeze(" ").strip
       sender_name = @user.CompanyName.presence || @user.Email if sender_name.blank?
 
+      @message_string.update_column(:LastMessageSentDate, Time.current) if @message_string.respond_to?(:LastMessageSentDate)
+
       ActionCable.server.broadcast(
-        "side_messages_#{@side_group.ConversationID}",
+        "side_messages_#{@message_string.ConversationID}",
         {
           message_id: @message.id,
           contents: @message.Contents,
@@ -83,24 +102,32 @@ class MediatorMessagesController < ApplicationController
     @user = User.find(session[:user_id])
   end
 
-  def set_or_create_side_group
+  def set_side_conversation
     @conversation_id = params[:conversation_id].to_i
-    @recipient_id = params[:recipient_id].to_i
 
-    # Ensure the mediator is one of the parties
-    mediator_id = @user.Role == "Mediator" ? @user.UserID : @recipient_id
-    user_id = @user.Role == "Mediator" ? @recipient_id : @user.UserID
+    raise ActiveRecord::RecordNotFound, "Conversation id missing" if @conversation_id.zero?
 
-    @side_group = SideMessageGroup.find_or_create_by!(
-      UserID: user_id,
-      MediatorID: mediator_id,
-      ConversationID: @conversation_id
-    )
+    @message_string = MessageString.find_by!(ConversationID: @conversation_id)
+    @side_group = SideMessageGroup.find_by!(ConversationID: @conversation_id, deleted_at: nil)
 
-    MessageString.find_or_create_by!(
-      ConversationID: @conversation_id,
-      Role: "Side"
-    )
+    if @user.Role == "Mediator"
+      unless @side_group.MediatorID == @user.UserID
+        raise ActiveRecord::RecordNotFound, "Mediator not assigned to this conversation"
+      end
+      @recipient_id = @side_group.UserID
+    else
+      unless @side_group.UserID == @user.UserID
+        raise ActiveRecord::RecordNotFound, "User not part of this side conversation"
+      end
+      @recipient_id = @side_group.MediatorID
+    end
+
+    if params[:recipient_id].present?
+      provided_recipient = params[:recipient_id].to_i
+      unless provided_recipient.positive? && provided_recipient == @recipient_id
+        raise ActiveRecord::RecordNotFound, "Recipient mismatch"
+      end
+    end
   end
 
   def require_login
