@@ -45,12 +45,20 @@
       <% end %>
 
       <!-- Resend Section -->
-      <div class="resend-section">
-        <p class="resend-text">Didn't receive the code?</p>
-        <%= button_to 'Resend Code', sms_two_factor_resend_path, 
-              method: :post, 
-              class: 'btn btn-resend',
-              id: 'resend-btn' %>
+      <div class="sms-resend-section">
+        <p class="sms-resend-text">Didn't receive the code?</p>
+        
+        <%= form_with url: resend_sms_two_factor_path, method: :post, local: true, class: "sms-resend-form", id: "resend-form" do |f| %>
+          <%= f.submit "Resend Code", 
+              class: "sms-btn-secondary",
+              id: "resend-btn",
+              data: { "disable-with": '<i class="sms-spinner"></i>Sending...' } %>
+        <% end %>
+        
+        <div id="resend-timer" class="sms-resend-timer" style="display: none;">
+          <i class="fas fa-clock"></i>
+          You can resend in <span id="countdown">30</span> seconds
+        </div>
       </div>
     </div>
 
@@ -68,7 +76,6 @@
         <i class="fas fa-arrow-left"></i>Back to Login
       <% end %>
     </div>
-  </div>
   </div>
 </div>
 
