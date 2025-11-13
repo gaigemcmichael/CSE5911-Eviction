@@ -49,6 +49,16 @@
                   <th>Landlord Email</th>
                   <td><%= @mediation.landlord.Email %></td>
                 </tr>
+                <% if (mediator = @mediation&.mediator) %>
+                  <tr>
+                    <th>Mediator Name</th>
+                    <td><%= [mediator.FName, mediator.LName].compact.join(" ").squeeze(" ").strip.presence || mediator.Email %></td>
+                  </tr>
+                  <tr>
+                    <th>Mediator Email</th>
+                    <td><%= mediator.Email %></td>
+                  </tr>
+                <% end %>
               <% elsif @user.Role == "Landlord" %>
                 <tr>
                   <th>Tenant Name</th>
@@ -58,6 +68,16 @@
                   <th>Tenant Email</th>
                   <td><%= @mediation.tenant.Email %></td>
                 </tr>
+                <% if (mediator = @mediation&.mediator) %>
+                  <tr>
+                    <th>Mediator Name</th>
+                    <td><%= [mediator.FName, mediator.LName].compact.join(" ").squeeze(" ").strip.presence || mediator.Email %></td>
+                  </tr>
+                  <tr>
+                    <th>Mediator Email</th>
+                    <td><%= mediator.Email %></td>
+                  </tr>
+                <% end %>
               <% end %>
             </table>
           </div>

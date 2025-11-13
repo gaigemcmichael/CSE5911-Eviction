@@ -6,7 +6,7 @@
   <% show_status_card = @mediation.present? && (mediation_assigned || mediation_requested) %>
 
   <% if show_status_card %>
-    <div class="conversation-card">
+  <div class="conversation-card <%= 'conversation-card--mediator' if mediation_assigned %>">
       <% if mediation_assigned %>
         <div class="conversation-status conversation-status--success">
           <i class="fa-solid fa-handshake" aria-hidden="true"></i>
