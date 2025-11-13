@@ -1,0 +1,10 @@
+Hi <%= (@user.try(:FName) || @user.try(:first_name)).presence || "there" %>,
+
+Welcome to Eviction Mediation!
+
+Your account is ready — you can log in anytime to manage mediation requests.
+
+Dashboard: <%= @dashboard_url %>
+
+Thanks,
+The Eviction Mediation Team

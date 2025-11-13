@@ -47,6 +47,8 @@ db/schema1.rb
 
 
 create-secrets.sh
+
+# SQL Server data files
 SQLData/
 *.gdmp
 *.mdmp
@@ -60,3 +62,12 @@ SQLData/
 
 # Ignore SQL Server data directory
 /SQLData/
+
+# Development credentials
+/config/credentials/development.key
+
+# Ignore vendored gems
+/vendor/bundle
+
+# ignore environment-specific encrypted credentials
+/config/credentials/*.yml.enc
