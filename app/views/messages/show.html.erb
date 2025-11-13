@@ -4,18 +4,32 @@
     landlord_screening = ScreeningQuestion.find_by(ScreeningID: @mediation.LandlordScreeningID, deleted_at: nil)
   %>
   <% if @mediation&.deleted_at.nil? && @message_string&.deleted_at.nil? %>
-    <% if @mediation&.MediatorRequested && @mediation&.MediatorAssigned && (tenant_screening&.flagged != true && landlord_screening&.flagged != true) %>
-      <h1>Mediation Conversation</h1>
-      <p>
-        A mediator has been requested and assigned to this case. <br>
-        You are now communicating with a neutral third-party mediator to help resolve the issue.
-      </p>
-    <% elsif @mediation&.MediatorRequested && @mediation&.MediatorAssigned && (tenant_screening&.flagged == true || landlord_screening&.flagged == true) %>
-      <h1>Mediation Conversation</h1>
-    <% else %>
-      <h1>
-        Negotiation with <%= @user.Role == "Tenant" ? "Landlord" : "Tenant" %>
-      </h1>
+    <% mediator_assigned = @mediation&.MediatorRequested && @mediation&.MediatorAssigned %>
+    <% screenings_flagged = tenant_screening&.flagged == true || landlord_screening&.flagged == true %>
+
+    <h1>
+      <% if mediator_assigned %>
+        Mediation Conversation
+      <% elsif @user.Role == "Tenant" %>
+        Negotiation with Landlord
+      <% elsif @user.Role == "Landlord" %>
+        Negotiation with Tenant
+      <% else %>
+        Negotiation Conversation
+      <% end %>
+    </h1>
+
+    <% if mediator_assigned && !screenings_flagged %>
+      <% if @user.Role == "Mediator" %>
+        <p>
+          You're now part of the primary conversation. Messages you send here are visible to both the tenant and landlord.
+        </p>
+      <% else %>
+        <p>
+          A mediator has been requested and assigned to this case. <br>
+          You are now communicating with a neutral third-party mediator to help resolve the issue.
+        </p>
+      <% end %>
     <% end %>
     <div class="chat-page-wrapper">
       <div class="conversation-info-trigger">
@@ -78,62 +92,70 @@
                     <td><%= mediator.Email %></td>
                   </tr>
                 <% end %>
+              <% elsif @user.Role == "Mediator" %>
+                <tr>
+                  <th>Tenant Name</th>
+                  <td><%= @mediation.tenant.FName %> <%= @mediation.tenant.LName %></td>
+                </tr>
+                <tr>
+                  <th>Tenant Email</th>
+                  <td><%= @mediation.tenant.Email %></td>
+                </tr>
+                <tr>
+                  <th>Tenant Phone</th>
+                  <td><%= @mediation.tenant.PhoneNumber.presence || "N/A" %></td>
+                </tr>
+                <tr>
+                  <th>Landlord Name</th>
+                  <td><%= @mediation.landlord.FName %> <%= @mediation.landlord.LName %></td>
+                </tr>
+                <tr>
+                  <th>Landlord Email</th>
+                  <td><%= @mediation.landlord.Email %></td>
+                </tr>
+                <tr>
+                  <th>Landlord Phone</th>
+                  <td><%= @mediation.landlord.PhoneNumber.presence || "N/A" %></td>
+                </tr>
               <% end %>
             </table>
           </div>
         </div>
       </div>
     </div>
-    <% mediator_screening_needed = @mediation&.MediatorRequested && @mediation&.MediatorAssigned &&
-      ((@user.Role == "Tenant" && @mediation.TenantScreeningID.nil?) ||
-      (@user.Role == "Landlord" && @mediation.LandlordScreeningID.nil?)) %>
-
-    <%
-      mediator_chat_ready = @mediation&.MediatorRequested && @mediation&.MediatorAssigned &&
-        (
-          (tenant_screening&.flagged != true) && (landlord_screening&.flagged != true)
-        )
-    %>
-
-    <% if mediator_chat_ready %>
-      <!-- Mediator Chatbox -->
-      <div class="message-page-container chat-layout">
-        <section class="chat-panel-wrapper">
-          <%= render partial: "mediator_chatbox", locals: {
-            recipient: @mediator,
-            messages: @messages,
-            message_string: @message_string,
-            current_user: @user,
-            participants: @conversation_participants
-          } %>
-        </section>
-          <div class="chat-actions-column">
-          <%= render 'actions' %>
-          </div>
-      </div>
-    <% elsif (tenant_screening&.flagged == true || landlord_screening&.flagged == true) %>
+    <% if screenings_flagged %>
+      <% composer_disabled_reason = "Messaging is paused while an administrator reviews the flagged screening responses." %>
       <p class="alert alert-warning">One of the party's screening questions has been flagged and is under review by an administrator. Please wait before continuing mediation.</p>
-    <% elsif mediator_screening_needed %>
-      
-        <%= render 'actions' %>
-      
-    <% else %>
-      <!-- Normal Chatbox and Actions Side-by-side Layout -->
       <div class="message-page-container chat-layout">
         <section class="chat-panel-wrapper">
-          <%= render 'negotiation_chatbox', participants: @conversation_participants, current_user: @user %>
+          <%= render 'negotiation_chatbox',
+                participants: @conversation_participants,
+                current_user: @user,
+                broadcast_enabled: @broadcast_enabled,
+                placeholder_text: @message_placeholder,
+                composer_enabled: false,
+                composer_disabled_reason: composer_disabled_reason %>
         </section>
-          <div class="chat-actions-column">
+        <div class="chat-actions-column">
           <%= render 'actions' %>
-          </div>
+        </div>
+      </div>
+    <% else %>
+      <!-- Unified Chatbox and Actions Side-by-side Layout -->
+      <div class="message-page-container chat-layout">
+        <section class="chat-panel-wrapper">
+          <%= render 'negotiation_chatbox',
+                participants: @conversation_participants,
+                current_user: @user,
+                broadcast_enabled: @broadcast_enabled,
+                placeholder_text: @message_placeholder %>
+        </section>
+        <div class="chat-actions-column">
+          <%= render 'actions' %>
+        </div>
       </div>
     <% end %>
   <% else %>
     <%= render "good_faith_prompt", mediation: @mediation, user: @user %>
   <% end %>
 </div>
-
-<!-- Pass mediator status clearly to JavaScript -->
-<script>
-  window.mediatorAssigned = <%= @mediation&.MediatorRequested && @mediation&.MediatorAssigned ? 'true' : 'false' %>;
-</script>

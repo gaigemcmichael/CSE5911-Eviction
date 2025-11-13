@@ -59,57 +59,24 @@ class MessagesController < ApplicationController
       return
     end
 
-    # Load mediatior chat recipient
-    if @mediation&.MediatorAssigned
-      @mediator = User.find_by(UserID: @mediation.MediatorID)
-
-      if @user.Role == "Tenant"
-        @recipient = @mediator
-      elsif @user.Role == "Landlord"
-        @recipient = @mediator
-      elsif @user.Role == "Mediator"
-        # Optional: if the mediator is viewing the case, this helps find the tenant or landlord
-        tenant = User.find_by(UserID: @mediation.TenantID)
-        landlord = User.find_by(UserID: @mediation.LandlordID)
-        @tenant_recipient = tenant
-        @landlord_recipient = landlord
-      end
-    end
-
-    unless @message_string
-      render plain: "Conversation not found", status: :not_found
+    unless conversation_participant?(@mediation)
+      render plain: "Access Denied", status: :forbidden
       return
     end
+
+    if @user.Role == "Mediator" && @mediation.MediatorID != @user.UserID
+      render plain: "Access Denied", status: :forbidden
+      return
+    end
+
+    @mediator = @mediation.mediator if @mediation&.MediatorAssigned
 
     @messages = Message
       .where(ConversationID: @message_string.ConversationID)
       .includes(file_attachments: :file_draft)
       .order(:MessageDate)
 
-    mediator_chat_ready = @mediation&.MediatorRequested && @mediation&.MediatorAssigned &&
-      ((@user.Role == "Tenant" && @mediation.TenantScreeningID.present?) ||
-      (@user.Role == "Landlord" && @mediation.LandlordScreeningID.present?))
-
-    if mediator_chat_ready
-      # Load mediator <-> current user side conversation
-
-      # THIS IS THE MESSAGE HISTORY BUG ORIGIN POINT, should be fixed now
-      if @user.Role == "Tenant"
-        side_group = SideMessageGroup.find_by(ConversationID: @mediation.TenantSideConversationID)
-      elsif @user.Role == "Landlord"
-        side_group = SideMessageGroup.find_by(ConversationID: @mediation.LandlordSideConversationID)
-      end
-
-
-      if side_group
-        @message_string = MessageString.find_by(ConversationID: side_group.ConversationID)
-        @messages = Message
-          .where(ConversationID: @message_string.ConversationID)
-          .includes(file_attachments: :file_draft)
-          .order(:MessageDate)
-        @mediator = User.find_by(UserID: @mediation.MediatorID)
-      end
-    end
+    @broadcast_enabled = broadcast_conversation?(@mediation)
 
     participant_ids = [
       @user.UserID,
@@ -119,6 +86,21 @@ class MessagesController < ApplicationController
     ].compact.uniq
 
     @conversation_participants = User.where(UserID: participant_ids).index_by(&:UserID)
+
+    @message_placeholder = if @broadcast_enabled
+      case @user.Role
+      when "Mediator"
+        "Message everyone in this mediation..."
+      when "Tenant"
+        "Message your landlord and mediator..."
+      when "Landlord"
+        "Message your tenant and mediator..."
+      else
+        "Type your message..."
+      end
+    else
+      "Type your message..."
+    end
 
     respond_to do |format|
       format.html { render "messages/show" }
@@ -202,8 +184,26 @@ class MessagesController < ApplicationController
     end
 
     if conversation
-      # Determine Recipient
-      recipient_id = determine_recipient(conversation)
+      primary_group = PrimaryMessageGroup.find_by(ConversationID: conversation.ConversationID)
+
+      unless primary_group
+        respond_to do |format|
+          format.html { redirect_to messages_path, alert: "Conversation not found" }
+          format.json { render json: { error: "Conversation not found" }, status: :not_found }
+        end
+        return
+      end
+
+      unless conversation_participant?(primary_group)
+        respond_to do |format|
+          format.html { redirect_to messages_path, alert: "Access denied" }
+          format.json { render json: { error: "Access denied" }, status: :forbidden }
+        end
+        return
+      end
+
+      # Determine Recipient / broadcast behavior
+      recipient_id = determine_recipient(primary_group)
 
       duplicate_exists = Message.where(
         SenderID: @user.UserID,
@@ -268,7 +268,7 @@ class MessagesController < ApplicationController
           end
           .compact
 
-  sender_name = [ @user.FName, @user.LName ].compact.join(" ").squeeze(" ").strip
+        sender_name = [ @user.FName, @user.LName ].compact.join(" ").squeeze(" ").strip
         sender_name = @user.CompanyName.presence || @user.Email if sender_name.blank?
 
         # Broadcast to ActionCable for both sender and receiver
@@ -282,7 +282,8 @@ class MessagesController < ApplicationController
             message_date: @message.MessageDate.strftime("%B %d, %Y %I:%M %p"),
             sender_role: @user.Role,
             sender_name: sender_name,
-            attachments: attachments_payload
+            attachments: attachments_payload,
+            broadcast: recipient_id.nil?
           }
         )
 
@@ -360,21 +361,38 @@ class MessagesController < ApplicationController
 
   private
 
+  def determine_recipient(primary_group)
+    return nil unless primary_group
 
-  def determine_recipient(conversation)
-    primary_group = PrimaryMessageGroup.find_by(ConversationID: conversation.ConversationID)
-
-    if primary_group.nil?
-      raise "There was an issue finding the mediation group for this conversation."
-    end
-
-    if @user.Role == "Tenant"
-      primary_group.LandlordID
-    elsif @user.Role == "Landlord"
-      primary_group.TenantID
+    if broadcast_conversation?(primary_group)
+      nil
     else
-      nil # Handle unexpected roles
+      case @user.Role
+      when "Tenant"
+        primary_group.LandlordID
+      when "Landlord"
+        primary_group.TenantID
+      when "Mediator"
+        nil
+      else
+        nil
+      end
     end
+  end
+
+  def broadcast_conversation?(primary_group)
+    mediator_present = primary_group.MediatorRequested && primary_group.MediatorAssigned && primary_group.MediatorID.present?
+    mediator_present
+  end
+
+  def conversation_participant?(primary_group)
+    participant_ids = [
+      primary_group.TenantID,
+      primary_group.LandlordID,
+      primary_group.MediatorID
+    ].compact
+
+    participant_ids.include?(@user.UserID)
   end
 
   def require_login

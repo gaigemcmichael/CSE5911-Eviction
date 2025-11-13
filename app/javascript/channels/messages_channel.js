@@ -37,6 +37,19 @@ const formatMessageContents = (contents) => {
   return sanitized.replace(/(\r\n|\n|\r)/g, "<br>");
 };
 
+const placeholderForRole = (role) => {
+  switch (role) {
+    case "Tenant":
+      return "Message your landlord and mediator...";
+    case "Landlord":
+      return "Message your tenant and mediator...";
+    case "Mediator":
+      return "Message everyone in this mediation...";
+    default:
+      return "Type your message...";
+  }
+};
+
 const buildAttachmentHtml = (attachment, currentUserRole) => {
   if (!attachment) return "";
 
@@ -84,12 +97,14 @@ let activeConversationId = null;
 const initializeMessagesChannel = () => {
   const messagesContainer = document.querySelector('.message-list-container');
   const messagesList = document.getElementById('messages');
+  const composer = document.getElementById('new_message_form');
 
   if (!messagesContainer || !messagesList) return;
 
   const conversationId = messagesList.dataset.conversationId;
   const currentUserId = messagesList.dataset.currentUserId;
   const currentUserRole = messagesList.dataset.currentUserRole;
+  let broadcastEnabled = messagesList.dataset.broadcastEnabled === 'true';
 
   if (!conversationId) {
     console.error("No conversation ID found in message list!");
@@ -121,18 +136,46 @@ const initializeMessagesChannel = () => {
     },
     received(data) {
       if (data.type === 'mediator_assigned') {
-        const messageFormContainer = document.getElementById('new_message_form');
-        if (messageFormContainer) {
-          messageFormContainer.style.display = 'none';
-          console.log("Mediator assigned, message input form hidden.");
+        broadcastEnabled = true;
+        if (messagesList) {
+          messagesList.dataset.broadcastEnabled = 'true';
         }
+
+        const textarea = document.getElementById('message_contents');
+        if (textarea) {
+          textarea.placeholder = placeholderForRole(currentUserRole);
+        }
+
+        if (composer) {
+          composer.dataset.composerEnabled = 'true';
+        }
+
+        console.log('Mediator assigned, conversation now in broadcast mode.');
         return;
       }
 
-      const isSender = data.sender_id.toString() === currentUserId;
-      const isRecipient = data.recipient_id.toString() === currentUserId;
+      const senderId = data.sender_id != null ? data.sender_id.toString() : null;
+      const recipientId = data.recipient_id != null ? data.recipient_id.toString() : null;
+      const isBroadcast = data.broadcast === true || data.broadcast === 'true' || recipientId === null;
 
-      if (!(isSender || isRecipient)) return;
+      const isSender = senderId === currentUserId;
+      const isRecipient = !isBroadcast && recipientId === currentUserId;
+
+      if (isBroadcast && !broadcastEnabled) {
+        broadcastEnabled = true;
+        if (messagesList) {
+          messagesList.dataset.broadcastEnabled = 'true';
+        }
+        if (composer) {
+          composer.dataset.composerEnabled = 'true';
+        }
+        const textarea = document.getElementById('message_contents');
+        if (textarea) {
+          textarea.placeholder = placeholderForRole(currentUserRole);
+        }
+      }
+
+      if (!(isSender || isRecipient || isBroadcast)) return;
 
       const messageClass = isSender ? 'sent' : 'received';
       const formattedRole = titleize(data.sender_role);
@@ -145,8 +188,11 @@ const initializeMessagesChannel = () => {
         .filter(Boolean)
         .join('');
 
+      const broadcastAttr = isBroadcast ? 'true' : 'false';
+      const recipientAttr = recipientId || '';
+
       const messageHtml = `
-        <div class="chat-message ${messageClass}" data-message-id="${escapeAttribute(data.message_id)}" data-sender-role="${escapeAttribute(formattedRole)}" data-sender-id="${escapeAttribute(data.sender_id)}" data-current-user-id="${escapeAttribute(currentUserId)}">
+        <div class="chat-message ${messageClass}" data-message-id="${escapeAttribute(data.message_id)}" data-sender-role="${escapeAttribute(formattedRole)}" data-sender-id="${escapeAttribute(data.sender_id)}" data-recipient-id="${escapeAttribute(recipientAttr)}" data-current-user-id="${escapeAttribute(currentUserId)}" data-broadcast="${broadcastAttr}">
           <div class="message-bubble">
             <div class="message-meta">
               <span class="message-author">${senderName}</span>
@@ -193,31 +239,18 @@ const initializeMessagesChannel = () => {
   }
 };
 
-const hideMessageFormIfMediatorAssigned = () => {
-  if (window.mediatorAssigned === true || window.mediatorAssigned === 'true') {
-    const messageFormContainer = document.getElementById('new_message_form');
-    if (messageFormContainer) {
-      messageFormContainer.style.display = 'none';
-      console.log("Mediator already assigned, message input form hidden.");
-    }
-  }
-};
-
 if (document.readyState === 'interactive' || document.readyState === 'complete') {
   initializeMessagesChannel();
-  hideMessageFormIfMediatorAssigned();
 }
 
 document.addEventListener('turbo:load', () => {
   initializeMessagesChannel();
-  hideMessageFormIfMediatorAssigned();
 });
 
 document.addEventListener('turbo:frame-load', (event) => {
   const frame = event.target;
   if (frame instanceof HTMLElement && typeof frame.querySelector === 'function' && frame.querySelector('#messages')) {
     initializeMessagesChannel();
-    hideMessageFormIfMediatorAssigned();
   }
 });
 

@@ -11,11 +11,13 @@
       end %>
 <% message_role_for_css = formatted_sender_role.presence || "Unknown" %>
 
-<div class="chat-message <%= message.SenderID == current_user.UserID ? 'sent' : 'received' if message.recipientID == current_user.UserID || message.SenderID == current_user.UserID %>"
-     data-message-id="<%= message.id %>"
-     data-sender-id="<%= message.SenderID %>"
-     data-current-user-id="<%= current_user.UserID %>"
-     data-sender-role="<%= message_role_for_css %>">
+<div class="chat-message <%= message.SenderID == current_user.UserID ? 'sent' : 'received' %>"
+  data-message-id="<%= message.id %>"
+  data-sender-id="<%= message.SenderID %>"
+  data-recipient-id="<%= message.recipientID %>"
+  data-current-user-id="<%= current_user.UserID %>"
+  data-sender-role="<%= message_role_for_css %>"
+  data-broadcast="<%= message.recipientID.nil? %>">
   <div class="message-bubble">
     <div class="message-meta">
       <span class="message-author"><%= sender_name %></span>
