@@ -148,6 +148,29 @@ const initializeMessagesChannel = () => {
 
         if (composer) {
           composer.dataset.composerEnabled = 'true';
+          const submitButton = composer.querySelector('button[type="submit"]');
+          if (submitButton) submitButton.disabled = false;
+        }
+
+        // Update the status box
+        const statusContainer = document.getElementById('mediation-status-container');
+        if (statusContainer) {
+           const mediatorName = data.mediator_name || "A mediator";
+           statusContainer.innerHTML = `
+            <div class="conversation-banner conversation-banner--success">
+              <i class="fa-solid fa-handshake" aria-hidden="true"></i>
+              <span>Mediator <strong>${mediatorName}</strong> has been assigned to this case.</span>
+            </div>
+           `;
+        }
+
+        // Update the button text
+        const requestButton = document.querySelector('.conversation-cta--primary');
+        if (requestButton) {
+            const label = requestButton.querySelector('.conversation-cta__label');
+            if (label) label.textContent = "Mediator assigned";
+            requestButton.classList.add('is-disabled');
+            requestButton.disabled = true;
         }
 
         console.log('Mediator assigned, conversation now in broadcast mode.');

@@ -6,19 +6,20 @@
   <% show_status_card = @mediation.present? && (mediation_assigned || mediation_requested) %>
 
   <% if show_status_card %>
-  <div class="conversation-card <%= 'conversation-card--mediator' if mediation_assigned %>">
+    <div id="mediation-status-container">
       <% if mediation_assigned %>
-        <div class="conversation-status conversation-status--success">
+        <% mediator = @mediation&.mediator %>
+        <% mediator_name = mediator ? [mediator.FName, mediator.LName].compact.join(" ").squeeze(" ").strip : "A mediator" %>
+        <div class="conversation-banner conversation-banner--success">
           <i class="fa-solid fa-handshake" aria-hidden="true"></i>
-          Mediator assigned and ready to assist.
-        </div>
-        <div class="conversation-card__details">
-          <%= render 'mediator_details' %>
+          <span>Mediator <strong><%= mediator_name %></strong> has been assigned to this case.</span>
         </div>
       <% elsif mediation_requested %>
-        <div class="conversation-status conversation-status--info">
-          <i class="fa-solid fa-clock" aria-hidden="true"></i>
-          Mediator requested. We'll notify you when someone is assigned.
+        <div class="conversation-card">
+          <div class="conversation-status conversation-status--info">
+            <i class="fa-solid fa-clock" aria-hidden="true"></i>
+            Mediator requested. We'll notify you when someone is assigned.
+          </div>
         </div>
       <% end %>
     </div>

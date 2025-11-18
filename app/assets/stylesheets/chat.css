@@ -1801,3 +1801,27 @@
       flex-shrink: 0;
     }
   }
+
+  .conversation-banner {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.85rem 1.25rem;
+    border-radius: 12px;
+    font-size: 0.95rem;
+    line-height: 1.4;
+    font-weight: 500;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    margin-bottom: 1rem;
+  }
+
+  .conversation-banner--success {
+    background: linear-gradient(135deg, #e6fcf5, #d1fae5);
+    border: 1px solid rgba(16, 185, 129, 0.2);
+    color: #065f46;
+  }
+
+  .conversation-banner i {
+    font-size: 1.1rem;
+    color: #059669;
+  }

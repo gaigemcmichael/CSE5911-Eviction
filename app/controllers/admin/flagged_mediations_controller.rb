@@ -124,16 +124,19 @@ class Admin::FlaggedMediationsController < ApplicationController
         )
 
         # Broadcast mediator assigned
+        mediator_user = User.find(new_mediator_id)
+        mediator_name = "#{mediator_user.FName} #{mediator_user.LName}"
+
         ActionCable.server.broadcast(
           "messages_#{@mediation.ConversationID}",
           {
-            type: "mediator_assigned"
+            type: "mediator_assigned",
+            mediator_name: mediator_name
           }
         )
 
         # Create system message "Mediator (Name) has been assigned..."
-        mediator_user = User.find(new_mediator_id)
-        content = "Mediator #{mediator_user.FName} #{mediator_user.LName} has been assigned to this mediation."
+        content = "Mediator #{mediator_name} has been assigned to this mediation."
 
         message = Message.create!(
           ConversationID: @mediation.ConversationID,
