@@ -93,52 +93,23 @@ class AccountController < ApplicationController
       redirect_to login_path, alert: 'Please sign in' and return
     end
 
-    # Handle verification code submission
-    if params[:verification_code].present? || params[:sms_code].present?
-      verification_code = (params[:verification_code] || params[:sms_code]).strip
-      
-      verifier = TwilioVerifyService.new
-      verified = false
-      
-      if verifier.configured? && @user.phone_number.present?
-        result = verifier.check_verification(to: @user.phone_number, code: verification_code)
-        if result[:error]
-          Rails.logger.error "Twilio verify check error: #{result[:error]}"
-          flash[:alert] = 'Verification failed due to an internal error.'
-        elsif result[:valid]
-          verified = true
-        else
-          flash[:alert] = 'Invalid or expired verification code.'
-        end
-      else
-        verified = @user.verify_sms_otp(verification_code)
-        flash[:alert] = 'Invalid or expired verification code.' unless verified
-      end
-      
-      if verified
-        @user.update!(sms_2fa_enabled: true)
-        flash[:notice] = 'SMS two-factor enabled successfully!'
-      end
-      
-      redirect_to account_path
+    # Check if user has verified SMS test
+    unless session[:sms_test_verified]
+      redirect_to account_path, alert: "You must verify SMS delivery by completing the test first"
       return
     end
 
-    # Handle phone number submission
-    phone = params[:phone_number]&.strip
-    if phone.blank?
-      redirect_to account_path, alert: "Phone number is required"
-      return
-    end
+    # Clear the session since we're enabling 2FA now
+    session[:sms_test_verified] = false
 
-    @user.phone_number = phone
-    @user.sms_2fa_enabled = true
-    
-    if @user.save
-      redirect_to account_path, notice: "SMS 2FA enabled successfully"
+    # Update the user to enable 2FA
+    if @user.update(sms_2fa_enabled: true)
+      flash[:notice] = 'SMS two-factor authentication enabled successfully!'
     else
-      redirect_to account_path, alert: "Failed to enable SMS 2FA"
+      flash[:alert] = "Failed to enable SMS 2FA: #{@user.errors.full_messages.join(', ')}"
     end
+    
+    redirect_to account_path
   end
 
   def disable_sms_2fa
@@ -234,6 +205,43 @@ class AccountController < ApplicationController
   end
 
   def phone_verify
+  end
+
+  def verify_test_sms
+    unless @user
+      return render json: { success: false, error: 'Not authenticated' }, status: :unauthorized
+    end
+
+    test_code = params[:test_code].to_s.strip
+    if test_code.blank?
+      return render json: { success: false, error: 'Code is required' }, status: :bad_request
+    end
+
+    # Verify the code using Twilio 
+    verifier = TwilioVerifyService.new
+    if verifier.configured? && @user.phone_number.present?
+      result = verifier.check_verification(to: @user.phone_number, code: test_code)
+      
+      if result[:error]
+        Rails.logger.error "Twilio verify test check error: #{result[:error]}"
+        return render json: { success: false, error: 'Verification failed. Please try again.' }, status: :bad_request
+      elsif result[:valid]
+        # Mark SMS successful
+        session[:sms_test_verified] = true
+        return render json: { success: true, message: 'SMS delivery verified!' }
+      else
+        return render json: { success: false, error: 'Invalid or expired code.' }, status: :bad_request
+      end
+    else
+      
+      verified = @user.verify_sms_otp(test_code)
+      if verified
+        session[:sms_test_verified] = true
+        return render json: { success: true, message: 'SMS delivery verified!' }
+      else
+        return render json: { success: false, error: 'Invalid or expired code.' }, status: :bad_request
+      end
+    end
   end
 
   private

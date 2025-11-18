@@ -76,7 +76,9 @@ class User < ApplicationRecord
 
   def phone_number_formatted
     return nil unless phone_number.present?
-    phone_number.to_s.gsub(/(\d{1})(\d{3})(\d{3})(\d{4})/, '+\1 (\2) \3-\4')
+    # Remove any existing + or spaces, then format cleanly
+    clean_number = phone_number.to_s.gsub(/[^\d]/, '')
+    clean_number.gsub(/(\d{1})(\d{3})(\d{3})(\d{4})/, '+\1 (\2) \3-\4')
   end
 
   def can_send_sms_otp?

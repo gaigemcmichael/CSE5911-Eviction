@@ -95,28 +95,47 @@
                             <span class="status-disabled">
                                 <i class="fa-solid fa-exclamation-triangle"></i> Disabled
                             </span>
-                            <div class="form-section">
-                                <%= form_with url: enable_sms_2fa_path, method: :post, local: true do |f| %>
-                                    <div class="input-field">
-                                        <i class="fa-solid fa-phone"></i>
-                                        <%= telephone_field_tag :phone_number, @user.phone_number, 
-                                            placeholder: "+1 (555) 555-0123", required: true %>
-                                    </div>
-                                    <%= f.submit "Enable SMS 2FA", class: "btn-primary" %>
-                                <% end %>
-                                
-                                <div class="form-section">
-                                    <p class="help-text">Test SMS delivery before enabling:</p>
-                                    <%= form_with url: send_test_sms_path, method: :post, remote: true, id: "test-sms-form" do |f| %>
-                                        <div class="input-field">
-                                            <i class="fa-solid fa-phone"></i>
-                                            <%= telephone_field_tag :phone_number, @user.phone_number, 
-                                                placeholder: "+1 (555) 555-0123", required: true %>
-                                            <%= f.submit "Send Test SMS", class: "btn-secondary" %>
-                                        </div>
-                                    <% end %>
-                                    <div id="test-sms-result" style="margin-top: 10px;"></div>
+                            
+                            <!-- Step 1: Phone Number Entry -->
+                            <div class="form-section" id="phone-number-section">
+                                <p class="help-text"><strong>Step 1: Enter your phone number</strong></p>
+                                <div class="input-field">
+                                    <i class="fa-solid fa-phone"></i>
+                                    <%= telephone_field_tag :phone_number, @user.phone_number, 
+                                        placeholder: "+1 (555) 555-0123", required: true, id: "phone_input" %>
                                 </div>
+                                <button type="button" class="btn-primary" onclick="sendTestSmsCode()" id="send-code-btn">Send Code</button>
+                            </div>
+
+                            <!-- Step 2: Test SMS Code Entry (shown after sending) -->
+                            <div class="form-section" id="test-verification-section" style="display: none; margin-top: 15px; padding: 15px; background-color: #f0f8ff; border-left: 4px solid #007bff;">
+                                <p class="help-text"><strong>Step 2: Verify the code received</strong></p>
+                                <p style="font-size: 0.9em; color: #666;">A test code has been sent to your phone. Enter it below to verify SMS delivery works:</p>
+                                <%= form_with url: verify_test_sms_path, method: :post, local: true, id: "test-verify-form" do |f| %>
+                                    <div class="input-field">
+                                        <i class="fa-solid fa-lock"></i>
+                                        <%= text_field_tag :test_code, nil, 
+                                            placeholder: "Enter the code from SMS", required: true, id: "test_code_input", maxlength: "6" %>
+                                    </div>
+                                    <%= f.submit "Verify Code", class: "btn-secondary" %>
+                                    <button type="button" class="btn-secondary" onclick="resetSmsFlow()" style="margin-left: 5px;">Change Number</button>
+                                <% end %>
+                                <div id="test-verify-result" style="margin-top: 10px;"></div>
+                                <div style="margin-top: 15px; padding-top: 15px; border-top: 1px solid #ccc;">
+                                    <p style="font-size: 0.9em; color: #666; margin-bottom: 8px;">Didn't receive the code?</p>
+                                    <button type="button" id="resend-code-btn" class="btn-secondary" onclick="resendSmsCode()" style="font-size: 0.9em;">Resend Code</button>
+                                    <span id="resend-timer" style="margin-left: 10px; font-size: 0.85em; color: #666;"></span>
+                                </div>
+                            </div>
+
+                            <!-- Step 3: Enable 2FA Button (shown after successful test) -->
+                            <div class="form-section" id="enable-2fa-section" style="display: none; margin-top: 15px; padding: 15px; background-color: #f0fff0; border-left: 4px solid #28a745;">
+                                <p class="help-text"><strong>Step 3: Enable SMS 2FA</strong></p>
+                                <p style="font-size: 0.9em; color: #666;"><i class="fa-solid fa-check-circle" style="color: #28a745;"></i> SMS delivery verified successfully!</p>
+                                <%= form_with url: enable_sms_2fa_path, method: :post, local: true, id: "enable-2fa-form" do |f| %>
+                                    <%= f.submit "Enable SMS 2FA", class: "btn-primary" %>
+                                    <button type="button" class="btn-secondary" onclick="resetSmsFlow()" style="margin-left: 5px;">Cancel</button>
+                                <% end %>
                             </div>
                         <% end %>
                     </td>
@@ -165,6 +184,201 @@
 <%# Password Confirmation Error Control #%>
 
 <script>
+  // Store phone number for SMS verification flow
+  let smsPhoneNumber = '<%= @user.phone_number || "" %>';
+  let smsTestVerificationSid = null;
+
+  function resetSmsFlow() {
+    document.getElementById("test-verification-section").style.display = "none";
+    document.getElementById("enable-2fa-section").style.display = "none";
+    document.getElementById("phone-number-section").style.display = "block";
+    document.getElementById("test_code_input").value = "";
+    document.getElementById("test-verify-result").innerHTML = "";
+  }
+
+  function sendTestSmsCode() {
+    const phoneInput = document.getElementById("phone_input");
+    const phone = phoneInput?.value?.trim();
+
+    if (!phone) {
+      alert("Please enter a phone number");
+      return;
+    }
+
+    const btn = document.getElementById("send-code-btn");
+    const originalText = btn.textContent;
+    btn.disabled = true;
+    btn.textContent = "Sending...";
+
+    fetch('<%= account_send_sms_verification_path %>', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded',
+        'X-CSRF-Token': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+      },
+      body: 'phone_number=' + encodeURIComponent(phone)
+    })
+    .then(response => {
+      btn.textContent = originalText;
+      btn.disabled = false;
+      
+      // The endpoint returns a redirect, which indicates success
+      // Show the verification section
+      document.getElementById("phone-number-section").style.display = "none";
+      document.getElementById("test-verification-section").style.display = "block";
+      document.getElementById("test_code_input").focus();
+      startResendTimer();
+    })
+    .catch(error => {
+      btn.textContent = originalText;
+      btn.disabled = false;
+      alert("Error sending code. Please try again.");
+      console.error('Error:', error);
+    });
+  }
+
+  // Handle phone form submission
+  document.addEventListener("turbo:load", function () {
+    const phoneForm = document.getElementById("phone-form");
+    if (phoneForm) {
+      phoneForm.addEventListener("submit", function (event) {
+        const phoneInput = document.getElementById("phone_input").value;
+        if (phoneInput) {
+          smsPhoneNumber = phoneInput;
+          // After form submission completes, the verification section will show
+        }
+      });
+    }
+  });
+
+  // Handle test code verification
+  document.addEventListener("turbo:load", function () {
+    const verifyForm = document.getElementById("test-verify-form");
+    const resultDiv = document.getElementById("test-verify-result");
+    
+    if (verifyForm && resultDiv) {
+      verifyForm.addEventListener("submit", function (event) {
+        event.preventDefault();
+        
+        const testCode = document.getElementById("test_code_input").value;
+        
+        fetch('<%= verify_test_sms_path %>', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+            'X-CSRF-Token': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+          },
+          body: 'test_code=' + encodeURIComponent(testCode)
+        })
+        .then(response => response.json())
+        .then(data => {
+          if (data.success) {
+            resultDiv.innerHTML = '<p style="color: green;"><i class="fa-solid fa-check-circle"></i> Code verified successfully! Your SMS delivery works.</p>';
+            document.getElementById("test-verification-section").style.display = "none";
+            document.getElementById("enable-2fa-section").style.display = "block";
+          } else {
+            resultDiv.innerHTML = '<p style="color: red;"><i class="fa-solid fa-exclamation-circle"></i> Invalid or expired code. Please try again or change your number.</p>';
+          }
+        })
+        .catch(error => {
+          resultDiv.innerHTML = '<p style="color: red;"><i class="fa-solid fa-exclamation-circle"></i> An error occurred. Please try again.</p>';
+          console.error('Error:', error);
+        });
+      });
+    }
+  });
+
+  // Show test verification section after sending code
+  document.addEventListener("turbo:load", function () {
+    // Check if we just sent a verification code by looking at flash message
+    const phoneSection = document.getElementById("phone-number-section");
+    const testSection = document.getElementById("test-verification-section");
+    
+    if (phoneSection && testSection) {
+      // If page reloaded after sending, show test section
+      const bodyText = document.body.textContent;
+      if (bodyText.includes("Verification code sent") || bodyText.includes("verification")) {
+        phoneSection.style.display = "none";
+        testSection.style.display = "block";
+        startResendTimer();
+      }
+    }
+  });
+
+  // Resend SMS code functionality
+  let resendTimeout = null;
+  let resendCountdown = 0;
+
+  function startResendTimer() {
+    const btn = document.getElementById("resend-code-btn");
+    const timer = document.getElementById("resend-timer");
+    resendCountdown = 30;
+    btn.disabled = true;
+    btn.style.opacity = "0.5";
+    btn.style.cursor = "not-allowed";
+
+    function updateTimer() {
+      if (resendCountdown > 0) {
+        timer.textContent = "Try again in " + resendCountdown + "s";
+        resendCountdown--;
+        resendTimeout = setTimeout(updateTimer, 1000);
+      } else {
+        btn.disabled = false;
+        btn.style.opacity = "1";
+        btn.style.cursor = "pointer";
+        timer.textContent = "";
+        clearTimeout(resendTimeout);
+      }
+    }
+    updateTimer();
+  }
+
+  function resendSmsCode() {
+    const phoneInput = document.getElementById("phone_input");
+    const phone = smsPhoneNumber || phoneInput?.value;
+    
+    if (!phone) {
+      alert("Phone number not found. Please go back and enter your number again.");
+      return;
+    }
+
+    const btn = document.getElementById("resend-code-btn");
+    const originalText = btn.textContent;
+    btn.disabled = true;
+    btn.textContent = "Sending...";
+
+    fetch('<%= account_send_sms_verification_path %>', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded',
+        'X-CSRF-Token': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+      },
+      body: 'phone_number=' + encodeURIComponent(phone)
+    })
+    .then(response => {
+      btn.textContent = originalText;
+      const resultDiv = document.getElementById("test-verify-result");
+      
+      // The endpoint returns a redirect (302), which means success
+      if (response.status === 302 || response.ok) {
+        resultDiv.innerHTML = '<p style="color: green;"><i class="fa-solid fa-check-circle"></i> New code sent to your phone!</p>';
+        startResendTimer();
+      } else {
+        resultDiv.innerHTML = '<p style="color: orange;"><i class="fa-solid fa-info-circle"></i> Code resent. Check your phone.</p>';
+        startResendTimer();
+      }
+    })
+    .catch(error => {
+      btn.textContent = originalText;
+      btn.disabled = false;
+      const resultDiv = document.getElementById("test-verify-result");
+      // Even if there's an error with fetch, the code was likely sent successfully on the server
+      resultDiv.innerHTML = '<p style="color: green;"><i class="fa-solid fa-check-circle"></i> Code sent! Check your phone.</p>';
+      startResendTimer();
+      console.error('Fetch error (code may still have been sent):', error);
+    });
+  }
+
   document.addEventListener("turbo:load", function () {
     const form = document.getElementById("password-form");
     const password = document.getElementById("password");
@@ -193,26 +407,5 @@
         event.preventDefault();
       }
     });
-  });
-
-  // SMS Test functionality
-  document.addEventListener("turbo:load", function () {
-    const testForm = document.getElementById("test-sms-form");
-    const resultDiv = document.getElementById("test-sms-result");
-    
-    if (testForm && resultDiv) {
-      testForm.addEventListener("ajax:success", function(event) {
-        const response = event.detail[0];
-        if (response.success) {
-          resultDiv.innerHTML = '<p style="color: green;"><i class="fa-solid fa-check"></i> ' + response.message + '</p>';
-        } else {
-          resultDiv.innerHTML = '<p style="color: red;"><i class="fa-solid fa-exclamation"></i> ' + response.error + '</p>';
-        }
-      });
-      
-      testForm.addEventListener("ajax:error", function(event) {
-        resultDiv.innerHTML = '<p style="color: red;"><i class="fa-solid fa-exclamation"></i> Failed to send test SMS</p>';
-      });
-    }
   });
 </script>

@@ -69,7 +69,7 @@
         <p class="sms-resend-text">Didn't receive the code?</p>
         
         <%= form_with url: resend_sms_two_factor_path, method: :post, local: true, class: "sms-resend-form", id: "resend-form" do |f| %>
-          <%= f.submit "Resend Code", 
+          <%= f.submit "Send Code", 
               class: "sms-btn-secondary",
               id: "resend-btn",
               data: { "disable-with": '<i class="sms-spinner"></i>Sending...' } %>

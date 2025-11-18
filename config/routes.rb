@@ -32,7 +32,8 @@ Rails.application.routes.draw do
   post "/account/sms/disable", to: "account#disable_sms_2fa", as: "account_disable_sms_2fa"
   post "/account/enable_sms_2fa", to: "account#enable_sms_2fa", as: "enable_sms_2fa"
   post "/account/disable_sms_2fa", to: "account#disable_sms_2fa", as: "disable_sms_2fa"
-  post "/account/send_test_sms", to: "account#send_test_sms", as: "send_test_sms"
+  post "/account/send_test_sms", to: "account#send_sms_verification", as: "send_test_sms"
+  post "/account/verify_test_sms", to: "account#verify_test_sms", as: "verify_test_sms"
   get "/account/phone_verify", to: "account#phone_verify", as: "phone_verify_account"
 
   # SMS Two-Factor Authentication

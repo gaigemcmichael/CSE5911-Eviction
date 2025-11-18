@@ -24,3 +24,8 @@
 //= link resources.css
 //= link account_view.css
 //= link admin_mediations.css
+//= link sms_two_factor.css
+//= link sms_2fa.css
+
+// Individual JavaScript links
+//= link sms_two_factor.js
