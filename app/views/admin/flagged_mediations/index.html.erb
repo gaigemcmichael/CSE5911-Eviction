@@ -1,5 +1,31 @@
 <div class="mediation-container">
-  <h1>Flagged Mediations</h1>
+  <h1>Mediations Dashboard</h1>
+
+  <% if @unassigned_mediations.any? %>
+    <h2>Unassigned Mediator Requests</h2>
+    <table class="mediation-table">
+      <thead>
+        <tr>
+          <th>Tenant</th>
+          <th>Landlord</th>
+          <th>Requested At</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% @unassigned_mediations.each do |mediation| %>
+          <tr>
+            <td><%= mediation.tenant.FName %> <%= mediation.tenant.LName %></td>
+            <td><%= mediation.landlord.FName %> <%= mediation.landlord.LName %></td>
+            <td><%= mediation.CreatedAt.strftime("%B %d, %Y") %></td>
+            <td><%= link_to "Assign Mediator", admin_flagged_mediation_path(mediation), class: "view-link" %></td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  <% end %>
+
+  <h2>Flagged Mediations</h2>
 
   <table class="mediation-table">
     <thead>

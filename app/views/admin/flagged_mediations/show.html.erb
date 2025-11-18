@@ -30,25 +30,27 @@
 
     <!-- Reassign Mediator -->
     <div class="admin-form-section">
-      <h2><i class="fa-solid fa-people-arrows"></i> Reassign Mediator</h2>
+      <h2><i class="fa-solid fa-people-arrows"></i> <%= @mediator ? "Reassign Mediator" : "Assign Mediator" %></h2>
       <div class="form-section">
         <%= form_with url: admin_reassign_mediator_path(@mediation), method: :patch, local: true do |f| %>
         
         <div class="custom-select-wrapper">
           <%= f.select :new_mediator_id,
             @eligible_mediators.map { |m| ["#{m.user.FName} #{m.user.LName}", m.UserID] },
-            { include_blank: "Select a new mediator" },
+            { include_blank: "Select a mediator" },
             class: "form-control" %>
           <i class="arrow down"></i>
         </div>
 
-        <%= submit_tag "Reassign and Require New Screenings" %>
+        <%= submit_tag @mediator ? "Reassign and Require New Screenings" : "Assign Mediator" %>
         <% end %>
         
-        <h3> OR </h3>
-        
-        <%= button_to "Unflag Without Reassigning", admin_unflag_mediation_path(@mediation), 
-          method: :patch, class: "unflag-btn" %>
+        <% if @mediator %>
+          <h3> OR </h3>
+          
+          <%= button_to "Unflag Without Reassigning", admin_unflag_mediation_path(@mediation), 
+            method: :patch, class: "unflag-btn" %>
+        <% end %>
       </div>
     </div>
 

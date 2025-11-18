@@ -117,58 +117,41 @@ class MessagesController < ApplicationController
     end
 
     if !@mediation.MediatorRequested && !@mediation.MediatorAssigned
-      mediator = Mediator
-        .where(Available: true)
-        .where("ActiveMediations < MediationCap")
-        .order("ActiveMediations ASC")
-        .first
+      # Update to requested only
+      @mediation.update!(MediatorRequested: true)
 
-      if mediator
-        # Assign the mediator to the mediation
-        @mediation.update!(
-          MediatorRequested: true,
-          MediatorAssigned: true,
-          MediatorID: mediator.UserID
-        )
-        mediator.increment!(:ActiveMediations)
+      # Create system message
+      sender_name = [ @user.FName, @user.LName ].compact.join(" ")
+      content = "#{sender_name} requested a mediator."
 
-        # Create SideMessageGroup for mediatior chatboxes
-        side_convo_tenant = MessageString.create!(Role: "Side")
-        side_convo_landlord = MessageString.create!(Role: "Side")
+      # Create the message
+      message = Message.create!(
+        ConversationID: @mediation.ConversationID,
+        SenderID: @user.UserID,
+        MessageDate: Time.current,
+        Contents: content,
+        recipientID: determine_recipient(@mediation)
+      )
 
-        # Create SideMessageGroup entries for tenant and landlord
-        SideMessageGroup.find_or_create_by!(
-          UserID: @mediation.TenantID,
-          MediatorID: mediator.UserID,
-          ConversationID: side_convo_tenant.ConversationID
-        )
+      # Broadcast to ActionCable
+      ActionCable.server.broadcast(
+        "messages_#{@mediation.ConversationID}",
+        {
+          message_id: message.id,
+          contents: message.Contents,
+          sender_id: message.SenderID,
+          recipient_id: message.recipientID,
+          message_date: message.MessageDate.strftime("%B %d, %Y %I:%M %p"),
+          sender_role: @user.Role,
+          sender_name: sender_name,
+          attachments: [],
+          broadcast: false
+        }
+      )
 
-        SideMessageGroup.find_or_create_by!(
-          UserID: @mediation.LandlordID,
-          MediatorID: mediator.UserID,
-          ConversationID: side_convo_landlord.ConversationID
-        )
-
-        # Update PrimaryMessageGroup with new side conversation IDs
-        @mediation.update!(
-          TenantSideConversationID: side_convo_tenant.ConversationID,
-          LandlordSideConversationID: side_convo_landlord.ConversationID
-        )
-
-        # Hide the chatbox for other party upon mediator request
-        ActionCable.server.broadcast(
-          "messages_#{@mediation.ConversationID}",
-          {
-            type: "mediator_assigned"
-          }
-        )
-        # not sure on these redirects, they seem to work but also kinda hard to test obv
-        redirect_back fallback_location: messages_path, notice: "Mediator requested successfully."
-      else
-        redirect_back fallback_location: messages_path, alert: "No available mediators at this time. Please try again later."
-      end
+      redirect_back fallback_location: messages_path, notice: "Mediator requested. An admin will assign one shortly."
     else
-      redirect_back fallback_location: messages_path, alert: "Failed to request a mediator."
+      redirect_back fallback_location: messages_path, alert: "Mediator already requested or assigned."
     end
   end
 
