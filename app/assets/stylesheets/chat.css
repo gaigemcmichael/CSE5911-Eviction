@@ -1408,22 +1408,30 @@
       padding: 0 0.5rem clamp(1rem, 3vw, 1.5rem);
       max-width: 100vw;
       overflow-x: hidden;
+      flex: 1 1 auto;
+      min-height: 0;
+      display: flex;
+      flex-direction: column;
     }
     
     .mediation-container {
       padding: 0 0.5rem 0.5rem;
       max-width: 100vw;
       overflow-x: hidden;
+      height: 94vh;
+      height: 94dvh;
     }
 
     .mediation-container h1 {
       font-size: 1.5rem;
       padding: 0 clamp(1rem, 6vw, 1.75rem);
+      flex: 0 0 auto;
     }
 
     .mediation-container p {
       margin-bottom: 1rem;
       font-size: 0.95rem;
+      flex: 0 0 auto;
     }
 
     .message-page-container.chat-layout {
@@ -1431,6 +1439,11 @@
       max-width: 100%;
       overflow-x: hidden;
       padding-bottom: 0.5rem;
+      flex: 1 1 auto;
+      min-height: 0;
+      display: flex;
+      flex-direction: column;
+      height: 100%;
     }
 
     .chat-panel-wrapper {
@@ -1438,6 +1451,10 @@
       overflow-x: hidden;
       padding: 0 clamp(0.75rem, 4vw, 1.35rem);
       box-sizing: border-box;
+      flex: 1 1 auto;
+      min-height: 0;
+      display: flex;
+      flex-direction: column;
     }
 
     .chat-panel {
@@ -1445,8 +1462,10 @@
       max-width: 100%;
       overflow-x: hidden;
       /* Resetting height constraints for mobile to let flexbox work */
-      min-height: initial;
-      max-height: initial;
+      min-height: 0;
+      height: auto !important;
+      max-height: none !important;
+      flex: 1 1 auto;
     }
 
     .message-list-container {
@@ -1522,6 +1541,7 @@
       width: 100%;
       align-items: stretch;
       background: transparent;
+      flex: 0 0 auto;
     }
 
     .conversation-actions {
@@ -1743,15 +1763,15 @@
 
     .chat-panel {
       /* Resetting height constraints for mobile to let flexbox work */
-      min-height: initial;
-      height: 65vh;
-      max-height: 65vh;
+      min-height: 0;
+      height: auto !important;
+      max-height: none !important;
       border-radius: 14px;
-      flex: 0 0 auto;
+      flex: 1 1 auto;
     }
 
     .chat-panel-wrapper {
-      flex: 0 0 auto;
+      flex: 1 1 auto;
     }
 
     .message-list-container {
