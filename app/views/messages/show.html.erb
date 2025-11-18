@@ -7,29 +7,8 @@
     <% mediator_assigned = @mediation&.MediatorRequested && @mediation&.MediatorAssigned %>
     <% screenings_flagged = tenant_screening&.flagged == true || landlord_screening&.flagged == true %>
 
-    <h1>
-      <% if mediator_assigned %>
-        Mediation Conversation
-      <% elsif @user.Role == "Tenant" %>
-        Negotiation with Landlord
-      <% elsif @user.Role == "Landlord" %>
-        Negotiation with Tenant
-      <% else %>
-        Negotiation Conversation
-      <% end %>
-    </h1>
-
     <% if mediator_assigned && !screenings_flagged %>
-      <% if @user.Role == "Mediator" %>
-        <p>
-          You're now part of the primary conversation. Messages you send here are visible to both the tenant and landlord.
-        </p>
-      <% else %>
-        <p>
-          A mediator has been requested and assigned to this case. <br>
-          You are now communicating with a neutral third-party mediator to help resolve the issue.
-        </p>
-      <% end %>
+      <%# Moved to conversation details panel %>
     <% end %>
     <div class="chat-page-wrapper">
       <div class="conversation-info-trigger">
@@ -49,6 +28,27 @@
             </button>
           </div>
           <div class="conversation-info-card__body">
+            <% 
+               other_party_role = @user.Role == "Tenant" ? "Landlord" : "Tenant" 
+               is_mediator = @user.Role == "Mediator"
+            %>
+            
+            <% if mediator_assigned && !screenings_flagged %>
+              <div class="info-box info-box--mediator">
+                <h4>Mediation Active</h4>
+                <% if is_mediator %>
+                  <p>You're now part of the primary conversation. Messages you send here are visible to both the tenant and landlord.</p>
+                <% else %>
+                  <p>A mediator has joined the conversation. Messages you send here are visible to both the <%= other_party_role.downcase %> and the mediator.</p>
+                <% end %>
+              </div>
+            <% elsif !is_mediator %>
+              <div class="info-box info-box--info">
+                <h4>Negotiation Active</h4>
+                <p>This is a mediation conversation with your <%= other_party_role.downcase %>.</p>
+              </div>
+            <% end %>
+
             <table class="info-table">
               <tr>
                 <th>Address</th>

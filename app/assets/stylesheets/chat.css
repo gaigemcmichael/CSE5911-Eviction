@@ -203,6 +203,55 @@
     background: rgba(16, 42, 77, 0.08);
   }
 
+  /* Info Box Styles */
+  .info-box {
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+    padding: 1rem;
+    margin-bottom: 1.25rem;
+  }
+
+  .info-box h4 {
+    margin: 0 0 0.5rem;
+    font-size: 0.95rem;
+    color: #102a4d;
+    font-weight: 600;
+  }
+
+  .info-box p {
+    margin: 0;
+    font-size: 0.9rem;
+    color: #475569;
+    line-height: 1.5;
+  }
+
+  .info-box--mediator {
+    background: #f0fdf4;
+    border-color: #bbf7d0;
+  }
+
+  .info-box--mediator h4 {
+    color: #166534;
+  }
+
+  .info-box--mediator p {
+    color: #15803d;
+  }
+
+  .info-box--info {
+    background: #eff6ff;
+    border-color: #bfdbfe;
+  }
+
+  .info-box--info h4 {
+    color: #1e40af;
+  }
+
+  .info-box--info p {
+    color: #1d4ed8;
+  }
+
   /* ==========================================================================
     4. Chat Panel & Message List
     ========================================================================== */
