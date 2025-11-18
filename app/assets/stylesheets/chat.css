@@ -402,6 +402,16 @@
     border: none;
   }
 
+  .chat-message[data-sender-role="Mediator"] .message-meta,
+  .chat-message[data-sender-role="Mediator"] .message-author,
+  .chat-message[data-sender-role="Mediator"] .message-content {
+    color: rgba(255, 255, 255, 0.95);
+  }
+
+  .chat-message[data-sender-role="Mediator"] .message-timestamp {
+    color: rgba(255, 255, 255, 0.8);
+  }
+
   .chat-message.is-entering {
     animation: messageEnter 220ms ease-out;
   }
