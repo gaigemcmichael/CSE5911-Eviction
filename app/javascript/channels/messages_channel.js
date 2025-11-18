@@ -177,6 +177,12 @@ const initializeMessagesChannel = () => {
 
       if (!(isSender || isRecipient || isBroadcast)) return;
 
+      // Remove "no messages" placeholder if it exists
+      const noMessagesPlaceholder = messagesList.querySelector('.no-messages');
+      if (noMessagesPlaceholder) {
+        noMessagesPlaceholder.remove();
+      }
+
       const messageClass = isSender ? 'sent' : 'received';
       const formattedRole = titleize(data.sender_role);
       const senderName = escapeHtml(data.sender_name || (isSender ? 'You' : formattedRole || 'Participant'));
