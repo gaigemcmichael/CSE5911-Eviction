@@ -20,6 +20,7 @@ class SessionsController < ApplicationController
                 Rails.logger.info "SMS Code for #{user.phone_number}: #{code}"
                 puts "*** SMS CODE: #{code} for #{user.phone_number} ***"
                 redirect_to sms_two_factor_path, notice: "Please enter the verification code sent to your phone"
+                return
               else
                 user.update!(twilio_verification_sid: result[:sid], twilio_verification_status: result[:status], twilio_verification_sent_at: Time.current)
               end

@@ -22,7 +22,8 @@ class AccountController < ApplicationController
         updated = true
       else
         flash.now[:alert] = "Password update failed."
-        render :show and return
+        render :show
+        return
       end
     end
 
@@ -33,7 +34,8 @@ class AccountController < ApplicationController
         updated = true
       else
         flash.now[:alert] = "Failed to update availability."
-        render :show and return
+        render :show
+        return
       end
     end
 
@@ -44,7 +46,8 @@ class AccountController < ApplicationController
         updated = true
       else
         flash.now[:alert] = "Address update failed."
-        render :show and return
+        render :show
+        return
       end
     end
 
@@ -54,19 +57,22 @@ class AccountController < ApplicationController
 
   def send_sms_verification
     unless @user
-      redirect_to login_path, alert: 'Please sign in' and return
+      redirect_to login_path, alert: 'Please sign in'
+      return
     end
 
     phone = params[:phone_number].to_s.strip
     if phone.blank?
-      redirect_to account_path, alert: 'Phone number cannot be blank' and return
+      redirect_to account_path, alert: 'Phone number cannot be blank'
+      return
     end
 
     @user.update!(phone_number: phone)
     
     unless @user.valid?
       flash[:alert] = @user.errors.full_messages.join(', ')
-      redirect_to account_path and return
+      redirect_to account_path
+      return
     end
 
     verifier = TwilioVerifyService.new
@@ -90,7 +96,8 @@ class AccountController < ApplicationController
 
   def enable_sms_2fa
     unless @user
-      redirect_to login_path, alert: 'Please sign in' and return
+      redirect_to login_path, alert: 'Please sign in'
+      return
     end
 
     # Check if user has verified SMS test
@@ -114,7 +121,8 @@ class AccountController < ApplicationController
 
   def disable_sms_2fa
     unless @user
-      redirect_to login_path, alert: 'Please sign in' and return
+      redirect_to login_path, alert: 'Please sign in'
+      return
     end
     
     Rails.logger.debug "Account#disable_sms_2fa called for user=#{@user.UserID} password_present=#{params[:password].present?} sms_code_present=#{params[:sms_code].present?}"
