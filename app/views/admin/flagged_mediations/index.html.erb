@@ -15,10 +15,10 @@
       <tbody>
         <% @unassigned_mediations.each do |mediation| %>
           <tr>
-            <td><%= mediation.tenant.FName %> <%= mediation.tenant.LName %></td>
-            <td><%= mediation.landlord.FName %> <%= mediation.landlord.LName %></td>
-            <td><%= mediation.CreatedAt.strftime("%B %d, %Y") %></td>
-            <td><%= link_to "Assign Mediator", admin_flagged_mediation_path(mediation), class: "view-link" %></td>
+            <td data-label="Tenant"><%= mediation.tenant.FName %> <%= mediation.tenant.LName %></td>
+            <td data-label="Landlord"><%= mediation.landlord.FName %> <%= mediation.landlord.LName %></td>
+            <td data-label="Requested At"><%= mediation.CreatedAt.strftime("%B %d, %Y") %></td>
+            <td data-label="Action"><%= link_to "Assign Mediator", admin_flagged_mediation_path(mediation), class: "view-link" %></td>
           </tr>
         <% end %>
       </tbody>
@@ -40,10 +40,10 @@
     <tbody>
       <% @flagged_mediations.each do |mediation| %>
         <tr>
-          <td><%= mediation.tenant.FName %> <%= mediation.tenant.LName %></td>
-          <td><%= mediation.landlord.FName %> <%= mediation.landlord.LName %></td>
-          <td><%= mediation.mediator&.FName %> <%= mediation.mediator&.LName || "Unassigned" %></td>
-          <td><%= link_to "View Mediation", admin_flagged_mediation_path(mediation), class: "view-link" %></td>
+          <td data-label="Tenant"><%= mediation.tenant.FName %> <%= mediation.tenant.LName %></td>
+          <td data-label="Landlord"><%= mediation.landlord.FName %> <%= mediation.landlord.LName %></td>
+          <td data-label="Assigned Mediator"><%= mediation.mediator&.FName %> <%= mediation.mediator&.LName || "Unassigned" %></td>
+          <td data-label="View Details"><%= link_to "View Mediation", admin_flagged_mediation_path(mediation), class: "view-link" %></td>
         </tr>
       <% end %>
     </tbody>
