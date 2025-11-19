@@ -1,90 +1,253 @@
-<div class="summary-container">
-
-  <!-- Back Header -->
-  <div class="header-with-back">
-    <%= link_to admin_mediations_path, class: "back-btn" do %>
-      <i class="fa-solid fa-arrow-left"></i> Back
+<div class="admin-mediation-details-container">
+  <!-- Header -->
+  <div class="page-header">
+    <%= link_to admin_mediations_path, class: "back-link" do %>
+      <i class="fa-solid fa-arrow-left"></i> Back to Flagged Mediations
     <% end %>
     <h1>Flagged Mediation Details</h1>
   </div>
 
-  <!-- Tabs -->
-  <div class="admin-tabs">
-    <a href="?tab=mediator" class="<%= params[:tab] == 'mediator' || params[:tab].blank? ? 'active' : '' %>">Mediator</a>
-    <a href="?tab=parties" class="<%= params[:tab] == 'parties' ? 'active' : '' %>">Tenant & Landlord</a>
-  </div>
-
-  <% tab = params[:tab] || 'mediator' %>
-
-  <% if tab == 'mediator' %>
-    <!-- Mediator Info -->
-    <div class="summary-section">
-      <h2><i class="fa-solid fa-briefcase"></i> Mediator Info</h2>
-      <table class="summary-table">
-        <tr>
-          <th><i class="fa-solid fa-id-badge"></i> Name</th>
-          <td><%= @mediator&.FName %> <%= @mediator&.LName || "None assigned" %></td>
-        </tr>
-      </table>
-    </div>
-
-    <!-- Reassign Mediator -->
-    <div class="admin-form-section">
-      <h2><i class="fa-solid fa-people-arrows"></i> <%= @mediator ? "Reassign Mediator" : "Assign Mediator" %></h2>
-      <div class="form-section">
-        <%= form_with url: admin_reassign_mediator_path(@mediation), method: :patch, local: true do |f| %>
-        
-        <div class="custom-select-wrapper">
-          <%= f.select :new_mediator_id,
-            @eligible_mediators.map { |m| ["#{m.user.FName} #{m.user.LName}", m.UserID] },
-            { include_blank: "Select a mediator" },
-            class: "form-control" %>
-          <i class="arrow down"></i>
+  <div class="details-grid">
+    <!-- Left Column: Landlord & Mediator Actions -->
+    <div class="details-column left-column">
+      <!-- Landlord Card -->
+      <div class="info-card">
+        <div class="card-header">
+          <h2><i class="fa-solid fa-house-user"></i> Landlord</h2>
         </div>
+        <div class="card-body">
+          <div class="info-row">
+            <span class="label">Name</span>
+            <span class="value"><%= @landlord.FName %> <%= @landlord.LName %></span>
+          </div>
+          <div class="info-row">
+            <span class="label">Email</span>
+            <span class="value"><%= @landlord.Email %></span>
+          </div>
+          <div class="info-row">
+            <span class="label">Phone</span>
+            <span class="value"><%= @landlord.PhoneNumber.presence || "N/A" %></span>
+          </div>
+          <% if @landlord.CompanyName.present? %>
+            <div class="info-row">
+              <span class="label">Company</span>
+              <span class="value"><%= @landlord.CompanyName %></span>
+            </div>
+          <% end %>
+        </div>
+      </div>
 
-        <%= submit_tag @mediator ? "Reassign and Require New Screenings" : "Assign Mediator" %>
-        <% end %>
-        
-        <% if @mediator %>
-          <h3> OR </h3>
-          
-          <%= button_to "Unflag Without Reassigning", admin_unflag_mediation_path(@mediation), 
-            method: :patch, class: "unflag-btn" %>
-        <% end %>
+      <!-- Mediator Assignment Card -->
+      <div class="info-card mediator-card">
+        <div class="card-header">
+          <h2><i class="fa-solid fa-gavel"></i> Mediator Assignment</h2>
+        </div>
+        <div class="card-body">
+          <% if @mediator %>
+            <div class="current-mediator">
+              <span class="label">Current Mediator</span>
+              <div class="mediator-name">
+                <%= @mediator.FName %> <%= @mediator.LName %>
+              </div>
+            </div>
+          <% else %>
+            <div class="current-mediator">
+              <span class="label">Current Status</span>
+              <div class="mediator-name text-warning">
+                <i class="fa-solid fa-circle-exclamation"></i> Unassigned
+              </div>
+            </div>
+          <% end %>
+
+          <div class="action-section">
+            <h3>Reassign Case</h3>
+            <%= form_with url: admin_reassign_mediator_path(@mediation), method: :patch, local: true do |f| %>
+              <div class="form-group">
+                <div class="select-wrapper">
+                  <%= f.select :new_mediator_id, 
+                      options_for_select(@eligible_mediators.map { |m| ["#{m.user.FName} #{m.user.LName} (#{m.ActiveMediations}/#{m.MediationCap} cases)", m.UserID] }), 
+                      { prompt: "Select a mediator..." }, 
+                      { class: "form-control" } 
+                  %>
+                  <i class="fa-solid fa-chevron-down"></i>
+                </div>
+              </div>
+              <%= f.button type: "submit", class: "btn btn-primary" do %>
+                <i class="fa-solid fa-user-check"></i> Assign Mediator
+              <% end %>
+            <% end %>
+          </div>
+
+          <div class="divider">
+            <span>OR</span>
+          </div>
+
+          <div class="action-section">
+            <h3>Resolve Flag</h3>
+            <p class="help-text">If the issue has been resolved or was flagged in error.</p>
+            <%= button_to admin_unflag_mediation_path(@mediation), method: :patch, class: "btn btn-outline-danger", form: { data: { turbo_confirm: "Are you sure you want to unflag this mediation?" } } do %>
+              <i class="fa-solid fa-flag-checkered"></i> Unflag Mediation
+            <% end %>
+          </div>
+        </div>
       </div>
     </div>
 
-  <% elsif tab == 'parties' %>
-    <!-- Tenant Info -->
-    <div class="summary-section">
-      <h2><i class="fa-solid fa-user"></i> Tenant Info</h2>
-      <table class="summary-table">
-        <tr><th><i class="fa-solid fa-id-badge"></i> Name</th><td><%= @tenant.FName %> <%= @tenant.LName %></td></tr>
-        <tr><th><i class="fa-solid fa-envelope"></i> Email</th><td><%= @tenant.Email %></td></tr>
-      </table>
-    </div>
+    <!-- Right Column: Tenant Info & Screening -->
+    <div class="details-column right-column">
+      <!-- Tenant Card -->
+      <div class="info-card">
+        <div class="card-header">
+          <h2><i class="fa-solid fa-user"></i> Tenant</h2>
+        </div>
+        <div class="card-body">
+          <div class="info-row">
+            <span class="label">Name</span>
+            <span class="value"><%= @tenant.FName %> <%= @tenant.LName %></span>
+          </div>
+          <div class="info-row">
+            <span class="label">Email</span>
+            <span class="value"><%= @tenant.Email %></span>
+          </div>
+          <div class="info-row">
+            <span class="label">Phone</span>
+            <span class="value"><%= @tenant.PhoneNumber.presence || "N/A" %></span>
+          </div>
+          <div class="info-row">
+            <span class="label">Address</span>
+            <span class="value"><%= @tenant.TenantAddress.presence || "N/A" %></span>
+          </div>
 
-    <!-- Landlord Info -->
-    <div class="summary-section">
-      <h2><i class="fa-solid fa-building-user"></i> Landlord Info</h2>
-      <table class="summary-table">
-        <tr><th><i class="fa-solid fa-id-badge"></i> Name</th><td><%= @landlord.FName %> <%= @landlord.LName %></td></tr>
-        <tr><th><i class="fa-solid fa-envelope"></i> Email</th><td><%= @landlord.Email %></td></tr>
-      </table>
-    </div>
+          <!-- Intake Data (New) -->
+          <% if @mediation.intake_question %>
+            <div class="screening-section">
+              <h3>Intake Responses</h3>
+              <div class="screening-grid">
+                <div class="screening-item">
+                  <span class="q-label">Reason for Mediation</span>
+                  <span class="q-value"><%= @mediation.intake_question.Reason %></span>
+                </div>
+                <div class="screening-item">
+                  <span class="q-label">Describe the Cause</span>
+                  <span class="q-value"><%= @mediation.intake_question.DescribeCause.presence || "N/A" %></span>
+                </div>
+                <div class="screening-item">
+                  <span class="q-label">Best Option</span>
+                  <span class="q-value"><%= @mediation.intake_question.BestOption %></span>
+                </div>
+                <div class="screening-item">
+                  <span class="q-label">Uses Section 8?</span>
+                  <span class="q-value"><%= @mediation.intake_question.Section8 ? "Yes" : "No" %></span>
+                </div>
+                <div class="screening-item">
+                  <span class="q-label">Money Owed</span>
+                  <span class="q-value">$<%= @mediation.intake_question.MoneyOwed %></span>
+                </div>
+                <div class="screening-item">
+                  <span class="q-label">Total or Monthly?</span>
+                  <span class="q-value"><%= @mediation.intake_question.TotalCostOrMonthly ? "Monthly" : "Total" %></span>
+                </div>
+                <div class="screening-item">
+                  <span class="q-label">Monthly Rent</span>
+                  <span class="q-value">$<%= @mediation.intake_question.MonthlyRent || "N/A" %></span>
+                </div>
+                <div class="screening-item">
+                  <span class="q-label">Date Due</span>
+                  <span class="q-value"><%= @mediation.intake_question.DateDue&.strftime("%B %d, %Y") || "N/A" %></span>
+                </div>
+                <div class="screening-item">
+                  <span class="q-label">Payable Today</span>
+                  <span class="q-value"><%= @mediation.intake_question.PayableToday %></span>
+                </div>
+              </div>
+            </div>
+          <% end %>
 
-    <% if @tenant_screening %>
-      <div class="summary-section">
-        <h2>Tenant Screening</h2>
-        <%= render partial: "screening_table", locals: { screening: @tenant_screening } %>
+          <!-- Screening Data -->
+          <div class="screening-section">
+            <h3>Screening Questionnaire</h3>
+            
+            <% if @tenant_screening %>
+              <div class="screening-grid">
+                <!-- Interpreter -->
+                <div class="screening-item">
+                  <span class="q-label">Interpreter Needed?</span>
+                  <span class="q-value <%= @tenant_screening.InterpreterNeeded ? 'text-warning' : '' %>">
+                    <%= @tenant_screening.InterpreterNeeded ? "Yes" : "No" %>
+                  </span>
+                  <% if @tenant_screening.InterpreterNeeded %>
+                    <div class="q-detail">Language: <%= @tenant_screening.InterpreterLanguage %></div>
+                  <% end %>
+                </div>
+
+                <!-- Disability -->
+                <div class="screening-item">
+                  <span class="q-label">Disability Accommodation?</span>
+                  <span class="q-value <%= @tenant_screening.DisabilityAccommodation ? 'text-warning' : '' %>">
+                    <%= @tenant_screening.DisabilityAccommodation ? "Yes" : "No" %>
+                  </span>
+                  <% if @tenant_screening.DisabilityAccommodation %>
+                    <div class="q-detail"><%= @tenant_screening.DisabilityExplanation %></div>
+                  <% end %>
+                </div>
+
+                <!-- Conflict of Interest -->
+                <div class="screening-item">
+                  <span class="q-label">Conflict of Interest?</span>
+                  <span class="q-value <%= @tenant_screening.ConflictOfInterest ? 'text-danger' : '' %>">
+                    <%= @tenant_screening.ConflictOfInterest ? "Yes" : "No" %>
+                  </span>
+                </div>
+
+                <!-- Speak on Own Behalf -->
+                <div class="screening-item">
+                  <span class="q-label">Can Speak on Own Behalf?</span>
+                  <span class="q-value <%= !@tenant_screening.SpeakOnOwnBehalf ? 'text-warning' : '' %>">
+                    <%= @tenant_screening.SpeakOnOwnBehalf ? "Yes" : "No" %>
+                  </span>
+                </div>
+
+                <!-- Need to Consult -->
+                <div class="screening-item">
+                  <span class="q-label">Need to Consult?</span>
+                  <span class="q-value <%= @tenant_screening.NeedToConsult ? 'text-info' : '' %>">
+                    <%= @tenant_screening.NeedToConsult ? "Yes" : "No" %>
+                  </span>
+                  <% if @tenant_screening.NeedToConsult %>
+                    <div class="q-detail"><%= @tenant_screening.ConsultExplanation %></div>
+                  <% end %>
+                </div>
+
+                <!-- Relationship -->
+                <% if @tenant_screening.RelationshipToOtherParty.present? %>
+                  <div class="screening-item full-width">
+                    <span class="q-label">Relationship to Landlord</span>
+                    <div class="q-detail"><%= @tenant_screening.RelationshipToOtherParty %></div>
+                  </div>
+                <% end %>
+
+                <!-- Safety -->
+                <div class="screening-item full-width">
+                  <span class="q-label">Feel Unsafe?</span>
+                  <span class="q-value <%= @tenant_screening.Unsafe ? 'text-danger' : '' %>">
+                    <%= @tenant_screening.Unsafe ? "Yes" : "No" %>
+                  </span>
+                  <% if @tenant_screening.Unsafe %>
+                    <div class="q-detail warning-box">
+                      <i class="fa-solid fa-triangle-exclamation"></i>
+                      <%= @tenant_screening.UnsafeExplanation %>
+                    </div>
+                  <% end %>
+                </div>
+              </div>
+            <% else %>
+              <div class="no-data">
+                <i class="fa-regular fa-clipboard"></i> No screening questionnaire found.
+              </div>
+            <% end %>
+          </div>
+        </div>
       </div>
-    <% end %>
-
-    <% if @landlord_screening %>
-      <div class="summary-section">
-        <h2>Landlord Screening</h2>
-        <%= render partial: "screening_table", locals: { screening: @landlord_screening } %>
-      </div>
-    <% end %>
-  <% end %>
+    </div>
+  </div>
 </div>
