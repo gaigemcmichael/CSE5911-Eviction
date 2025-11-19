@@ -49,4 +49,18 @@ class MessagesControllerTest < ActionDispatch::IntegrationTest
     assert_response :forbidden
     assert_match "Access Denied", response.body
   end
+
+  test "should get summary for ended mediation" do
+    @mediation.update!(deleted_at: Time.current)
+    log_in_as(@tenant)
+    get mediation_summary_path(@mediation.ConversationID)
+    assert_response :success
+    assert_select "h1", "Mediation Summary"
+  end
+
+  test "should redirect active mediation summary" do
+    log_in_as(@tenant)
+    get mediation_summary_path(@mediation.ConversationID)
+    assert_redirected_to messages_path
+  end
 end

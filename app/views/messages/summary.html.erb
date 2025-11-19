@@ -1,81 +1,179 @@
-<div class="summary-container">
-  <div class="header-with-back">
-    <% if @user.Role == "Mediator" %>
-      <%= link_to third_party_mediations_path, class: "back-btn" do %>
-        <i class="fa-solid fa-arrow-left"></i> Back
-      <% end %>
-    <% else %>
-      <%= link_to messages_path, class: "back-btn" do %>
-        <i class="fa-solid fa-arrow-left"></i> Back
-      <% end %>
+<%= stylesheet_link_tag "admin_mediations", "data-turbo-track": "reload" %>
+
+<div class="admin-mediation-details-container">
+  <!-- Header -->
+  <div class="page-header">
+    <% back_path = @user.Role == "Mediator" ? third_party_mediations_path : messages_path %>
+    <%= link_to back_path, class: "back-link" do %>
+      <i class="fa-solid fa-arrow-left"></i> Back to Dashboard
     <% end %>
     <h1>Mediation Summary</h1>
   </div>
 
-  <div class="summary-content">
-    <div class="summary-section">
-      <h2><i class="fa-solid fa-calendar-check"></i> Mediation Ended</h2>
-      <p><strong>Ended At:</strong> <%= @mediation.deleted_at.strftime("%B %d, %Y at %I:%M %p") %></p>
-    </div>
-
-    <!-- Tenant Info -->
-    <div class="summary-section">
-      <h2><i class="fa-solid fa-user"></i> Tenant Info</h2>
-      <table class="summary-table">
-        <tr><th><i class="fa-solid fa-id-badge"></i> Name</th><td><%= @tenant.FName %> <%= @tenant.LName %></td></tr>
-        <tr><th><i class="fa-solid fa-envelope"></i> Email</th><td><%= @tenant.Email %></td></tr>
-      </table>
-    </div>
-
-    <!-- Landlord Info -->
-    <div class="summary-section">
-      <h2><i class="fa-solid fa-building-user"></i> Landlord Info</h2>
-      <table class="summary-table">
-        <tr><th><i class="fa-solid fa-id-badge"></i> Name</th><td><%= @landlord.FName %> <%= @landlord.LName %></td></tr>
-        <tr><th><i class="fa-solid fa-envelope"></i> Email</th><td><%= @landlord.Email %></td></tr>
-      </table>
-    </div>
-
-    <!-- Feedback-->
-    <div class="summary-section">
-      <h2><i class="fa-solid fa-scale-balanced"></i> Feedback</h2>
-      <table class="summary-table">
-        <tr>
-          <th>Tenant acted in good faith <br>(per landlord)</th>
-          <td><%= good_faith_label(@mediation.EndOfConversationGoodFaithTenant) %></td>
-        </tr>
-        <tr>
-          <th>Landlord acted in good faith <br>(per tenant)</th>
-          <td><%= good_faith_label(@mediation.EndOfConversationGoodFaithLandlord) %></td>
-        </tr>
-      </table>
-    </div>
-
-    <div class="summary-section">
-      <h2><i class="fa-solid fa-paperclip"></i> Signed Attached Documents</h2>
-
-      <ul class="signed-documents-list">
-        <% @signed_files.each do |file| %>
-          <% tag_class, tag_label = case file.ConversationID
-            when @mediation.ConversationID
-              ['primary', 'Main Negotiation']
-            when @mediation.TenantSideConversationID
-              ['tenant-side', 'Tenant Side Mediation']
-            when @mediation.LandlordSideConversationID
-              ['landlord-side', 'Landlord Side Mediation']
-            else
-              ['unknown', 'Unknown']
-          end %>
-
-          <li class="doc-item">
-            <div class="doc-link-info">
-              <i class="fa-solid fa-file-lines"></i>
-              <%= link_to file.FileName, "/#{file.FileURLPath}", target: "_blank", class: "doc-link" %>
+  <div class="details-grid">
+    <!-- Left Column: Info & Parties -->
+    <div class="details-column left-column">
+      
+      <!-- Mediation Status -->
+      <div class="info-card">
+        <div class="card-header">
+          <h2><i class="fa-solid fa-info-circle"></i> Status</h2>
+        </div>
+        <div class="card-body">
+          <div class="info-row">
+            <span class="label">Ended At</span>
+            <span class="value"><%= @mediation.deleted_at&.strftime("%B %d, %Y at %I:%M %p") %></span>
+          </div>
+          
+          <div class="screening-section" style="margin-top: 1.5rem;">
+            <h3>Feedback</h3>
+            <div class="screening-grid">
+              <div class="screening-item full-width">
+                <span class="q-label">Tenant acted in good faith (per landlord)</span>
+                <span class="q-value"><%= good_faith_label(@mediation.EndOfConversationGoodFaithTenant) %></span>
+              </div>
+              <div class="screening-item full-width">
+                <span class="q-label">Landlord acted in good faith (per tenant)</span>
+                <span class="q-value"><%= good_faith_label(@mediation.EndOfConversationGoodFaithLandlord) %></span>
+              </div>
             </div>
-            <span class="tag <%= tag_class %>"><%= tag_label %></span>
-          </li>
-        <% end %>
-      </ul>
+          </div>
+        </div>
+      </div>
+
+      <!-- Parties -->
+      <div class="info-card">
+        <div class="card-header">
+          <h2><i class="fa-solid fa-users"></i> Parties</h2>
+        </div>
+        <div class="card-body">
+          <!-- Tenant -->
+          <div class="party-section" style="margin-bottom: 1.5rem;">
+            <h3 style="font-size: 0.9rem; text-transform: uppercase; color: #64748b; margin-bottom: 0.5rem;">Tenant</h3>
+            <% if @tenant %>
+              <div class="info-row">
+                <span class="label">Name</span>
+                <span class="value"><%= @tenant.FName %> <%= @tenant.LName %></span>
+              </div>
+              <div class="info-row">
+                <span class="label">Email</span>
+                <span class="value"><%= @tenant.Email %></span>
+              </div>
+            <% else %>
+              <p class="text-muted">Tenant information unavailable.</p>
+            <% end %>
+          </div>
+
+          <!-- Landlord -->
+          <div class="party-section" style="margin-bottom: 1.5rem; border-top: 1px solid #e2e8f0; padding-top: 1rem;">
+            <h3 style="font-size: 0.9rem; text-transform: uppercase; color: #64748b; margin-bottom: 0.5rem;">Landlord</h3>
+            <% if @landlord %>
+              <div class="info-row">
+                <span class="label">Name</span>
+                <span class="value"><%= @landlord.FName %> <%= @landlord.LName %></span>
+              </div>
+              <div class="info-row">
+                <span class="label">Email</span>
+                <span class="value"><%= @landlord.Email %></span>
+              </div>
+            <% else %>
+              <p class="text-muted">Landlord information unavailable.</p>
+            <% end %>
+          </div>
+
+          <!-- Mediator -->
+          <div class="party-section" style="border-top: 1px solid #e2e8f0; padding-top: 1rem;">
+            <h3 style="font-size: 0.9rem; text-transform: uppercase; color: #64748b; margin-bottom: 0.5rem;">Mediator</h3>
+            <% if @mediator %>
+              <div class="info-row">
+                <span class="label">Name</span>
+                <span class="value"><%= @mediator.FName %> <%= @mediator.LName %></span>
+              </div>
+              <div class="info-row">
+                <span class="label">Email</span>
+                <span class="value"><%= @mediator.Email %></span>
+              </div>
+            <% else %>
+              <p style="color: #64748b; font-style: italic;">No mediator was assigned to this case.</p>
+            <% end %>
+          </div>
+        </div>
+      </div>
+
+      <!-- Signed Documents -->
+      <% if @signed_files.any? %>
+        <div class="info-card">
+          <div class="card-header">
+            <h2><i class="fa-solid fa-file-signature"></i> Signed Documents</h2>
+          </div>
+          <div class="card-body">
+            <ul class="signed-documents-list" style="list-style: none; padding: 0; margin: 0;">
+              <% @signed_files.each do |file| %>
+                <li style="display: flex; align-items: center; justify-content: space-between; padding: 0.75rem 0; border-bottom: 1px solid #f1f5f9;">
+                  <div style="display: flex; align-items: center; gap: 0.5rem;">
+                    <i class="fa-solid fa-file-pdf" style="color: #ef4444;"></i>
+                    <%= link_to file.FileName, "/#{file.FileURLPath}", target: "_blank", style: "color: #0f172a; text-decoration: none; font-weight: 500;" %>
+                  </div>
+                  <span class="badge" style="font-size: 0.75rem; padding: 0.25rem 0.5rem; background: #f1f5f9; border-radius: 4px; color: #64748b;">Signed</span>
+                </li>
+              <% end %>
+            </ul>
+          </div>
+        </div>
+      <% end %>
     </div>
 
+    <!-- Right Column: Chat Transcript -->
+    <div class="details-column right-column">
+      <div class="info-card" style="height: calc(100vh - 140px); display: flex; flex-direction: column;">
+        <div class="card-header">
+          <h2><i class="fa-solid fa-comments"></i> Chat Transcript</h2>
+        </div>
+        <div class="card-body" style="flex: 1; overflow-y: auto; background: #f8fafc; padding: 1.5rem;">
+          <% if @messages.any? %>
+            <div class="chat-transcript">
+              <% @messages.each do |message| %>
+                <% sender = @conversation_participants[message.SenderID] %>
+                <% is_me = sender&.UserID == @user.UserID %>
+                <% 
+                   bubble_class = is_me ? "chat-bubble-me" : "chat-bubble-other"
+                   align_style = is_me ? "align-self: flex-end; background: #3b82f6; color: white;" : "align-self: flex-start; background: white; border: 1px solid #e2e8f0;"
+                   text_color = is_me ? "rgba(255,255,255,0.9)" : "#64748b"
+                %>
+                
+                <div class="message-wrapper" style="display: flex; flex-direction: column; margin-bottom: 1rem; <%= is_me ? 'align-items: flex-end;' : 'align-items: flex-start;' %>">
+                  <div class="message-meta" style="font-size: 0.75rem; color: #94a3b8; margin-bottom: 0.25rem; padding: 0 0.5rem;">
+                    <strong><%= sender ? "#{sender.FName} #{sender.LName}" : "Unknown" %></strong>
+                    <% if sender&.Role == "Mediator" %>
+                      <span class="badge" style="background: #e0f2fe; color: #0369a1; padding: 0 4px; border-radius: 3px; margin-left: 4px;">Mediator</span>
+                    <% end %>
+                    • <%= message.MessageDate.strftime("%b %d, %I:%M %p") %>
+                  </div>
+                  
+                  <div class="message-bubble" style="max-width: 80%; padding: 0.75rem 1rem; border-radius: 12px; box-shadow: 0 1px 2px rgba(0,0,0,0.05); <%= align_style %>">
+                    <%= simple_format(message.Contents, {}, wrapper_tag: "div") %>
+                    
+                    <% if message.file_attachments.any? %>
+                      <div class="attachments" style="margin-top: 0.5rem; padding-top: 0.5rem; border-top: 1px solid <%= is_me ? 'rgba(255,255,255,0.2)' : '#e2e8f0' %>;">
+                        <% message.file_attachments.each do |attachment| %>
+                          <div class="attachment-item" style="font-size: 0.85rem;">
+                            <i class="fa-solid fa-paperclip"></i> <%= attachment.file_draft.FileName %>
+                          </div>
+                        <% end %>
+                      </div>
+                    <% end %>
+                  </div>
+                </div>
+              <% end %>
+            </div>
+          <% else %>
+            <div class="empty-state" style="text-align: center; padding: 3rem; color: #94a3b8;">
+              <i class="fa-regular fa-comments" style="font-size: 3rem; margin-bottom: 1rem;"></i>
+              <p>No messages were exchanged in this mediation.</p>
+            </div>
+          <% end %>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>

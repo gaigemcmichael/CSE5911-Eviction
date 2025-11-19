@@ -290,54 +290,53 @@ class MessagesController < ApplicationController
 
   # Allows a user to view summaries of previous mediations
   def summary
-    # Lookup both groups - side_mediation should be empty everytime, but not sure if changing that will mess up anything else (I didnt write it initially)
-    @primary_mediation = PrimaryMessageGroup.find_by(ConversationID: params[:id])
-    @side_mediation = SideMessageGroup.find_by(ConversationID: params[:id])
+    @mediation = PrimaryMessageGroup.find_by(ConversationID: params[:id])
 
-    # Make sure at least one exists and is closed (deleted_at present)
-    if (@primary_mediation.nil? || @primary_mediation.deleted_at.nil?) &&
-       (@side_mediation.nil? || @side_mediation.deleted_at.nil?)
+    # Basic validation
+    if @mediation.nil? || @mediation.deleted_at.nil?
       redirect_to messages_path, alert: "Mediation not found or still active."
       return
     end
 
-    # For some code that already depends on this that I  didnt have time to refactor
-    @mediation = @primary_mediation
-
-
-    # Finding the tenant and landlord
-    @tenant = User.find_by(UserID: @primary_mediation.TenantID)
-    @landlord = User.find_by(UserID: @primary_mediation.LandlordID)
-
-    # THis is going to be all of the conversation ids we need to check (reduces number of complicated queries needed)
-    conversation_ids = []
-
-    if @primary_mediation.present?
-      # Add Primary id
-      conversation_ids << @primary_mediation.ConversationID
-
-      # Add Side Conversations from the Primary one, if they exist
-      conversation_ids << @primary_mediation.TenantSideConversationID if @primary_mediation.TenantSideConversationID.present?
-      conversation_ids << @primary_mediation.LandlordSideConversationID if @primary_mediation.LandlordSideConversationID.present?
-    elsif @side_mediation.present?
-      # If only a side was found directly, use it. This should never really happen but included just to be safe
-      conversation_ids << @side_mediation.ConversationID
+    # Permission check
+    unless conversation_participant?(@mediation)
+      render plain: "Access Denied", status: :forbidden
+      return
     end
 
-    # Query to get the signed files, this could be simpler, but that would require some model changes that are going to be annoying too
+    # Fetch Parties
+    @tenant = User.find_by(UserID: @mediation.TenantID)
+    @landlord = User.find_by(UserID: @mediation.LandlordID)
+    @mediator = User.find_by(UserID: @mediation.MediatorID) if @mediation.MediatorID.present?
+
+    # Determine visible conversations
+    conversation_ids = [ @mediation.ConversationID ]
+
+    if @user.Role == "Mediator"
+      conversation_ids << @mediation.TenantSideConversationID if @mediation.TenantSideConversationID.present?
+      conversation_ids << @mediation.LandlordSideConversationID if @mediation.LandlordSideConversationID.present?
+    elsif @user.Role == "Tenant"
+      conversation_ids << @mediation.TenantSideConversationID if @mediation.TenantSideConversationID.present?
+    elsif @user.Role == "Landlord"
+      conversation_ids << @mediation.LandlordSideConversationID if @mediation.LandlordSideConversationID.present?
+    end
+
+    # Fetch Messages
+    @messages = Message.where(ConversationID: conversation_ids).order(:MessageDate)
+
+    # Fetch Participants for name lookup
+    participant_ids = @messages.pluck(:SenderID).uniq
+    @conversation_participants = User.where(UserID: participant_ids).index_by(&:UserID)
+
+    # Fetch Signed Files
     @signed_files = FileDraft
       .joins(file_attachments: :message)
       .where(
-        messages: { ConversationID: [
-          @mediation.ConversationID,
-          @mediation.TenantSideConversationID,
-          @mediation.LandlordSideConversationID
-        ] }
+        messages: { ConversationID: conversation_ids }
       )
       .where(TenantSignature: true, LandlordSignature: true)
       .distinct
       .select("FileDrafts.*, Messages.ConversationID as ConversationID")
-
 
     render "messages/summary"
   end
