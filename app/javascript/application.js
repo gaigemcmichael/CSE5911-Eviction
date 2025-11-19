@@ -2,6 +2,8 @@
 import "@hotwired/turbo-rails";
 import "controllers";
 import "channels";
+import "chat/negotiation_chat";
+import "chat/mediator_chats";
 
 (function () {
   if (window.__navToggleInit) return;

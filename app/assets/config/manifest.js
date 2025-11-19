@@ -18,9 +18,9 @@
 //= link messages_landlord.css
 //= link screening_questions.css
 //= link action.css
+//= link admin_mediations.css
 //= link mediator_screening_view.css
 //= link mediations.css
 //= link documents.css
 //= link resources.css
 //= link account_view.css
-//= link admin_mediations.css

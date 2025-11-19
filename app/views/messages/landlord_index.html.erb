@@ -15,9 +15,9 @@
           <tbody>
               <% @mediation.each do |mediation| %>
                   <tr>
-                      <td><%= mediation.tenant.FName %> <%= mediation.tenant.LName %></td>
-                      <td> <%= mediation.tenant.TenantAddress %> </td>
-                      <td>
+                      <td data-label="Tenant"><%= mediation.tenant.FName %> <%= mediation.tenant.LName %></td>
+                      <td data-label="Address"> <%= mediation.tenant.TenantAddress %> </td>
+                      <td data-label="Actions">
                           <% if mediation.accepted_by_landlord %>
                                 <% if mediation.IntakeID.present? %>
                                     <%= link_to "View Negotiation", message_path(mediation.ConversationID), class: "view-link" %>
