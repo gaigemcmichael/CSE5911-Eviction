@@ -1,0 +1,315 @@
+<div class="docs-wrapper">
+  <h1 class="docs-title">Document Information</h1>
+  <p class="docs-subtitle">Fill out the information below to generate your <%= @template_name %></p>
+
+  <%= form_with url: generate_from_intake_path(template: @template), method: :post, local: true, class: "intake-form" do |f| %>
+    
+    <div class="form-grid">
+      <!-- Party Information -->
+      <div class="form-section">
+        <h3 class="section-title">Party Information</h3>
+        
+        <div class="form-group">
+          <%= label_tag :landlord_name, "Landlord Name", class: "form-label required-label" %>
+          <%= text_field_tag :landlord_name, nil, class: "form-input", required: true, placeholder: "Enter landlord's full name" %>
+        </div>
+
+        <div class="form-group">
+          <%= label_tag :tenant_name, "Tenant Name", class: "form-label required-label" %>
+          <%= text_field_tag :tenant_name, "#{@user.FName} #{@user.LName}".strip, class: "form-input", required: true, placeholder: "Enter tenant's full name" %>
+        </div>
+
+        <div class="form-group">
+          <%= label_tag :address, "Property Address", class: "form-label required-label" %>
+          <%= text_field_tag :address, @user.TenantAddress || "", class: "form-input", required: true, placeholder: "Enter full property address" %>
+        </div>
+
+        <div class="form-group">
+          <%= label_tag :negotiation_date, "Agreement Date", class: "form-label required-label" %>
+          <%= date_field_tag :negotiation_date, Date.today, class: "form-input", required: true %>
+        </div>
+      </div>
+
+      <!-- Dispute Details -->
+      <div class="form-section">
+        <h3 class="section-title">Dispute Details</h3>
+
+        <div class="form-group">
+          <%= label_tag :reason, "Reason for Dispute", class: "form-label required-label" %>
+          <%= select_tag :reason, options_for_select([
+            ["Select a reason", ""],
+            "Failure to Pay Rent",
+            "Violation of Lease Terms",
+            "Damage to Property",
+            "Illegal Activity",
+            "Nuisance or Disturbance",
+            "Expiration of Lease",
+            "Unknown"
+          ]), class: "form-select", required: true %>
+        </div>
+
+        <div class="form-group">
+          <%= label_tag :money_owed, "Amount Owed", class: "form-label required-label" %>
+          <div class="input-with-prefix">
+            <span class="input-prefix">$</span>
+            <%= number_field_tag :money_owed, nil, step: 0.01, class: "form-input with-prefix", required: true, placeholder: "0.00" %>
+          </div>
+          <small class="form-hint">Enter the total amount currently owed</small>
+        </div>
+
+        <div class="form-group">
+          <%= label_tag :monthly_rent, "Monthly Rent", class: "form-label" %>
+          <div class="input-with-prefix">
+            <span class="input-prefix">$</span>
+            <%= number_field_tag :monthly_rent, nil, step: 0.01, class: "form-input with-prefix", placeholder: "0.00" %>
+          </div>
+          <small class="form-hint">Enter the regular monthly rent amount</small>
+        </div>
+
+        <div class="form-group">
+          <%= label_tag :best_option, "Resolution Type", class: "form-label required-label" %>
+          <%= select_tag :best_option, options_for_select([
+            ["Select an option", ""],
+            "Pay Missed Rent",
+            "Move Out",
+            "Payment Plan"
+          ]), class: "form-select", required: true %>
+        </div>
+      </div>
+    </div>
+
+    <!-- Payment Schedule (Optional) -->
+    <div class="form-section payment-schedule-section" style="display: none;">
+      <h3 class="section-title">Payment Schedule (Optional)</h3>
+      <p class="form-hint">Add payment installments if agreeing to a payment plan</p>
+      
+      <div id="payment-schedule">
+        <div class="payment-row">
+          <div class="form-group">
+            <%= label_tag :amount1, "Amount", class: "form-label" %>
+            <div class="input-with-prefix">
+              <span class="input-prefix">$</span>
+              <%= number_field_tag :amount1, nil, step: 0.01, class: "form-input with-prefix", placeholder: "0.00" %>
+            </div>
+          </div>
+          <div class="form-group">
+            <%= label_tag :date1, "Due Date", class: "form-label" %>
+            <%= date_field_tag :date1, nil, class: "form-input" %>
+          </div>
+        </div>
+      </div>
+      
+      <button type="button" class="btn btn-secondary" onclick="addPaymentRow()">+ Add Payment</button>
+    </div>
+
+    <div class="form-actions">
+      <%= link_to "← Back to Templates", generate_file_path, class: "btn btn-secondary" %>
+      <%= submit_tag "Generate Document", class: "btn btn-primary" %>
+    </div>
+
+  <% end %>
+</div>
+
+<script>
+let paymentCount = 1;
+
+function addPaymentRow() {
+  paymentCount++;
+  const container = document.getElementById('payment-schedule');
+  const newRow = document.createElement('div');
+  newRow.className = 'payment-row';
+  newRow.innerHTML = `
+    <div class="form-group">
+      <label for="amount${paymentCount}" class="form-label">Amount</label>
+      <div class="input-with-prefix">
+        <span class="input-prefix">$</span>
+        <input type="number" name="amount${paymentCount}" id="amount${paymentCount}" step="0.01" class="form-input with-prefix" placeholder="0.00">
+      </div>
+    </div>
+    <div class="form-group">
+      <label for="date${paymentCount}" class="form-label">Due Date</label>
+      <input type="date" name="date${paymentCount}" id="date${paymentCount}" class="form-input">
+    </div>
+    <button type="button" class="btn-remove" onclick="this.parentElement.remove()">×</button>
+  `;
+  container.appendChild(newRow);
+}
+
+// Show payment schedule section if "Payment Plan" is selected
+document.addEventListener('DOMContentLoaded', function() {
+  const bestOptionSelect = document.getElementById('best_option');
+  const paymentSection = document.querySelector('.payment-schedule-section');
+  
+  if (bestOptionSelect) {
+    bestOptionSelect.addEventListener('change', function() {
+      if (this.value === 'Payment Plan') {
+        paymentSection.style.display = 'block';
+      } else {
+        paymentSection.style.display = 'none';
+      }
+    });
+  }
+});
+</script>
+
+<style>
+.intake-form {
+  margin-top: 24px;
+}
+
+.form-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+  gap: 32px;
+  margin-bottom: 32px;
+}
+
+.form-section {
+  background: #f9fafb;
+  padding: 24px;
+  border-radius: 12px;
+  border: 1px solid #e7eefb;
+}
+
+.section-title {
+  font-size: 20px;
+  font-weight: 700;
+  color: #0f2a49;
+  margin: 0 0 20px;
+  padding-bottom: 12px;
+  border-bottom: 2px solid #e7eefb;
+}
+
+.form-group {
+  margin-bottom: 20px;
+}
+
+.form-label {
+  display: block;
+  font-weight: 600;
+  color: #0f2a49;
+  margin-bottom: 8px;
+  font-size: 14px;
+}
+
+.required-label::after {
+  content: " *";
+  color: #dc2626;
+}
+
+.form-input, .form-select {
+  width: 100%;
+  padding: 10px 14px;
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  font-size: 15px;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.form-input:focus, .form-select:focus {
+  outline: none;
+  border-color: #1a73e8;
+  box-shadow: 0 0 0 3px rgba(26, 115, 232, 0.1);
+}
+
+.input-with-prefix {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.input-prefix {
+  position: absolute;
+  left: 14px;
+  font-weight: 600;
+  color: #6b7280;
+  pointer-events: none;
+}
+
+.form-input.with-prefix {
+  padding-left: 32px;
+}
+
+.form-hint {
+  display: block;
+  margin-top: 6px;
+  font-size: 13px;
+  color: #6b7280;
+}
+
+.payment-schedule-section {
+  margin-top: 32px;
+}
+
+#payment-schedule {
+  margin-bottom: 16px;
+}
+
+.payment-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr auto;
+  gap: 16px;
+  align-items: end;
+  margin-bottom: 12px;
+  padding: 16px;
+  background: #fff;
+  border-radius: 8px;
+  border: 1px solid #e7eefb;
+}
+
+.btn-remove {
+  width: 36px;
+  height: 36px;
+  border: none;
+  background: #fee2e2;
+  color: #dc2626;
+  border-radius: 8px;
+  font-size: 20px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background 0.2s ease;
+  margin-bottom: 20px;
+}
+
+.btn-remove:hover {
+  background: #fecaca;
+}
+
+.form-actions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 32px;
+  padding-top: 24px;
+  border-top: 2px solid #e7eefb;
+}
+
+.btn-secondary {
+  background: #f3f4f6;
+  color: #374151;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.btn-secondary:hover {
+  background: #e5e7eb;
+}
+
+@media (max-width: 768px) {
+  .form-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .payment-row {
+    grid-template-columns: 1fr;
+  }
+
+  .form-actions {
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .btn {
+    width: 100%;
+  }
+}
+</style>

@@ -1,25 +1,51 @@
-<h1>File Generation - Select a Template</h1>
-<p>Choose a template for generating a proposal document:</p>
+<div class="docs-wrapper">
+  <h1 class="docs-title">Select a Template</h1>
+  <p class="docs-subtitle">Choose a template for generating your proposal document</p>
 
-<div class="template-selection">
-  <h3>Template 1: Payment Plan Proposal A</h3>
-  <iframe src="<%= '/Agree to Vacate PDF.pdf' %>" width="600" height="400">
-  Your browser does not support embedded PDFs.
-    </iframe>
-  <br>
-  <%= button_to 'Select Template A', proposal_generation_path(template: 'a'), method: :get, class: 'btn btn-primary' %>
+  <div class="template-grid">
+    <div class="template-card">
+      <div class="template-header">
+        <h3 class="template-title">Agree to Vacate</h3>
+        <span class="template-badge">Template A</span>
+      </div>
+      <div class="template-preview">
+        <iframe src="<%= '/Agree to Vacate PDF.pdf' %>" width="100%" height="400" frameborder="0">
+          Your browser does not support embedded PDFs.
+        </iframe>
+      </div>
+      <div class="template-footer">
+        <%= button_to 'Select Template A', template_intake_path(template: 'a'), method: :get, class: 'btn btn-primary btn-block' %>
+      </div>
+    </div>
 
-  <h3>Template 2: Payment Plan Proposal B</h3>
-  <iframe src="<%= '/Pay and Stay Negotiated Agreement PDF.pdf' %>" width="600" height="400">
-    Your browser does not support embedded PDFs.
-  </iframe>
-  <br>
-  <%= button_to 'Select Template B', proposal_generation_path(template: 'b'), method: :get, class: 'btn btn-primary' %>
+    <div class="template-card">
+      <div class="template-header">
+        <h3 class="template-title">Pay and Stay Agreement</h3>
+        <span class="template-badge">Template B</span>
+      </div>
+      <div class="template-preview">
+        <iframe src="<%= '/Pay and Stay Negotiated Agreement PDF.pdf' %>" width="100%" height="400" frameborder="0">
+          Your browser does not support embedded PDFs.
+        </iframe>
+      </div>
+      <div class="template-footer">
+        <%= button_to 'Select Template B', template_intake_path(template: 'b'), method: :get, class: 'btn btn-primary btn-block' %>
+      </div>
+    </div>
 
-  <h3>Template 3: Payment Plan Proposal C</h3>
-  <iframe src="<%= '/Sandbox Mediation Agreement PDF.pdf' %>" width="600" height="400">
-    Your browser does not support embedded PDFs.
-  </iframe>
-  <br>
-  <%= button_to 'Select Template C', proposal_generation_path(template: 'c'), method: :get, class: 'btn btn-primary' %>
+    <div class="template-card">
+      <div class="template-header">
+        <h3 class="template-title">Mediation Agreement</h3>
+        <span class="template-badge">Template C</span>
+      </div>
+      <div class="template-preview">
+        <iframe src="<%= '/Sandbox Mediation Agreement PDF.pdf' %>" width="100%" height="400" frameborder="0">
+          Your browser does not support embedded PDFs.
+        </iframe>
+      </div>
+      <div class="template-footer">
+        <%= button_to 'Select Template C', template_intake_path(template: 'c'), method: :get, class: 'btn btn-primary btn-block' %>
+      </div>
+    </div>
+  </div>
 </div>

@@ -44,7 +44,8 @@ Rails.application.routes.draw do
 
   post "documents/select_template", to: "documents#select_template", as: "select_template"
 
-  get "proposal_generation/:template", to: "documents#proposal_generation", as: "proposal_generation"
+  get "documents/template/:template/intake", to: "documents#template_intake", as: "template_intake"
+  post "documents/template/:template/generate", to: "documents#generate_from_intake", as: "generate_from_intake"
 
   get "intake_questions/new", to: "intake_questions#new", as: "new_intake_question"
   post "intake_questions", to: "intake_questions#create", as: "intake_questions"

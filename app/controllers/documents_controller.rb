@@ -13,6 +13,24 @@ class DocumentsController < ApplicationController
 
   def intake_template_view
   end
+
+  def template_intake
+    @template = params[:template]
+    @template_name = case @template
+    when 'a' then 'Agree to Vacate'
+    when 'b' then 'Pay and Stay Agreement'
+    when 'c' then 'Mediation Agreement'
+    else 'Unknown Template'
+    end
+  end
+
+  def generate_from_intake
+    @template = params[:template]
+    
+    # Call the existing generate_filled_template method
+    generate_filled_template
+  end
+
   # delete files
   def destroy
     file = FileDraft.find_by(FileID: params[:id], CreatorID: @user[:UserID])
