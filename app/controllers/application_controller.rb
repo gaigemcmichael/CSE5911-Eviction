@@ -5,7 +5,10 @@ class ApplicationController < ActionController::Base
   private
 
   def set_current_user
-    @user = User.find(session[:user_id]) if session[:user_id]
+    if session[:user_id]
+      @user = User.find_by(UserID: session[:user_id])
+      session[:user_id] = nil unless @user
+    end
   end
 
   helper_method :current_user

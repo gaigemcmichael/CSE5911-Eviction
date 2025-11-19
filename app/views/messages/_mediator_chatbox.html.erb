@@ -49,18 +49,22 @@
       <%= f.hidden_field :conversation_id, value: message_string&.ConversationID %>
       <%= f.hidden_field :recipient_id, value: recipient.UserID %>
 
-      <div class="composer-field">
-        <%= f.text_area :Contents,
-          placeholder: "Message #{recipient.FName}...",
-          class: "message-textarea",
-          rows: 3 %>
-      </div>
-
-      <div class="composer-toolbar">
-        <button type="button" class="composer-action" data-attachment-toggle>
+      <div class="composer-input-row">
+        <button type="button"
+                class="composer-attach-btn"
+                data-attachment-toggle
+                aria-label="Attach a document">
           <i class="fa-solid fa-paperclip" aria-hidden="true"></i>
-          <span>Documents</span>
+          <span class="composer-attach-label">Docs</span>
         </button>
+
+        <div class="composer-field">
+          <%= f.text_area :Contents,
+            placeholder: "Message #{recipient.FName}...",
+            class: "message-textarea",
+            rows: 3 %>
+        </div>
+
         <%= f.submit "Send", class: "send-msg-btn" %>
       </div>
 
