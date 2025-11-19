@@ -18,7 +18,7 @@ class Admin::FlaggedMediationsControllerTest < ActionDispatch::IntegrationTest
     get admin_mediations_url
 
     assert_response :success
-    assert_select "h1", "Flagged Mediations"
+    assert_select "h1", "Mediations Dashboard"
     assert_select "table.mediation-table tbody tr", minimum: 1
   end
 
@@ -27,6 +27,6 @@ class Admin::FlaggedMediationsControllerTest < ActionDispatch::IntegrationTest
 
     assert_response :success
     assert_select "h1", "Flagged Mediation Details"
-    assert_select ".summary-section h2", text: /Tenant Info|Mediator Info/
+    assert_select ".card-header h2", text: /Tenant|Landlord/
   end
 end
