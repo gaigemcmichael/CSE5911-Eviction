@@ -208,7 +208,7 @@ const initializeMessagesChannel = () => {
 
       const messageClass = isSender ? 'sent' : 'received';
       const formattedRole = titleize(data.sender_role);
-      const senderName = escapeHtml(data.sender_name || (isSender ? 'You' : formattedRole || 'Participant'));
+      const senderName = isSender ? 'You' : escapeHtml(data.sender_name || formattedRole || 'Participant');
       const messageContents = formatMessageContents(data.contents);
       const attachments = Array.isArray(data.attachments) ? data.attachments : [];
 
