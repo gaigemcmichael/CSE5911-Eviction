@@ -4,19 +4,24 @@ class Admin::FlaggedMediationsController < ApplicationController
   before_action :authorize_admin # Ensures Only Admins Can deal with flagged mediations
 
   def index
-    @flagged_mediations = PrimaryMessageGroup
-      .includes(:tenant, :landlord, :mediator)
-      .where.not(TenantScreeningID: nil)
-      .or(PrimaryMessageGroup.where.not(LandlordScreeningID: nil))
-      .select do |pmg|
-        tenant_flagged = pmg.TenantScreeningID && ScreeningQuestion.find_by(ScreeningID: pmg.TenantScreeningID)&.flagged
-        landlord_flagged = pmg.LandlordScreeningID && ScreeningQuestion.find_by(ScreeningID: pmg.LandlordScreeningID)&.flagged
-        tenant_flagged || landlord_flagged
-      end
-
     @unassigned_mediations = PrimaryMessageGroup
       .where(MediatorRequested: true, MediatorAssigned: false)
       .includes(:tenant, :landlord)
+
+    page = params[:page].to_i > 0 ? params[:page].to_i : 1
+    per_page = 20
+    offset = (page - 1) * per_page
+
+    @completed_mediations = PrimaryMessageGroup
+      .where.not(deleted_at: nil)
+      .order(deleted_at: :desc)
+      .includes(:tenant, :landlord)
+      .offset(offset)
+      .limit(per_page)
+
+    @total_completed = PrimaryMessageGroup.where.not(deleted_at: nil).count
+    @total_pages = (@total_completed.to_f / per_page).ceil
+    @current_page = page
   end
 
   def show
@@ -167,17 +172,6 @@ class Admin::FlaggedMediationsController < ApplicationController
     end
 
     redirect_to redirect_path || admin_mediations_path, notice: notice_msg || "Operation successful."
-  end
-
-  def unflag
-    @mediation = PrimaryMessageGroup.find(params[:id])
-    tenant_screening = ScreeningQuestion.find_by(ScreeningID: @mediation.TenantScreeningID, deleted_at: nil)
-    landlord_screening = ScreeningQuestion.find_by(ScreeningID: @mediation.LandlordScreeningID, deleted_at: nil)
-
-    tenant_screening&.update!(flagged: false) if tenant_screening&.active?
-    landlord_screening&.update!(flagged: false) if landlord_screening&.active?
-
-    redirect_to admin_mediations_path, notice: "Mediation unflagged. Current screening responses will remain."
   end
 
   private

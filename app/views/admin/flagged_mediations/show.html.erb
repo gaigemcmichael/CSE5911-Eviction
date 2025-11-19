@@ -2,9 +2,9 @@
   <!-- Header -->
   <div class="page-header">
     <%= link_to admin_mediations_path, class: "back-link" do %>
-      <i class="fa-solid fa-arrow-left"></i> Back to Flagged Mediations
+      <i class="fa-solid fa-arrow-left"></i> Back to Dashboard
     <% end %>
-    <h1>Flagged Mediation Details</h1>
+    <h1>Mediation Details</h1>
   </div>
 
   <div class="details-grid">
@@ -75,18 +75,6 @@
               <%= f.button type: "submit", class: "btn btn-primary" do %>
                 <i class="fa-solid fa-user-check"></i> Assign Mediator
               <% end %>
-            <% end %>
-          </div>
-
-          <div class="divider">
-            <span>OR</span>
-          </div>
-
-          <div class="action-section">
-            <h3>Resolve Flag</h3>
-            <p class="help-text">If the issue has been resolved or was flagged in error.</p>
-            <%= button_to admin_unflag_mediation_path(@mediation), method: :patch, class: "btn btn-outline-danger", form: { data: { turbo_confirm: "Are you sure you want to unflag this mediation?" } } do %>
-              <i class="fa-solid fa-flag-checkered"></i> Unflag Mediation
             <% end %>
           </div>
         </div>
@@ -162,90 +150,6 @@
               </div>
             </div>
           <% end %>
-
-          <!-- Screening Data -->
-          <div class="screening-section">
-            <h3>Screening Questionnaire</h3>
-            
-            <% if @tenant_screening %>
-              <div class="screening-grid">
-                <!-- Interpreter -->
-                <div class="screening-item">
-                  <span class="q-label">Interpreter Needed?</span>
-                  <span class="q-value <%= @tenant_screening.InterpreterNeeded ? 'text-warning' : '' %>">
-                    <%= @tenant_screening.InterpreterNeeded ? "Yes" : "No" %>
-                  </span>
-                  <% if @tenant_screening.InterpreterNeeded %>
-                    <div class="q-detail">Language: <%= @tenant_screening.InterpreterLanguage %></div>
-                  <% end %>
-                </div>
-
-                <!-- Disability -->
-                <div class="screening-item">
-                  <span class="q-label">Disability Accommodation?</span>
-                  <span class="q-value <%= @tenant_screening.DisabilityAccommodation ? 'text-warning' : '' %>">
-                    <%= @tenant_screening.DisabilityAccommodation ? "Yes" : "No" %>
-                  </span>
-                  <% if @tenant_screening.DisabilityAccommodation %>
-                    <div class="q-detail"><%= @tenant_screening.DisabilityExplanation %></div>
-                  <% end %>
-                </div>
-
-                <!-- Conflict of Interest -->
-                <div class="screening-item">
-                  <span class="q-label">Conflict of Interest?</span>
-                  <span class="q-value <%= @tenant_screening.ConflictOfInterest ? 'text-danger' : '' %>">
-                    <%= @tenant_screening.ConflictOfInterest ? "Yes" : "No" %>
-                  </span>
-                </div>
-
-                <!-- Speak on Own Behalf -->
-                <div class="screening-item">
-                  <span class="q-label">Can Speak on Own Behalf?</span>
-                  <span class="q-value <%= !@tenant_screening.SpeakOnOwnBehalf ? 'text-warning' : '' %>">
-                    <%= @tenant_screening.SpeakOnOwnBehalf ? "Yes" : "No" %>
-                  </span>
-                </div>
-
-                <!-- Need to Consult -->
-                <div class="screening-item">
-                  <span class="q-label">Need to Consult?</span>
-                  <span class="q-value <%= @tenant_screening.NeedToConsult ? 'text-info' : '' %>">
-                    <%= @tenant_screening.NeedToConsult ? "Yes" : "No" %>
-                  </span>
-                  <% if @tenant_screening.NeedToConsult %>
-                    <div class="q-detail"><%= @tenant_screening.ConsultExplanation %></div>
-                  <% end %>
-                </div>
-
-                <!-- Relationship -->
-                <% if @tenant_screening.RelationshipToOtherParty.present? %>
-                  <div class="screening-item full-width">
-                    <span class="q-label">Relationship to Landlord</span>
-                    <div class="q-detail"><%= @tenant_screening.RelationshipToOtherParty %></div>
-                  </div>
-                <% end %>
-
-                <!-- Safety -->
-                <div class="screening-item full-width">
-                  <span class="q-label">Feel Unsafe?</span>
-                  <span class="q-value <%= @tenant_screening.Unsafe ? 'text-danger' : '' %>">
-                    <%= @tenant_screening.Unsafe ? "Yes" : "No" %>
-                  </span>
-                  <% if @tenant_screening.Unsafe %>
-                    <div class="q-detail warning-box">
-                      <i class="fa-solid fa-triangle-exclamation"></i>
-                      <%= @tenant_screening.UnsafeExplanation %>
-                    </div>
-                  <% end %>
-                </div>
-              </div>
-            <% else %>
-              <div class="no-data">
-                <i class="fa-regular fa-clipboard"></i> No screening questionnaire found.
-              </div>
-            <% end %>
-          </div>
         </div>
       </div>
     </div>

@@ -313,7 +313,7 @@ class MessagesController < ApplicationController
     # Determine visible conversations
     conversation_ids = [ @mediation.ConversationID ]
 
-    if @user.Role == "Mediator"
+    if @user.Role == "Mediator" || @user.Role == "Admin"
       conversation_ids << @mediation.TenantSideConversationID if @mediation.TenantSideConversationID.present?
       conversation_ids << @mediation.LandlordSideConversationID if @mediation.LandlordSideConversationID.present?
     elsif @user.Role == "Tenant"
@@ -369,6 +369,8 @@ class MessagesController < ApplicationController
   end
 
   def conversation_participant?(primary_group)
+    return true if @user.Role == "Admin"
+
     participant_ids = [
       primary_group.TenantID,
       primary_group.LandlordID,
