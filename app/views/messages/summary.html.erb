@@ -24,18 +24,29 @@
             <span class="label">Ended At</span>
             <span class="value"><%= @mediation.deleted_at&.strftime("%B %d, %Y at %I:%M %p") %></span>
           </div>
+          <% if @ended_by %>
+            <div class="info-row">
+              <span class="label">Ended By</span>
+              <span class="value"><%= @ended_by.FName %> <%= @ended_by.LName %> (<%= @ended_by.Role %>)</span>
+            </div>
+          <% end %>
           
           <div class="screening-section" style="margin-top: 1.5rem;">
             <h3>Feedback</h3>
             <div class="screening-grid">
-              <div class="screening-item full-width">
-                <span class="q-label">Tenant acted in good faith (per landlord)</span>
-                <span class="q-value"><%= good_faith_label(@mediation.EndOfConversationGoodFaithTenant) %></span>
-              </div>
-              <div class="screening-item full-width">
-                <span class="q-label">Landlord acted in good faith (per tenant)</span>
-                <span class="q-value"><%= good_faith_label(@mediation.EndOfConversationGoodFaithLandlord) %></span>
-              </div>
+              <% if @user.Role == "Landlord" || @user.Role == "Mediator" || @user.Role == "Admin" %>
+                <div class="screening-item full-width">
+                  <span class="q-label">Tenant acted in good faith (per landlord)</span>
+                  <span class="q-value"><%= good_faith_label(@mediation.EndOfConversationGoodFaithTenant) %></span>
+                </div>
+              <% end %>
+              
+              <% if @user.Role == "Tenant" || @user.Role == "Mediator" || @user.Role == "Admin" %>
+                <div class="screening-item full-width">
+                  <span class="q-label">Landlord acted in good faith (per tenant)</span>
+                  <span class="q-value"><%= good_faith_label(@mediation.EndOfConversationGoodFaithLandlord) %></span>
+                </div>
+              <% end %>
             </div>
           </div>
         </div>
@@ -135,26 +146,44 @@
               <% @messages.each do |message| %>
                 <% sender = @conversation_participants[message.SenderID] %>
                 <% is_me = sender&.UserID == @user.UserID %>
+                <% role = sender&.Role %>
                 <% 
-                   bubble_class = is_me ? "chat-bubble-me" : "chat-bubble-other"
-                   align_style = is_me ? "align-self: flex-end; background: #3b82f6; color: white;" : "align-self: flex-start; background: white; border: 1px solid #e2e8f0;"
-                   text_color = is_me ? "rgba(255,255,255,0.9)" : "#64748b"
+                   # Determine Alignment
+                   align_class = is_me ? "align-items: flex-end;" : "align-items: flex-start;"
+                   bubble_align = is_me ? "align-self: flex-end;" : "align-self: flex-start;"
+
+                   # Determine Color based on Role
+                   if role == "Mediator"
+                     # Green for Mediator
+                     bubble_style = "background: #dcfce7; color: #166534; border: 1px solid #bbf7d0;"
+                     attachment_border = "border-top: 1px solid #bbf7d0;"
+                   elsif role == "Tenant"
+                     # Blue for Tenant
+                     bubble_style = "background: #3b82f6; color: white;"
+                     attachment_border = "border-top: 1px solid rgba(255,255,255,0.2);"
+                   else
+                     # White for Landlord (and others)
+                     bubble_style = "background: white; border: 1px solid #e2e8f0; color: #0f172a;"
+                     attachment_border = "border-top: 1px solid #e2e8f0;"
+                   end
+                   
+                   final_bubble_style = "#{bubble_align} #{bubble_style}"
                 %>
                 
-                <div class="message-wrapper" style="display: flex; flex-direction: column; margin-bottom: 1rem; <%= is_me ? 'align-items: flex-end;' : 'align-items: flex-start;' %>">
+                <div class="message-wrapper" style="display: flex; flex-direction: column; margin-bottom: 1rem; <%= align_class %>">
                   <div class="message-meta" style="font-size: 0.75rem; color: #94a3b8; margin-bottom: 0.25rem; padding: 0 0.5rem;">
                     <strong><%= sender ? "#{sender.FName} #{sender.LName}" : "Unknown" %></strong>
-                    <% if sender&.Role == "Mediator" %>
+                    <% if role == "Mediator" %>
                       <span class="badge" style="background: #e0f2fe; color: #0369a1; padding: 0 4px; border-radius: 3px; margin-left: 4px;">Mediator</span>
                     <% end %>
                     • <%= message.MessageDate.strftime("%b %d, %I:%M %p") %>
                   </div>
                   
-                  <div class="message-bubble" style="max-width: 80%; padding: 0.75rem 1rem; border-radius: 12px; box-shadow: 0 1px 2px rgba(0,0,0,0.05); <%= align_style %>">
+                  <div class="message-bubble" style="max-width: 80%; padding: 0.75rem 1rem; border-radius: 12px; box-shadow: 0 1px 2px rgba(0,0,0,0.05); <%= final_bubble_style %>">
                     <%= simple_format(message.Contents, {}, wrapper_tag: "div") %>
                     
                     <% if message.file_attachments.any? %>
-                      <div class="attachments" style="margin-top: 0.5rem; padding-top: 0.5rem; border-top: 1px solid <%= is_me ? 'rgba(255,255,255,0.2)' : '#e2e8f0' %>;">
+                      <div class="attachments" style="margin-top: 0.5rem; padding-top: 0.5rem; <%= attachment_border %>">
                         <% message.file_attachments.each do |attachment| %>
                           <div class="attachment-item" style="font-size: 0.85rem;">
                             <i class="fa-solid fa-paperclip"></i> <%= attachment.file_draft.FileName %>

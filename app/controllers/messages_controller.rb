@@ -308,6 +308,7 @@ class MessagesController < ApplicationController
     @tenant = User.find_by(UserID: @mediation.TenantID)
     @landlord = User.find_by(UserID: @mediation.LandlordID)
     @mediator = User.find_by(UserID: @mediation.MediatorID) if @mediation.MediatorID.present?
+    @ended_by = User.find_by(UserID: @mediation.EndedBy) if @mediation.EndedBy.present?
 
     # Determine visible conversations
     conversation_ids = [ @mediation.ConversationID ]
