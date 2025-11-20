@@ -226,6 +226,8 @@ class MessagesController < ApplicationController
             MessageID: @message.MessageID,
             FileID: file_draft.FileID
           )
+          # Reload to pick up the association
+          @message.reload
        else
           Rails.logger.error "FileDraft not found with ID: #{params[:file_id]}"
        end
@@ -246,7 +248,7 @@ class MessagesController < ApplicationController
               preview_url: view_file_path(file.FileID),
               download_url: download_file_path(file.FileID),
               view_url: view_file_path(file.FileID),
-              sign_url: sign_document_path(file.FileID),
+              sign_url: apply_signature_document_path(file.FileID),
               tenant_signature_required: file.respond_to?(:TenantSignature) ? !file.TenantSignature : false,
               landlord_signature_required: file.respond_to?(:LandlordSignature) ? !file.LandlordSignature : false,
               extension: extension.presence || file.FileTypes

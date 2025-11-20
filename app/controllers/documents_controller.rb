@@ -17,21 +17,21 @@ class DocumentsController < ApplicationController
   def template_intake
     @template = params[:template]
     @template_name = case @template
-    when 'a' then 'Agree to Vacate'
-    when 'b' then 'Pay and Stay Agreement'
-    when 'c' then 'Mediation Agreement'
-    else 'Unknown Template'
+    when "a" then "Agree to Vacate"
+    when "b" then "Pay and Stay Agreement"
+    when "c" then "Mediation Agreement"
+    else "Unknown Template"
     end
-    
+
     # Set default resolution type based on template
     @default_resolution = case @template
-    when 'a' then 'Move Out'
-    when 'b' then 'Payment Plan'
-    when 'c' then 'Payment Plan'
-    else ''
+    when "a" then "Move Out"
+    when "b" then "Payment Plan"
+    when "c" then "Payment Plan"
+    else ""
     end
-    
-    
+
+
     @conversation_id = params[:conversation_id]
     if @conversation_id.present?
       @conversation = PrimaryMessageGroup.find_by(ConversationID: @conversation_id)
@@ -43,9 +43,9 @@ class DocumentsController < ApplicationController
   end
 
   def generate_from_intake
-    template = params[:template] || 'a'
-    
-   
+    template = params[:template] || "a"
+
+
     @landlord = params[:landlord_name].to_s
     @tenant = params[:tenant_name].to_s
     @address = params[:address].to_s
@@ -58,11 +58,11 @@ class DocumentsController < ApplicationController
     @money_owed = params[:money_owed].to_s
     @monthly_rent = params[:monthly_rent].to_s
     @conversation_id = params[:conversation_id]
-    @vacate_date = params[:vacate_date] if template == 'a'
-    
-    
+    @vacate_date = params[:vacate_date] if template == "a"
+
+
     conversation = PrimaryMessageGroup.find_by(ConversationID: @conversation_id) if @conversation_id.present?
-    
+
     # Build payment schedule
     @schedule = []
     params.to_unsafe_h.each do |key, value|
@@ -70,32 +70,32 @@ class DocumentsController < ApplicationController
       index = Regexp.last_match(1).to_i
       amount = value.to_s
       due_on = params["date#{index}"]
-      @schedule << [index, amount, due_on] if amount.present?
+      @schedule << [ index, amount, due_on ] if amount.present?
     end
     @schedule.sort_by! { |i, _, _| i }
-    
-    
+
+
     template_file = case template
-    when 'a' then 'documents/templates/agree_to_vacate'
-    when 'b' then 'documents/templates/pay_and_stay'
-    when 'c' then 'documents/templates/mediation_agreement'
-    else 'documents/templates/agree_to_vacate'
+    when "a" then "documents/templates/agree_to_vacate"
+    when "b" then "documents/templates/pay_and_stay"
+    when "c" then "documents/templates/mediation_agreement"
+    else "documents/templates/agree_to_vacate"
     end
-    
+
     html_content = render_to_string(
       template: template_file,
       layout: false
     )
-    
+
     # Save as HTML file
     file_id = SecureRandom.uuid
     ext = ".html"
     dir = Rails.root.join("public", "userFiles")
     FileUtils.mkdir_p(dir)
     dest = dir.join("#{file_id}#{ext}")
-    
+
     File.write(dest, html_content)
-    
+
     # Create database record
     pk_name, pk_value = next_filedraft_pk_value
     attrs = {
@@ -108,28 +108,60 @@ class DocumentsController < ApplicationController
       LandlordSignature: false
     }
     attrs[pk_name] = pk_value if pk_name && pk_value
-    
+
     file_draft = FileDraft.create!(attrs)
-    
-    
+
+
     if conversation && @conversation_id.present?
       # Create a message in the conversation announcing the document
       message_body = "📄 A new agreement document (#{@template_name}) has been generated."
-      
+
       message = Message.create!(
         ConversationID: @conversation_id,
         SenderID: @user[:UserID],
-        MessageBody: message_body,
-        TimestampMessage: Time.current,
-        UserDeletedAt: nil
+        Contents: message_body,
+        MessageDate: Time.current,
+        recipientID: nil
       )
-      
-      
+
+
       FileAttachment.create!(
         MessageID: message.MessageID,
         FileID: file_draft.FileID
       )
-      
+
+      # Broadcast to ActionCable
+      extension = File.extname(file_draft.FileURLPath.to_s).delete(".")
+      attachments_payload = [ {
+        file_id: file_draft.FileID,
+        file_name: file_draft.FileName,
+        preview_url: view_file_path(file_draft.FileID),
+        download_url: download_file_path(file_draft.FileID),
+        view_url: view_file_path(file_draft.FileID),
+        sign_url: sign_document_path(file_draft.FileID),
+        tenant_signature_required: !file_draft.TenantSignature,
+        landlord_signature_required: !file_draft.LandlordSignature,
+        extension: extension.presence || file_draft.FileTypes
+      } ]
+
+      sender_name = [ @user[:FName], @user[:LName] ].compact.join(" ").squeeze(" ").strip
+      sender_name = @user[:CompanyName].presence || @user[:Email] if sender_name.blank?
+
+      ActionCable.server.broadcast(
+        "messages_#{@conversation_id}",
+        {
+          message_id: message.MessageID,
+          contents: message.Contents,
+          sender_id: message.SenderID,
+          recipient_id: message.recipientID,
+          message_date: message.MessageDate.strftime("%B %d, %Y %I:%M %p"),
+          sender_role: @user[:Role],
+          sender_name: sender_name,
+          attachments: attachments_payload,
+          broadcast: true
+        }
+      )
+
       redirect_to message_path(@conversation_id), notice: "Document generated and shared in the conversation."
     else
       redirect_to documents_path, notice: "Document generated successfully."
@@ -143,9 +175,9 @@ class DocumentsController < ApplicationController
 
     # Check if user is creator OR part of the conversation
     can_delete = file.CreatorID == @user[:UserID]
-    
+
     unless can_delete
-      
+
       attachments = FileAttachment.where(FileID: file.FileID)
       if attachments.exists?
         message_ids = attachments.pluck(:MessageID)
@@ -155,12 +187,12 @@ class DocumentsController < ApplicationController
                                         .exists?
       end
     end
-    
+
     return render plain: "Unauthorized", status: :forbidden unless can_delete
 
     # Delete the physical file
     delete_physical_file(file)
-    
+
     # Delete file attachments (removes from chat)
     FileAttachment.where(FileID: file.FileID).destroy_all
 
@@ -174,24 +206,23 @@ class DocumentsController < ApplicationController
   end
 
   def index
-    
     scope = FileDraft.where(CreatorID: @user[:UserID])
-    
-    
+
+
     user_conversations = PrimaryMessageGroup.where("LandlordID = ? OR TenantID = ?", @user[:UserID], @user[:UserID])
     conversation_ids = user_conversations.pluck(:ConversationID)
-    
+
     if conversation_ids.any?
-      
+
       message_ids = Message.where(ConversationID: conversation_ids).pluck(:MessageID)
-      
-      
+
+
       conversation_file_ids = FileAttachment.where(MessageID: message_ids).pluck(:FileID)
-      
-      
+
+
       scope = FileDraft.where("CreatorID = ? OR FileID IN (?)", @user[:UserID], conversation_file_ids)
     end
-    
+
     scope = scope.where(UserDeletedAt: nil) if FileDraft.column_names.include?("UserDeletedAt")
 
     @files =
@@ -263,7 +294,7 @@ class DocumentsController < ApplicationController
         if @conversation
           @landlord = User.find_by(UserID: @conversation.LandlordID)
           @tenant = User.find_by(UserID: @conversation.TenantID)
-          
+
           # Determine if current user can sign
           @user_role_in_conversation = if @user.UserID == @conversation.LandlordID
             "landlord"
@@ -341,11 +372,11 @@ class DocumentsController < ApplicationController
     if @file.save
       # Update the HTML file with the signature
       update_document_with_signature(@file, is_landlord, signature_name)
-      
+
       # Send notification to conversation
       landlord = User.find_by(UserID: conversation.LandlordID)
       tenant = User.find_by(UserID: conversation.TenantID)
-      
+
       signer_role = is_landlord ? "Landlord" : "Tenant"
       message_content = "#{signer_role} #{signature_name} has signed the document: #{@file.FileName}"
 
@@ -360,7 +391,7 @@ class DocumentsController < ApplicationController
       ActionCable.server.broadcast(
         "document_#{@file.FileID}",
         {
-          type: 'signature_update',
+          type: "signature_update",
           file_id: @file.FileID,
           landlord_signature: @file.LandlordSignature,
           landlord_signed_at: @file.LandlordSignedAt&.strftime("%B %d, %Y at %I:%M %p"),
@@ -375,7 +406,7 @@ class DocumentsController < ApplicationController
       # Check if both parties have signed
       if @file.LandlordSignature && @file.TenantSignature
         flash[:success] = "Document signed successfully! Both parties have now signed this agreement."
-        
+
         # Send completion notification
         Message.create!(
           ConversationID: conversation.ConversationID,
@@ -417,7 +448,7 @@ class DocumentsController < ApplicationController
     rescue StandardError
       nil
     end
-    disposition = mime_type == "application/pdf" ? "inline" : "attachment"
+    disposition = (mime_type == "application/pdf" || mime_type == "text/html") ? "inline" : "attachment"
 
     send_file path,
               filename: "#{file.FileName}#{File.extname(path)}",
@@ -461,33 +492,33 @@ class DocumentsController < ApplicationController
 
     # Generate the PDF based on template type
     require "prawn"
-    template = params[:template] || 'a'
+    template = params[:template] || "a"
     reason = params[:reason].to_s
     money_owed = params[:money_owed].to_s
     monthly_rent = params[:monthly_rent].to_s
-    
-    Prawn::Document.generate(dest.to_s, margin: 54, page_size: 'LETTER') do |pdf|
+
+    Prawn::Document.generate(dest.to_s, margin: 54, page_size: "LETTER") do |pdf|
       case template
-      when 'a' # Agree to Vacate
+      when "a" # Agree to Vacate
         generate_vacate_agreement(pdf, landlord, tenant, address, nego_date, reason, money_owed, schedule, best)
-      when 'b' # Pay and Stay Agreement
+      when "b" # Pay and Stay Agreement
         generate_pay_stay_agreement(pdf, landlord, tenant, address, nego_date, reason, money_owed, monthly_rent, schedule, best)
-      when 'c' # Mediation Agreement
+      when "c" # Mediation Agreement
         generate_mediation_agreement(pdf, landlord, tenant, address, nego_date, reason, money_owed, monthly_rent, schedule, best)
       else
         # Fallback to generic
         generate_generic_agreement(pdf, landlord, tenant, address, nego_date, reason, money_owed, schedule, best)
       end
-      
+
       # Footer
       pdf.move_down 20
       pdf.stroke_horizontal_rule
       pdf.move_down 10
-      
+
       pdf.text "Tenant Signature: ____________________________  Date: ____________", size: 10
       pdf.move_down 15
       pdf.text "Landlord Signature: ____________________________  Date: ____________", size: 10
-      
+
       if conv_id.present?
         pdf.move_down 15
         pdf.text "Conversation ID: #{conv_id}", size: 8, color: "888888"
@@ -621,44 +652,44 @@ class DocumentsController < ApplicationController
   def generate_vacate_agreement(pdf, landlord, tenant, address, date, reason, money_owed, schedule, best)
     pdf.text "AGREEMENT TO VACATE PREMISES", size: 18, style: :bold, align: :center
     pdf.move_down 20
-    
+
     pdf.text "This Agreement to Vacate is made on #{date.strftime('%B %d, %Y')} between:", size: 11
     pdf.move_down 10
-    
+
     pdf.text "LANDLORD: #{landlord}", size: 11, style: :bold
     pdf.text "TENANT: #{tenant}", size: 11, style: :bold
     pdf.text "PROPERTY ADDRESS: #{address}", size: 11, style: :bold
     pdf.move_down 15
-    
+
     pdf.text "WHEREAS:", size: 12, style: :bold
     pdf.move_down 8
     pdf.text "• The Tenant currently resides at the above-mentioned property", size: 10, indent_paragraphs: 20
     pdf.text "• Reason for agreement: #{reason}", size: 10, indent_paragraphs: 20
     pdf.text "• Outstanding rent owed: $#{money_owed}", size: 10, indent_paragraphs: 20
     pdf.move_down 15
-    
+
     pdf.text "TERMS OF AGREEMENT:", size: 12, style: :bold
     pdf.move_down 8
-    
+
     vacate_date = schedule.first&.last if schedule.any?
     vacate_date_str = vacate_date.present? ? (Date.parse(vacate_date) rescue vacate_date) : "To be determined"
-    
+
     pdf.text "1. The Tenant agrees to vacate the premises on or before: #{vacate_date_str}", size: 10, indent_paragraphs: 20
     pdf.move_down 8
     pdf.text "2. The Tenant will leave the property in clean and acceptable condition", size: 10, indent_paragraphs: 20
     pdf.move_down 8
     pdf.text "3. All keys and access devices will be returned to the Landlord", size: 10, indent_paragraphs: 20
     pdf.move_down 8
-    
+
     if schedule.any?
       pdf.text "4. Payment Schedule for Outstanding Rent ($#{money_owed}):", size: 10, indent_paragraphs: 20, style: :bold
       pdf.move_down 5
       schedule.each_with_index do |(i, amt, due), idx|
-        due_str = due.present? ? (Date.parse(due).strftime('%B %d, %Y') rescue due) : "TBD"
+        due_str = due.present? ? (Date.parse(due).strftime("%B %d, %Y") rescue due) : "TBD"
         pdf.text "   Payment #{idx + 1}: $#{amt} due on #{due_str}", size: 9, indent_paragraphs: 40
       end
     end
-    
+
     pdf.move_down 15
     pdf.text "Both parties agree to the terms outlined above.", size: 10
   end
@@ -666,15 +697,15 @@ class DocumentsController < ApplicationController
   def generate_pay_stay_agreement(pdf, landlord, tenant, address, date, reason, money_owed, monthly_rent, schedule, best)
     pdf.text "PAY AND STAY NEGOTIATED AGREEMENT", size: 18, style: :bold, align: :center
     pdf.move_down 20
-    
+
     pdf.text "This Pay and Stay Agreement is entered into on #{date.strftime('%B %d, %Y')} by and between:", size: 11
     pdf.move_down 10
-    
+
     pdf.text "LANDLORD: #{landlord}", size: 11, style: :bold
     pdf.text "TENANT: #{tenant}", size: 11, style: :bold
     pdf.text "PROPERTY ADDRESS: #{address}", size: 11, style: :bold
     pdf.move_down 15
-    
+
     pdf.text "RECITALS:", size: 12, style: :bold
     pdf.move_down 8
     pdf.text "• Tenant is currently residing at the property", size: 10, indent_paragraphs: 20
@@ -682,50 +713,50 @@ class DocumentsController < ApplicationController
     pdf.text "• Total amount owed: $#{money_owed}", size: 10, indent_paragraphs: 20
     pdf.text "• Monthly rent: $#{monthly_rent}", size: 10, indent_paragraphs: 20
     pdf.move_down 15
-    
+
     pdf.text "AGREEMENT TERMS:", size: 12, style: :bold
     pdf.move_down 8
-    
+
     pdf.text "1. The Tenant will remain in the property and continue tenancy", size: 10, indent_paragraphs: 20
     pdf.move_down 8
     pdf.text "2. The Tenant agrees to pay the outstanding balance according to the following schedule:", size: 10, indent_paragraphs: 20
     pdf.move_down 10
-    
+
     if schedule.any?
-      data = [["Payment #", "Amount", "Due Date"]]
+      data = [ [ "Payment #", "Amount", "Due Date" ] ]
       schedule.each_with_index do |(i, amt, due), idx|
-        due_str = due.present? ? (Date.parse(due).strftime('%m/%d/%Y') rescue due) : "TBD"
-        data << [(idx + 1).to_s, "$#{amt}", due_str]
+        due_str = due.present? ? (Date.parse(due).strftime("%m/%d/%Y") rescue due) : "TBD"
+        data << [ (idx + 1).to_s, "$#{amt}", due_str ]
       end
-      
+
       pdf.table(data, header: true, width: pdf.bounds.width - 40, position: 20,
                 cell_style: { size: 10, padding: 8 }) do
         row(0).font_style = :bold
-        row(0).background_color = 'E8F4F8'
+        row(0).background_color = "E8F4F8"
       end
       pdf.move_down 15
     end
-    
+
     pdf.text "3. Tenant must continue paying monthly rent of $#{monthly_rent} on time", size: 10, indent_paragraphs: 20
     pdf.move_down 8
     pdf.text "4. Failure to comply with this agreement may result in eviction proceedings", size: 10, indent_paragraphs: 20
     pdf.move_down 15
-    
+
     pdf.text "This agreement is binding upon execution by both parties.", size: 10
   end
 
   def generate_mediation_agreement(pdf, landlord, tenant, address, date, reason, money_owed, monthly_rent, schedule, best)
     pdf.text "MEDIATION AGREEMENT", size: 18, style: :bold, align: :center
     pdf.move_down 20
-    
+
     pdf.text "This Mediation Agreement is executed on #{date.strftime('%B %d, %Y')} between:", size: 11
     pdf.move_down 10
-    
+
     pdf.text "PARTY A (Landlord): #{landlord}", size: 11, style: :bold
     pdf.text "PARTY B (Tenant): #{tenant}", size: 11, style: :bold
     pdf.text "CONCERNING PROPERTY: #{address}", size: 11, style: :bold
     pdf.move_down 15
-    
+
     pdf.text "BACKGROUND:", size: 12, style: :bold
     pdf.move_down 8
     pdf.text "The parties have entered into mediation to resolve the following dispute:", size: 10
@@ -734,66 +765,66 @@ class DocumentsController < ApplicationController
     pdf.text "• Amount in question: $#{money_owed}", size: 10, indent_paragraphs: 20
     pdf.text "• Current monthly rent: $#{monthly_rent}", size: 10, indent_paragraphs: 20
     pdf.move_down 15
-    
+
     pdf.text "MEDIATED RESOLUTION:", size: 12, style: :bold
     pdf.move_down 8
-    
+
     pdf.text "The parties agree to the following terms to resolve this dispute:", size: 10
     pdf.move_down 10
-    
+
     pdf.text "1. PAYMENT ARRANGEMENT:", size: 10, style: :bold, indent_paragraphs: 20
     pdf.move_down 5
-    
+
     if schedule.any?
       pdf.text "   The Tenant agrees to pay the outstanding balance as follows:", size: 10, indent_paragraphs: 20
       pdf.move_down 8
-      
-      data = [["Installment", "Amount", "Due Date"]]
+
+      data = [ [ "Installment", "Amount", "Due Date" ] ]
       schedule.each_with_index do |(i, amt, due), idx|
-        due_str = due.present? ? (Date.parse(due).strftime('%B %d, %Y') rescue due) : "TBD"
-        data << [(idx + 1).to_s, "$#{amt}", due_str]
+        due_str = due.present? ? (Date.parse(due).strftime("%B %d, %Y") rescue due) : "TBD"
+        data << [ (idx + 1).to_s, "$#{amt}", due_str ]
       end
-      
+
       pdf.table(data, header: true, width: pdf.bounds.width - 40, position: 20,
                 cell_style: { size: 9, padding: 6 }) do
         row(0).font_style = :bold
-        row(0).background_color = 'F0F0F0'
+        row(0).background_color = "F0F0F0"
       end
       pdf.move_down 12
     end
-    
+
     pdf.text "2. ONGOING OBLIGATIONS:", size: 10, style: :bold, indent_paragraphs: 20
     pdf.move_down 5
     pdf.text "   • Tenant will continue paying regular monthly rent of $#{monthly_rent}", size: 9, indent_paragraphs: 25
     pdf.text "   • Tenant will maintain the property in good condition", size: 9, indent_paragraphs: 25
     pdf.text "   • Landlord will not pursue eviction while this agreement is honored", size: 9, indent_paragraphs: 25
     pdf.move_down 12
-    
+
     pdf.text "3. DEFAULT PROVISION:", size: 10, style: :bold, indent_paragraphs: 20
     pdf.move_down 5
     pdf.text "   If Tenant fails to make any payment, Landlord may proceed with eviction", size: 9, indent_paragraphs: 25
     pdf.move_down 15
-    
+
     pdf.text "This agreement represents the full understanding between the parties.", size: 10
   end
 
   def generate_generic_agreement(pdf, landlord, tenant, address, date, reason, money_owed, schedule, best)
     pdf.text "RENTAL AGREEMENT", size: 18, style: :bold, align: :center
     pdf.move_down 20
-    
+
     pdf.text "Date: #{date.strftime('%B %d, %Y')}", size: 11
     pdf.move_down 10
-    
+
     pdf.text "Landlord: #{landlord}", size: 11
     pdf.text "Tenant: #{tenant}", size: 11
     pdf.text "Address: #{address}", size: 11
     pdf.move_down 15
-    
+
     pdf.text "Reason: #{reason}", size: 10
     pdf.text "Amount Owed: $#{money_owed}", size: 10
     pdf.text "Resolution Type: #{best}", size: 10
     pdf.move_down 15
-    
+
     if schedule.any?
       pdf.text "Payment Schedule:", style: :bold
       pdf.move_down 6
