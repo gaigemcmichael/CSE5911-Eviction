@@ -1,110 +1,116 @@
-<div class = "account">
-    <!-- Main Content -->
-    <div class="account-content">
-        <div class="profile-section">
-            <h1> <i class="fa-solid fa-user"></i> Personal Details</h1>
-            <table class = "personal-details-table">
-                <tr>
-                    <th> <i class="fa-solid fa-id-badge"></i> Name</th>
-                    <td> <%= @user.FName %> <%= @user.LName %> </td>
-                </tr>
-                <tr>
-                    <th> <i class="fa-solid fa-envelope"></i> Email</th>
-                    <td> <%= @user.Email %> </td>
-                </tr>
-                <tr>
-                    <th> <i class="fa-solid fa-user-tag"></i> Role</th>
-                    <td> <%= @user.Role %> </td>
-                </tr>
-                <% if @user.Role == "Tenant" %>
-                  <tr>
-                    <th> <i class="fa-solid fa-location-dot"></i> Address</th>
-                    <td>
-                      <!-- Current Address Display -->
-                      <p><strong>Current:</strong> <%= @user.TenantAddress.presence || "Not provided" %></p>
+<div class="signup-container">
+  <div style="max-width: 900px; width: 90%; margin: 0 auto; padding: 20px 0;">
+    <h1 style="margin: 0 0 6px 0; font-size: 28px; color: #102a4d; text-align: center;"><i class="fa-solid fa-user-circle"></i> My Account</h1>
+    <h2 style="font-size: 16px; color: #2b556f; font-weight: 400; margin-top: 0; margin-bottom: 32px; text-align: center;">Manage your personal information and security settings</h2>
 
-                      <div class="form-section">
-                        <!-- Form to Update Address -->
-                        <%= form_with model: @user, url: account_path, method: :patch, local: true, id: "address-form" do |f| %>
-                        <div class="input-field">
-                          <i class="fa-solid fa-location-dot"></i>
-                          <%= f.text_field :TenantAddress, class: "form-control", placeholder: "Enter new address" %>
-                        </div>
-                          <%= f.submit "Update Address" %>
-                        <% end %>
-                      </div>
-                    </td>
-                  </tr>
-                <% elsif @user.Role == "Landlord"%>
-                    <tr>
-                        <th> <i class="fa-solid fa-building"></i> Company</th>
-                        <td> <%= @user.CompanyName %> </td>
-                    </tr>
-                <% end %>
-            </table>
-        </div>
-
-        <div class="security-section">
-            <h1> <i class="fa-solid fa-lock"></i> Password and Security</h1>
-            <table class = "pass-security-table">
-                <tr>
-                    <th> <i class="fa-solid fa-key"></i> Password</th>
-                    <td>
-                      <%= form_with model: @user, url: account_path, method: :patch, local: true, id: "password-form" do |f| %>
-                        <div class="form-section">
-                          <div class="input-field">
-                            <i class="fa-solid fa-lock"></i>
-                            <%= f.password_field :password, placeholder: "New Password", id: "password" %><br>
-                          </div>
-                          <div class="input-field">
-                            <i class="fa-solid fa-lock"></i>
-                            <%= f.password_field :password_confirmation, placeholder: "Confirm Password", id: "password_confirmation" %><br>
-                          </div>
-                          <%= f.submit "Update Password" %>
-                        </div>
-                        <div id="password-error" class="text-danger mt-1" style="display: none;"></div>
-                      <% end %>
-                    </td>      
-                </tr>
-            </table>
-        </div>
-
-        <% if @user.Role == "Mediator" %>
-            <!-- Mediator Availability -->
-            <div class="profile-section">
-                <h1> <i class="fa-solid fa-user"></i> Mediator Availability</h1>
-                <table class = "personal-details-table">
-                    <tr>
-                        <th>Are you available for Mediation? </th>
-                        <td>
-                        <%= form_with model: @user, url: account_path, method: :patch, local: true do |f| %>
-                          <%= f.fields_for :mediator do |m| %>
-                            <% status_text = @user.mediator.Available ? "Available" : "Not Available" %>
-                            <% status_class = @user.mediator.Available ? "status-available" : "status-unavailable" %>
-                            <p>
-                              <strong>Status: 
-                                <span class="availability-badge <%= status_class %>">
-                                  <%= status_text %>
-                                </span>
-                              </strong>
-                            </p>
-                            <div class="form-section">
-                              <div class="checkbox-inline">
-                                <%= m.check_box :Available, class: "form-check-input", id: "availableCheckbox" %>
-                                <%= m.label :Available, "Currently Available", class: "form-check-label", for: "availableCheckbox" %>
-                              </div>
-                      
-                              <p></p> <!-- Space -->
-                              <%= f.submit "Update Availability" %>
-                            </div>
-                          <% end %>
-                        <% end %>
-                      </td>
-                    </tr>
-                </table>
+    <!-- Personal Details Card -->
+    <div class="account-card" style="margin-bottom: 24px;">
+      <div class="card-header">
+        <h2><i class="fa-solid fa-user"></i> Personal Details</h2>
+      </div>
+      <div class="card-body">
+        <div class="info-grid">
+          <div class="info-item">
+            <div class="info-label">
+              <i class="fa-solid fa-id-badge"></i> Name
             </div>
+            <div class="info-value"><%= @user.FName %> <%= @user.LName %></div>
+          </div>
+
+          <div class="info-item">
+            <div class="info-label">
+              <i class="fa-solid fa-envelope"></i> Email
+            </div>
+            <div class="info-value"><%= @user.Email %></div>
+          </div>
+
+          <div class="info-item">
+            <div class="info-label">
+              <i class="fa-solid fa-phone"></i> Phone Number
+            </div>
+            <div class="info-value"><%= @user.PhoneNumber.presence || "Not provided" %></div>
+          </div>
+
+          <div class="info-item">
+            <div class="info-label">
+              <i class="fa-solid fa-user-tag"></i> Role
+            </div>
+            <div class="info-value"><%= @user.Role %></div>
+          </div>
+
+        <% if @user.Role == "Tenant" %>
+          <div class="info-item">
+            <div class="info-label">
+              <i class="fa-solid fa-location-dot"></i> Address
+            </div>
+            <div class="info-value"><%= @user.TenantAddress.presence || "Not provided" %></div>
+          </div>
+        </div>
+
+        <div class="form-section-card">
+          <div class="info-label" style="margin-bottom: 1rem;">
+            <i class="fa-solid fa-edit"></i> Update Address
+          </div>
+          <%= form_with model: @user, url: account_path, method: :patch, local: true, id: "address-form", class: "account-form" do |f| %>
+            <%= f.text_field :TenantAddress, class: "form-input-simple", placeholder: "Enter new address" %>
+            <%= f.submit "Update Address", class: "btn-primary" %>
+          <% end %>
+        </div>
+        <% else %>
+        </div>
         <% end %>
+      </div>
     </div>
+
+    <!-- Password & Security Card -->
+    <div class="account-card" style="margin-bottom: 24px;">
+      <div class="card-header">
+        <h2><i class="fa-solid fa-lock"></i> Password & Security</h2>
+      </div>
+      <div class="card-body">
+        <%= form_with model: @user, url: account_path, method: :patch, local: true, id: "password-form", class: "account-form" do |f| %>
+          <div class="info-label">
+            <i class="fa-solid fa-key"></i> Change Password
+          </div>
+          <%= f.password_field :password, placeholder: "New Password", id: "password", class: "form-input-simple" %>
+          <%= f.password_field :password_confirmation, placeholder: "Confirm Password", id: "password_confirmation", class: "form-input-simple" %>
+          <div id="password-error" class="error-message" style="display: none;"></div>
+          <%= f.submit "Update Password", class: "btn-primary" %>
+        <% end %>
+      </div>
+    </div>
+
+    <% if @user.Role == "Mediator" %>
+      <!-- Mediator Availability Card -->
+      <div class="account-card" style="margin-bottom: 24px;">
+        <div class="card-header">
+          <h2><i class="fa-solid fa-calendar-check"></i> Mediator Availability</h2>
+        </div>
+        <div class="card-body">
+          <%= form_with model: @user, url: account_path, method: :patch, local: true, class: "account-form" do |f| %>
+            <%= f.fields_for :mediator do |m| %>
+              <div class="info-label">
+                Current Status
+              </div>
+              <% status_text = @user.mediator.Available ? "Available" : "Not Available" %>
+              <% status_class = @user.mediator.Available ? "status-available" : "status-unavailable" %>
+              <div class="availability-badge <%= status_class %>">
+                <i class="fa-solid <%= @user.mediator.Available ? 'fa-circle-check' : 'fa-circle-xmark' %>"></i>
+                <%= status_text %>
+              </div>
+
+              <div class="checkbox-group">
+                <%= m.check_box :Available, class: "form-checkbox", id: "availableCheckbox" %>
+                <%= m.label :Available, "I am currently available for mediation", class: "checkbox-label", for: "availableCheckbox" %>
+              </div>
+
+              <%= f.submit "Update Availability", class: "btn-primary" %>
+            <% end %>
+          <% end %>
+        </div>
+      </div>
+    <% end %>
+  </div>
 </div>
 
 <%# Password Confirmation Error Control #%>

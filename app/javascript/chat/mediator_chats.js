@@ -165,6 +165,63 @@ const setupMediatorForms = () => {
 const initializeMediatorChat = () => {
   setupTextareaAutoExpand();
   setupMediatorForms();
+
+  // Show disclaimer modal on mobile/tablet with slight delay (only once for landlords)
+  const disclaimerModal = document.querySelector('[data-disclaimer-modal]');
+  if (disclaimerModal && window.innerWidth <= 1024) {
+    const userRole = disclaimerModal.dataset.userRole;
+    const disclaimerKey = `chatDisclaimerSeen_${userRole}`;
+    
+    // For landlords, check if they've seen it before
+    if (userRole === 'Landlord') {
+      const hasSeenDisclaimer = localStorage.getItem(disclaimerKey);
+      if (hasSeenDisclaimer) {
+        return; // Don't show modal again
+      }
+    }
+    
+    setTimeout(() => {
+      disclaimerModal.hidden = false;
+      requestAnimationFrame(() => {
+        disclaimerModal.classList.add('is-open');
+      });
+    }, 300);
+  }
+
+  // Disclaimer modal close handler
+  const disclaimerCloseButtons = document.querySelectorAll('[data-disclaimer-modal-close]');
+  disclaimerCloseButtons.forEach(button => {
+    button.addEventListener('click', () => {
+      const modal = document.querySelector('[data-disclaimer-modal]');
+      if (modal) {
+        modal.classList.remove('is-open');
+        modal.hidden = true;
+        
+        // Mark as seen for landlords
+        const userRole = modal.dataset.userRole;
+        if (userRole === 'Landlord') {
+          const disclaimerKey = `chatDisclaimerSeen_${userRole}`;
+          localStorage.setItem(disclaimerKey, 'true');
+        }
+      }
+    });
+  });
+
+  // Also mark as seen when clicking outside the modal
+  if (disclaimerModal) {
+    disclaimerModal.addEventListener('click', (e) => {
+      if (e.target === disclaimerModal) {
+        disclaimerModal.classList.remove('is-open');
+        disclaimerModal.hidden = true;
+        
+        const userRole = disclaimerModal.dataset.userRole;
+        if (userRole === 'Landlord') {
+          const disclaimerKey = `chatDisclaimerSeen_${userRole}`;
+          localStorage.setItem(disclaimerKey, 'true');
+        }
+      }
+    });
+  }
 };
 
 const eagerInitializeMediatorChat = () => {

@@ -1,6 +1,3 @@
-<h2> <i class="fa-solid fa-user-pen"></i> Update Mediator</h2>
-<p>Select a mediator and update their info below.</p>
-
 <%= form_with url: "", method: :patch, local: true, id: "mediator-update-form" do |f| %>
 
   <!-- Mediator Select -->
@@ -46,7 +43,7 @@
 
   <!-- New Password -->
   <div class="form-section">
-    <%= f.label :password, "New Password", class: "required-label" %>
+    <%= f.label :password, "New Password" %>
     <div class="input-field">
       <i class="fa-solid fa-lock"></i>
       <%= password_field_tag :password, nil, placeholder: "Enter new password", class: "signup-input", id: "password" %>
@@ -55,7 +52,7 @@
 
   <!-- Confirm Password -->
   <div class="form-section">
-    <%= f.label :password_confirmation, "Confirm Password", class: "required-label" %>
+    <%= f.label :password_confirmation, "Confirm Password" %>
     <div class="input-field">
       <i class="fa-solid fa-lock"></i>
       <%= password_field_tag :password_confirmation, nil, placeholder: "Confirm new password", class: "signup-input", id: "password-confirmation" %>
@@ -63,7 +60,9 @@
     <p id="password-warning" style="color: red; display: none;">⚠️ Passwords do not match</p>
   </div>
 
-  <%= submit_tag "Update Mediator", class: "signup-btn" %>
+  <div class="form-footer">
+    <%= submit_tag "Update Mediator", class: "signup-btn" %>
+  </div>
 <% end %>
 
 <%# Script for password confirmation and displaying mediator details after being selected #%>

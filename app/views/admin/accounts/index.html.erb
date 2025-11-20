@@ -1,23 +1,26 @@
-<div class="admin-account-container">
-    <h1>Manage Mediator Accounts</h1>
+<div class="signup-container">
+  <div style="background: white; box-shadow: 0 4px 12px rgba(0,0,0,0.1); padding: 40px; border-radius: 16px; max-width: 70%; width: 90%; margin: 0 auto;">
+    <h1 style="margin: 0 0 6px 0; font-size: 28px; color: #102a4d; text-align: center;"><i class="fa-solid fa-users-cog"></i> Manage Mediator Accounts</h1>
+    <h2 style="font-size: 16px; color: #2b556f; font-weight: 400; margin-top: 0; margin-bottom: 18px; text-align: center;">Create new mediator accounts or update existing ones</h2>
 
     <!-- Admin Tabs -->
     <div class="admin-tabs">
-        <a href="?tab=create" class="<%= params[:tab] == 'create' || params[:tab].blank? ? 'active' : '' %>">Create</a>
-        <a href="?tab=update" class="<%= params[:tab] == 'update' ? 'active' : '' %>">Update</a>
+      <a href="?tab=create" class="admin-tab <%= params[:tab] == 'create' || params[:tab].blank? ? 'active' : '' %>">
+        <i class="fa-solid fa-user-plus"></i> Create Account
+      </a>
+      <a href="?tab=update" class="admin-tab <%= params[:tab] == 'update' ? 'active' : '' %>">
+        <i class="fa-solid fa-user-pen"></i> Update Account
+      </a>
     </div>
 
     <div>
-        <% tab = params[:tab] || 'create' %>
+      <% tab = params[:tab] || 'create' %>
 
-        <% if tab == 'create' %>
-        <div class="admin-form-section">
-            <%= render partial: "create_form" %>
-        </div>
-        <% elsif tab == 'update' %>
-        <div class="admin-form-section">
-            <%= render partial: "update_form" %>
-        </div>
-        <% end %>
+      <% if tab == 'create' %>
+        <%= render partial: "create_form" %>
+      <% elsif tab == 'update' %>
+        <%= render partial: "update_form" %>
+      <% end %>
     </div>
+  </div>
 </div>

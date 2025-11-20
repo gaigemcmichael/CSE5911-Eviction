@@ -22,9 +22,9 @@
   <% @files.each do |f| %>
     <% t = (f.respond_to?(:uploaded_at) && f.uploaded_at.present?) ? f.uploaded_at : nil %>
     <tr>
-      <td><strong><%= f.FileName.presence || File.basename(f.FileURLPath.to_s) %></strong></td>
-      <td><span class="badge"><%= f.FileTypes.to_s.upcase %></span></td>
-      <td><%= t ? t.strftime("%b %d, %Y %l:%M %p") : "-" %></td>
+      <td data-label="File"><%= f.FileName.presence || File.basename(f.FileURLPath.to_s) %></td>
+      <td data-label="Type"><span class="badge"><%= f.FileTypes.to_s.upcase %></span></td>
+      <td data-label="Uploaded"><%= t ? t.strftime("%b %d, %Y %l:%M %p") : "-" %></td>
       <td class="docs-actions-cell">
         <%= link_to "Download",
                     download_document_path(f.FileID),
