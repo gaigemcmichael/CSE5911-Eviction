@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <style>
+    body {
+      font-family: 'Times New Roman', Times, serif;
+      max-width: 8.5in;
+      margin: 0 auto;
+      padding: 0.75in;
+      line-height: 1.6;
+      color: #000;
+    }
+    h1 {
+      text-align: center;
+      font-size: 18pt;
+      font-weight: bold;
+      margin-bottom: 24pt;
+      text-transform: uppercase;
+    }
+    h2 {
+      font-size: 14pt;
+      font-weight: bold;
+      margin-top: 18pt;
+      margin-bottom: 12pt;
+    }
+    .section {
+      margin-bottom: 18pt;
+    }
+    .info-line {
+      margin: 6pt 0;
+      font-size: 11pt;
+    }
+    .label {
+      font-weight: bold;
+      display: inline-block;
+      width: 150pt;
+    }
+    .value {
+      border-bottom: 1px solid #000;
+      display: inline-block;
+      min-width: 200pt;
+    }
+    .terms-list {
+      margin-left: 24pt;
+      margin-top: 12pt;
+    }
+    .terms-list li {
+      margin-bottom: 12pt;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 12pt 0;
+    }
+    th, td {
+      border: 1px solid #000;
+      padding: 8pt;
+      text-align: left;
+    }
+    th {
+      background-color: #f0f0f0;
+      font-weight: bold;
+    }
+    .signature-section {
+      margin-top: 48pt;
+      page-break-inside: avoid;
+    }
+    .signature-line {
+      margin: 24pt 0;
+    }
+    .signature-line .line {
+      display: inline-block;
+      width: 250pt;
+      border-bottom: 1px solid #000;
+    }
+    .footer {
+      margin-top: 36pt;
+      font-size: 9pt;
+      color: #666;
+      text-align: center;
+    }
+    @media print {
+      body {
+        padding: 0.5in;
+      }
+    }
+  </style>
+</head>
+<body>
+  <h1>Agreement to Vacate Premises</h1>
+
+  <div class="section">
+    <p>This Agreement to Vacate is made on <strong><%= @date.strftime('%B %d, %Y') %></strong> between:</p>
+  </div>
+
+  <div class="section">
+    <div class="info-line">
+      <span class="label">LANDLORD:</span>
+      <span class="value"><%= @landlord %></span>
+    </div>
+    <div class="info-line">
+      <span class="label">TENANT:</span>
+      <span class="value"><%= @tenant %></span>
+    </div>
+    <div class="info-line">
+      <span class="label">PROPERTY ADDRESS:</span>
+      <span class="value"><%= @address %></span>
+    </div>
+  </div>
+
+  <h2>WHEREAS:</h2>
+  <ul class="terms-list">
+    <li>The Tenant currently resides at the above-mentioned property</li>
+    <li>Reason for agreement: <%= @reason %></li>
+    <li>Outstanding rent owed: $<%= @money_owed %></li>
+  </ul>
+
+  <h2>TERMS OF AGREEMENT:</h2>
+  <ol class="terms-list">
+    <li>
+      <strong>Vacate Date:</strong> The Tenant agrees to vacate the premises on or before: 
+      <strong><%= @vacate_date.present? ? (Date.parse(@vacate_date).strftime('%B %d, %Y') rescue @vacate_date) : 'To be determined' %></strong>
+    </li>
+    <li>The Tenant will leave the property in clean and acceptable condition, free of personal belongings and debris.</li>
+    <li>All keys, access cards, garage door openers, and any other access devices will be returned to the Landlord upon vacating.</li>
+    <% if @schedule.any? %>
+      <li>
+        <strong>Payment Schedule for Outstanding Rent ($<%= @money_owed %>):</strong>
+        <table>
+          <thead>
+            <tr>
+              <th>Payment #</th>
+              <th>Amount</th>
+              <th>Due Date</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% @schedule.each_with_index do |(i, amt, due), idx| %>
+              <tr>
+                <td><%= idx + 1 %></td>
+                <td>$<%= amt %></td>
+                <td><%= due.present? ? (Date.parse(due).strftime('%B %d, %Y') rescue due) : 'TBD' %></td>
+              </tr>
+            <% end %>
+          </tbody>
+        </table>
+      </li>
+    <% end %>
+    <li>The Landlord agrees not to pursue further legal action if the Tenant complies with all terms of this agreement.</li>
+  </ol>
+
+  <div class="section">
+    <p>Both parties agree to the terms outlined above and acknowledge that this agreement is legally binding.</p>
+  </div>
+
+  <div class="signature-section">
+    <div class="signature-line">
+      <strong>Tenant Signature:</strong> <span class="line"></span> <strong>Date:</strong> __________
+    </div>
+    <div class="signature-line">
+      <strong>Landlord Signature:</strong> <span class="line"></span> <strong>Date:</strong> __________
+    </div>
+  </div>
+
+  <% if @conversation_id.present? %>
+    <div class="footer">
+      Document ID: <%= @conversation_id %>
+    </div>
+  <% end %>
+</body>
+</html>

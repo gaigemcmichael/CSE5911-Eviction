@@ -50,7 +50,7 @@
           <%= f.label :file_id, "Attach an existing file", class: "file-label" %>
           <div class="custom-select-wrapper">
             <%= f.collection_select :file_id,
-                  FileDraft.where(CreatorID: current_user.UserID),
+                  FileDraft.where(CreatorID: current_user.UserID).where(UserDeletedAt: nil),
                   :FileID,
                   :FileName,
                   { prompt: "Choose a file" },
