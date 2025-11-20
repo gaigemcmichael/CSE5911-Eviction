@@ -48,6 +48,15 @@
                 <p>This is a mediation conversation with your <%= other_party_role.downcase %>.</p>
               </div>
             <% end %>
+            
+            <% if !is_mediator %>
+              <div class="info-box info-box--disclaimer">
+                <h4>Chat Terms</h4>
+                <p>Messages shared in this chat box are used for mediation and negotiation purposes only.</p>
+                <p>The mediator may review these messages to <strong>help guide the conversation</strong>, but they <strong>do not represent either party</strong> and cannot give legal advice.</p>
+                <p>By continuing to use this chat, you agree to these terms.</p>
+              </div>
+            <% end %>
 
             <table class="info-table">
               <tr>

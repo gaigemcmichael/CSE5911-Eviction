@@ -252,6 +252,27 @@
     color: #1d4ed8;
   }
 
+  .info-box--disclaimer {
+    background: #f8f9fa;
+    border-color: #dee2e6;
+  }
+
+  .info-box--disclaimer h4 {
+    color: #495057;
+  }
+
+  .info-box--disclaimer p {
+    color: #6c757d;
+    font-size: 0.9rem;
+  }
+
+  /* Hide disclaimer in conversation details on desktop */
+  @media (min-width: 1025px) {
+    .info-box--disclaimer {
+      display: none;
+    }
+  }
+
   /* ==========================================================================
     4. Chat Panel & Message List
     ========================================================================== */
@@ -1601,8 +1622,26 @@
     }
   }
 
-  /* Mobile Devices (Portrait) */
-  @media (max-width: 768px) {
+  /* Tablet sizes (768-1024px) - constrain width to prevent full-screen stretch */
+  @media (min-width: 768px) and (max-width: 1024px) {
+    .message-page-container.chat-layout {
+      max-width: 850px;
+      margin: 0 auto;
+    }
+
+    .conversation-info-trigger {
+      max-width: 850px;
+      margin: 0 auto clamp(0.6rem, 1.3vw, 1.1rem);
+    }
+
+    .chat-page-wrapper {
+      max-width: 850px;
+      margin: 0 auto;
+    }
+  }
+
+  /* Mobile and Tablet Devices (Portrait) */
+  @media (max-width: 1024px) {
     /* Adding responsive padding to the master wrapper */
     .chat-page-wrapper {
       padding: 0;
@@ -1758,12 +1797,12 @@
       gap: 0.65rem;
     }
 
-    /* Hide desktop disclaimer on mobile */
+    /* Hide desktop disclaimer on mobile and tablet */
     .chat-disclaimer--desktop {
       display: none;
     }
 
-    /* Show modal disclaimer on mobile */
+    /* Show modal disclaimer on mobile and tablet */
     .chat-disclaimer-modal {
       display: flex;
     }
