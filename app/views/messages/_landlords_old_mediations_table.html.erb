@@ -15,13 +15,13 @@
         <% @past_mediations.each do |mediation| %>
         <% tenant = mediation.tenant %>
         <tr>
-            <td><%= tenant.FName %> <%= tenant.LName %></td>
-            <td><%= tenant.Email %></td>
-            <td><%= mediation.deleted_at.strftime("%B %d, %Y %I:%M %p") %></td>
-            <td>
+            <td data-label="Tenant Name"><%= tenant.FName %> <%= tenant.LName %></td>
+            <td data-label="Email"><%= tenant.Email %></td>
+            <td data-label="Ended At"><%= mediation.deleted_at.strftime("%B %d, %Y %I:%M %p") %></td>
+            <td data-label="Summary">
             <%= link_to "View Summary", mediation_summary_path(mediation.ConversationID), class: "view-link" %>
             </td>
-            <td>
+            <td data-label="Feedback">
               <% if needs_good_faith_response?(mediation, @user) %>
                 <%= link_to "Complete Feedback", good_faith_response_path(mediation.ConversationID), class: "complete-link" %>
               <% else %>

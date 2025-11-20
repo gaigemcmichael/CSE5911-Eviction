@@ -1,5 +1,7 @@
-<div class="mediator-info">
-  <h2>Your Mediator</h2>
-  <p><strong>Name:</strong> <%= @mediation.mediator.FName %> <%= @mediation.mediator.LName %></p>
-  <!-- Include more mediator details if needed -->
-</div>
+<% if (mediator = @mediation&.mediator) %>
+  <% mediator_name = [mediator.FName, mediator.LName].compact.join(" ").squeeze(" ").strip.presence || mediator.Email %>
+  <p class="mediator-inline-details" data-mediator-card>
+    <span class="mediator-inline-details__label">Name:</span>
+    <span class="mediator-inline-details__value" data-mediator-name><%= mediator_name %></span>
+  </p>
+<% end %>

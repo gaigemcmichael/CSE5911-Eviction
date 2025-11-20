@@ -203,6 +203,55 @@
     background: rgba(16, 42, 77, 0.08);
   }
 
+  /* Info Box Styles */
+  .info-box {
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+    padding: 1rem;
+    margin-bottom: 1.25rem;
+  }
+
+  .info-box h4 {
+    margin: 0 0 0.5rem;
+    font-size: 0.95rem;
+    color: #102a4d;
+    font-weight: 600;
+  }
+
+  .info-box p {
+    margin: 0;
+    font-size: 0.9rem;
+    color: #475569;
+    line-height: 1.5;
+  }
+
+  .info-box--mediator {
+    background: #f0fdf4;
+    border-color: #bbf7d0;
+  }
+
+  .info-box--mediator h4 {
+    color: #166534;
+  }
+
+  .info-box--mediator p {
+    color: #15803d;
+  }
+
+  .info-box--info {
+    background: #eff6ff;
+    border-color: #bfdbfe;
+  }
+
+  .info-box--info h4 {
+    color: #1e40af;
+  }
+
+  .info-box--info p {
+    color: #1d4ed8;
+  }
+
   /* ==========================================================================
     4. Chat Panel & Message List
     ========================================================================== */
@@ -400,6 +449,16 @@
     background: linear-gradient(135deg, #0f9d58 0%, #34c07a 100%);
     color: #ffffff;
     border: none;
+  }
+
+  .chat-message[data-sender-role="Mediator"] .message-meta,
+  .chat-message[data-sender-role="Mediator"] .message-author,
+  .chat-message[data-sender-role="Mediator"] .message-content {
+    color: rgba(255, 255, 255, 0.95);
+  }
+
+  .chat-message[data-sender-role="Mediator"] .message-timestamp {
+    color: rgba(255, 255, 255, 0.8);
   }
 
   .chat-message.is-entering {
@@ -878,6 +937,78 @@
     display: flex;
     flex-direction: column;
     gap: 0.85rem;
+    min-width: 0;
+  }
+  @media (max-width: 900px) {
+    .chat-layout {
+      grid-template-columns: 1fr;
+    }
+
+    .chat-actions-column {
+      position: static;
+      top: auto;
+      width: 100%;
+      margin-top: clamp(1.25rem, 3vw, 2rem);
+    }
+  }
+
+  @media (max-width: 520px) {
+    .conversation-card {
+      padding: clamp(0.85rem, 4vw, 1.1rem);
+      border-radius: 18px;
+      gap: 0.75rem;
+    }
+
+    .conversation-status {
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      font-size: 0.9rem;
+    }
+
+    .mediator-card__header {
+      align-items: flex-start;
+    }
+
+    .mediator-card__icon {
+      border-radius: 12px;
+    }
+  }
+
+  .conversation-card--mediator {
+    background: linear-gradient(135deg, rgba(223, 249, 237, 0.95), rgba(207, 244, 227, 0.98));
+    border-color: rgba(15, 157, 88, 0.32);
+    color: #0b2f1d;
+    gap: 0.5rem;
+  }
+
+  .conversation-card--mediator .conversation-status--success {
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.7), rgba(210, 244, 226, 0.85));
+    color: #0b2f1d;
+  }
+
+  .conversation-card--mediator .conversation-card__details {
+    padding: 0.35rem 0 0;
+  }
+
+  .mediator-inline-details {
+    margin: 0;
+    display: flex;
+    align-items: center;
+    gap: 0.35rem;
+    font-weight: 600;
+    color: rgba(11, 47, 29, 0.95);
+    font-size: 0.98rem;
+  }
+
+  .mediator-inline-details__label {
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    font-size: 0.72rem;
+    color: rgba(11, 47, 29, 0.65);
+  }
+
+  .mediator-inline-details__value {
+    overflow-wrap: anywhere;
   }
 
   .conversation-card--warning {
@@ -887,6 +1018,13 @@
   .conversation-card__details {
     display: block;
     padding-top: 0.25rem;
+  }
+
+  @media (max-width: 640px) {
+    .mediator-inline-details {
+      flex-wrap: wrap;
+      gap: 0.25rem;
+    }
   }
 
   .conversation-action__icon {
@@ -1238,16 +1376,46 @@
       /* max-width rule removed from here */
       flex-direction: column;
       gap: clamp(0.6rem, 1.2vw, 1.1rem);
+      flex: 1 1 auto;
+      min-height: 0;
+      width: 100%;
+      max-height: 100%;
+      overflow: hidden;
     }
 
     .chat-panel-wrapper {
       width: 100%;
+      max-width: 100%;
+      padding: 0 clamp(0.75rem, 2vw, 1.25rem);
+      box-sizing: border-box;
+      display: flex;
+      flex-direction: column;
+      flex: 1 1 auto;
+      min-height: 0;
+      max-height: 100%;
+      overflow: hidden;
     }
 
     .chat-actions-column {
       width: 100%;
       padding: 0 clamp(0.75rem, 2vw, 1.25rem) clamp(1.25rem, 2vw, 2rem);
-      margin-top: clamp(0.75rem, 1.5vw, 1.75rem);
+      margin-top: clamp(0.25rem, 0.8vw, 0.6rem);
+      order: 2;
+      align-items: stretch;
+      background: transparent;
+      flex: 0 0 auto;
+    }
+
+    .chat-actions-column .conversation-actions {
+      gap: clamp(0.35rem, 1vw, 0.6rem);
+    }
+
+    .chat-actions-column .conversation-actions__button-stack {
+      gap: clamp(0.35rem, 1vw, 0.6rem);
+    }
+
+    .chat-actions-column .conversation-banner {
+      margin: clamp(0.2rem, 0.6vw, 0.4rem) 0 clamp(0.25rem, 0.7vw, 0.45rem);
     }
 
     .conversation-info-trigger {
@@ -1261,6 +1429,143 @@
     .message-textarea::-webkit-scrollbar {
       display: none;
     }
+
+    .chat-page-wrapper {
+      padding: 0 clamp(0.75rem, 2vw, 1.75rem) clamp(1rem, 2vw, 1.75rem);
+      max-width: 100%;
+      flex: 1 1 auto;
+      min-height: 0;
+      max-height: 100%;
+    }
+
+    .mediation-container {
+      padding: 0 clamp(0.75rem, 2vw, 1.75rem) clamp(1rem, 2vw, 1.75rem);
+      max-width: 100%;
+      overflow-x: hidden;
+      height: 94vh;
+      height: 94dvh;
+      max-height: 94vh;
+      max-height: 94dvh;
+    }
+
+    .mediation-container h1 {
+      padding: 0 clamp(0.75rem, 2vw, 1.5rem);
+      font-size: clamp(1.4rem, 2vw, 1.75rem);
+      margin-bottom: 0.35rem;
+    }
+
+    .mediation-container p {
+      font-size: 1rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .chat-panel {
+      border-radius: 18px;
+      max-width: 100%;
+      min-height: 0;
+      height: auto;
+      max-height: 100%;
+      box-shadow: 0 16px 32px rgba(16, 42, 77, 0.12);
+    }
+
+    .message-list-container {
+      padding: clamp(0.9rem, 2vw, 1.25rem);
+      overflow-x: hidden;
+    }
+
+    .message-list {
+      max-width: 100%;
+    }
+
+    .chat-message {
+      max-width: 84%;
+      word-break: break-word;
+    }
+
+    .message-bubble {
+      padding: 0.7rem 0.95rem 0.65rem;
+      font-size: 0.95rem;
+    }
+
+    .message-composer,
+    .composer-input-row {
+      max-width: 100%;
+      box-sizing: border-box;
+    }
+
+    .composer-input-row {
+      gap: clamp(0.5rem, 1.5vw, 0.85rem);
+    }
+
+    .composer-attach-btn {
+      min-height: clamp(3rem, 7vw, 3.75rem);
+      padding: 0 0.85rem;
+    }
+
+    .message-textarea {
+      min-height: clamp(3rem, 8vw, 4.2rem);
+      font-size: 1rem;
+    }
+
+    .send-msg-btn {
+      min-height: clamp(3rem, 8vw, 4.2rem);
+      padding: clamp(0.5rem, 1.5vw, 0.75rem) clamp(1.25rem, 3vw, 1.75rem);
+      font-size: 1rem;
+    }
+
+    .conversation-actions,
+    .conversation-actions__button-stack {
+      gap: clamp(0.6rem, 1.8vw, 0.9rem);
+    }
+
+    .conversation-card {
+      border-radius: 18px;
+      padding: clamp(0.85rem, 2vw, 1.1rem);
+      box-shadow: 0 14px 32px rgba(16, 42, 77, 0.14);
+    }
+
+    .conversation-cta,
+    .conversation-action {
+      border-radius: 16px;
+      padding: clamp(0.75rem, 2vw, 1rem) clamp(0.9rem, 2vw, 1.1rem);
+      font-size: 1rem;
+    }
+
+    .conversation-cta__label {
+      font-size: 1rem;
+    }
+
+    .conversation-info-card {
+      width: min(640px, 94vw);
+      border-radius: 20px;
+    }
+
+    .conversation-info-card__header {
+      padding: 1rem 1.5rem 0.9rem;
+    }
+
+    .conversation-info-card__body {
+      padding: 1rem 1.5rem 1.35rem;
+    }
+
+    .document-preview-dialog {
+      width: min(760px, 94vw);
+      height: min(88vh, 820px);
+    }
+
+    .document-preview-body iframe {
+      min-height: 65vh;
+    }
+
+    .info-toggle-btn {
+      min-height: 46px;
+      font-size: 0.95rem;
+      padding: 0.6rem 1.1rem;
+    }
+
+    .chat-panel-wrapper {
+      order: 1;
+    }
   }
 
   /* Mobile Devices (Portrait) */
@@ -1270,22 +1575,31 @@
       padding: 0 0.5rem clamp(1rem, 3vw, 1.5rem);
       max-width: 100vw;
       overflow-x: hidden;
+      flex: 1 1 auto;
+      min-height: 0;
+      display: flex;
+      flex-direction: column;
     }
     
     .mediation-container {
       padding: 0 0.5rem 0.5rem;
       max-width: 100vw;
       overflow-x: hidden;
+      height: 94vh;
+      height: 94dvh;
     }
 
     .mediation-container h1 {
       font-size: 1.5rem;
       padding: 0 clamp(1rem, 6vw, 1.75rem);
+      flex: 0 0 auto;
+      margin-bottom: 0.25rem;
     }
 
     .mediation-container p {
-      margin-bottom: 1rem;
+      margin-bottom: 0.5rem;
       font-size: 0.95rem;
+      flex: 0 0 auto;
     }
 
     .message-page-container.chat-layout {
@@ -1293,6 +1607,11 @@
       max-width: 100%;
       overflow-x: hidden;
       padding-bottom: 0.5rem;
+      flex: 1 1 auto;
+      min-height: 0;
+      display: flex;
+      flex-direction: column;
+      height: 100%;
     }
 
     .chat-panel-wrapper {
@@ -1300,6 +1619,10 @@
       overflow-x: hidden;
       padding: 0 clamp(0.75rem, 4vw, 1.35rem);
       box-sizing: border-box;
+      flex: 1 1 auto;
+      min-height: 0;
+      display: flex;
+      flex-direction: column;
     }
 
     .chat-panel {
@@ -1307,8 +1630,10 @@
       max-width: 100%;
       overflow-x: hidden;
       /* Resetting height constraints for mobile to let flexbox work */
-      min-height: initial;
-      max-height: initial;
+      min-height: 0;
+      height: auto !important;
+      max-height: none !important;
+      flex: 1 1 auto;
     }
 
     .message-list-container {
@@ -1384,6 +1709,7 @@
       width: 100%;
       align-items: stretch;
       background: transparent;
+      flex: 0 0 auto;
     }
 
     .conversation-actions {
@@ -1578,7 +1904,7 @@
     .composer-attach-btn {
       padding: 0 0.6rem;
       min-width: 2.25rem;
-      min-height: clamp(2.75rem, 16vw, 4.2rem);
+      min-height: 2.75rem;
     }
 
     .composer-attach-btn i {
@@ -1586,16 +1912,16 @@
     }
 
     .message-textarea {
-      min-height: clamp(2.85rem, 18vw, 4.25rem);
+      min-height: 2.75rem;
       padding: 0.7rem 0.85rem;
       font-size: 0.9rem;
     }
 
     .send-msg-btn {
-      padding: clamp(0.35rem, 3vw, 0.55rem) clamp(1rem, 4vw, 1.5rem);
+      padding: 0.35rem 1rem;
       min-width: 85px;
       font-size: 0.9rem;
-      min-height: clamp(2.85rem, 18vw, 4.25rem);
+      min-height: 2.75rem;
       line-height: 1;
     }
 
@@ -1605,9 +1931,15 @@
 
     .chat-panel {
       /* Resetting height constraints for mobile to let flexbox work */
-      min-height: initial;
-      max-height: initial;
+      min-height: 0;
+      height: auto !important;
+      max-height: none !important;
       border-radius: 14px;
+      flex: 1 1 auto;
+    }
+
+    .chat-panel-wrapper {
+      flex: 1 1 auto;
     }
 
     .message-list-container {
@@ -1677,6 +2009,16 @@
     .document-preview-title h3 {
       font-size: 0.95rem;
     }
+
+    .conversation-banner {
+      font-size: 0.85rem;
+      padding: 0.75rem 1rem;
+      margin-bottom: clamp(0.6rem, 3vw, 0.9rem);
+    }
+
+    .conversation-info-trigger {
+      margin-top: 0.15rem;
+    }
   }
 
   /* Very Small Mobile Devices */
@@ -1710,5 +2052,44 @@
 
     .conversation-cta__chevron {
       flex-shrink: 0;
+    }
+  }
+
+    .conversation-banner {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      padding: 0.7rem 1.1rem;
+      border-radius: 12px;
+      font-size: 0.95rem;
+      line-height: 1.4;
+      font-weight: 500;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+      margin: clamp(0.4rem, 1vw, 0.6rem) 0 clamp(0.5rem, 1.2vw, 0.75rem);
+    }
+
+  .conversation-banner--success {
+    background: linear-gradient(135deg, #e6fcf5, #d1fae5);
+    border: 1px solid rgba(16, 185, 129, 0.2);
+    color: #065f46;
+  }
+
+  .conversation-banner i {
+    font-size: 1.1rem;
+    color: #059669;
+  }
+
+  /* Mobile overrides for conversation banner - Must be after base styles */
+  @media (max-width: 540px) {
+    .conversation-banner {
+      font-size: 0.8rem;
+      padding: 0.55rem 0.75rem;
+      margin: 0.3rem 0 0.4rem;
+      gap: 0.5rem;
+      line-height: 1.35;
+    }
+
+    .conversation-banner i {
+      font-size: 0.95rem;
     }
   }

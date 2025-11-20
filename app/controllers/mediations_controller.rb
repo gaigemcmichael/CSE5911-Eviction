@@ -55,7 +55,7 @@ class MediationsController < ApplicationController
   def end_conversation
     @mediation = PrimaryMessageGroup.find(params[:id])
     if @mediation.deleted_at.nil?
-      @mediation.update(deleted_at: Time.current)
+      @mediation.update(deleted_at: Time.current, EndedBy: @user.UserID)
       @mediation.linked_message_string&.update(deleted_at: Time.current)
 
       # Decrement the mediator’s active mediation count if one is assigned

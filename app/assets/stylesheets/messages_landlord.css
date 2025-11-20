@@ -109,6 +109,34 @@
       text-decoration: underline;
   } 
 
+/* Pagination */
+.pagination {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 20px;
+    gap: 15px;
+}
+
+.pagination-link {
+    padding: 8px 16px;
+    background-color: #102a4d;
+    color: white;
+    text-decoration: none;
+    border-radius: 5px;
+    font-weight: bold;
+    transition: background-color 0.3s;
+}
+
+.pagination-link:hover {
+    background-color: #0d2340;
+}
+
+.page-info {
+    font-weight: bold;
+    color: #555;
+}
+
 /* Responsive Design */
 @media (max-width: 600px) {
     .mediation-table {
@@ -155,7 +183,32 @@
     
       .mediation-table td:last-child {
         border-bottom: none;
-        text-align: right;
+        text-align: center;
+        padding-top: 15px;
+      }
+
+      /* Hide label for the action column */
+      .mediation-table td:last-child::before {
+        display: none;
+      }
+
+      /* Make action links look like buttons on mobile */
+      .mediation-table td:last-child .view-link,
+      .mediation-table td:last-child .accept-btn {
+          display: inline-block;
+          background-color: #102a4d;
+          color: white;
+          padding: 10px 20px;
+          border-radius: 5px;
+          text-decoration: none;
+          width: 100%;
+          box-sizing: border-box;
+      }
+
+      .mediation-table td:last-child .view-link:hover,
+      .mediation-table td:last-child .accept-btn:hover {
+          background-color: #0d2340;
+          text-decoration: none;
       }
 }
 }
