@@ -14,9 +14,133 @@
     <h1>Document: <%= @file.FileName %></h1>
   </div>
 
+  <% if @conversation && @landlord && @tenant %>
+    <!-- Signature Status Section -->
+    <div class="signature-status-section" style="margin: 20px 0; padding: 15px; background-color: #f5f5f5; border-radius: 5px;">
+      <h3>Signature Status</h3>
+      <div style="display: flex; gap: 30px; margin-top: 10px;">
+        <div>
+          <strong>Landlord (<%= @landlord.FName %> <%= @landlord.LName %>):</strong>
+          <% if @file.LandlordSignature %>
+            <span style="color: green;">✓ Signed</span>
+            <% if @file.LandlordSignedAt %>
+              <br><small>on <%= @file.LandlordSignedAt.strftime("%B %d, %Y at %I:%M %p") %></small>
+            <% end %>
+          <% else %>
+            <span style="color: #999;">Not signed yet</span>
+          <% end %>
+        </div>
+        <div>
+          <strong>Tenant (<%= @tenant.FName %> <%= @tenant.LName %>):</strong>
+          <% if @file.TenantSignature %>
+            <span style="color: green;">✓ Signed</span>
+            <% if @file.TenantSignedAt %>
+              <br><small>on <%= @file.TenantSignedAt.strftime("%B %d, %Y at %I:%M %p") %></small>
+            <% end %>
+          <% else %>
+            <span style="color: #999;">Not signed yet</span>
+          <% end %>
+        </div>
+      </div>
+
+      <% if @file.LandlordSignature && @file.TenantSignature %>
+        <div style="margin-top: 15px; padding: 10px; background-color: #d4edda; border: 1px solid #c3e6cb; border-radius: 5px; color: #155724;">
+          <strong>✓ Document fully executed</strong> - Both parties have signed this agreement.
+        </div>
+      <% end %>
+    </div>
+
+    <!-- Signing Form (only show if user hasn't signed yet) -->
+    <% if @user_role_in_conversation == "landlord" && !@file.LandlordSignature %>
+      <div class="signing-section" style="margin: 20px 0; padding: 15px; background-color: #fff3cd; border: 1px solid #ffc107; border-radius: 5px;">
+        <h3>Sign This Document</h3>
+        <p>By signing below, you confirm that you agree to the terms outlined in this document.</p>
+        <%= form_with url: apply_signature_document_path(@file.FileID), method: :post, local: true do |form| %>
+          <div style="margin: 10px 0;">
+            <%= form.label :signature_name, "Your Full Name:" %>
+            <%= form.text_field :signature_name, value: "#{@landlord.FName} #{@landlord.LName}", style: "width: 300px; padding: 5px; margin-left: 10px;" %>
+          </div>
+          <p style="margin: 10px 0;"><small>Your signature will be recorded as: <strong>/s/ [Your Name]</strong></small></p>
+          <%= form.submit "Sign Document", style: "padding: 10px 20px; background-color: #28a745; color: white; border: none; border-radius: 5px; cursor: pointer; font-size: 16px;" %>
+        <% end %>
+      </div>
+    <% elsif @user_role_in_conversation == "tenant" && !@file.TenantSignature %>
+      <div class="signing-section" style="margin: 20px 0; padding: 15px; background-color: #fff3cd; border: 1px solid #ffc107; border-radius: 5px;">
+        <h3>Sign This Document</h3>
+        <p>By signing below, you confirm that you agree to the terms outlined in this document.</p>
+        <%= form_with url: apply_signature_document_path(@file.FileID), method: :post, local: true do |form| %>
+          <div style="margin: 10px 0;">
+            <%= form.label :signature_name, "Your Full Name:" %>
+            <%= form.text_field :signature_name, value: "#{@tenant.FName} #{@tenant.LName}", style: "width: 300px; padding: 5px; margin-left: 10px;" %>
+          </div>
+          <p style="margin: 10px 0;"><small>Your signature will be recorded as: <strong>/s/ [Your Name]</strong></small></p>
+          <%= form.submit "Sign Document", style: "padding: 10px 20px; background-color: #28a745; color: white; border: none; border-radius: 5px; cursor: pointer; font-size: 16px;" %>
+        <% end %>
+      </div>
+    <% end %>
+  <% end %>
+
   <iframe src="<%= '/' + @file.FileURLPath %>"
-          width="80%" height="600px">
+          width="80%" height="600px" style="margin-top: 20px;">
     Your browser does not support iframes.
     <a href="<%= @file.FileURLPath %>">View Document</a>
   </iframe>
 </div>
+
+<% if @conversation %>
+<script>
+  (function() {
+    const fileId = <%= @file.FileID %>;
+    const cable = ActionCable.createConsumer();
+    
+    const subscription = cable.subscriptions.create(
+      { channel: "DocumentSignatureChannel", file_id: fileId },
+      {
+        received(data) {
+          if (data.type === 'signature_update') {
+            // Update landlord signature status
+            const landlordDiv = document.querySelector('.signature-status-section > div:nth-child(2) > div:nth-child(1)');
+            if (landlordDiv) {
+              if (data.landlord_signature) {
+                const signedHtml = `<strong>Landlord (${data.landlord_name}):</strong>
+                  <span style="color: green;">✓ Signed</span>
+                  ${data.landlord_signed_at ? `<br><small>on ${data.landlord_signed_at}</small>` : ''}`;
+                landlordDiv.innerHTML = signedHtml;
+              }
+            }
+            
+            // Update tenant signature status
+            const tenantDiv = document.querySelector('.signature-status-section > div:nth-child(2) > div:nth-child(2)');
+            if (tenantDiv) {
+              if (data.tenant_signature) {
+                const signedHtml = `<strong>Tenant (${data.tenant_name}):</strong>
+                  <span style="color: green;">✓ Signed</span>
+                  ${data.tenant_signed_at ? `<br><small>on ${data.tenant_signed_at}</small>` : ''}`;
+                tenantDiv.innerHTML = signedHtml;
+              }
+            }
+            
+            // Hide signing form if current user just signed
+            const signingSection = document.querySelector('.signing-section');
+            if (signingSection) {
+              signingSection.remove();
+            }
+            
+            // Show fully executed banner if both signed
+            if (data.both_signed) {
+              const statusSection = document.querySelector('.signature-status-section');
+              const existingBanner = statusSection.querySelector('div[style*="background-color: #d4edda"]');
+              if (!existingBanner) {
+                const banner = document.createElement('div');
+                banner.style.cssText = 'margin-top: 15px; padding: 10px; background-color: #d4edda; border: 1px solid #c3e6cb; border-radius: 5px; color: #155724;';
+                banner.innerHTML = '<strong>✓ Document fully executed</strong> - Both parties have signed this agreement.';
+                statusSection.appendChild(banner);
+              }
+            }
+          }
+        }
+      }
+    );
+  })();
+</script>
+<% end %>
