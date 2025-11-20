@@ -179,6 +179,8 @@
     background: #f1f5f9;
     color: #475569;
     text-align: center;
+    max-width: 100%;
+    box-sizing: border-box;
 }
 
 .card-btn:hover {

@@ -107,7 +107,7 @@
 </div>
 
 <script>
-  document.addEventListener('DOMContentLoaded', function() {
+  document.addEventListener('turbo:load', function() {
     const form = document.querySelector('form');
     const monthlyRentSection = document.getElementById('monthly-rent-section');
     const monthlyRentField = document.getElementById('monthly_rent_field');
@@ -116,6 +116,8 @@
 
     // Toggle monthly rent field visibility
     function toggleMonthlyRent() {
+      if (!monthlyRentSection || !monthlyRentField) return;
+      
       if (totalCostNo && totalCostNo.checked) {
         monthlyRentSection.style.display = 'block';
         monthlyRentField.required = true;
@@ -131,7 +133,8 @@
     if (totalCostNo) totalCostNo.addEventListener('change', toggleMonthlyRent);
 
     // Form validation with visual feedback
-    form.addEventListener('submit', function(e) {
+    if (form) {
+      form.addEventListener('submit', function(e) {
       const requiredFields = form.querySelectorAll('[required]');
       let firstInvalidField = null;
       let isValid = true;
@@ -175,6 +178,7 @@
         alert('Please fill in all required fields highlighted in red.');
       }
     });
+    }
 
     // Initialize monthly rent visibility on page load
     toggleMonthlyRent();

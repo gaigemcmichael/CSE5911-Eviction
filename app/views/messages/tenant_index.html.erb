@@ -1,30 +1,32 @@
 <div class="mediation-container">
-  <h1>Tenant Negotiation & Messages</h1>
-  <p>Welcome, <%= @user.FName %>! This is the tenant negotiations page.</p>
+  <div class="tenant-header-card">
+    <h1>Tenant Negotiation & Messages</h1>
+    <p>Welcome, <%= @user.FName %>! This is the tenant negotiations page.</p>
 
-  <% if @show_mediation_view %>
-    <% if @mediation.IntakeID.present? %>
-      <% if @mediation.accepted_by_landlord %>
-        <p>Negotiation with <%= @mediation.landlord.CompanyName || @mediation.landlord.Email %> is accepted and in progress.</p>
-        <%= link_to "Access Negotiation", message_path(@mediation.ConversationID), class: "mediation-btn" %>
+    <% if @show_mediation_view %>
+      <% if @mediation.IntakeID.present? %>
+        <% if @mediation.accepted_by_landlord %>
+          <p>Negotiation with <%= @mediation.landlord.CompanyName || @mediation.landlord.Email %> is accepted and in progress.</p>
+          <%= link_to "Access Negotiation", message_path(@mediation.ConversationID), class: "mediation-btn" %>
+        <% else %>
+          <div class="request-alert">
+            <p>Negotiation requested. Waiting for the landlord to accept.</p>
+          </div>
+        <% end %>
       <% else %>
-        <div class="request-alert">
-          <p>Negotiation requested. Waiting for the landlord to accept.</p>
+        <div class="intake-alert">
+          <h1>Next Steps: </h1>
+          <p>You must complete your intake questions for this mediation!</p>
+          <%= link_to "Complete Intake Questions", new_intake_question_path, class: "mediation-btn" %>
         </div>
       <% end %>
     <% else %>
-      <div class="intake-alert">
-        <h1>Next Steps: </h1>
-        <p>You must complete your intake questions for this mediation!</p>
-        <%= link_to "Complete Intake Questions", new_intake_question_path, class: "mediation-btn" %>
+      <p class="mediation-status">No negotiations exist. Create a new negotiation request below:</p>
+      <div class="mediation-form">
+        <%= render "mediations/tenant_create_mediation_form" %>
       </div>
     <% end %>
-  <% else %>
-    <p class="mediation-status">No negotiations exist. Create a new negotiation request below:</p>
-    <div class="mediation-form">
-      <%= render "mediations/tenant_create_mediation_form" %>
-    </div>
-  <% end %>
+  </div>
 
   <% if @past_mediations.any? %>
     <%= render 'tenants_old_mediations_table' %>
