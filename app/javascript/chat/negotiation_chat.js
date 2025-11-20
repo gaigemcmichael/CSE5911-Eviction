@@ -176,6 +176,29 @@ const initializeNegotiationChat = () => {
     document.addEventListener("submit", handleNegotiationSubmit);
     negotiationSubmitListenerBound = true;
   }
+
+  // Show disclaimer modal on mobile with slight delay
+  const disclaimerModal = document.querySelector('[data-disclaimer-modal]');
+  if (disclaimerModal && window.innerWidth <= 768) {
+    setTimeout(() => {
+      disclaimerModal.hidden = false;
+      requestAnimationFrame(() => {
+        disclaimerModal.classList.add('is-open');
+      });
+    }, 300);
+  }
+
+  // Disclaimer modal close handler
+  const disclaimerCloseButtons = document.querySelectorAll('[data-disclaimer-modal-close]');
+  disclaimerCloseButtons.forEach(button => {
+    button.addEventListener('click', () => {
+      const modal = document.querySelector('[data-disclaimer-modal]');
+      if (modal) {
+        modal.classList.remove('is-open');
+        modal.hidden = true;
+      }
+    });
+  });
 };
 
 const eagerInitializeNegotiationChat = () => {

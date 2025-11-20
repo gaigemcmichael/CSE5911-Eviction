@@ -922,6 +922,39 @@
     gap: clamp(0.65rem, 1.5vw, 1.25rem);
   }
 
+  /* Chat Disclaimer */
+  .chat-disclaimer {
+    background: #f8f9fa;
+    border: 1px solid #dee2e6;
+    border-radius: 12px;
+    padding: 1rem 1.25rem;
+    margin-top: 1rem;
+    font-size: 0.85rem;
+    line-height: 1.5;
+    color: #495057;
+  }
+
+  .chat-disclaimer p {
+    margin: 0.5rem 0;
+  }
+
+  .chat-disclaimer p:first-child {
+    margin-top: 0;
+  }
+
+  .chat-disclaimer p:last-child {
+    margin-bottom: 0;
+  }
+
+  /* Hide mobile disclaimer modal on desktop */
+  .chat-disclaimer-modal {
+    display: none;
+  }
+
+  .chat-disclaimer-modal.is-open .conversation-modal__content {
+    animation: slideDown 350ms cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
   .conversation-actions__footer {
     margin-top: 1.5rem;
     display: flex;
@@ -1723,6 +1756,16 @@
 
     .conversation-actions__button-stack {
       gap: 0.65rem;
+    }
+
+    /* Hide desktop disclaimer on mobile */
+    .chat-disclaimer--desktop {
+      display: none;
+    }
+
+    /* Show modal disclaimer on mobile */
+    .chat-disclaimer-modal {
+      display: flex;
     }
 
     .conversation-card {
