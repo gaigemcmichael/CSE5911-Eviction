@@ -44,7 +44,8 @@ Rails.application.routes.draw do
 
   post "documents/select_template", to: "documents#select_template", as: "select_template"
 
-  get "proposal_generation/:template", to: "documents#proposal_generation", as: "proposal_generation"
+  get "documents/template/:template/intake", to: "documents#template_intake", as: "template_intake"
+  post "documents/template/:template/generate", to: "documents#generate_from_intake", as: "generate_from_intake"
 
   get "intake_questions/new", to: "intake_questions#new", as: "new_intake_question"
   post "intake_questions", to: "intake_questions#create", as: "intake_questions"
@@ -53,8 +54,6 @@ Rails.application.routes.draw do
   get  "/documents/template_preview/:conversation_id", to: "documents#intake_template_view", as: :intake_template_view
   post "/documents/template_generate", to: "documents#generate_filled_template", as: :generate_filled_template
 
-  # post "/documents/:id/sign", to: "documents#sign", as: "sign_file"
-  get    "/documents/:id/sign", to: "documents#sign", as: :sign_document
   post   "/documents/:id/apply_signature", to: "documents#apply_signature", as: :apply_signature_document
   # Resources
   resources :messages, only: [ :index, :show, :create, :destroy ] do

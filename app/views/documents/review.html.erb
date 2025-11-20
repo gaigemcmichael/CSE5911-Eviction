@@ -1,0 +1,294 @@
+<div class="review-wrapper">
+  <div class="review-header">
+    <h1>Review & Sign Document</h1>
+    <p class="subtitle">Please review the document below and provide signatures to finalize the agreement.</p>
+  </div>
+
+  <div class="document-preview">
+    <div class="preview-header">
+      <h2>Document Preview</h2>
+      <a href="<%= download_file_path(@file.FileID) %>" target="_blank" class="btn-download">
+        📄 Open in New Tab
+      </a>
+    </div>
+    
+    <div class="preview-container">
+      <%= raw @html_content %>
+    </div>
+  </div>
+
+  <div class="signature-form">
+    <h2>Digital Signatures</h2>
+    <p class="form-hint">By signing below, both parties agree to the terms outlined in this document.</p>
+    
+    <%= form_with url: finalize_document_signatures_path(@file.FileID), method: :post, class: "sign-form" do |f| %>
+      <div class="signature-grid">
+        <div class="signature-input-group">
+          <%= label_tag :landlord_signature, "Landlord Full Name", class: "sig-label" %>
+          <%= text_field_tag :landlord_signature, @pending_data[:landlord], 
+              class: "sig-input", 
+              required: true,
+              placeholder: "Enter landlord's full name" %>
+          <small class="sig-hint">Will appear as: /s/ [Name]</small>
+        </div>
+
+        <div class="signature-input-group">
+          <%= label_tag :tenant_signature, "Tenant Full Name", class: "sig-label" %>
+          <%= text_field_tag :tenant_signature, @pending_data[:tenant], 
+              class: "sig-input", 
+              required: true,
+              placeholder: "Enter tenant's full name" %>
+          <small class="sig-hint">Will appear as: /s/ [Name]</small>
+        </div>
+      </div>
+
+      <div class="signature-preview">
+        <div class="preview-sig">
+          <strong>Landlord Signature Preview:</strong>
+          <div class="sig-display" id="landlord-preview">/s/ <%= @pending_data[:landlord] %></div>
+        </div>
+        <div class="preview-sig">
+          <strong>Tenant Signature Preview:</strong>
+          <div class="sig-display" id="tenant-preview">/s/ <%= @pending_data[:tenant] %></div>
+        </div>
+      </div>
+
+      <div class="form-actions">
+        <%= link_to "← Back to Documents", documents_path, class: "btn btn-secondary" %>
+        <%= submit_tag "Sign Document", class: "btn btn-primary", 
+            data: { confirm: "By clicking OK, you confirm that both parties agree to sign this document. This action cannot be undone." } %>
+      </div>
+    <% end %>
+  </div>
+</div>
+
+<script>
+// Live signature preview
+document.addEventListener('DOMContentLoaded', function() {
+  const landlordInput = document.getElementById('landlord_signature');
+  const tenantInput = document.getElementById('tenant_signature');
+  const landlordPreview = document.getElementById('landlord-preview');
+  const tenantPreview = document.getElementById('tenant-preview');
+
+  if (landlordInput && landlordPreview) {
+    landlordInput.addEventListener('input', function() {
+      landlordPreview.textContent = '/s/ ' + this.value;
+    });
+  }
+
+  if (tenantInput && tenantPreview) {
+    tenantInput.addEventListener('input', function() {
+      tenantPreview.textContent = '/s/ ' + this.value;
+    });
+  }
+});
+</script>
+
+<style>
+.review-wrapper {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 40px 20px;
+}
+
+.review-header {
+  margin-bottom: 40px;
+  text-align: center;
+}
+
+.review-header h1 {
+  font-size: 32px;
+  font-weight: 700;
+  color: #0f2a49;
+  margin-bottom: 10px;
+}
+
+.subtitle {
+  font-size: 16px;
+  color: #64748b;
+}
+
+.document-preview {
+  background: white;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  padding: 30px;
+  margin-bottom: 40px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+}
+
+.preview-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  padding-bottom: 15px;
+  border-bottom: 2px solid #e2e8f0;
+}
+
+.preview-header h2 {
+  font-size: 24px;
+  font-weight: 600;
+  color: #0f2a49;
+  margin: 0;
+}
+
+.btn-download {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 20px;
+  background: #3b82f6;
+  color: white;
+  text-decoration: none;
+  border-radius: 8px;
+  font-weight: 500;
+  transition: background 0.2s;
+}
+
+.btn-download:hover {
+  background: #2563eb;
+}
+
+.preview-container {
+  max-height: 600px;
+  overflow-y: auto;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  padding: 30px;
+  background: white;
+}
+
+.signature-form {
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  padding: 30px;
+}
+
+.signature-form h2 {
+  font-size: 24px;
+  font-weight: 600;
+  color: #0f2a49;
+  margin: 0 0 10px;
+}
+
+.form-hint {
+  color: #64748b;
+  margin-bottom: 30px;
+}
+
+.signature-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 30px;
+  margin-bottom: 30px;
+}
+
+.signature-input-group {
+  display: flex;
+  flex-direction: column;
+}
+
+.sig-label {
+  font-weight: 600;
+  color: #0f2a49;
+  margin-bottom: 8px;
+}
+
+.sig-input {
+  padding: 12px 16px;
+  border: 2px solid #e2e8f0;
+  border-radius: 8px;
+  font-size: 16px;
+  transition: border-color 0.2s;
+}
+
+.sig-input:focus {
+  outline: none;
+  border-color: #3b82f6;
+}
+
+.sig-hint {
+  margin-top: 6px;
+  color: #64748b;
+  font-size: 14px;
+}
+
+.signature-preview {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 30px;
+  padding: 25px;
+  background: white;
+  border: 2px dashed #cbd5e1;
+  border-radius: 8px;
+  margin-bottom: 30px;
+}
+
+.preview-sig strong {
+  display: block;
+  color: #0f2a49;
+  margin-bottom: 10px;
+  font-size: 14px;
+}
+
+.sig-display {
+  font-family: 'Brush Script MT', cursive, 'Times New Roman', serif;
+  font-size: 24px;
+  color: #1e40af;
+  padding: 10px;
+  border-bottom: 2px solid #000;
+  min-height: 40px;
+}
+
+.form-actions {
+  display: flex;
+  gap: 15px;
+  justify-content: flex-end;
+}
+
+.btn {
+  padding: 12px 24px;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 16px;
+  cursor: pointer;
+  text-decoration: none;
+  display: inline-block;
+  transition: all 0.2s;
+  border: none;
+}
+
+.btn-primary {
+  background: #10b981;
+  color: white;
+}
+
+.btn-primary:hover {
+  background: #059669;
+  transform: translateY(-1px);
+}
+
+.btn-secondary {
+  background: #e2e8f0;
+  color: #475569;
+}
+
+.btn-secondary:hover {
+  background: #cbd5e1;
+}
+
+@media (max-width: 768px) {
+  .signature-grid,
+  .signature-preview {
+    grid-template-columns: 1fr;
+  }
+  
+  .preview-header {
+    flex-direction: column;
+    gap: 15px;
+    align-items: flex-start;
+  }
+}
+</style>

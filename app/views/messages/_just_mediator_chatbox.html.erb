@@ -73,7 +73,7 @@
                     FileID: FileAttachment.where(
                       MessageID: (@tenant_messages + @landlord_messages).pluck(:MessageID)
                     ).pluck(:FileID)
-                  ).uniq,
+                  ).where(UserDeletedAt: nil).uniq,
                   :FileID,
                   :FileName,
                   { prompt: "Choose a file" },

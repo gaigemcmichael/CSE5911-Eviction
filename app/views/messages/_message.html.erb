@@ -54,10 +54,10 @@
 
                 <% if current_user.Role == "Tenant" && file.TenantSignature == false %>
                   <span aria-hidden="true" class="attachment-dot">·</span>
-                  <%= link_to "Sign as Tenant", sign_document_path(file.FileID), class: "attachment-link attachment-link--primary" %>
+                  <%= link_to "Sign Document", view_file_path(file.FileID), class: "attachment-link attachment-link--primary" %>
                 <% elsif current_user.Role == "Landlord" && file.LandlordSignature == false %>
                   <span aria-hidden="true" class="attachment-dot">·</span>
-                  <%= link_to "Sign as Landlord", sign_document_path(file.FileID), class: "attachment-link attachment-link--primary" %>
+                  <%= link_to "Sign Document", view_file_path(file.FileID), class: "attachment-link attachment-link--primary" %>
                 <% end %>
               </div>
             </div>
