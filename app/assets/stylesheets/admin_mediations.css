@@ -182,8 +182,8 @@
   padding: 1rem;
 }
 
-/* Mediator Card Specifics */
-.mediator-card {
+/* Mediator Card Specifics - Only for admin mediation detail pages */
+.admin-mediation-details-container .mediator-card {
   position: sticky;
   top: 2rem;
   /* Reset styles from dashboard.css that cause layout issues */

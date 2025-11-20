@@ -1,6 +1,3 @@
-<h2> <i class="fa-solid fa-user-plus"></i> Create a Mediator Account</h2>
-<p> Let's get started. </p>
-
 <%= form_with url: admin_accounts_path, method: :post, local: true, id: "create-mediator-form" do |f| %>
   <!-- Email -->
   <div class="form-section">
@@ -56,7 +53,10 @@
       <%= number_field_tag :mediation_cap, nil, placeholder: "Set the maximum number of mediations this mediator can be assigned at any time", required: true, class: "signup-input" %>
     </div>
   </div>
-  <%= submit_tag "Create Mediator" %>
+  
+  <div class="form-footer">
+    <%= submit_tag "Create Mediator", class: "signup-btn" %>
+  </div>
 <% end %>
 
 <%# Script for password confirmation #%>

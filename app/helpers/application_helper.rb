@@ -14,7 +14,20 @@ module ApplicationHelper
   # Return "active" when the current request path starts with the given
   # navigation path. This marks parent/nav links as active for detail pages
   # (for example: /messages and /messages/1 both match '/messages').
+  # Special case: /mediation_summary and /good_faith_response are treated as
+  # part of /messages navigation since they're message/mediation workflows.
   def active_nav_class(path)
-    request.path.start_with?(path) ? "active" : ""
+    if path == "/messages"
+      # Messages link is active for /messages, /mediation_summary, and /good_faith_response
+      (request.path.start_with?("/messages") || 
+       request.path.start_with?("/mediation_summary") || 
+       request.path.start_with?("/good_faith_response")) ? "active" : ""
+    elsif path == "/admin/mediations"
+      # Admin Mediations link is active for /admin/mediations and /mediation_summary
+      (request.path.start_with?("/admin/mediations") || 
+       request.path.start_with?("/mediation_summary")) ? "active" : ""
+    else
+      request.path.start_with?(path) ? "active" : ""
+    end
   end
 end

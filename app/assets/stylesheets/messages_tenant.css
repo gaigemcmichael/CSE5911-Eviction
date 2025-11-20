@@ -1,15 +1,16 @@
 /* Container Styling */
 .mediation-container {
-    width: 100vw; 
-    max-width: 100%;
+    width: 100%; 
+    max-width: 1200px;
     margin: 0 auto; 
-    padding: 20px 0;
+    padding: 20px 15px;
     border-radius: 10px;
     display: flex;
     flex-direction: column;
     align-items: center;
     text-align: center;
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    box-sizing: border-box;
 }
 
 /* Header Styling */
@@ -64,9 +65,11 @@
     background: #f1f1f1;
     border-radius: 5px;
     font-size: 1rem;
-    margin: 16px 0;
+    margin: 16px auto;
     text-align: center;
     font-weight: bold;
+    padding: 12px;
+    max-width: 600px;
 }
 
 .mediation-status.accepted {
@@ -206,21 +209,36 @@
 
 /* Responsive Design */
 @media (max-width: 600px) {
-    .messages-container {
-        width: 90%;
+    .mediation-container {
+        width: 100%;
+        max-width: 100%;
         padding: 15px;
+        box-sizing: border-box;
+        position: relative;
     }
 
-    h1 {
+    .mediation-container h1 {
         font-size: 1.5rem;
+        flex-wrap: wrap;
+        justify-content: center;
     }
 
-    p {
+    .mediation-container h2 {
+        font-size: 1.2rem;
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+
+    .mediation-container p {
         font-size: 0.9rem;
+        padding: 0 10px;
     }
 
     .mediation-card {
-        padding: 20px;
+        width: calc(100% - 20px);
+        max-width: 100%;
+        padding: 15px;
+        margin: 0 10px;
         border-radius: 8px;
         box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
     }
@@ -234,15 +252,136 @@
         font-size: 0.95rem;
     }
 
+    /* Fix Next Steps box overflow */
     .intake-alert {
-        flex-direction: row;
-        justify-content: center;
-        padding: 10px 16px;
-        margin: 20px 10px;
+        width: calc(100% - 20px);
+        max-width: 100%;
+        margin: 15px 10px;
+        padding: 10px 15px;
+        box-sizing: border-box;
+    }
+
+    .intake-alert h1 {
+        font-size: 1.1rem;
+        flex-wrap: wrap;
     }
 
     .intake-alert p {
-        margin: 0;
-        padding-right: 10px;
+        font-size: 0.9rem;
+        flex-wrap: wrap;
+    }
+
+    /* Fix request alert overflow */
+    .request-alert {
+        width: calc(100% - 20px);
+        max-width: 100%;
+        margin: 15px 10px;
+        padding: 10px 15px;
+        box-sizing: border-box;
+    }
+
+    .request-alert p {
+        font-size: 0.9rem;
+    }
+
+    /* Make mediation table responsive */
+    .mediation-table {
+        width: 100%;
+        margin: 15px 0;
+        display: block;
+        overflow: visible;
+        box-shadow: none;
+        background: transparent;
+    }
+
+    .mediation-table thead {
+        display: none;
+    }
+
+    .mediation-table tbody {
+        display: block;
+        width: 100%;
+    }
+
+    .mediation-table tr {
+        display: block;
+        width: 100%;
+        margin-bottom: 20px;
+        background-color: #fff;
+        border-radius: 8px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        padding: 15px;
+        box-sizing: border-box;
+    }
+
+    .mediation-table td {
+        display: block;
+        width: 100%;
+    }
+
+    .mediation-table td {
+        padding: 8px 0;
+        text-align: left;
+        border: none;
+        position: relative;
+        box-sizing: border-box;
+    }
+
+    .mediation-table td::before {
+        content: attr(data-label);
+        font-weight: bold;
+        color: #102a4d;
+        display: inline-block;
+        margin-right: 8px;
+        font-size: 0.95rem;
+    }
+
+    /* Summary and Feedback columns - center them */
+    .mediation-table td:nth-last-child(1),
+    .mediation-table td:nth-last-child(2) {
+        text-align: center;
+        padding-top: 12px;
+        padding-bottom: 12px;
+    }
+
+    /* Keep labels for Summary and Feedback columns visible */
+    .mediation-table td:nth-last-child(1)::before,
+    .mediation-table td:nth-last-child(2)::before {
+        display: inline-block;
+        margin-bottom: 8px;
+    }
+
+    /* Style action links and submitted text */
+    .mediation-table .view-link,
+    .mediation-table .complete-link {
+        display: inline-block;
+        background-color: #102a4d;
+        color: white;
+        padding: 10px 24px;
+        border-radius: 5px;
+        text-decoration: none;
+        font-weight: bold;
+        min-width: 150px;
+        box-sizing: border-box;
+        margin-top: 5px;
+    }
+
+    .mediation-table .view-link:hover,
+    .mediation-table .complete-link:hover {
+        background-color: #0d2340;
+        text-decoration: none;
+    }
+
+    .mediation-table .complete-link {
+        background-color: #c0392b;
+    }
+
+    .mediation-table .complete-link:hover {
+        background-color: #a93226;
+    }
+
+    /* Hide the "Submitted" text on mobile */
+    .mediation-table .text-muted {
+        display: none;
     }
 }

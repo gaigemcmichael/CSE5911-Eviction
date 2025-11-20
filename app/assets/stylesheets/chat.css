@@ -1572,7 +1572,7 @@
   @media (max-width: 768px) {
     /* Adding responsive padding to the master wrapper */
     .chat-page-wrapper {
-      padding: 0 0.5rem clamp(1rem, 3vw, 1.5rem);
+      padding: 0;
       max-width: 100vw;
       overflow-x: hidden;
       flex: 1 1 auto;
@@ -1582,7 +1582,7 @@
     }
     
     .mediation-container {
-      padding: 0 0.5rem 0.5rem;
+      padding: 0 12px 0.5rem;
       max-width: 100vw;
       overflow-x: hidden;
       height: 94vh;
@@ -1591,7 +1591,7 @@
 
     .mediation-container h1 {
       font-size: 1.5rem;
-      padding: 0 clamp(1rem, 6vw, 1.75rem);
+      padding: 0;
       flex: 0 0 auto;
       margin-bottom: 0.25rem;
     }
@@ -1600,6 +1600,11 @@
       margin-bottom: 0.5rem;
       font-size: 0.95rem;
       flex: 0 0 auto;
+    }
+
+    .conversation-info-trigger {
+      padding: 0;
+      margin-bottom: 0.65rem;
     }
 
     .message-page-container.chat-layout {
@@ -1617,7 +1622,7 @@
     .chat-panel-wrapper {
       max-width: 100%;
       overflow-x: hidden;
-      padding: 0 clamp(0.75rem, 4vw, 1.35rem);
+      padding: 0;
       box-sizing: border-box;
       flex: 1 1 auto;
       min-height: 0;
@@ -1704,7 +1709,7 @@
 
     .chat-actions-column {
       order: 2;
-      padding: 0 clamp(0.75rem, 4vw, 1.35rem) clamp(1.5rem, 4vw, 2.5rem);
+      padding: 0;
       margin-top: 0;
       width: 100%;
       align-items: stretch;

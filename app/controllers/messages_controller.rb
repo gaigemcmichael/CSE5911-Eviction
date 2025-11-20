@@ -39,6 +39,9 @@ class MessagesController < ApplicationController
         format.html { render "messages/landlord_index" }
       end
 
+    when "Mediator"
+      redirect_to third_party_mediations_path
+
     else
       render plain: "Access Denied", status: :forbidden
     end

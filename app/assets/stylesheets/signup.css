@@ -79,6 +79,57 @@
     max-width: 760px; /* keep cards a comfortable width */
 }
 
+/* Remove box styling for form-sections in admin accounts (not intake cards) */
+.signup-container > div:not(.signup-card) .form-section {
+    background: transparent;
+    padding: 0;
+    border-radius: 0;
+    margin: 18px 0;
+    border: none;
+    box-shadow: none;
+}
+
+/* Admin tabs styling */
+.admin-tabs {
+    display: flex;
+    gap: 12px;
+    justify-content: center;
+    margin: 24px auto 32px;
+    max-width: 760px;
+}
+
+.admin-tab {
+    flex: 1;
+    text-align: center;
+    padding: 14px 24px;
+    background: #ffffff;
+    color: #102a4d;
+    text-decoration: none;
+    border-radius: 10px;
+    font-weight: 600;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+    border: 2px solid rgba(7,32,58,0.1);
+    box-shadow: 0 4px 12px rgba(7,32,58,0.08);
+}
+
+.admin-tab:hover {
+    background: #f0f7ff;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(7,32,58,0.12);
+}
+
+.admin-tab.active {
+    background: linear-gradient(135deg, #007bff 0%, #0056b3 100%);
+    color: white;
+    border-color: #0056b3;
+    box-shadow: 0 8px 24px rgba(0, 123, 255, 0.3);
+}
+
+.admin-tab i {
+    margin-right: 8px;
+}
+
 /* Form footer and button layout for intake page */
 .signup-card.intake-card .form-footer {
     display: block;
@@ -111,6 +162,9 @@
     align-items: center;
     background: transparent;
     padding-top: 3vh;
+    max-width: 1400px;
+    width: 100%;
+    margin: 0 auto;
 }
 
 .signup-title {
