@@ -45,7 +45,7 @@ Rails.application.routes.draw do
   get "messages/tenant_index", to: "messages#tenant_index", as: "tenant_index"
   get "messages/landlord_index", to: "messages#landlord_index", as: "landlord_index"
 
-  get "documents/download/:id", to: "documents#download", as: "download_file"
+  get "documents/download/:id", to: "documents#download_or_view", as: "download_file"
   get "documents/:id/view", to: "documents#show", as: "view_file"
 
   get "documents/generate", to: "documents#generate", as: "generate_file"
@@ -75,7 +75,8 @@ Rails.application.routes.draw do
 
 resources :documents, only: [ :index, :new, :create, :show, :destroy ] do
   member do
-    get  :download
+    get  :download, action: :download_or_view
+    get  :view_inline
     post :generate_filled_template
   end
 end

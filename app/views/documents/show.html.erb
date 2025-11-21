@@ -103,9 +103,9 @@
   <% end %>
 
   <div class="document-preview-card">
-    <iframe src="<%= download_file_path(@file.FileID) %>" class="document-iframe">
+    <iframe src="<%= view_inline_document_path(@file.FileID) %>" class="document-iframe">
       Your browser does not support iframes.
-      <%= link_to "View Document", download_file_path(@file.FileID), target: "_blank", class: "fallback-link" %>
+      <%= link_to "View Document", view_inline_document_path(@file.FileID), target: "_blank", class: "fallback-link" %>
     </iframe>
   </div>
 </div>

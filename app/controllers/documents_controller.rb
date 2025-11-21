@@ -439,7 +439,7 @@ class DocumentsController < ApplicationController
     size = File.exist?(path) ? File.size(path) : -1
     Rails.logger.info "[DL] path=#{path} exists=#{File.exist?(path)} size=#{size}"
 
-   
+    
     unless path.to_s.start_with?(base_path.to_s) && File.exist?(path)
       return render plain: "File not found (#{path})", status: :not_found
     end
@@ -452,7 +452,45 @@ class DocumentsController < ApplicationController
     rescue StandardError
       nil
     end
-    disposition = (mime_type == "application/pdf" || mime_type == "text/html") ? "inline" : "attachment"
+    
+    
+    disposition = "attachment"
+
+    send_file path,
+              filename: "#{file.FileName}#{File.extname(path)}",
+              type: mime_type || "application/octet-stream",
+              disposition: disposition
+  end
+
+  
+  def view_inline
+   
+    file = find_file_for_user(params[:id])
+    return render plain: "File not found (record)", status: :not_found unless file
+
+    base_path = Rails.root.join("public")
+    rel_path  = Pathname.new(file.FileURLPath).cleanpath
+    path      = base_path.join(rel_path)
+
+    size = File.exist?(path) ? File.size(path) : -1
+    Rails.logger.info "[VIEW] path=#{path} exists=#{File.exist?(path)} size=#{size}"
+
+    
+    unless path.to_s.start_with?(base_path.to_s) && File.exist?(path)
+      return render plain: "File not found (#{path})", status: :not_found
+    end
+    if size <= 0
+      return render plain: "Generated file is empty (#{path})", status: :unprocessable_entity
+    end
+
+    mime_type = begin
+      Marcel::MimeType.for(path.to_path, extension: File.extname(path))
+    rescue StandardError
+      nil
+    end
+    
+    
+    disposition = "inline"
 
     send_file path,
               filename: "#{file.FileName}#{File.extname(path)}",
