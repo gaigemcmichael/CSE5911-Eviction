@@ -1,0 +1,151 @@
+<!-- BEGIN app/views/documents/templates/pay_and_stay.html.erb --><!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <style>
+    body {
+      font-family: 'Times New Roman', Times, serif;
+      max-width: 8.5in;
+      margin: 0 auto;
+      padding: 0.75in;
+      line-height: 1.6;
+      color: #000;
+    }
+    h1 {
+      text-align: center;
+      font-size: 18pt;
+      font-weight: bold;
+      margin-bottom: 24pt;
+      text-transform: uppercase;
+    }
+    h2 {
+      font-size: 14pt;
+      font-weight: bold;
+      margin-top: 18pt;
+      margin-bottom: 12pt;
+    }
+    .section {
+      margin-bottom: 18pt;
+    }
+    .info-line {
+      margin: 6pt 0;
+      font-size: 11pt;
+    }
+    .label {
+      font-weight: bold;
+      display: inline-block;
+      width: 150pt;
+    }
+    .value {
+      border-bottom: 1px solid #000;
+      display: inline-block;
+      min-width: 200pt;
+    }
+    .terms-list {
+      margin-left: 24pt;
+      margin-top: 12pt;
+    }
+    .terms-list li {
+      margin-bottom: 12pt;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 12pt 0;
+    }
+    th, td {
+      border: 1px solid #000;
+      padding: 8pt;
+      text-align: left;
+    }
+    th {
+      background-color: #f0f0f0;
+      font-weight: bold;
+    }
+    .signature-section {
+      margin-top: 48pt;
+      page-break-inside: avoid;
+    }
+    .signature-line {
+      margin: 24pt 0;
+    }
+    .signature-line .line {
+      display: inline-block;
+      width: 250pt;
+      border-bottom: 1px solid #000;
+    }
+    .footer {
+      margin-top: 36pt;
+      font-size: 9pt;
+      color: #666;
+      text-align: center;
+    }
+    @media print {
+      body {
+        padding: 0.5in;
+      }
+    }
+  </style>
+</head>
+<body>
+  <h1>Pay and Stay Negotiated Agreement</h1>
+
+  <div class="section">
+    <p>This Pay and Stay Agreement is entered into on <strong>November 19, 2025</strong> by and between:</p>
+  </div>
+
+  <div class="section">
+    <div class="info-line">
+      <span class="label">LANDLORD:</span>
+      <span class="value">Vince Guevarra</span>
+    </div>
+    <div class="info-line">
+      <span class="label">TENANT:</span>
+      <span class="value">landlord test</span>
+    </div>
+    <div class="info-line">
+      <span class="label">PROPERTY ADDRESS:</span>
+      <span class="value">1234 Steelwood Rd</span>
+    </div>
+  </div>
+
+  <h2>RECITALS:</h2>
+  <ul class="terms-list">
+    <li>The Tenant is currently residing at the property under an existing lease agreement</li>
+    <li>Reason for negotiation: Failure to Pay Rent</li>
+    <li>Total amount owed: $1200</li>
+    <li>Monthly rent: $1200</li>
+  </ul>
+
+  <h2>AGREEMENT TERMS:</h2>
+  <ol class="terms-list">
+    <li><strong>Tenancy Continuation:</strong> The Tenant will remain in the property and continue the tenancy under the existing lease terms.</li>
+    
+    <li><strong>Payment of Outstanding Balance:</strong> The Tenant agrees to pay the outstanding balance according to the following schedule:
+    </li>
+
+    <li><strong>Current Rent Payments:</strong> The Tenant must continue paying the regular monthly rent of $1200 on time, in addition to the payment schedule above.</li>
+
+    <li><strong>Good Standing:</strong> The Tenant agrees to maintain the property in good condition and comply with all lease terms going forward.</li>
+
+    <li><strong>Default Provision:</strong> Failure to comply with this payment agreement or to pay current rent on time may result in the Landlord resuming eviction proceedings.</li>
+
+    <li><strong>Waiver of Eviction:</strong> The Landlord agrees not to pursue eviction proceedings while this agreement is being honored in good faith.</li>
+  </ol>
+
+  <div class="section">
+    <p>This agreement is binding upon execution by both parties and represents the full understanding between the Landlord and Tenant regarding resolution of the outstanding balance.</p>
+  </div>
+
+  <div class="signature-section">
+    <div class="signature-line">
+      <strong>Tenant Signature:</strong> <span class="line"></span> <strong>Date:</strong> __________
+    </div>
+    <div class="signature-line">
+      <strong>Landlord Signature:</strong> <span class="line"></span> <strong>Date:</strong> __________
+    </div>
+  </div>
+
+</body>
+</html>
+<!-- END app/views/documents/templates/pay_and_stay.html.erb -->

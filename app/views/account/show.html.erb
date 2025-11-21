@@ -66,6 +66,63 @@
                       <% end %>
                     </td>      
                 </tr>
+                <tr>
+                    <th> <i class="fa-solid fa-mobile-screen"></i> Two-Factor Authentication</th>
+                    <td>
+                      <% if @user.two_factor_enabled? %>
+                        <p>
+                          <strong>Status: 
+                            <span class="availability-badge status-available">
+                              <i class="fa-solid fa-circle-check"></i> Enabled
+                            </span>
+                          </strong>
+                        </p>
+                        <p><strong>Phone:</strong> <%= @user.format_phone_for_display %></p>
+                        
+                        <%= form_with model: @user, url: account_path, method: :patch, local: true, class: "phone-update-form" do |f| %>
+                          <div class="form-section">
+                            <div class="input-field">
+                              <i class="fa-solid fa-phone"></i>
+                              <%= f.telephone_field :phone_number, 
+                                  value: @user.phone_number, 
+                                  placeholder: "Update phone number", 
+                                  class: "form-control" %>
+                              <small class="form-text">Include country code (e.g., +1 for US)</small>
+                            </div>
+                            <%= f.submit "Update Phone Number", data: { confirm: "A verification code will be sent to the new phone number. Continue?" } %>
+                          </div>
+                        <% end %>
+                        
+                        <%= form_with model: @user, url: account_path, method: :patch, local: true do |f| %>
+                          <%= f.hidden_field :two_factor_enabled, value: false %>
+                          <%= f.submit "Disable 2FA", class: "btn-danger", data: { confirm: "Are you sure you want to disable two-factor authentication?" } %>
+                        <% end %>
+                      <% else %>
+                        <p>
+                          <strong>Status: 
+                            <span class="availability-badge status-unavailable">
+                              <i class="fa-solid fa-circle-xmark"></i> Disabled
+                            </span>
+                          </strong>
+                        </p>
+                        <p class="help-text">Add an extra layer of security to your account with SMS verification.</p>
+                        <%= form_with model: @user, url: account_path, method: :patch, local: true do |f| %>
+                          <div class="form-section">
+                            <div class="input-field">
+                              <i class="fa-solid fa-phone"></i>
+                              <%= f.telephone_field :phone_number, 
+                                  value: @user.phone_number, 
+                                  placeholder: "Enter phone number (e.g., +15551234567)", 
+                                  class: "form-control" %>
+                              <small class="form-text">Include country code (e.g., +1 for US)</small>
+                            </div>
+                            <%= f.hidden_field :two_factor_enabled, value: true %>
+                            <%= f.submit "Enable 2FA", data: { confirm: "A verification code will be sent to this phone number. Continue?" } %>
+                          </div>
+                        <% end %>
+                      <% end %>
+                    </td>
+                </tr>
             </table>
         </div>
 

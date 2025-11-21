@@ -211,6 +211,7 @@
           text-decoration: none;
       }
 }
+<<<<<<< HEAD
 }
 
 .signature-status {
@@ -305,3 +306,7 @@
     transform: translateY(-2px);
     box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
 }
+=======
+
+
+>>>>>>> 2fa-clean
