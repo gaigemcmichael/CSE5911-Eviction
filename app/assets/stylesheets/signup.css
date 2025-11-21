@@ -7,6 +7,154 @@
     padding: 15px 20px 0px 20px;
 }
 
+/* Intake-specific page: softer gradient so the navbar card remains distinct */
+.intake-page {
+    display: flex;
+    flex-direction: column;
+    /* Smoother vertical gradient to avoid an abrupt color shift mid-page */
+    background: linear-gradient(180deg,
+                #dbeeff 0%,
+                #e8f5ff 30%,
+                #eaf6ff 60%,
+                #d9eefb 100%);
+    min-height: 100vh;
+    padding: 15px 20px 0 20px;
+}
+
+/* Reduce top spacing on intake page so title isn't pushed too far down */
+.intake-page .signup-container {
+    padding-top: 1.25vh; /* was 3vh globally */
+}
+.intake-page .navbar {
+    /* slightly more opaque so it reads above the light background */
+    background: rgba(16, 42, 77, 0.96);
+    box-shadow: 0 14px 40px rgba(2,10,20,0.18);
+}
+
+/* Center navbar on intake page without changing the global navbar-container padding */
+@media (max-width: 1200px) {
+    .intake-page .navbar {
+        margin: 8px auto 0; /* center via auto margins */
+        max-width: 760px; /* match the .form-section max-width */
+        width: 100%;
+        border-radius: 14px; /* keep subtle rounded corners */
+    }
+}
+
+/* Card variant for intake page: left-aligned headings and more breathing room */
+.signup-card.intake-card {
+    /* Make the outer container visually transparent so inner .form-section
+       elements act as the floating cards (clean, home-like look). */
+    text-align: left;
+    padding: 0; /* remove outer padding */
+    max-width: 920px;
+    background: transparent;
+    border: none;
+    box-shadow: none;
+}
+
+.signup-card.intake-card h1 {
+    margin: 0 0 6px 0;
+    font-size: 28px;
+    color: #07203a;
+    text-align: center; /* center main title as requested */
+}
+
+.signup-card.intake-card h2 {
+    font-size: 16px;
+    color: #2b556f;
+    font-weight: 400;
+    margin-top: 0;
+    margin-bottom: 18px;
+}
+
+/* Make each question stand out slightly as its own card */
+.signup-card.intake-card .form-section {
+    background: #ffffff;
+    padding: 16px 18px;
+    border-radius: 12px;
+    margin: 18px auto; /* center each question card */
+    border: 1px solid rgba(7,32,58,0.06);
+    box-shadow: 0 18px 40px rgba(7,32,58,0.10), 0 6px 18px rgba(7,32,58,0.06);
+    max-width: 760px; /* keep cards a comfortable width */
+}
+
+/* Remove box styling for form-sections in admin accounts (not intake cards) */
+.signup-container > div:not(.signup-card) .form-section {
+    background: transparent;
+    padding: 0;
+    border-radius: 0;
+    margin: 18px 0;
+    border: none;
+    box-shadow: none;
+}
+
+/* Admin tabs styling */
+.admin-tabs {
+    display: flex;
+    gap: 12px;
+    justify-content: center;
+    margin: 24px auto 32px;
+    max-width: 760px;
+}
+
+.admin-tab {
+    flex: 1;
+    text-align: center;
+    padding: 14px 24px;
+    background: #ffffff;
+    color: #102a4d;
+    text-decoration: none;
+    border-radius: 10px;
+    font-weight: 600;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+    border: 2px solid rgba(7,32,58,0.1);
+    box-shadow: 0 4px 12px rgba(7,32,58,0.08);
+}
+
+.admin-tab:hover {
+    background: #f0f7ff;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(7,32,58,0.12);
+}
+
+.admin-tab.active {
+    background: linear-gradient(135deg, #007bff 0%, #0056b3 100%);
+    color: white;
+    border-color: #0056b3;
+    box-shadow: 0 8px 24px rgba(0, 123, 255, 0.3);
+}
+
+.admin-tab i {
+    margin-right: 8px;
+}
+
+/* Form footer and button layout for intake page */
+.signup-card.intake-card .form-footer {
+    display: block;
+    max-width: 760px;
+    margin: 0 auto 24px auto;
+    padding: 0 18px;
+    box-sizing: border-box;
+}
+
+/* Ensure submit button fills the question card width on mobile */
+.signup-card.intake-card .form-footer .signup-btn {
+    width: 100%;
+    display: block;
+}
+
+@media (max-width: 480px) {
+    .intake-page .signup-container { padding-top: 0.8vh; }
+    .signup-card.intake-card .form-section { padding: 12px 14px; margin: 12px auto; }
+    .signup-card.intake-card .form-footer { padding: 0 12px; }
+}
+
+.signup-card.intake-card .form-section p {
+    color: #234b5f;
+}
+
 .signup-container {
     flex: 1;
     display: flex;
@@ -14,6 +162,9 @@
     align-items: center;
     background: transparent;
     padding-top: 3vh;
+    max-width: 1400px;
+    width: 100%;
+    margin: 0 auto;
 }
 
 .signup-title {
@@ -592,5 +743,8 @@
     .disclaimer-text {
         font-size: 0.85rem;
     }
-}
+    /* Make intake page main title smaller on small screens */
+    .signup-card.intake-card h1 {
+        font-size: 20px;
+    }
 }

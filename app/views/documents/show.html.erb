@@ -1,90 +1,113 @@
-<div class="documents-container">
-  <div class="header-with-back">
-    <% back_path = case @user.Role
-      when "Mediator"
-        third_party_mediations_path
-      else
-        documents_path
-    end %>
+<div class="document-view-container">
+  <% back_path = case @user.Role
+    when "Mediator"
+      third_party_mediations_path
+    else
+      documents_path
+  end %>
 
-    <%= link_to back_path, class: "back-btn" do %>
-      <i class="fa-solid fa-arrow-left"></i> Back
-    <% end %>
+  <%= link_to back_path, class: "back-link" do %>
+    <i class="fa-solid fa-arrow-left"></i> Back to Documents
+  <% end %>
 
-    <h1>Document: <%= @file.FileName %></h1>
+  <div class="document-header-card">
+    <div class="header-content">
+      <h1><%= @file.FileName %></h1>
+      <div class="document-actions">
+        <%= link_to download_file_path(@file.FileID), target: "_blank", class: "btn-document-action" do %>
+          <i class="fa-solid fa-download"></i> Download
+        <% end %>
+      </div>
+    </div>
   </div>
 
   <% if @conversation && @landlord && @tenant %>
-    <!-- Signature Status Section -->
-    <div class="signature-status-section" style="margin: 20px 0; padding: 15px; background-color: #f5f5f5; border-radius: 5px;">
+    <!-- Signature Status Card -->
+    <div class="signature-status-card">
       <h3>Signature Status</h3>
-      <div style="display: flex; gap: 30px; margin-top: 10px;">
-        <div>
-          <strong>Landlord (<%= @landlord.FName %> <%= @landlord.LName %>):</strong>
+      <div class="signature-grid">
+        <div class="signature-party">
+          <div class="party-label">Landlord</div>
+          <div class="party-name"><%= @landlord.FName %> <%= @landlord.LName %></div>
           <% if @file.LandlordSignature %>
-            <span style="color: green;">✓ Signed</span>
+            <div class="signature-status signed">
+              <i class="fa-solid fa-check-circle"></i> Signed
+            </div>
             <% if @file.LandlordSignedAt %>
-              <br><small>on <%= @file.LandlordSignedAt.strftime("%B %d, %Y at %I:%M %p") %></small>
+              <div class="signature-timestamp"><%= @file.LandlordSignedAt.strftime("%B %d, %Y at %I:%M %p") %></div>
             <% end %>
           <% else %>
-            <span style="color: #999;">Not signed yet</span>
+            <div class="signature-status pending">
+              <i class="fa-regular fa-circle"></i> Awaiting signature
+            </div>
           <% end %>
         </div>
-        <div>
-          <strong>Tenant (<%= @tenant.FName %> <%= @tenant.LName %>):</strong>
+        <div class="signature-party">
+          <div class="party-label">Tenant</div>
+          <div class="party-name"><%= @tenant.FName %> <%= @tenant.LName %></div>
           <% if @file.TenantSignature %>
-            <span style="color: green;">✓ Signed</span>
+            <div class="signature-status signed">
+              <i class="fa-solid fa-check-circle"></i> Signed
+            </div>
             <% if @file.TenantSignedAt %>
-              <br><small>on <%= @file.TenantSignedAt.strftime("%B %d, %Y at %I:%M %p") %></small>
+              <div class="signature-timestamp"><%= @file.TenantSignedAt.strftime("%B %d, %Y at %I:%M %p") %></div>
             <% end %>
           <% else %>
-            <span style="color: #999;">Not signed yet</span>
+            <div class="signature-status pending">
+              <i class="fa-regular fa-circle"></i> Awaiting signature
+            </div>
           <% end %>
         </div>
       </div>
 
       <% if @file.LandlordSignature && @file.TenantSignature %>
-        <div style="margin-top: 15px; padding: 10px; background-color: #d4edda; border: 1px solid #c3e6cb; border-radius: 5px; color: #155724;">
-          <strong>✓ Document fully executed</strong> - Both parties have signed this agreement.
+        <div class="completion-banner">
+          <i class="fa-solid fa-check-circle"></i>
+          <strong>Document Fully Executed</strong> - Both parties have signed this agreement.
         </div>
       <% end %>
     </div>
 
     <!-- Signing Form (only show if user hasn't signed yet) -->
     <% if @user_role_in_conversation == "landlord" && !@file.LandlordSignature %>
-      <div class="signing-section" style="margin: 20px 0; padding: 15px; background-color: #fff3cd; border: 1px solid #ffc107; border-radius: 5px;">
-        <h3>Sign This Document</h3>
-        <p>By signing below, you confirm that you agree to the terms outlined in this document.</p>
-        <%= form_with url: apply_signature_document_path(@file.FileID), method: :post, local: true do |form| %>
-          <div style="margin: 10px 0;">
-            <%= form.label :signature_name, "Your Full Name:" %>
-            <%= form.text_field :signature_name, value: "#{@landlord.FName} #{@landlord.LName}", style: "width: 300px; padding: 5px; margin-left: 10px;" %>
+      <div class="signing-card">
+        <h3><i class="fa-solid fa-pen-to-square"></i> Sign This Document</h3>
+        <p class="signing-description">By signing below, you confirm that you agree to the terms outlined in this document.</p>
+        <%= form_with url: apply_signature_document_path(@file.FileID), method: :post, local: true, class: "signature-form" do |form| %>
+          <div class="form-group">
+            <%= form.label :signature_name, "Your Full Name", class: "form-label" %>
+            <%= form.text_field :signature_name, value: "#{@landlord.FName} #{@landlord.LName}", class: "form-input", required: true %>
+            <small class="form-hint">Your signature will be recorded as: <strong>/s/ [Your Name]</strong></small>
           </div>
-          <p style="margin: 10px 0;"><small>Your signature will be recorded as: <strong>/s/ [Your Name]</strong></small></p>
-          <%= form.submit "Sign Document", style: "padding: 10px 20px; background-color: #28a745; color: white; border: none; border-radius: 5px; cursor: pointer; font-size: 16px;" %>
+          <div class="form-actions">
+            <%= form.submit "Sign Document", class: "btn-sign" %>
+          </div>
         <% end %>
       </div>
     <% elsif @user_role_in_conversation == "tenant" && !@file.TenantSignature %>
-      <div class="signing-section" style="margin: 20px 0; padding: 15px; background-color: #fff3cd; border: 1px solid #ffc107; border-radius: 5px;">
-        <h3>Sign This Document</h3>
-        <p>By signing below, you confirm that you agree to the terms outlined in this document.</p>
-        <%= form_with url: apply_signature_document_path(@file.FileID), method: :post, local: true do |form| %>
-          <div style="margin: 10px 0;">
-            <%= form.label :signature_name, "Your Full Name:" %>
-            <%= form.text_field :signature_name, value: "#{@tenant.FName} #{@tenant.LName}", style: "width: 300px; padding: 5px; margin-left: 10px;" %>
+      <div class="signing-card">
+        <h3><i class="fa-solid fa-pen-to-square"></i> Sign This Document</h3>
+        <p class="signing-description">By signing below, you confirm that you agree to the terms outlined in this document.</p>
+        <%= form_with url: apply_signature_document_path(@file.FileID), method: :post, local: true, class: "signature-form" do |form| %>
+          <div class="form-group">
+            <%= form.label :signature_name, "Your Full Name", class: "form-label" %>
+            <%= form.text_field :signature_name, value: "#{@tenant.FName} #{@tenant.LName}", class: "form-input", required: true %>
+            <small class="form-hint">Your signature will be recorded as: <strong>/s/ [Your Name]</strong></small>
           </div>
-          <p style="margin: 10px 0;"><small>Your signature will be recorded as: <strong>/s/ [Your Name]</strong></small></p>
-          <%= form.submit "Sign Document", style: "padding: 10px 20px; background-color: #28a745; color: white; border: none; border-radius: 5px; cursor: pointer; font-size: 16px;" %>
+          <div class="form-actions">
+            <%= form.submit "Sign Document", class: "btn-sign" %>
+          </div>
         <% end %>
       </div>
     <% end %>
   <% end %>
 
-  <iframe src="<%= '/' + @file.FileURLPath %>"
-          width="80%" height="600px" style="margin-top: 20px;">
-    Your browser does not support iframes.
-    <a href="<%= @file.FileURLPath %>">View Document</a>
-  </iframe>
+  <div class="document-preview-card">
+    <iframe src="<%= download_file_path(@file.FileID) %>" class="document-iframe">
+      Your browser does not support iframes.
+      <%= link_to "View Document", download_file_path(@file.FileID), target: "_blank", class: "fallback-link" %>
+    </iframe>
+  </div>
 </div>
 
 <% if @conversation %>
@@ -99,42 +122,59 @@
         received(data) {
           if (data.type === 'signature_update') {
             // Update landlord signature status
-            const landlordDiv = document.querySelector('.signature-status-section > div:nth-child(2) > div:nth-child(1)');
-            if (landlordDiv) {
-              if (data.landlord_signature) {
-                const signedHtml = `<strong>Landlord (${data.landlord_name}):</strong>
-                  <span style="color: green;">✓ Signed</span>
-                  ${data.landlord_signed_at ? `<br><small>on ${data.landlord_signed_at}</small>` : ''}`;
-                landlordDiv.innerHTML = signedHtml;
+            const signatureParties = document.querySelectorAll('.signature-party');
+            if (signatureParties[0] && data.landlord_signature) {
+              const landlordDiv = signatureParties[0];
+              const statusDiv = landlordDiv.querySelector('.signature-status');
+              if (statusDiv) {
+                statusDiv.className = 'signature-status signed';
+                statusDiv.innerHTML = '<i class="fa-solid fa-check-circle"></i> Signed';
+                
+                // Add timestamp if it doesn't exist
+                let timestampDiv = landlordDiv.querySelector('.signature-timestamp');
+                if (!timestampDiv && data.landlord_signed_at) {
+                  timestampDiv = document.createElement('div');
+                  timestampDiv.className = 'signature-timestamp';
+                  timestampDiv.textContent = data.landlord_signed_at;
+                  statusDiv.after(timestampDiv);
+                }
               }
             }
             
             // Update tenant signature status
-            const tenantDiv = document.querySelector('.signature-status-section > div:nth-child(2) > div:nth-child(2)');
-            if (tenantDiv) {
-              if (data.tenant_signature) {
-                const signedHtml = `<strong>Tenant (${data.tenant_name}):</strong>
-                  <span style="color: green;">✓ Signed</span>
-                  ${data.tenant_signed_at ? `<br><small>on ${data.tenant_signed_at}</small>` : ''}`;
-                tenantDiv.innerHTML = signedHtml;
+            if (signatureParties[1] && data.tenant_signature) {
+              const tenantDiv = signatureParties[1];
+              const statusDiv = tenantDiv.querySelector('.signature-status');
+              if (statusDiv) {
+                statusDiv.className = 'signature-status signed';
+                statusDiv.innerHTML = '<i class="fa-solid fa-check-circle"></i> Signed';
+                
+                // Add timestamp if it doesn't exist
+                let timestampDiv = tenantDiv.querySelector('.signature-timestamp');
+                if (!timestampDiv && data.tenant_signed_at) {
+                  timestampDiv = document.createElement('div');
+                  timestampDiv.className = 'signature-timestamp';
+                  timestampDiv.textContent = data.tenant_signed_at;
+                  statusDiv.after(timestampDiv);
+                }
               }
             }
             
             // Hide signing form if current user just signed
-            const signingSection = document.querySelector('.signing-section');
-            if (signingSection) {
-              signingSection.remove();
+            const signingCard = document.querySelector('.signing-card');
+            if (signingCard) {
+              signingCard.remove();
             }
             
             // Show fully executed banner if both signed
             if (data.both_signed) {
-              const statusSection = document.querySelector('.signature-status-section');
-              const existingBanner = statusSection.querySelector('div[style*="background-color: #d4edda"]');
+              const statusCard = document.querySelector('.signature-status-card');
+              const existingBanner = statusCard.querySelector('.completion-banner');
               if (!existingBanner) {
                 const banner = document.createElement('div');
-                banner.style.cssText = 'margin-top: 15px; padding: 10px; background-color: #d4edda; border: 1px solid #c3e6cb; border-radius: 5px; color: #155724;';
-                banner.innerHTML = '<strong>✓ Document fully executed</strong> - Both parties have signed this agreement.';
-                statusSection.appendChild(banner);
+                banner.className = 'completion-banner';
+                banner.innerHTML = '<i class="fa-solid fa-check-circle"></i><strong>Document Fully Executed</strong> - Both parties have signed this agreement.';
+                statusCard.appendChild(banner);
               }
             }
           }

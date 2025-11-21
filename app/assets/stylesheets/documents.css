@@ -31,6 +31,8 @@
   text-decoration: none;
   font-weight: 600;
   transition: transform .05s ease, box-shadow .2s ease, background .2s ease;
+  max-width: 100%;
+  box-sizing: border-box;
 }
 .btn-primary{
   background: #1a73e8; color: #fff;
@@ -46,6 +48,61 @@
 .docs-table tbody tr{ border-bottom:1px solid #eef2f7; }
 .docs-table tbody tr:hover{ background:#fbfdff; }
 
+@media (max-width: 768px) {
+  .docs-table thead { display: none; }
+  .docs-table, .docs-table tbody, .docs-table tr, .docs-table td {
+    display: block;
+    width: 100%;
+  }
+  .docs-table tr {
+    margin-bottom: 1rem;
+    padding: 1rem;
+    background: #f8fbff;
+    border-radius: 12px;
+    border: 1px solid #e7eefb;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    box-sizing: border-box;
+    max-width: 100%;
+  }
+  .docs-table tr:hover { background: #f0f6ff; }
+  .docs-table td {
+    text-align: left;
+    padding: 0.5rem 0;
+    border: none;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+  }
+  .docs-table td:first-child {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+  }
+  .docs-table td:first-child:before {
+    content: 'File:';
+    font-weight: 700;
+    color: #173a58;
+  }
+  .docs-table td:not(:first-child) {
+    position: relative;
+    padding-left: 40%;
+  }
+  .docs-table td:not(:first-child):before {
+    content: attr(data-label);
+    position: absolute;
+    left: 0;
+    font-weight: 700;
+    color: #173a58;
+  }
+  .docs-table td.docs-actions-cell {
+    padding-left: 0;
+    display: flex;
+    gap: 0.5rem;
+    margin-top: 0.5rem;
+  }
+  .docs-table td.docs-actions-cell:before { display: none; }
+  .btn-sm { flex: 1; text-align: center; }
+}
+
 .badge{
   display:inline-block; padding:4px 10px; border-radius:999px;
   font-size:12px; font-weight:700; background:#eef2ff; color:#1d4ed8;
@@ -60,6 +117,12 @@
 .upload-card{
   display:flex; justify-content:center; align-items:center;
   padding:22px; border:2px dashed #d7e3ff; border-radius:16px; background:#fafcff;
+}
+.upload-form {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 .file-input{ font-size:14px; }
 
@@ -119,16 +182,63 @@
   background:#f8fbff; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:6px;
   box-shadow: inset 0 0 0 1px rgba(255,255,255,.6), 0 10px 28px rgba(2,6,23,.06);
   transition: border-color .15s ease, background .15s ease, transform .08s ease;
+  box-sizing: border-box;
+  overflow: hidden;
+}
+label.dropzone {
+  max-width: 100%;
+  width: 100%;
+}
+label.dropzone * {
+  max-width: 100%;
+  box-sizing: border-box;
 }
 .dropzone:hover, .dropzone.dragover{ border-color:#8db2ff; background:#f1f6ff; transform: translateY(-1px); }
 .dropzone, .dropzone *{ cursor:pointer !important; }
 
 .dz-icon{ font-size:28px; line-height:1; opacity:.95; }
-.dz-title{ font-weight:800; color:#0f2944; }
-.dz-subtitle{ color:#64748b; font-size:.95rem; }
+.dz-title{ 
+  font-weight:800; 
+  color:#0f2944;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  max-width: 100%;
+  text-align: center;
+}
+.dz-subtitle{ 
+  color:#64748b; 
+  font-size:.95rem;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  max-width: 100%;
+  text-align: center;
+}
 
-.filename{ margin-top:10px; color:#334155; font-size:.92rem; text-align:center; }
-.form-actions{ margin-top:12px; display:flex; justify-content:center; gap:12px; }
+.filename{ 
+  margin-top:10px; 
+  color:#334155; 
+  font-size:.92rem; 
+  text-align:center;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  max-width: 100%;
+  width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.form-actions {
+  margin-top: 12px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 12px;
+  min-height: 48px;
+}
+.upload-doc-button{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
 .btn-primary{
   background:#2563eb; border:1px solid #1e4fd9; color:#fff; border-radius:10px;
   box-shadow:0 10px 22px rgba(37,99,235,.25); padding:10px 16px; font-weight:800;
@@ -137,13 +247,38 @@
 .btn.btn-link{ color:#6d28d9; font-weight:700; text-decoration:none; }
 .btn.btn-link:hover{ text-decoration:underline; }
 
-.selected-file{ display:flex; align-items:center; justify-content:center; gap:12px; margin-top:10px; }
-.file-thumb{ width:56px; height:56px; object-fit:cover; border-radius:8px; border:1px solid #e5e7eb; }
-.file-icon{ width:48px; height:48px; display:grid; place-items:center; border-radius:10px; background:#eef2ff; color:#3730a3; font-weight:800; border:1px solid #e5e7eb; }
-.file-meta{ font-size:.95rem; color:#0f2a49; line-height:1.2; }
+.selected-file{ 
+  display:flex; 
+  align-items:center; 
+  justify-content:center; 
+  gap:12px; 
+  margin-top:10px;
+  max-width: 100%;
+  flex-wrap: wrap;
+  width: 100%;
+  box-sizing: border-box;
+}
+.file-thumb{ width:56px; height:56px; object-fit:cover; border-radius:8px; border:1px solid #e5e7eb; flex-shrink: 0; }
+.file-icon{ width:48px; height:48px; display:grid; place-items:center; border-radius:10px; background:#eef2ff; color:#3730a3; font-weight:800; border:1px solid #e5e7eb; flex-shrink: 0; }
+.file-meta{ 
+  font-size:.95rem; 
+  color:#0f2a49; 
+  line-height:1.2;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  max-width: calc(100% - 80px);
+  min-width: 0;
+  flex: 1;
+}
 .file-meta small{ display:block; color:#64748b; margin-top:2px; }
 .clear-file{ background:transparent; border:0; color:#b91c1c; font-weight:700; padding:6px 8px; border-radius:8px; }
 .clear-file:hover{ background:#fff5f5; }
+
+@media (max-width: 480px) {
+  label.dropzone {
+    max-width: 250px;
+  }
+}
 
 /* Template Grid Layout */
 .template-grid {
@@ -220,4 +355,342 @@
   }
 }
 
+/* Document View Page */
+.document-view-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 24px;
+}
 
+.back-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: #3b82f6;
+  text-decoration: none;
+  font-weight: 600;
+  margin-bottom: 20px;
+  transition: color 0.2s ease;
+}
+
+.back-link:hover {
+  color: #2563eb;
+}
+
+.document-header-card {
+  background: linear-gradient(135deg, #102a4d 0%, #2b556f 100%);
+  border-radius: 12px;
+  padding: 32px;
+  margin-bottom: 24px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+}
+
+.header-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 20px;
+}
+
+.document-header-card h1 {
+  color: #fff;
+  margin: 0;
+  font-size: 28px;
+  font-weight: 700;
+}
+
+.document-actions {
+  display: flex;
+  gap: 12px;
+}
+
+.btn-document-action {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 20px;
+  background: rgba(255, 255, 255, 0.15);
+  color: #fff;
+  text-decoration: none;
+  border-radius: 8px;
+  font-weight: 600;
+  transition: background 0.2s ease;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.btn-document-action:hover {
+  background: rgba(255, 255, 255, 0.25);
+}
+
+.signature-status-card {
+  background: #fff;
+  border-radius: 12px;
+  padding: 28px;
+  margin-bottom: 24px;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+  border: 1px solid #e2e8f0;
+}
+
+.signature-status-card h3 {
+  margin: 0 0 20px;
+  font-size: 20px;
+  font-weight: 700;
+  color: #0f2a49;
+}
+
+.signature-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 24px;
+  margin-bottom: 20px;
+}
+
+.signature-party {
+  background: #f8fafc;
+  padding: 20px;
+  border-radius: 10px;
+  border: 2px solid #e2e8f0;
+}
+
+.party-label {
+  font-size: 12px;
+  text-transform: uppercase;
+  font-weight: 700;
+  color: #64748b;
+  letter-spacing: 0.5px;
+  margin-bottom: 6px;
+}
+
+.party-name {
+  font-size: 18px;
+  font-weight: 700;
+  color: #0f2a49;
+  margin-bottom: 12px;
+}
+
+.signature-status {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 600;
+  font-size: 15px;
+  margin-bottom: 6px;
+}
+
+.signature-status.signed {
+  color: #10b981;
+}
+
+.signature-status.signed i {
+  font-size: 18px;
+}
+
+.signature-status.pending {
+  color: #94a3b8;
+}
+
+.signature-status.pending i {
+  font-size: 18px;
+}
+
+.signature-timestamp {
+  font-size: 13px;
+  color: #64748b;
+  margin-top: 4px;
+}
+
+.completion-banner {
+  background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%);
+  border: 2px solid #6ee7b7;
+  border-radius: 10px;
+  padding: 16px 20px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  color: #065f46;
+  font-weight: 600;
+  margin-top: 20px;
+  animation: slideIn 0.4s ease;
+}
+
+.completion-banner i {
+  font-size: 22px;
+  color: #10b981;
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.signing-card {
+  background: linear-gradient(135deg, #fffbeb 0%, #fef3c7 100%);
+  border: 2px solid #fcd34d;
+  border-radius: 12px;
+  padding: 28px;
+  margin-bottom: 24px;
+  box-shadow: 0 2px 12px rgba(251, 191, 36, 0.15);
+}
+
+.signing-card h3 {
+  margin: 0 0 8px;
+  font-size: 20px;
+  font-weight: 700;
+  color: #78350f;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.signing-description {
+  color: #92400e;
+  margin-bottom: 24px;
+  font-size: 15px;
+}
+
+.signature-form .form-group {
+  margin-bottom: 20px;
+}
+
+.signature-form .form-label {
+  display: block;
+  font-weight: 700;
+  color: #78350f;
+  margin-bottom: 8px;
+  font-size: 15px;
+}
+
+.signature-form .form-input {
+  width: 100%;
+  max-width: 400px;
+  padding: 12px 16px;
+  border: 2px solid #fbbf24;
+  border-radius: 8px;
+  font-size: 16px;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  background: #fff;
+}
+
+.signature-form .form-input:focus {
+  outline: none;
+  border-color: #f59e0b;
+  box-shadow: 0 0 0 3px rgba(251, 191, 36, 0.2);
+}
+
+.signature-form .form-hint {
+  display: block;
+  margin-top: 8px;
+  color: #92400e;
+  font-size: 14px;
+}
+
+.signature-form .form-actions {
+  display: flex;
+  justify-content: flex-start;
+}
+
+.btn-sign {
+  padding: 12px 28px;
+  background: #10b981;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  font-size: 16px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background 0.2s ease, transform 0.1s ease, box-shadow 0.2s ease;
+  box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+}
+
+.btn-sign:hover {
+  background: #059669;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(16, 185, 129, 0.4);
+}
+
+.btn-sign:active {
+  transform: translateY(0);
+}
+
+.document-preview-card {
+  background: #fff;
+  border-radius: 12px;
+  padding: 24px;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+  border: 1px solid #e2e8f0;
+}
+
+.document-iframe {
+  width: 100%;
+  height: 800px;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+}
+
+.fallback-link {
+  color: #3b82f6;
+  text-decoration: underline;
+  font-weight: 600;
+}
+
+@media (max-width: 768px) {
+  .document-view-container {
+    padding: 16px;
+  }
+
+  .document-header-card {
+    padding: 20px;
+  }
+
+  .header-content {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .document-header-card h1 {
+    font-size: 22px;
+  }
+
+  .signature-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .signature-status-card,
+  .signing-card,
+  .document-preview-card {
+    padding: 20px;
+  }
+
+  .document-iframe {
+    height: 500px;
+  }
+
+  .signature-form .form-input {
+    max-width: 100%;
+  }
+
+  .filename {
+    max-width: 260px;
+    font-weight: normal;
+  }
+
+  .docs-wrapper{
+    margin-top: 0;
+  }
+
+  .docs-title{
+    font-size: 28px;
+  }
+
+  .docs-subtitle{
+    text-align: center;
+    color: #5b6b7a;
+    margin-bottom: 18px;
+  }
+}

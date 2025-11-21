@@ -3,7 +3,14 @@
 <div class="admin-mediation-details-container">
   <!-- Header -->
   <div class="page-header">
-    <% back_path = @user.Role == "Mediator" ? third_party_mediations_path : messages_path %>
+    <% back_path = case @user.Role
+                   when "Mediator"
+                     third_party_mediations_path
+                   when "Admin"
+                     dashboard_path
+                   else
+                     messages_path
+                   end %>
     <%= link_to back_path, class: "back-link" do %>
       <i class="fa-solid fa-arrow-left"></i> Back to Dashboard
     <% end %>

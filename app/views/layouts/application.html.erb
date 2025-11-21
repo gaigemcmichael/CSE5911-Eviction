@@ -47,7 +47,7 @@
   <%# Removed fallback to `application.css` to avoid double-link with .erb %>
   </head>
 
-  <body>
+  <body class="<%= content_for?(:body_class) ? yield(:body_class) : '' %>">
     <% unless (controller_name == "sessions" && action_name == "new")  || (controller_name == "users" && action_name == "new") %>
       <% if current_user %>
         <div class="navbar-container">

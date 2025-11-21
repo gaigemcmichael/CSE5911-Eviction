@@ -1,5 +1,8 @@
-<div class="form-container">
-  <div class="form-card">
+<%# Use a softer intake-specific background so the navbar remains visually distinct %>
+<% content_for :body_class, 'intake-page' %>
+
+<div class="signup-container">
+  <div class="signup-card intake-card" style="max-width: 820px;">
     <h1>Start Your Intake Questions</h1>
       <h2>Please complete the following intake questions before proceeding with negotiation.</h2>
 
@@ -10,7 +13,6 @@
 
         <div class="custom-select-wrapper">
           <%= f.select :Reason, [
-            ["Select a reason", ""],
             "Failure to Pay Rent",
             "Violation of Lease Terms",
             "Damage to Property",
@@ -18,7 +20,7 @@
             "Nuisance or Disturbance",
             "Expiration of Lease",
             "Unknown"
-          ], {}, { class: "form-control", required: true } %>
+          ], { prompt: "Select a reason" }, { class: "form-control", required: true } %>
 
           <i class="arrow down"></i>
         </div>
@@ -42,10 +44,9 @@
 
         <div class="custom-select-wrapper">
           <%= f.select :BestOption, [
-            ["Select a reason", ""],
             "Pay Missed Rent", 
             "Move Out"
-          ], {}, { class: "form-control", required: true } %>
+          ], { prompt: "Select an option" }, { class: "form-control", required: true } %>
           <i class="arrow down"></i>
         </div>
       </div>
@@ -56,8 +57,12 @@
         <p>If you are in Section 8 Housing, you may qualify for Legal Aid Resources. You are encouraged to 
           <strong><a href="https://oslsaoi.legalserver.org/modules/matter/extern_intake.php?pid=129&h=daa817&" target="_blank">contact Legal Aid</a></strong>.
         </p>
-        <%= f.radio_button :Section8, true, required: true %> Yes
-        <%= f.radio_button :Section8, false %> No
+        <label style="cursor: pointer; font-weight: normal;">
+          <%= f.radio_button :Section8, true, required: true %> Yes
+        </label>
+        <label style="cursor: pointer; font-weight: normal;">
+          <%= f.radio_button :Section8, false %> No
+        </label>
         
       </div>
 
@@ -69,11 +74,17 @@
 
       <div class="form-section">
         <%= f.label :TotalCostOrMonthly, "Is the amount you typed above the total cost of your monthly rent?", class: "required-label" %><br>
-        <%= f.radio_button :TotalCostOrMonthly, true, required: true %> Yes
-        <%= f.radio_button :TotalCostOrMonthly, false %> No
-        <p> </p> <!-- add space-->
-        <%= f.label :MonthlyRent, "If no, what is the total rent you pay each month?" %>
-        <%= f.number_field :MonthlyRent, step: 0.01, class: "form-control", placeholder: "e.g. 800.00" %>
+        <label style="cursor: pointer; font-weight: normal;">
+          <%= f.radio_button :TotalCostOrMonthly, true, required: true, id: "total_cost_yes" %> Yes
+        </label>
+        <label style="cursor: pointer; font-weight: normal;">
+          <%= f.radio_button :TotalCostOrMonthly, false, id: "total_cost_no" %> No
+        </label>
+        
+        <div id="monthly-rent-section" style="display: none; margin-top: 12px;">
+          <%= f.label :MonthlyRent, "What is the total rent you pay each month?" %>
+          <%= f.number_field :MonthlyRent, step: 0.01, class: "form-control", placeholder: "e.g. 800.00", id: "monthly_rent_field" %>
+        </div>
       </div>
 
       <div class="form-section">
@@ -88,9 +99,88 @@
       </div>
 
       <div class="form-footer">
-        <%= f.submit "Submit"%>
+        <%= f.submit "Submit", class: 'signup-btn' %>
       </div>
 
     <% end %>
   </div>
 </div>
+
+<script>
+  document.addEventListener('turbo:load', function() {
+    const form = document.querySelector('form');
+    const monthlyRentSection = document.getElementById('monthly-rent-section');
+    const monthlyRentField = document.getElementById('monthly_rent_field');
+    const totalCostYes = document.getElementById('total_cost_yes');
+    const totalCostNo = document.getElementById('total_cost_no');
+
+    // Toggle monthly rent field visibility
+    function toggleMonthlyRent() {
+      if (!monthlyRentSection || !monthlyRentField) return;
+      
+      if (totalCostNo && totalCostNo.checked) {
+        monthlyRentSection.style.display = 'block';
+        monthlyRentField.required = true;
+      } else {
+        monthlyRentSection.style.display = 'none';
+        monthlyRentField.required = false;
+        monthlyRentField.value = ''; // Clear the field when hidden
+      }
+    }
+
+    // Listen for radio button changes
+    if (totalCostYes) totalCostYes.addEventListener('change', toggleMonthlyRent);
+    if (totalCostNo) totalCostNo.addEventListener('change', toggleMonthlyRent);
+
+    // Form validation with visual feedback
+    if (form) {
+      form.addEventListener('submit', function(e) {
+      const requiredFields = form.querySelectorAll('[required]');
+      let firstInvalidField = null;
+      let isValid = true;
+
+      // Remove previous error styling
+      document.querySelectorAll('.form-section').forEach(section => {
+        section.style.border = '';
+        section.style.background = '';
+      });
+
+      requiredFields.forEach(field => {
+        // Skip validation for hidden fields
+        if (field.offsetParent === null) return;
+
+        let isEmpty = false;
+        if (field.type === 'radio') {
+          const radioGroup = form.querySelectorAll(`input[name="${field.name}"]`);
+          isEmpty = ![...radioGroup].some(radio => radio.checked);
+        } else if (field.tagName === 'SELECT') {
+          isEmpty = !field.value || field.value === '';
+        } else {
+          isEmpty = !field.value.trim();
+        }
+
+        if (isEmpty) {
+          isValid = false;
+          const section = field.closest('.form-section');
+          if (section) {
+            section.style.border = '2px solid #d32f2f';
+            section.style.background = '#fff3f3';
+            if (!firstInvalidField) firstInvalidField = section;
+          }
+        }
+      });
+
+      if (!isValid) {
+        e.preventDefault();
+        if (firstInvalidField) {
+          firstInvalidField.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+        alert('Please fill in all required fields highlighted in red.');
+      }
+    });
+    }
+
+    // Initialize monthly rent visibility on page load
+    toggleMonthlyRent();
+  });
+</script>

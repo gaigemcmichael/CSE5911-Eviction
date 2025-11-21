@@ -10,12 +10,23 @@
     --gap: 20px;
 }
 
+html {
+    overflow-y: auto;
+    overflow-x: hidden;
+    height: auto;
+    min-height: 100%;
+}
+
 body {
     margin: 0;
     padding: 0;
     font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     background-color: var(--bg-color);
     color: var(--text-color);
+    overflow-y: auto;
+    overflow-x: hidden;
+    height: auto;
+    min-height: 100vh;
 }
 
 /* Page Content Structure */
