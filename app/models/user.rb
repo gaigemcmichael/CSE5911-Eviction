@@ -32,6 +32,26 @@ class User < ApplicationRecord
   def mediator? = self[:Role] == "Mediator"
   def admin?    = self[:Role] == "Admin"
 
+  # Two-Factor Authentication methods
+  def two_factor_enabled?
+    self[:two_factor_enabled] == true
+  end
+
+  def phone_verified?
+    self[:phone_verified] == true
+  end
+
+  def format_phone_for_display
+    return nil unless phone_number.present?
+    # Format 
+    cleaned = phone_number.gsub(/\D/, '')
+    if cleaned.length == 10
+      "(#{cleaned[0..2]}) #{cleaned[3..5]}-#{cleaned[6..9]}"
+    else
+      phone_number
+    end
+  end
+
   private
 
   def normalize_email

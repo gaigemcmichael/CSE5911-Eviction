@@ -407,6 +407,7 @@
     }
 }
 
+<<<<<<< HEAD
 /* Document Signature Form Inline Styles */
 .conversation-card--highlight {
     border: 2px solid #f59e0b;
@@ -507,3 +508,8 @@
     transform: translateY(-2px);
     box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
 }
+=======
+
+
+
+>>>>>>> 2fa-clean

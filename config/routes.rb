@@ -8,7 +8,13 @@ Rails.application.routes.draw do
   get "/login", to: "sessions#new"
   post "/login", to: "sessions#create"
   get "/logout", to: "sessions#destroy"
+  delete "/logout", to: "sessions#destroy"
   resources :sessions
+
+  # Two-Factor Authentication
+  get "/sms_two_factor", to: "sms_two_factor#show"
+  post "/sms_two_factor/verify", to: "sms_two_factor#verify", as: "verify_sms_two_factor"
+  post "/sms_two_factor/resend", to: "sms_two_factor#resend", as: "resend_sms_two_factor"
 
   # Dashboard Pages
   get "/dashboard", to: "dashboard#index", as: "dashboard"
@@ -25,6 +31,9 @@ Rails.application.routes.draw do
   get "/account", to: "account#show"
   get "/account/edit", to: "account#edit"
   patch "/account", to: "account#update"
+  post "/account/enable_two_factor", to: "account#enable_two_factor", as: "enable_two_factor_account"
+  get "/account/verify_phone", to: "account#verify_phone", as: "verify_phone_account"
+  post "/account/confirm_phone", to: "account#confirm_phone", as: "confirm_phone_account"
 
   get "messages/tenant_show/:conversation_id", to: "messages#show", as: "tenant_show"
   get "messages/landlord_show/:conversation_id", to: "messages#show", as: "landlord_show"

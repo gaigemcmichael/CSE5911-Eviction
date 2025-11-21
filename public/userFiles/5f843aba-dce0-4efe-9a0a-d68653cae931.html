@@ -1,0 +1,156 @@
+<!-- BEGIN app/views/documents/templates/pay_and_stay.html.erb --><!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Agreement</title>
+  <style>
+    body {
+      font-family: 'Times New Roman', serif;
+      max-width: 8.5in;
+      margin: 0 auto;
+      padding: 0.75in;
+      line-height: 1.6;
+      color: #000;
+      font-size: 11pt;
+    }
+    h1 {
+      text-align: center;
+      font-size: 14pt;
+      font-weight: bold;
+      margin: 20pt 0;
+      text-transform: uppercase;
+    }
+    p {
+      margin: 12pt 0;
+    }
+    .parties-section {
+      margin: 20pt 0;
+      text-align: center;
+    }
+    .party-line {
+      display: inline-block;
+      width: 45%;
+      margin: 10pt 0;
+      vertical-align: top;
+    }
+    .underline {
+      border-bottom: 1px solid #000;
+      display: inline-block;
+      min-width: 250pt;
+      padding-bottom: 2pt;
+    }
+    .party-label {
+      display: block;
+      margin-top: 5pt;
+      font-weight: bold;
+    }
+    .disagreement {
+      margin: 20pt 0;
+    }
+    ol {
+      margin-left: 20pt;
+      padding-left: 20pt;
+    }
+    li {
+      margin: 15pt 0;
+    }
+    .payment-list {
+      margin-left: 40pt;
+      list-style-type: lower-alpha;
+    }
+    .signature-section {
+      margin-top: 50pt;
+      page-break-inside: avoid;
+    }
+    .signature-line {
+      display: inline-block;
+      width: 45%;
+      margin: 30pt 0 0 0;
+    }
+    .sig-underline {
+      border-bottom: 1px solid #000;
+      display: inline-block;
+      width: 80%;
+      padding-bottom: 2pt;
+    }
+    @media print {
+      body {
+        padding: 0.5in;
+      }
+    }
+  </style>
+</head>
+<body>
+  <h1>AGREEMENT</h1>
+  
+  <p style="text-align: center;">This is the Agreement reached between:</p>
+  
+  <div class="parties-section">
+    <div class="party-line">
+      <span class="underline">Vince Guevarra</span><br>
+      <span class="underline">&nbsp;</span><br>
+      <span class="underline">&nbsp;</span><br>
+      <span class="party-label">LANDLORD</span>
+    </div>
+    
+    <span style="margin: 0 20pt;">and</span>
+    
+    <div class="party-line">
+      <span class="underline">landlord test</span><br>
+      <span class="underline">&nbsp;</span><br>
+      <span class="underline">&nbsp;</span><br>
+      <span class="party-label">TENANT</span>
+    </div>
+  </div>
+  
+  <div class="disagreement">
+    <p>The parties had a disagreement about their rights and responsibilities as to:</p>
+    <p><span class="underline" style="width: 100%; display: block;">1234 Steelwood Rd</span></p>
+  </div>
+  
+  <p>The parties took part in a negotiation session held on <span class="underline">2025-11-19</span> and agreed to the following:</p>
+  
+  <ol>
+    <li>Landlord will accept third-party payments as part of this agreement. This Agreement shall supersede any other agreement by Landlord or Tenant with any 3rd party providing monetary assistance to Tenant. Tenant acknowledges that Landlord shall not be required to adhere to any 3rd party requirements more strict than Federal law necessary for taking any third-party payments.</li>
+    
+    <li>The parties will take timely steps to process rental assistance applications.</li>
+    
+    <li>Tenant(s) shall make the following payments to Landlord to cover any outstanding balance owed to Landlord:
+      <ol class="payment-list">
+          <li>$<span class="underline">____________</span> on or before <span class="underline">_________________</span> by 5:00 PM</li>
+          <li>$<span class="underline">____________</span> on or before <span class="underline">_________________</span> by 5:00 PM</li>
+          <li>$<span class="underline">____________</span> on or before <span class="underline">_________________</span> by 5:00 PM</li>
+          <li>$<span class="underline">____________</span> on or before <span class="underline">_________________</span> by 5:00 PM</li>
+          <li>$<span class="underline">____________</span> on or before <span class="underline">_________________</span> by 5:00 PM</li>
+      </ol>
+    </li>
+    
+    <li>Payments shall be in the form of previous rent payments agreed to by both parties.</li>
+    
+    <li>If Tenant(s) pay as agreed, Landlord will not pursue an eviction filing against the Tenant. If Tenant(s) fail to make any payment as agreed, Landlord shall have the right to proceed with an eviction filing [under an expedited timeline].</li>
+    
+    <li>Both parties agree that this Agreement may be executed in one or more counterparts, each of which may be signed by a party individually. Upon execution by all parties, their respective signed copies of this Agreement shall be combined into a single, integrated document. The integrated agreement shall be deemed the final, complete, and enforceable version of this Agreement.</li>
+    
+    <li>Both parties agree that any additional provisions listed below are part of this agreement.</li>
+  </ol>
+  
+  <p style="text-align: center; margin-top: 40pt; font-weight: bold;">[SIGNATURE PAGE FOLLOWS]</p>
+  
+  <p style="margin-top: 30pt;">Agreed to by:</p>
+  
+  <div class="signature-section">
+    <div class="signature-line">
+      <span class="sig-underline"></span><br>
+      <span>Landlord</span>
+      <span style="margin-left: 100pt;">Date</span>
+    </div>
+    
+    <div class="signature-line" style="float: right;">
+      <span class="sig-underline"></span><br>
+      <span>Tenant</span>
+      <span style="margin-left: 120pt;">Date</span>
+    </div>
+  </div>
+</body>
+</html>
+<!-- END app/views/documents/templates/pay_and_stay.html.erb -->

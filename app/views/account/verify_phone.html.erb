@@ -1,0 +1,371 @@
+<div class="verify-phone-container">
+  <div class="verify-card">
+    <div class="verify-icon">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <rect x="5" y="2" width="14" height="20" rx="2" ry="2"></rect>
+        <path d="M12 18h.01"></path>
+        <path d="M8 6h8"></path>
+      </svg>
+    </div>
+    
+    <h1 class="verify-title">Verify Your Phone Number</h1>
+    <p class="verify-subtitle">
+      We sent a 6-digit code to<br>
+      <strong class="phone-display"><%= @user.format_phone_for_display %></strong>
+    </p>
+    
+    <% if flash[:alert] %>
+      <div class="alert alert-danger">
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="12" cy="12" r="10"></circle>
+          <line x1="12" y1="8" x2="12" y2="12"></line>
+          <line x1="12" y1="16" x2="12.01" y2="16"></line>
+        </svg>
+        <%= flash[:alert] %>
+      </div>
+    <% end %>
+
+    <% if flash[:notice] %>
+      <div class="alert alert-success">
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <polyline points="20 6 9 17 4 12"></polyline>
+        </svg>
+        <%= flash[:notice] %>
+      </div>
+    <% end %>
+
+    <%= form_with url: confirm_phone_account_path, method: :post, local: true, class: "verify-form" do |f| %>
+      <div class="form-group">
+        <%= label_tag :code, "Verification Code", class: "form-label" %>
+        <div class="code-input-wrapper">
+          <%= text_field_tag :code, nil, 
+              class: "code-input", 
+              placeholder: "000000",
+              maxlength: 6,
+              pattern: "[0-9]{6}",
+              required: true,
+              autofocus: true,
+              inputmode: "numeric" %>
+        </div>
+        <p class="input-hint">
+          <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="10"></circle>
+            <line x1="12" y1="16" x2="12" y2="12"></line>
+            <line x1="12" y1="8" x2="12.01" y2="8"></line>
+          </svg>
+          This will enable 2FA on your account
+        </p>
+      </div>
+
+      <div class="form-actions">
+        <%= f.submit "Verify & Enable 2FA", class: "btn-verify" %>
+      </div>
+    <% end %>
+
+    <div class="verify-links">
+      <%= link_to account_path, class: "link-action" do %>
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <line x1="19" y1="12" x2="5" y2="12"></line>
+          <polyline points="12 19 5 12 12 5"></polyline>
+        </svg>
+        Back to Account
+      <% end %>
+      <%= button_to enable_two_factor_account_path, method: :post, class: "link-action" do %>
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <polyline points="1 4 1 10 7 10"></polyline>
+          <path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"></path>
+        </svg>
+        Resend Code
+      <% end %>
+    </div>
+  </div>
+</div>
+
+<style>
+.verify-phone-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 40px 20px;
+  min-height: 80vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.verify-card {
+  background: white;
+  border-radius: 24px;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.08);
+  padding: 56px;
+  max-width: 520px;
+  width: 100%;
+  animation: fadeInUp 0.4s ease-out;
+  border: 1px solid #f1f5f9;
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.verify-icon {
+  width: 90px;
+  height: 90px;
+  margin: 0 auto 28px;
+  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+  border-radius: 22px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  box-shadow: 0 8px 24px rgba(16, 185, 129, 0.3);
+}
+
+.verify-icon svg {
+  width: 44px;
+  height: 44px;
+}
+
+.verify-title {
+  font-size: 2.2rem;
+  font-weight: 800;
+  color: #0f172a;
+  margin-bottom: 16px;
+  text-align: center;
+}
+
+.verify-subtitle {
+  font-size: 1.05rem;
+  color: #64748b;
+  margin-bottom: 36px;
+  text-align: center;
+  line-height: 1.7;
+}
+
+.phone-display {
+  color: #10b981;
+  font-weight: 700;
+  font-size: 1.1rem;
+  display: inline-block;
+  margin-top: 6px;
+}
+
+.verify-form {
+  margin-bottom: 28px;
+}
+
+.form-group {
+  margin-bottom: 28px;
+}
+
+.form-label {
+  display: block;
+  font-weight: 700;
+  font-size: 1rem;
+  color: #1e293b;
+  margin-bottom: 14px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  font-size: 0.85rem;
+}
+
+.code-input-wrapper {
+  position: relative;
+}
+
+.code-input {
+  width: 100%;
+  padding: 22px 24px;
+  border: 3px solid #e2e8f0;
+  border-radius: 16px;
+  font-size: 1.75rem;
+  text-align: center;
+  letter-spacing: 1em;
+  font-family: 'SF Mono', 'Monaco', 'Cascadia Code', 'Courier New', monospace;
+  font-weight: 700;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  background: #f8fafc;
+  color: #0f172a;
+}
+
+.code-input:focus {
+  outline: none;
+  border-color: #10b981;
+  background: white;
+  box-shadow: 0 0 0 6px rgba(16, 185, 129, 0.1), 0 8px 16px rgba(0, 0, 0, 0.05);
+  transform: translateY(-2px);
+}
+
+.input-hint {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 12px;
+  font-size: 0.9rem;
+  color: #64748b;
+  font-weight: 500;
+}
+
+.input-hint svg {
+  flex-shrink: 0;
+  opacity: 0.7;
+}
+
+.form-actions {
+  margin-top: 32px;
+}
+
+.btn-verify {
+  width: 100%;
+  padding: 18px 32px;
+  border: none;
+  border-radius: 14px;
+  font-weight: 700;
+  font-size: 1.1rem;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+  color: white;
+  box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+  position: relative;
+  overflow: hidden;
+}
+
+.btn-verify::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0;
+  height: 0;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.3);
+  transform: translate(-50%, -50%);
+  transition: width 0.6s, height 0.6s;
+}
+
+.btn-verify:hover::before {
+  width: 400px;
+  height: 400px;
+}
+
+.btn-verify:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 12px 28px rgba(16, 185, 129, 0.4);
+}
+
+.btn-verify:active {
+  transform: translateY(-1px);
+}
+
+.verify-links {
+  display: flex;
+  justify-content: center;
+  gap: 40px;
+  margin-top: 32px;
+  padding-top: 28px;
+  border-top: 2px solid #f1f5f9;
+}
+
+.link-action {
+  color: #10b981;
+  text-decoration: none;
+  font-size: 1rem;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  transition: all 0.2s;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+}
+
+.link-action:hover {
+  color: #059669;
+  transform: translateX(-2px);
+}
+
+.link-action:last-child:hover {
+  transform: translateX(0) scale(1.05);
+}
+
+.link-action svg {
+  transition: transform 0.3s;
+}
+
+.link-action:hover svg {
+  transform: translateX(-3px);
+}
+
+.link-action:last-child:hover svg {
+  transform: rotate(360deg);
+}
+
+.alert {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 16px 20px;
+  border-radius: 14px;
+  margin-bottom: 28px;
+  font-size: 1rem;
+  font-weight: 500;
+  animation: slideIn 0.3s ease-out;
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateX(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.alert svg {
+  flex-shrink: 0;
+}
+
+.alert-danger {
+  background: linear-gradient(135deg, #fef2f2 0%, #fee2e2 100%);
+  color: #dc2626;
+  border: 2px solid #fecaca;
+}
+
+.alert-success {
+  background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%);
+  color: #16a34a;
+  border: 2px solid #bbf7d0;
+}
+
+@media (max-width: 640px) {
+  .verify-card {
+    padding: 40px 28px;
+  }
+  
+  .verify-title {
+    font-size: 1.8rem;
+  }
+  
+  .code-input {
+    font-size: 1.5rem;
+    letter-spacing: 0.7em;
+  }
+  
+  .verify-links {
+    flex-direction: column;
+    gap: 20px;
+    align-items: center;
+  }
+}
+</style>

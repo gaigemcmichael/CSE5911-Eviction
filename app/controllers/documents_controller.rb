@@ -265,9 +265,11 @@ class DocumentsController < ApplicationController
     dest = dir.join("#{file_id}#{ext}")
     File.open(dest, "wb") { |f| f.write(uploaded.read) }
     pk_name, pk_value = next_filedraft_pk_value
+    
+    sanitized_filename = File.basename(uploaded.original_filename)
     attrs = {
 
-      FileName:     File.basename(uploaded.original_filename, ".*"),
+      FileName:     File.basename(sanitized_filename, ".*"),
       FileTypes:    ext.delete("."),
       FileURLPath:  "userFiles/#{file_id}#{ext}",
       CreatorID:    @user[:UserID],
@@ -425,7 +427,8 @@ class DocumentsController < ApplicationController
   end
 
   # download of the stored file
-  def download
+  def download_or_view
+    
     file = find_file_for_user(params[:id])
     return render plain: "File not found (record)", status: :not_found unless file
 
@@ -436,6 +439,7 @@ class DocumentsController < ApplicationController
     size = File.exist?(path) ? File.size(path) : -1
     Rails.logger.info "[DL] path=#{path} exists=#{File.exist?(path)} size=#{size}"
 
+   
     unless path.to_s.start_with?(base_path.to_s) && File.exist?(path)
       return render plain: "File not found (#{path})", status: :not_found
     end

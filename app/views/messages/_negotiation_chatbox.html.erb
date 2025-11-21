@@ -60,12 +60,15 @@
           <div class="file-dropdown-wrapper">
             <%= f.label :file_id, "Attach an existing file", class: "file-label" %>
             <div class="custom-select-wrapper">
+              <% available_files = FileDraft.where(CreatorID: current_user.UserID) %>
+              <% available_files = available_files.where(UserDeletedAt: nil) if FileDraft.column_names.include?("UserDeletedAt") %>
+
               <%= f.collection_select :file_id,
-                    FileDraft.where(CreatorID: current_user.UserID).where(UserDeletedAt: nil),
-                    :FileID,
-                    :FileName,
-                    { prompt: "Choose a file" },
-                    { class: "form-control", required: false } %>
+                                      available_files,
+                                      :FileID,
+                                      ->(fd) { "#{fd.FileName}#{fd.FileTypes.present? ? " (#{fd.FileTypes.upcase})" : ""}" },
+                                      { prompt: "Choose a file" },
+                                      { class: "form-control", required: false } %>
               <i class="arrow down"></i>
             </div>
           </div>
