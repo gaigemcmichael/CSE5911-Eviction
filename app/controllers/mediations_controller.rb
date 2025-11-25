@@ -52,22 +52,24 @@ class MediationsController < ApplicationController
       end
 
       if landlord.persisted?
+        Rails.logger.info "Landlord found: #{landlord.Email}, starting mediation and sending notification"
         start_mediation_with_existing_landlord(landlord)
+        # Send notification email even if account exists
+        LandlordMailer.mediation_request_notification(landlord.Email, @user).deliver_later
       else
         redirect_to messages_path, alert: "An unexpected error occurred. Please try again."
       end
     elsif @user.Role == "Landlord"
       tenant = find_existing_tenant
 
-      unless tenant
-        send_tenant_invitation(params[:tenant_email])
-        return
-      end
-
-      if tenant.persisted?
+      if tenant&.persisted?
+        Rails.logger.info "Tenant found: #{tenant.Email}, starting mediation and sending notification"
         start_mediation_with_existing_tenant(tenant)
+        # Send notification email even if account exists
+        TenantMailer.invitation_email(params[:tenant_email], @user).deliver_later
       else
-        redirect_to messages_path, alert: "An unexpected error occurred. Please try again."
+        Rails.logger.info "No tenant found with email: #{params[:tenant_email]}, sending invitation"
+        send_tenant_invitation(params[:tenant_email])
       end
     else
       redirect_to mediations_path, alert: "You are not authorized to start a negotiation."
@@ -225,10 +227,13 @@ class MediationsController < ApplicationController
   end
 
   def send_tenant_invitation(email)
+    Rails.logger.info "Attempting to send invitation email to: #{email}"
     TenantMailer.invitation_email(email, @user).deliver_now
-    redirect_to messages_path, notice: "Invitation email sent to #{email}. If they have an account, they can accept your request. Otherwise, they'll be invited to join the site."
-  rescue
-    redirect_to messages_path, notice: "Invitation email sent to #{email}. If they have an account, they can accept your request. Otherwise, they'll be invited to join the site."
+    Rails.logger.info "Invitation email sent successfully to: #{email}"
+    redirect_to messages_path, notice: "Invitation email sent to #{email}. They'll be invited to join the site."
+  rescue => e
+    Rails.logger.error "Failed to send invitation email: #{e.message}"
+    redirect_to messages_path, alert: "Failed to send invitation email. Please try again."
   end
 
   def set_user
