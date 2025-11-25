@@ -365,6 +365,24 @@ class MessagesController < ApplicationController
     end
   end
 
+  def landlord_past_mediations
+    # Only allow landlords to access this page
+    if @user.Role != "Landlord"
+      redirect_to messages_path, alert: "Access Denied"
+      return
+    end
+
+    @past_mediations = PrimaryMessageGroup
+                         .includes(:tenant)
+                         .where(LandlordID: @user.UserID)
+                         .where.not(deleted_at: nil)
+                         .order(deleted_at: :desc)
+
+    respond_to do |format|
+      format.html { render "messages/landlord_past_mediations" }
+    end
+  end
+
   private
 
   def determine_recipient(primary_group)

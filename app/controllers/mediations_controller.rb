@@ -224,6 +224,13 @@ class MediationsController < ApplicationController
     redirect_to messages_path, notice: "Invitation email sent to #{email}. If they have an account, they can accept your request. Otherwise, they'll be invited to join the site."
   end
 
+  def send_tenant_invitation(email)
+    TenantMailer.invitation_email(email, @user).deliver_now
+    redirect_to messages_path, notice: "Invitation email sent to #{email}. If they have an account, they can accept your request. Otherwise, they'll be invited to join the site."
+  rescue
+    redirect_to messages_path, notice: "Invitation email sent to #{email}. If they have an account, they can accept your request. Otherwise, they'll be invited to join the site."
+  end
+
   def set_user
     @user = User.find(session[:user_id])
   end

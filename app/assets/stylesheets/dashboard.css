@@ -179,6 +179,7 @@
     color: #475569;
     text-align: center;
     box-sizing: border-box;
+    margin: 0;
 }
 
 .card-btn:hover {
@@ -766,7 +767,8 @@
         grid-row: 3 / 4;
         grid-column: 1 / -1;
         margin-top: 0.5rem;
-        align-self: start;
+        align-self: stretch;
+        width: 100%;
     }
     
     .highlight-section {

@@ -3,16 +3,11 @@
     width: 100%; 
     max-width: 1200px;
     margin: 0 auto; 
-    padding: 20px 15px;
-    padding-bottom: 40px;
+    padding: 20px 15px 80px 15px; /* Add extra bottom padding */
     border-radius: 10px;
     display: block;
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     box-sizing: border-box;
-    position: static;
-    height: auto;
-    min-height: auto;
-    overflow: visible;
 }
 
 /* Tenant Header Card */
