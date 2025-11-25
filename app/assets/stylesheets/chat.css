@@ -266,13 +266,6 @@
     font-size: 0.9rem;
   }
 
-  /* Hide disclaimer in conversation details on desktop */
-  @media (min-width: 1025px) {
-    .info-box--disclaimer {
-      display: none;
-    }
-  }
-
   /* ==========================================================================
     4. Chat Panel & Message List
     ========================================================================== */
@@ -965,11 +958,6 @@
 
   .chat-disclaimer p:last-child {
     margin-bottom: 0;
-  }
-
-  /* Hide mobile disclaimer modal on desktop */
-  .chat-disclaimer-modal {
-    display: none;
   }
 
   .chat-disclaimer-modal.is-open .conversation-modal__content {
@@ -1795,16 +1783,6 @@
 
     .conversation-actions__button-stack {
       gap: 0.65rem;
-    }
-
-    /* Hide desktop disclaimer on mobile and tablet */
-    .chat-disclaimer--desktop {
-      display: none;
-    }
-
-    /* Show modal disclaimer on mobile and tablet */
-    .chat-disclaimer-modal {
-      display: flex;
     }
 
     .conversation-card {

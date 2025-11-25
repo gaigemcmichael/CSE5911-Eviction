@@ -56,20 +56,6 @@
     </button>
   </div>
 
-  <% if @user&.Role != "Mediator" %>
-    <div class="chat-disclaimer chat-disclaimer--desktop">
-      <p>
-        Messages shared in this chat box are used for mediation and negotiation purposes only.
-      </p>
-      <p>
-        The mediator may review these messages to <strong>help guide the conversation</strong>, but they <u>do not represent either party</u> and cannot give legal advice.
-      </p>
-      <p>
-        By continuing to use this chat, you agree to these terms.
-      </p>
-    </div>
-  <% end %>
-
   <% if @mediation.present? %>
     <div class="conversation-modal" data-mediator-modal hidden role="dialog" aria-modal="true" aria-labelledby="mediator-modal-title">
       <div class="conversation-modal__content">
