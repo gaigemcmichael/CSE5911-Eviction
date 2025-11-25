@@ -24,14 +24,24 @@ class MediationsControllerTest < ActionDispatch::IntegrationTest
     assert_redirected_to mediation_path(new_mediation)
   end
 
-  test "non-tenant cannot create mediation" do
+  test "landlord can create mediation" do
     log_in_as(@landlord)
-    assert_no_difference("PrimaryMessageGroup.count") do
-      post mediations_path, params: { landlord_id: @landlord[:UserID] }
+    assert_difference("PrimaryMessageGroup.count") do
+      post mediations_path, params: { tenant_email: @tenant[:Email] }
     end
 
-    assert_redirected_to mediations_path
-    assert_equal "Only tenants can start a negotiation.", flash[:alert]
+    assert_redirected_to messages_path
+  end
+
+  test "non-tenant/non-landlord cannot create mediation" do
+    mediator = users(:mediator1)
+    log_in_as(mediator)
+    assert_no_difference("PrimaryMessageGroup.count") do
+      post mediations_path, params: { tenant_email: @tenant[:Email] }
+    end
+
+    assert_redirected_to root_path
+    assert_equal "You are not authorized to access this page.", flash[:alert]
   end
 
   test "landlord can accept mediation" do
