@@ -22,6 +22,30 @@
     font-weight: bold;
     padding: 12px 18px;
     max-width: 600px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* Mediation Form Card */
+.mediation-card {
+    background: white;
+    padding: 15px 30px;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    max-width: 500px;
+    font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    box-sizing: border-box;
+    align-content: space-evenly;
+    margin: 0 auto;
+}
+
+.mediation-card h2 {
+    text-align: center;
+    font-size: 1.6rem;
+    margin-bottom: 20px;
+    font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
 /* Header Styling */

@@ -1,0 +1,21 @@
+<div class="mediation-container">
+  <h1>Request New Negotiation</h1>
+
+  <% if @user.Role == "Tenant" %>
+    <p>Select a landlord from the dropdown or enter their email address to request a negotiation.</p>
+    <div class="mediation-form">
+      <%= render "mediations/tenant_create_mediation_form" %>
+    </div>
+  <% elsif @user.Role == "Landlord" %>
+    <p>Enter the tenant's email address to request a negotiation.</p>
+    <div class="mediation-form">
+      <%= render "mediations/landlord_create_mediation_form" %>
+    </div>
+  <% else %>
+    <p class="mediation-status">You are not authorized to create negotiations.</p>
+  <% end %>
+
+  <div style="text-align: center; margin-top: 20px;">
+    <%= link_to "Back to Messages", messages_path, class: "mediation-btn" %>
+  </div>
+</div>

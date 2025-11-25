@@ -44,6 +44,7 @@ Rails.application.routes.draw do
 
   get "messages/tenant_index", to: "messages#tenant_index", as: "tenant_index"
   get "messages/landlord_index", to: "messages#landlord_index", as: "landlord_index"
+  get "messages/past_mediations", to: "messages#past_mediations", as: "past_mediations"
 
   get "documents/download/:id", to: "documents#download_or_view", as: "download_file"
   get "documents/:id/view", to: "documents#show", as: "view_file"
@@ -63,7 +64,7 @@ Rails.application.routes.draw do
   get  "/documents/template_preview/:conversation_id", to: "documents#intake_template_view", as: :intake_template_view
   post "/documents/template_generate", to: "documents#generate_filled_template", as: :generate_filled_template
 
-  post   "/documents/:id/apply_signature", to: "documents#apply_signature", as: :apply_signature_document
+  post "/documents/:id/apply_signature", to: "documents#apply_signature", as: :apply_signature_document
   # Resources
   resources :messages, only: [ :index, :show, :create, :destroy ] do
     patch :request_mediator, on: :member
@@ -90,6 +91,7 @@ end
   # Mediations and Related Actions
   resources :mediations, only: [ :index, :new, :create, :edit, :update, :destroy ] do
     post :accept, on: :member
+    post :reject, on: :member
     post :respond, on: :member
   end
 

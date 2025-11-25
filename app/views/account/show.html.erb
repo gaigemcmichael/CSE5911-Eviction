@@ -114,8 +114,8 @@
             </div>
             
             <%= form_with model: @user, url: account_path, method: :patch, local: true, class: "account-form" do |f| %>
-              <%= f.telephone_field :phone_number, 
-                  value: @user.phone_number, 
+              <%= f.telephone_field :PhoneNumber, 
+                  value: @user[:PhoneNumber], 
                   placeholder: "Enter phone number (e.g., +15551234567)", 
                   class: "form-input-simple" %>
               <small class="form-text" style="display: block; margin-bottom: 0.75rem; color: #64748b;">Include country code (e.g., +1 for US)</small>

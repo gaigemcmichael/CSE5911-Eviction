@@ -7,8 +7,8 @@
   }
 
   /* --- ▼▼▼ CRITICAL FIX 1 ▼▼▼ --- */
-  /* Make the .mediation-container the full-height flex parent for the entire view. */
-  .mediation-container {
+  /* Make the .mediation-container the full-height flex parent for the chat view ONLY. */
+  .mediation-container.chat-page {
     display: flex;
     flex-direction: column;
     height: var(--mediation-container-height, 100vh);
@@ -17,7 +17,7 @@
     overflow: hidden;
   }
 
-  .mediation-container h1 {
+  .mediation-container.chat-page h1 {
     font-size: clamp(1.75rem, 2vw + 1rem, 2.3rem);
     color: #102a4d;
     margin: 0 0 0.5rem;
@@ -28,7 +28,7 @@
     padding: 0 clamp(1rem, 2.5vw, 2rem);
   }
 
-  .mediation-container p {
+  .mediation-container.chat-page p {
     font-size: 1rem;
     margin: 0 0 0.75rem;
     color: #0b172d;
@@ -1407,7 +1407,7 @@
       
     }
 
-    .mediation-container {
+    .mediation-container.chat-page {
       max-height: 90vh;
     }
   }
@@ -1480,7 +1480,7 @@
       max-height: 100%;
     }
 
-    .mediation-container {
+    .mediation-container.chat-page {
       padding: 0 clamp(0.75rem, 2vw, 1.75rem) clamp(1rem, 2vw, 1.75rem);
       max-width: 100%;
       overflow-x: hidden;
@@ -1490,13 +1490,13 @@
       max-height: 94dvh;
     }
 
-    .mediation-container h1 {
+    .mediation-container.chat-page h1 {
       padding: 0 clamp(0.75rem, 2vw, 1.5rem);
       font-size: clamp(1.4rem, 2vw, 1.75rem);
       margin-bottom: 0.35rem;
     }
 
-    .mediation-container p {
+    .mediation-container.chat-page p {
       font-size: 1rem;
       margin-bottom: 0.5rem;
     }
@@ -1641,7 +1641,7 @@
       flex-direction: column;
     }
     
-    .mediation-container {
+    .mediation-container.chat-page {
       padding: 0 12px 0.5rem;
       max-width: 100vw;
       overflow-x: hidden;
@@ -1649,14 +1649,14 @@
       height: 94dvh;
     }
 
-    .mediation-container h1 {
+    .mediation-container.chat-page h1 {
       font-size: 1.5rem;
       padding: 0;
       flex: 0 0 auto;
       margin-bottom: 0.25rem;
     }
 
-    .mediation-container p {
+    .mediation-container.chat-page p {
       margin-bottom: 0.5rem;
       font-size: 0.95rem;
       flex: 0 0 auto;
