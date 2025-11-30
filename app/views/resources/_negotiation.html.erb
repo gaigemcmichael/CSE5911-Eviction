@@ -1,0 +1,188 @@
+<%# app/views/resources/_negotiation.html.erb %>
+
+<style>
+  .resx-info {
+    max-width: 1080px;
+    margin: 0 auto;
+  }
+  .resx-info-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 8px;
+  }
+  .resx-info-header i {
+    color: #0b2b4b;
+    font-size: 24px;
+  }
+  .resx-info-title {
+    font-size: 26px;
+    font-weight: 700;
+    color: #0b2b4b;
+  }
+  .resx-info-subtitle {
+    font-size: 15px;
+    color: #64748b;
+    margin-bottom: 20px;
+    line-height: 1.5;
+  }
+
+  .resx-info-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 16px;
+  }
+  .resx-info-card {
+    background: #ffffff;
+    border-radius: 16px;
+    border: 1px solid #e2e8f0;
+    padding: 18px 20px 16px;
+    box-shadow: 0 8px 18px rgba(15, 23, 42, 0.04);
+    animation: resxFadeIn .20s ease-out;
+  }
+  .resx-info-card h3 {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 17px;
+    font-weight: 700;
+    color: #0b2b4b;
+    margin-bottom: 8px;
+  }
+  .resx-info-card h3 i {
+    color: #0b2b4b;
+  }
+  .resx-info-card p,
+  .resx-info-card ul {
+    font-size: 14px;
+    color: #475569;
+    margin-bottom: 6px;
+    line-height: 1.6;
+  }
+  .resx-info-card ul {
+    margin-left: 18px;
+    list-style: disc;
+  }
+
+  @keyframes resxFadeIn {
+    from { opacity: 0; transform: translateY(4px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+</style>
+
+<div class="resx-info">
+  <div class="resx-info-header">
+    <i class="fas fa-handshake"></i>
+    <h1 class="resx-info-title">Negotiation &amp; Mediation: What They Are and How They Can Help</h1>
+  </div>
+  <p class="resx-info-subtitle">
+    This page explains what negotiation and mediation are, how they support both tenants and landlords,
+    and when these tools are most useful.
+  </p>
+
+  <div class="resx-info-grid">
+    <div class="resx-info-card">
+      <h3><i class="fas fa-comments"></i>What is negotiation?</h3>
+      <p>
+        Negotiation is a back-and-forth conversation between a tenant and a landlord to try to solve a housing
+        problem early. Most eviction cases start because communication breaks down.
+      </p>
+      <p>
+        Negotiation gives both sides a chance to explain what is going on, share documents, and try to reach an
+        agreement before an eviction is filed.
+      </p>
+      <p>Negotiation is:</p>
+      <ul>
+        <li>Voluntary</li>
+        <li>A chance to talk directly</li>
+        <li>A way to avoid court</li>
+        <li>Often faster and less stressful</li>
+        <li>Private and done at your own pace</li>
+      </ul>
+      <p>
+        Negotiation is not legal advice, and it does not force anyone into an agreement.
+        Agreements are usually only enforceable if both sides sign a written document.
+      </p>
+    </div>
+
+    <div class="resx-info-card">
+      <h3><i class="fas fa-scale-unbalanced"></i>What is mediation?</h3>
+      <p>
+        Mediation is when a trained, neutral mediator joins the conversation only if needed.
+        Franklin County has limited mediation staff, so mediation is reserved for situations
+        where negotiation has been tried first.
+      </p>
+      <p>Mediation helps by:</p>
+      <ul>
+        <li>Making sure each person has a chance to be heard</li>
+        <li>Helping the parties understand their options</li>
+        <li>Reducing the emotional stress of eviction</li>
+        <li>Giving structure to difficult conversations</li>
+      </ul>
+      <p>
+        A mediator does not take sides and cannot give legal advice. They help both sides work toward a
+        solution that feels fair.
+      </p>
+    </div>
+
+    <div class="resx-info-card">
+      <h3><i class="fas fa-user-shield"></i>How these tools help tenants</h3>
+      <ul>
+        <li>Preventing an eviction filing entirely when issues are caught early</li>
+        <li>Giving tenants time to communicate with the landlord</li>
+        <li>Helping tenants understand what they are agreeing to</li>
+        <li>Avoiding signing something “just to agree” when it may not be realistic</li>
+        <li>Providing a trauma-informed space that is easier to navigate than court</li>
+      </ul>
+      <p>
+        This process helps tenants advocate for themselves, ask questions, and work toward a plan that
+        makes sense for their situation.
+      </p>
+    </div>
+
+    <div class="resx-info-card">
+      <h3><i class="fas fa-briefcase"></i>How these tools help landlords</h3>
+      <ul>
+        <li>Reducing the need to file an eviction (and avoiding filing fees)</li>
+        <li>Saving time by preventing court hearings</li>
+        <li>Decreasing turnover costs and vacancy time</li>
+        <li>Reducing property damage by lowering conflict with frustrated tenants</li>
+        <li>Creating early communication before rent becomes significantly late</li>
+        <li>Providing a structured space to talk through issues</li>
+      </ul>
+      <p>
+        These tools let landlords reach agreements faster and with less stress.
+      </p>
+    </div>
+
+    <div class="resx-info-card">
+      <h3><i class="fas fa-bell"></i>Why early communication matters</h3>
+      <ul>
+        <li>Most evictions are for non-payment of rent, not intentional wrongdoing.</li>
+        <li>Many issues could be solved early if landlords and tenants talked sooner.</li>
+        <li>Eviction is traumatic—especially for families, children, and vulnerable renters.</li>
+      </ul>
+      <p>
+        By opening a conversation early, both sides have a chance to avoid court, avoid trauma,
+        preserve housing stability, and reach workable solutions.
+      </p>
+    </div>
+
+    <div class="resx-info-card">
+      <h3><i class="fas fa-lightbulb"></i>When to use negotiation or mediation</h3>
+      <p>You can use these tools when:</p>
+      <ul>
+        <li>Rent is late</li>
+        <li>There is confusion about the lease</li>
+        <li>There is a disagreement about repairs or fees</li>
+        <li>Important documents need to be shared</li>
+        <li>Communication is breaking down</li>
+        <li>You want to try resolving things before going to court</li>
+      </ul>
+      <p>
+        Our text-based tool allows parties to negotiate directly with each other to reach a solution.
+        Then, if progress stalls, a mediator can join the conversation.
+      </p>
+    </div>
+  </div>
+</div>

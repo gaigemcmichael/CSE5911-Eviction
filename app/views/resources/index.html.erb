@@ -1,18 +1,97 @@
-<!-- Tab Navigation (Resources & FAQs) -->
-<div class="tabs">
-    <a href="<%= resources_path(tab: 'resources') %>" class="<%= 'active' if @active_tab == 'resources' %>">
-        Resources
-    </a>
-    <a href="<%= resources_path(tab: 'faqs') %>" class="<%= 'active' if @active_tab == 'faqs' %>">
-        FAQs
-    </a>
+<%# app/views/resources/index.html.erb %>
+<% current_tab = params[:tab].presence || "guide" %>
+
+<div class="resx-top">
+  <div class="resx-top-tabs">
+    <%= link_to "Resources",
+                resources_path(tab: "guide"),
+                class: "resx-top-tab #{'is-active' if current_tab == 'guide'}" %>
+    <%= link_to "FAQs",
+                resources_path(tab: "faqs"),
+                class: "resx-top-tab #{'is-active' if current_tab == 'faqs'}" %>
+    <%= link_to "Negotiation & Mediation",
+                resources_path(tab: "negotiation"),
+                class: "resx-top-tab #{'is-active' if current_tab == 'negotiation'}" %>
+  </div>
 </div>
 
-<!-- Main Content -->
-<div class="resources-content">
-   <% if @active_tab == "resources" %>
-        <%= render "resources" %>
-   <% else %>
-        <%= render "faqs" %>
-   <% end %>
+<div class="resx-top-body">
+  <%# Shared disclaimer bar %>
+  <div class="resx-banner">
+    <i class="fas fa-circle-info"></i>
+    <span>
+      <strong>Disclaimer:</strong>
+      This page gives general information only. It is not legal advice.
+      For legal help, please talk to a lawyer or visit
+      <%= link_to "Ohio Legal Help", "https://www.ohiolegalhelp.org/guide/housing", target: "_blank", rel: "noopener noreferrer" %>.
+    </span>
+  </div>
+
+  <% if current_tab == "guide" %>
+    <%= render "resources" %>
+  <% elsif current_tab == "faqs" %>
+    <%= render "faqs" %>
+  <% elsif current_tab == "negotiation" %>
+    <%= render "negotiation" %>
+  <% end %>
 </div>
+
+<style>
+/* --- Top tab bar (Resources | FAQs | Negotiation & Mediation) --- */
+.resx-top {
+  max-width: 1080px;
+  margin: 0 auto;
+  padding: 24px 16px 0;
+}
+.resx-top-tabs {
+  display: inline-flex;
+  gap: 16px;
+  padding: 4px 6px;
+  background: #f3f5fa;
+  border-radius: 999px;
+  box-shadow: 0 4px 12px rgba(15, 23, 42, 0.04);
+}
+.resx-top-tab {
+  padding: 8px 18px;
+  border-radius: 999px;
+  font-size: 15px;
+  font-weight: 600;
+  color: #475569;
+  text-decoration: none;
+  transition: background 0.18s ease, color 0.18s ease, transform 0.18s ease;
+}
+.resx-top-tab:hover {
+  background: #e2e8f0;
+  transform: translateY(-1px);
+}
+.resx-top-tab.is-active {
+  background: #0b2b4b;
+  color: #ffffff;
+}
+
+/* container around body */
+.resx-top-body {
+  max-width: 1080px;
+  margin: 0 auto 32px;
+  padding: 8px 16px 32px;
+}
+
+/* disclaimer banner (reused) */
+.resx-banner {
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+  padding: 10px 14px;
+  margin-bottom: 18px;
+  background: #f8fafc;
+  border-radius: 10px;
+  border: 1px solid #e2e8f0;
+  font-size: 14px;
+  color: #475569;
+  line-height: 1.5;
+}
+.resx-banner i {
+  color: #0b2b4b;
+  margin-top: 3px;
+}
+</style>

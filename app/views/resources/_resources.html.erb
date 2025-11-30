@@ -1,133 +1,605 @@
-<%# 9/16/25 Tim D: Changed Resources Page to have different view for Tenants/Landlords and some system for mediators. Also added space for not logged in user but not sure if we allow that. %>
-<%# Check if a user is logged in first %>
+<%# app/views/resources/_resources.html.erb %>
 <% if current_user %>
+  <% role = current_user.Role %>
 
-  <%# Now, check the user's role %>
-  <% if current_user.Role == "Landlord" %>
-    <%# ----- CONTENT FOR LANDLORDS ----- %>
-    <!-- Table 1: Legal Resources -->
-    <div class="resources-legal">
-        <h1>Legal Resources </h1>
-        <div class="resources-table-container">
-            <table class="resources-table">
-                <thead>
-                    <tr>
-                        <th>Resource</th>
-                        <th>Description</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td>
-                            <a href="https://www.rentful614.com" target="_blank" rel="noopener noreferrer" class="resource-title">
-                                Rentful614 <i class="fas fa-external-link-alt"></i>
-                            </a>
-                        </td>
-                        <td>This is the Rentful614 page.</td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <a href="https://municipalcourt.franklincountyohio.gov/Departments-Services/Self-Help-Center" target="_blank" rel="noopener noreferrer" class="resource-title">
-                                Self-Help Center <i class="fas fa-external-link-alt"></i>
-                            </a>
-                        </td>
-                        <td>Visit the Self-Help Center for more support.</td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
-    </div>
+  <style>
+    /* ---- Layout + typography ---- */
+    .resx {
+      max-width: 1080px;
+      margin: 0 auto;
+    }
+    .resx-header {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 6px;
+    }
+    .resx-header i {
+      color: #0b2b4b;
+      font-size: 24px;
+    }
+    .resx-title {
+      font-size: 26px;
+      font-weight: 700;
+      color: #0b2b4b;
+    }
+    .resx-subtitle {
+      font-size: 15px;
+      color: #64748b;
+      margin-bottom: 22px;
+      line-height: 1.5;
+    }
 
-    <!-- Table 2: Other Resources -->
-    <div class="resources-other">
-        <h1>Other <%= current_user.Role %> Resources</h1>
-        <div class="resources-table-container">
-            <table class="resources-table">
-                <thead>
-                    <tr>
-                        <th>Resource</th>
-                        <th>Description</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td>
-                            <a href="#" class="resource-title">
-                                Other <%= current_user.Role%> Resources <i class="fas fa-external-link-alt"></i>
-                            </a>
-                        </td>
-                        <td>more information coming soon</td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
-    </div>
-    <% elsif current_user.Role == "Tenant" %>
-    <%# ----- CONTENT FOR TENANTS ----- %>
-    <!-- Table 1: Legal Resources -->
-    <div class="resources-legal">
-        <h1>Legal Resources </h1>
-        <div class="resources-table-container">
-            <table class="resources-table">
-                <thead>
-                    <tr>
-                        <th>Resource</th>
-                        <th>Description</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td>
-                            <a href="https://www.rentful614.com" target="_blank" rel="noopener noreferrer" class="resource-title">
-                                Rentful614 <i class="fas fa-external-link-alt"></i>
-                            </a>
-                        </td>
-                        <td>This is the Rentful614 page.</td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <a href="https://municipalcourt.franklincountyohio.gov/Departments-Services/Self-Help-Center" target="_blank" rel="noopener noreferrer" class="resource-title">
-                                Self-Help Center <i class="fas fa-external-link-alt"></i>
-                            </a>
-                        </td>
-                        <td>Visit the Self-Help Center for more support.</td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
-    </div>
+    /* ---- card grid (four big buttons) ---- */
+    .resx-cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 18px;
+      margin-bottom: 24px;
+    }
+    .resx-card {
+      border-radius: 16px;
+      background: #ffffff;
+      border: 1px solid #e2e8f0;
+      padding: 18px 18px 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      box-shadow: 0 8px 18px rgba(15, 23, 42, 0.04);
+      cursor: pointer;
+      transition: transform 0.16s ease, box-shadow 0.16s ease, border-color 0.16s ease;
+    }
+    .resx-card:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 14px 26px rgba(15, 23, 42, 0.10);
+      border-color: #0b2b4b;
+    }
+    .resx-card.is-active {
+      border-color: #0b2b4b;
+      box-shadow: 0 14px 26px rgba(15, 23, 42, 0.14);
+    }
+    .resx-card-icon {
+      width: 32px;
+      height: 32px;
+      border-radius: 12px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      background: #eff6ff;
+      color: #0b2b4b;
+      margin-bottom: 4px;
+    }
+    .resx-card-title {
+      font-size: 17px;
+      font-weight: 600;
+      color: #111827;
+    }
+    .resx-card-text {
+      font-size: 14px;
+      color: #6b7280;
+      line-height: 1.5;
+    }
 
-    <!-- Table 2: Other Resources -->
-    <div class="resources-other">
-        <h1>Other <%= current_user.Role%> Resources </h1>
-        <div class="resources-table-container">
-            <table class="resources-table">
-                <thead>
-                    <tr>
-                        <th>Resource</th>
-                        <th>Description</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td>
-                            <a href="#" class="resource-title">
-                                Other <%= current_user.Role%> Resources <i class="fas fa-external-link-alt"></i>
-                            </a>
-                        </td>
-                        <td>more information coming soon</td>
-                    </tr>
-                </tbody>
-            </table>
+    /* ---- detail panels (accordion content) ---- */
+    .resx-panels {
+      margin-top: 10px;
+    }
+    .resx-panel {
+      display: none;
+      margin-bottom: 28px;
+      padding: 20px 22px 18px;
+      border-radius: 16px;
+      background: #ffffff;
+      border: 1px solid #e2e8f0;
+      box-shadow: 0 10px 22px rgba(15, 23, 42, 0.06);
+      animation: resxFadeIn .20s ease-out;
+    }
+    .resx-panel.is-active {
+      display: block;
+    }
+    .resx-panel h2 {
+      font-size: 19px;
+      font-weight: 700;
+      margin-bottom: 10px;
+      color: #0b2b4b;
+    }
+    .resx-panel p {
+      font-size: 15px;
+      color: #475569;
+      margin-bottom: 10px;
+      line-height: 1.6;
+    }
+    .resx-steps {
+      margin-left: 20px;
+      margin-bottom: 10px;
+      font-size: 15px;
+      color: #475569;
+      line-height: 1.6;
+    }
+    .resx-steps li {
+      margin-bottom: 6px;
+    }
+    .resx-steps ul {
+      margin-top: 4px;
+      margin-left: 16px;
+      list-style: disc;
+    }
+
+    .resx-actions {
+      margin-top: 14px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .resx-btn {
+      border-radius: 999px;
+      border: none;
+      padding: 10px 20px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: transform 0.15s ease, box-shadow 0.15s ease, background 0.15s ease, color 0.15s ease;
+    }
+    .resx-btn-primary {
+      background: #0b2b4b;
+      color: #ffffff;
+      box-shadow: 0 10px 20px rgba(15, 23, 42, 0.35);
+    }
+    .resx-btn-primary:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 14px 26px rgba(15, 23, 42, 0.45);
+    }
+    .resx-btn-ghost {
+      background: #f8fafc;
+      color: #0f172a;
+      border: 1px solid #cbd5e1;
+    }
+    .resx-btn-ghost:hover {
+      background: #e2e8f0;
+    }
+
+    .resx-back-link {
+      font-size: 14px;
+      color: #0b2b4b;
+      text-decoration: underline;
+      margin-top: 12px;
+      display: inline-block;
+    }
+
+    .resx-panel-cta {
+      margin-top: 16px;
+    }
+
+    @keyframes resxFadeIn {
+      from { opacity: 0; transform: translateY(4px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    @media (max-width: 640px) {
+      .resx-panel { padding: 16px 14px; }
+    }
+  </style>
+
+  <div class="resx">
+    <% if role == "Tenant" %>
+      <%# ========== TENANT VIEW ========== %>
+      <div class="resx-header">
+        <i class="fas fa-user"></i>
+        <h1 class="resx-title">Tenant Resources</h1>
+      </div>
+      <p class="resx-subtitle">
+        Use this guide to figure out where you are in the eviction process and what you can do next.
+      </p>
+
+      <!-- Choice cards -->
+      <div class="resx-cards">
+        <div class="resx-card" data-panel="tenant-eviction">
+          <div class="resx-card-icon"><i class="fas fa-scale-balanced"></i></div>
+          <div class="resx-card-title">Learn the eviction process</div>
+          <div class="resx-card-text">Steps, timing &amp; what to expect.</div>
         </div>
-    </div>
+
+        <div class="resx-card" data-panel="tenant-facing">
+          <div class="resx-card-icon"><i class="fas fa-triangle-exclamation"></i></div>
+          <div class="resx-card-title">I’m facing eviction</div>
+          <div class="resx-card-text">Use the tool &amp; know your options.</div>
+        </div>
+
+        <div class="resx-card" data-panel="tenant-other">
+          <div class="resx-card-icon"><i class="fas fa-house-chimney"></i></div>
+          <div class="resx-card-title">Other housing issues</div>
+          <div class="resx-card-text">Repairs, deposits, utilities &amp; more.</div>
+        </div>
+
+        <div class="resx-card" data-panel="tenant-options">
+          <div class="resx-card-icon"><i class="fas fa-list-check"></i></div>
+          <div class="resx-card-title">Learn about your options</div>
+          <div class="resx-card-text">Compare mediation, court, or doing nothing.</div>
+        </div>
+      </div>
+
+      <!-- Detail panels -->
+      <div class="resx-panels">
+        <!-- 1. Learn the eviction process -->
+        <div id="panel-tenant-eviction" class="resx-panel">
+          <h2>Eviction process – overview</h2>
+          <p>
+            The eviction process usually has four steps:
+            <strong> notice, filing of an eviction, a court hearing, and a judgment.</strong>
+          </p>
+
+          <ol class="resx-steps">
+            <li>
+              <strong>Notice</strong>
+              <ul>
+                <li>Your landlord must give you a written “Notice to Leave the Premises”.</li>
+                <li>It explains why you are being asked to leave and gives you a few days to fix the issue or move out.</li>
+                <li>Common notices include a 3-day notice for not paying rent or a notice for violating the lease.</li>
+              </ul>
+            </li>
+            <li>
+              <strong>Filing the eviction case</strong>
+              <ul>
+                <li>If the problem is not fixed and you do not move out, your landlord can file an eviction in court.</li>
+                <li>You will receive a summons with the date of your hearing.</li>
+              </ul>
+            </li>
+            <li>
+              <strong>Court hearing</strong>
+              <ul>
+                <li>The hearing usually happens 2–3 weeks after filing.</li>
+                <li>You and your landlord can explain your positions, bring documents, and bring witnesses.</li>
+                <li>The judge may give more time if someone needs to prepare or speak with a lawyer.</li>
+              </ul>
+            </li>
+            <li>
+              <strong>Judgment</strong>
+              <ul>
+                <li>If the landlord wins, they receive a Writ of Restitution, which lets them take the property back after a short wait.</li>
+                <li>If the tenant wins, they may stay in the home or be awarded money for certain issues.</li>
+              </ul>
+            </li>
+          </ol>
+
+          <p>
+            Many eviction cases are caused by communication problems. Our text-based mediation tool lets you talk directly
+            with your landlord online, on your own time, and often <strong>before</strong> a case goes to court.
+          </p>
+
+          <p>
+            For step-by-step housing help, visit
+            <a href="https://www.ohiolegalhelp.org/guide/housing" target="_blank" rel="noopener noreferrer">
+              Ohio Legal Help
+            </a>.
+          </p>
+
+          <div class="resx-actions">
+            <%= link_to "Talk with my landlord using the mediation tool",
+                        messages_path,
+                        class: "resx-btn resx-btn-primary" %>
+            <%= link_to "Return to Eviction Mediation homepage",
+                        dashboard_path,
+                        class: "resx-btn resx-btn-ghost" %>
+          </div>
+        </div>
+
+        <!-- 2. I'm facing eviction -->
+        <div id="panel-tenant-facing" class="resx-panel">
+          <h2>I’m facing eviction</h2>
+          <p><strong>Are you behind on rent or did you get a notice from your landlord?</strong></p>
+
+          <p><strong>Yes.</strong> You may be in the early stages of the eviction process.</p>
+          <p>
+            You can use the text-based mediation tool to communicate with your landlord and try to solve the dispute
+            before an eviction is filed.
+          </p>
+          <div class="resx-actions">
+            <%= link_to "I want to negotiate with my landlord",
+                        messages_path,
+                        class: "resx-btn resx-btn-primary" %>
+            <a href="#panel-tenant-eviction" class="resx-btn resx-btn-ghost">
+              I want to learn more about the eviction process
+            </a>
+          </div>
+
+          <p style="margin-top:14px;"><strong>No.</strong> If you think you may fall behind soon, you can still use the
+            mediation tool to talk with your landlord before an issue turns into a case.</p>
+          <div class="resx-actions">
+            <%= link_to "I want to talk with my landlord",
+                        messages_path,
+                        class: "resx-btn resx-btn-primary" %>
+            <a href="#panel-tenant-eviction" class="resx-btn resx-btn-ghost">
+              I want to learn more about the eviction process
+            </a>
+          </div>
+
+          <%= link_to "Return to Eviction Mediation homepage",
+                      dashboard_path,
+                      class: "resx-back-link" %>
+        </div>
+
+        <!-- 3. Other housing issues -->
+        <div id="panel-tenant-other" class="resx-panel">
+          <h2>I am facing other housing issues</h2>
+          <p>
+            If your issue is not about eviction, you can find step-by-step help at
+            <a href="https://www.ohiolegalhelp.org/guide/housing" target="_blank" rel="noopener noreferrer">
+              Ohio Legal Help
+            </a>. They can assist with:
+          </p>
+          <ul class="resx-steps">
+            <li>Problems with repairs</li>
+            <li>Security deposits</li>
+            <li>Discrimination and fair housing</li>
+            <li>Rent increases</li>
+            <li>Utility shutoffs</li>
+            <li>Issues with neighbors and more</li>
+          </ul>
+
+          <%= link_to "Return to Eviction Mediation homepage",
+                      dashboard_path,
+                      class: "resx-back-link" %>
+        </div>
+
+        <!-- 4. Learn About Your Options (Tenant) -->
+        <div id="panel-tenant-options" class="resx-panel">
+          <h2>Learn About Your Options</h2>
+
+          <p>
+            Before deciding what to do next, it’s important to understand the different paths available
+            in an eviction or housing dispute. This section gives you a clear, easy-to-read comparison of
+            mediation, going to court, or taking no action so you can choose the option that fits your situation.
+          </p>
+
+          <p>
+            For a full breakdown — including pros, risks, and what to expect with each option — download
+            the PDF below.
+          </p>
+
+          <div class="resx-panel-cta">
+            <a href="/mediation_options.pdf"
+               target="_blank"
+               class="resx-btn resx-btn-primary">
+              📄 View PDF – Mediation vs. Court vs. Doing Nothing
+            </a>
+          </div>
+        </div>
+      </div>
+
+    <% elsif role == "Landlord" %>
+      <%# ========== LANDLORD VIEW ========== %>
+      <div class="resx-header">
+        <i class="fas fa-building-user"></i>
+        <h1 class="resx-title">Landlord Resources</h1>
+      </div>
+      <p class="resx-subtitle">
+        Learn the process and how early communication can save time, fees, and turnover.
+      </p>
+
+      <!-- Choice cards -->
+      <div class="resx-cards">
+        <div class="resx-card" data-panel="landlord-eviction">
+          <div class="resx-card-icon"><i class="fas fa-scale-balanced"></i></div>
+          <div class="resx-card-title">Learn the eviction process</div>
+          <div class="resx-card-text">Notice, filing, hearing, judgment.</div>
+        </div>
+
+        <div class="resx-card" data-panel="landlord-convo">
+          <div class="resx-card-icon"><i class="fas fa-comments"></i></div>
+          <div class="resx-card-title">Start a conversation</div>
+          <div class="resx-card-text">Use the messaging tool first.</div>
+        </div>
+
+        <div class="resx-card" data-panel="landlord-other">
+          <div class="resx-card-icon"><i class="fas fa-warehouse"></i></div>
+          <div class="resx-card-title">Other property issues</div>
+          <div class="resx-card-text">Fair housing, repairs, deposits, etc.</div>
+        </div>
+
+        <div class="resx-card" data-panel="landlord-options">
+          <div class="resx-card-icon"><i class="fas fa-list-check"></i></div>
+          <div class="resx-card-title">Learn about your options</div>
+          <div class="resx-card-text">Compare mediation, court, or doing nothing.</div>
+        </div>
+      </div>
+
+      <!-- Detail panels -->
+      <div class="resx-panels">
+        <!-- 1. Learn eviction process -->
+        <div id="panel-landlord-eviction" class="resx-panel">
+          <h2>Eviction process – overview</h2>
+          <p>
+            The eviction process usually has four steps:
+            <strong> notice, filing of an eviction, a court hearing, and a judgment.</strong>
+          </p>
+
+          <ol class="resx-steps">
+            <li>
+              <strong>Notice</strong>
+              <ul>
+                <li>You must give the tenant written notice called a “Notice to Leave the Premises”.</li>
+                <li>It explains why the tenant is being asked to leave and gives them a few days to fix the issue or move out.</li>
+                <li>Most notices are 3-day notices for non-payment of rent.</li>
+              </ul>
+            </li>
+            <li>
+              <strong>Filing the eviction case</strong>
+              <ul>
+                <li>If the issue is not fixed or the tenant does not move out, you may file an eviction case with the court.</li>
+                <li>The court schedules a hearing and sends a summons to the tenant with the court date and case info.</li>
+              </ul>
+            </li>
+            <li>
+              <strong>Court hearing</strong>
+              <ul>
+                <li>At the hearing, both you and the tenant can explain what happened.</li>
+                <li>You may bring documents, witnesses, or other information.</li>
+                <li>The judge may give extra time if someone needs to prepare or speak with a lawyer.</li>
+              </ul>
+            </li>
+            <li>
+              <strong>Judgment</strong>
+              <ul>
+                <li>If the eviction is granted, the court issues a Writ of Restitution allowing you to retake the property after several days.</li>
+                <li>If the tenant wins, they can stay and may be awarded money for certain issues.</li>
+              </ul>
+            </li>
+          </ol>
+
+          <p>
+            Common grounds for eviction include non-payment of rent, lease violations, and serious property damage.
+            Through negotiation or mediation, you may still be able to reach an agreement that works for both sides.
+          </p>
+
+          <p>
+            For more information about housing in general, visit
+            <a href="https://www.ohiolegalhelp.org/guide/housing" target="_blank" rel="noopener noreferrer">
+              Ohio Legal Help
+            </a>.
+          </p>
+
+          <div class="resx-actions">
+            <%= link_to "Talk with my tenant using the mediation tool",
+                        messages_path,
+                        class: "resx-btn resx-btn-primary" %>
+            <%= link_to "Return to Eviction Mediation homepage",
+                        dashboard_path,
+                        class: "resx-btn resx-btn-ghost" %>
+          </div>
+        </div>
+
+        <!-- 2. Start conversation -->
+        <div id="panel-landlord-convo" class="resx-panel">
+          <h2>I want to start a conversation with my tenant</h2>
+          <p>
+            Our online mediation tool allows landlords and tenants to communicate
+            <strong> before</strong> filing an eviction, when possible. You can use it to:
+          </p>
+          <ul class="resx-steps">
+            <li>Talk with a tenant about late rent</li>
+            <li>Clarify misunderstandings about the lease</li>
+            <li>Try to reach a payment plan or other resolution</li>
+            <li>Avoid the cost and stress of filing an eviction</li>
+          </ul>
+
+          <div class="resx-actions">
+            <%= link_to "Start a conversation with your tenant",
+                        messages_path,
+                        class: "resx-btn resx-btn-primary" %>
+          </div>
+
+          <%= link_to "Return to Eviction Mediation homepage",
+                      dashboard_path,
+                      class: "resx-back-link" %>
+        </div>
+
+        <!-- 3. Other issues -->
+        <div id="panel-landlord-other" class="resx-panel">
+          <h2>I am facing other housing or property issues</h2>
+          <p>
+            If your issue is not mainly about eviction or mediation (for example: repairs, discrimination,
+            fair housing, neighbor disputes, housing vouchers, security deposits, or other landlord-tenant topics),
+            you can find clear information at
+            <a href="https://www.ohiolegalhelp.org/guide/housing" target="_blank" rel="noopener noreferrer">
+              Ohio Legal Help
+            </a>.
+          </p>
+
+          <%= link_to "Return to Eviction Mediation homepage",
+                      dashboard_path,
+                      class: "resx-back-link" %>
+        </div>
+
+        <!-- 4. Learn About Your Options (Landlord) -->
+        <div id="panel-landlord-options" class="resx-panel">
+          <h2>Learn About Your Options</h2>
+
+          <p>
+            Before deciding what to do next, it’s important to understand the different paths available
+            in an eviction or housing dispute. This section gives you a clear, easy-to-read comparison of
+            mediation, going to court, or taking no action so you can choose the option that fits your situation.
+          </p>
+
+          <p>
+            For a full breakdown — including pros, risks, and what to expect with each option — download
+            the PDF below.
+          </p>
+
+          <div class="resx-panel-cta">
+            <a href="/mediation_options.pdf"
+               target="_blank"
+               class="resx-btn resx-btn-primary">
+              📄 View PDF – Mediation vs. Court vs. Doing Nothing
+            </a>
+          </div>
+        </div>
+      </div>
+
     <% else %>
-    <%# ----- Eventual content for mediators ----- %>
-     <h1>General Resources</h1>
-     <p>This is the general resource page.</p>
+      <%# other roles for now %>
+      <div class="resx-header">
+        <i class="fas fa-circle-info"></i>
+        <h1 class="resx-title">General Resources</h1>
+      </div>
+      <p class="resx-subtitle">
+        This space will include tailored resources for mediators and other users in future updates.
+      </p>
     <% end %>
-    <% else %>
-  <%# ----- Content for visitors who are not logged in ----- %>
-  <h1>Welcome to Resources</h1>
-  <p>Please log in or sign up to see resources tailored to you.</p>
+  </div>
+
+  <script>
+    function initResxGuide() {
+      const container = document.querySelector(".resx");
+      if (!container) return;
+
+      const cards  = container.querySelectorAll(".resx-card");
+      const panels = container.querySelectorAll(".resx-panel");
+
+      if (!cards.length || !panels.length) return;
+
+      function activate(panelKey) {
+        cards.forEach(card => {
+          card.classList.toggle("is-active", card.dataset.panel === panelKey);
+        });
+        panels.forEach(panel => {
+          panel.classList.toggle("is-active", panel.id === "panel-" + panelKey);
+        });
+      }
+
+      // default: activate first card
+      const firstKey = cards[0].dataset.panel;
+      activate(firstKey);
+
+      cards.forEach(card => {
+        card.addEventListener("click", () => {
+          const key = card.dataset.panel;
+          activate(key);
+          const activePanel = document.getElementById("panel-" + key);
+          if (activePanel) {
+            activePanel.scrollIntoView({ behavior: "smooth", block: "start" });
+          }
+        });
+      });
+    }
+
+    document.addEventListener("DOMContentLoaded", initResxGuide);
+    document.addEventListener("turbo:load", initResxGuide);
+  </script>
+
+<% else %>
+  <%# not logged in %>
+  <div class="resx">
+    <div class="resx-header">
+      <i class="fas fa-circle-info"></i>
+      <h1 class="resx-title">Resources</h1>
+    </div>
+    <p class="resx-subtitle">
+      Please log in or sign up to see resources tailored to you as a tenant or landlord.
+    </p>
+  </div>
 <% end %>

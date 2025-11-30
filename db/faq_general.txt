@@ -51,14 +51,45 @@ A: Mediators are required to keep any information learned in mediation private w
 	- Something said in mediation when offered in a felony proceeding or a delinquent child proceeding based on what would have been a felony if the child were an adult 
 	- Knowledge of a felony as required under Ohio Revised Code Section 2921.22 
 	- In addition, a judge will determine whether mediation is privileged when the proceeding at issue involves a misdemeanor or a contract arising from the mediation. 
-Mediations are privileged. This means that what is said in mediation can not be used in a formal proceeding, such as in a court case. What happens in mediation is considered privileged unless one of two things happens. First, the person who has the power to keep someone from testifying decides to allow them to testify, or second, what a person wants to testify about falls under an exception, such as child abuse, malpractice, or violent crimes. This means that unless one of the two things occurs, what happens in mediation cannot be shared in a legal or other formal proceeding.
+Mediations are privileged. This means that what is said in mediation can not be used in a formal proceeding, such as in a court case. What happens in mediation is considered privileged unless one of the two things happens. First, the person who has the power to keep someone from testifying decides to allow them to testify, or second, what a person wants to testify about falls under an exception, such as child abuse, malpractice, or violent crimes. This means that unless one of the two things occurs, what happens in mediation cannot be shared in a legal or other formal proceeding.
 **Mediations are NOT confidential.** This means that the other person in the mediation (not the Mediator) can share what happened in the mediation with others, including friends, family members, social media posts, or news media. Do NOT share any sensitive information, specifically any information that you are not comfortable with other people knowing or having access to. If you would like to make the mediation confidential, everyone participating must make a separate agreement addressing this.
 
 Q: Who will decide if I am right?
-A: Mediation is not about deciding who is “right” or “wrong” in a dispute. The Mediator is not a judge and will not decide anything to end the argument. Instead, it is up to the landlord and tenant to determine any outcomes.  If both reach an agreement, they will formally sign a mediation agreement that explains what each person is agreeing to. Once signed, the landlord and tenant must follow through and actually do what they committed to. 
+A: Mediation is not about deciding who is “right” or “wrong” in a dispute. The Mediator is not a judge and will not decide anything to end the argument. Instead, it is up to the landlord and tenant to determine any outcomes. If both reach an agreement, they will formally sign a mediation agreement that explains what each person is agreeing to. Once signed, the landlord and tenant must follow through and actually do what they committed to. 
 
 Q: What happens if I sign a mediation agreement and then break it by not doing what I have agreed to?
 A: A mediation agreement is a contract. This means that it can be legally enforced by the courts and breaking your commitment could lead to you paying additional money or being forced to take an action, such as being evicted. The mediation agreement signed may describe what will happen if you do not follow through on your commitments.
 
 Q: Will Mediation resolve my dispute?
 A: There is no guarantee that mediation will end in an agreement. Since no one is required to participate in mediation and anyone can stop mediating at any time, mediation will only last as long as the people involved are willing to participate. Additionally, it is the landlord and tenant who must work together to reach an agreement. The mediator cannot and will not decide any outcomes. Mediation has proven to help resolve disputes, however, it is up to you and the other party to come up with an agreement that you will both accept.
+
+Q: What is Pre-File Mediation (Supported by This Platform)?
+A: Pre-file mediation is mediation that happens *before* anyone files an eviction or lawsuit in court. It gives both sides a chance to address problems early—before court costs, legal stress, or an eviction filing appear on anyone’s record.
+
+Why it matters:
+	- Early communication helps prevent misunderstandings from turning into formal eviction filings or long-term disputes.
+	- Both sides get space to talk openly, share concerns, and explore solutions without the pressure of a courtroom.
+	- It allows tenants and landlords to stay in control of the outcome instead of leaving decisions to a judge.
+
+Best for:
+	- Communication problems or misunderstandings
+	- Nonpayment concerns
+	- Repair and maintenance disputes
+	- Lease misunderstandings
+	- Cases where both sides want privacy, control, and less stress
+	- Situations where landlords and tenants want to avoid court costs and public records
+	- Any issue both parties are willing to resolve *before* going to court
+
+Q: What is Post-Filing (Pre-Hearing) Mediation?
+A: Post-filing mediation happens after an eviction case has been filed, but before the first court hearing. It gives both sides an opportunity to resolve the case without appearing before a judge.
+
+Why it matters:
+	- It can stop the case from going further into the legal system.
+	- It allows both parties to avoid the stress, time, and uncertainty of a court hearing.
+	- It creates space for negotiation even after the case has already started.
+
+Best for:
+	- Cases where both sides are still willing to negotiate
+	- Situations where parties want to resolve issues quickly
+	- Disputes where more time is needed to work out payment plans or repairs
+	- Situations where communication has broken down but both sides prefer avoiding a judge’s decision
