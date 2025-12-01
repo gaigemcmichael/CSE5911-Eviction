@@ -98,7 +98,7 @@
   <h1>Mediation Agreement</h1>
 
   <div class="section">
-    <p>This Mediation Agreement is executed on <strong><%= @date.strftime('%B %d, %Y') %></strong> between:</p>
+    <p>This Mediation Agreement is executed on <strong><%= @date.respond_to?(:strftime) ? @date.strftime('%B %d, %Y') : (@date.present? ? @date : "____________") %></strong> between:</p>
   </div>
 
   <div class="section">

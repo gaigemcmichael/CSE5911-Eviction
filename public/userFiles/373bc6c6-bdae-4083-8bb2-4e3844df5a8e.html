@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!-- BEGIN app/views/documents/templates/pay_and_stay.html.erb --><!DOCTYPE html>
 <html>
 <head>
   <meta charset="UTF-8">
@@ -199,22 +199,22 @@
     
     <p>
       <strong>Landlord Name:</strong> 
-      <span class="field field-long"><%= @landlord %></span>
+      <span class="field field-long">Vince</span>
     </p>
     
     <p>
       <strong>Tenant Name(s):</strong> 
-      <span class="field field-long"><%= @tenant %></span>
+      <span class="field field-long">landlord test</span>
     </p>
     
     <p>
       <strong>Property Address:</strong> 
-      <span class="field field-full"><%= @address %></span>
+      <span class="field field-full">1234 Steelwood Rd</span>
     </p>
     
     <p>
       <strong>Agreement Date:</strong> 
-      <span class="field field-medium"><%= @date %></span>
+      <span class="field field-medium">December 01, 2025</span>
     </p>
 
     <h2>Reason for Agreement</h2>
@@ -224,7 +224,7 @@
     </p>
     
     <p class="indent">
-      <%= @reason %>
+      Failure to Pay Rent
     </p>
 
   </div>
@@ -237,23 +237,23 @@
     
     <p>
       <strong>Landlord:</strong> 
-      <span class="field field-long"><%= @landlord %></span>
+      <span class="field field-long">Vince</span>
     </p>
     <p>
       <strong>Tenant(s):</strong> 
-      <span class="field field-long"><%= @tenant %></span>
+      <span class="field field-long">landlord test</span>
     </p>
     
     <p>
       The parties participated in a negotiation session on 
-      <span class="field field-medium"><%= @date %></span> 
+      <span class="field field-medium">December 01, 2025</span> 
       and reached the following agreement:
     </p>
     
     <h3>1. Reason for Agreement</h3>
     
     <p>The parties disagree about:</p>
-    <p class="field field-full"><%= @reason %></p>
+    <p class="field field-full">Failure to Pay Rent</p>
     <p class="field field-full">___________</p>
     <p class="field field-full">___________</p>
     
@@ -267,25 +267,25 @@
     <h3>2. Amount Currently Owed</h3>
     
     <p>The tenant currently owes the landlord the following:</p>
-    <p><strong>Total Amount Owed:</strong> $<span class="field field-medium"><%= @money_owed %></span></p>
+    <p><strong>Total Amount Owed:</strong> $<span class="field field-medium">4000</span></p>
     
     <p>This amount is for (check all that apply):</p>
     <div class="checkbox-group">
       <div class="checkbox-item">
-        <div class="checkbox<%= @rent_owed.present? && @rent_owed.to_f > 0 ? ' checked' : '' %>"></div>
-        <span>Rent: $<span class="field field-short"><%= @rent_owed.present? && @rent_owed.to_f > 0 ? @rent_owed : '___________' %></span></span>
+        <div class="checkbox checked"></div>
+        <span>Rent: $<span class="field field-short">3600</span></span>
       </div>
       <div class="checkbox-item">
-        <div class="checkbox<%= @late_fees.present? && @late_fees.to_f > 0 ? ' checked' : '' %>"></div>
-        <span>Late fees: $<span class="field field-short"><%= @late_fees.present? && @late_fees.to_f > 0 ? @late_fees : '___________' %></span></span>
+        <div class="checkbox checked"></div>
+        <span>Late fees: $<span class="field field-short">400</span></span>
       </div>
       <div class="checkbox-item">
-        <div class="checkbox<%= @utilities.present? && @utilities.to_f > 0 ? ' checked' : '' %>"></div>
-        <span>Utilities: $<span class="field field-short"><%= @utilities.present? && @utilities.to_f > 0 ? @utilities : '___________' %></span></span>
+        <div class="checkbox"></div>
+        <span>Utilities: $<span class="field field-short">___________</span></span>
       </div>
       <div class="checkbox-item">
-        <div class="checkbox<%= @other_charges.present? && @other_charges.to_f > 0 ? ' checked' : '' %>"></div>
-        <span>Other charges (list): $<span class="field field-long"><%= @other_charges_description.present? ? @other_charges_description : '___________' %></span> = $<span class="field field-short"><%= @other_charges.present? && @other_charges.to_f > 0 ? @other_charges : '___________' %></span></span>
+        <div class="checkbox"></div>
+        <span>Other charges (list): $<span class="field field-long">___________</span> = $<span class="field field-short">___________</span></span>
       </div>
     </div>
     
@@ -296,33 +296,33 @@
     <p>To resolve this balance, the tenant agrees to make the following payments:</p>
     
     <p>
-      <strong>Regular Rent:</strong> Tenant will continue to pay regular monthly rent of $<span class="field field-medium"><%= @monthly_rent %></span>.
+      <strong>Regular Rent:</strong> Tenant will continue to pay regular monthly rent of $<span class="field field-medium">1200</span>.
     </p>
     
     <p><strong>Additional Payments Toward Balance (Check all that apply):</strong></p>
     
     <div class="checkbox-group">
       <div class="checkbox-item">
-        <div class="checkbox<%= @payment_lump_sum ? ' checked' : '' %>"></div>
+        <div class="checkbox checked"></div>
         <span>
-          <strong>Lump Sum Payment:</strong> $<span class="field field-medium"><%= @lump_sum_amount.present? ? @lump_sum_amount : '___________' %></span> 
-          due on or before <span class="field field-medium"><%= @lump_sum_date.present? ? @lump_sum_date : '___________' %></span> at 5:00 PM
+          <strong>Lump Sum Payment:</strong> $<span class="field field-medium">4000</span> 
+          due on or before <span class="field field-medium">2026-01-01</span> at 5:00 PM
         </span>
       </div>
       <div class="checkbox-item">
-        <div class="checkbox<%= @payment_monthly ? ' checked' : '' %>"></div>
+        <div class="checkbox"></div>
         <span>
-          <strong>Monthly Payments:</strong> $<span class="field field-medium"><%= @monthly_payment_amount.present? ? @monthly_payment_amount : '___________' %></span> 
-          per month for <span class="field field-short"><%= @monthly_payment_months.present? ? @monthly_payment_months : '___________' %></span> months, due on or before the 
-          <span class="field field-short"><%= @monthly_payment_day.present? ? @monthly_payment_day : '___________' %></span> day of each month, starting 
-          <span class="field field-medium"><%= @monthly_payment_start.present? ? @monthly_payment_start : '___________' %></span>
+          <strong>Monthly Payments:</strong> $<span class="field field-medium">___________</span> 
+          per month for <span class="field field-short">___________</span> months, due on or before the 
+          <span class="field field-short">___________</span> day of each month, starting 
+          <span class="field field-medium">___________</span>
         </span>
       </div>
       <div class="checkbox-item">
-        <div class="checkbox<%= @payment_final ? ' checked' : '' %>"></div>
+        <div class="checkbox"></div>
         <span>
-          <strong>Final Payment:</strong> $<span class="field field-medium"><%= @final_payment_amount.present? ? @final_payment_amount : '___________' %></span> 
-          due on or before <span class="field field-medium"><%= @final_payment_date.present? ? @final_payment_date : '___________' %></span> at 5:00 PM
+          <strong>Final Payment:</strong> $<span class="field field-medium">___________</span> 
+          due on or before <span class="field field-medium">___________</span> at 5:00 PM
         </span>
       </div>
     </div>
@@ -330,21 +330,21 @@
     <p><strong>Payment Method (Select one):</strong></p>
     <div class="checkbox-group">
       <div class="checkbox-item">
-        <div class="checkbox<%= @payment_method == 'online_portal' ? ' checked' : '' %>"></div>
+        <div class="checkbox checked"></div>
         <span>Online portal (Note: Some portals do <strong>not</strong> accept partial payments. Tenant and Landlord must confirm in advance 
         that this payment plan can be processed through the portal.)</span>
       </div>
       <div class="checkbox-item">
-        <div class="checkbox<%= @payment_method == 'money_order' ? ' checked' : '' %>"></div>
+        <div class="checkbox"></div>
         <span>Money order</span>
       </div>
       <div class="checkbox-item">
-        <div class="checkbox<%= @payment_method == 'cashiers_check' ? ' checked' : '' %>"></div>
+        <div class="checkbox"></div>
         <span>Cashier's check</span>
       </div>
       <div class="checkbox-item">
-        <div class="checkbox<%= @payment_method == 'other' ? ' checked' : '' %>"></div>
-        <span>Other (describe): <span class="field field-long"><%= @payment_method == 'other' && @payment_method_other_description.present? ? @payment_method_other_description : '___________' %></span></span>
+        <div class="checkbox"></div>
+        <span>Other (describe): <span class="field field-long">___________</span></span>
       </div>
     </div>
 
@@ -402,14 +402,7 @@
     
     <p>Any additional terms agreed to by both parties are listed here:</p>
     
-    <% if @additional_terms.present? %>
-      <p><%= @additional_terms %></p>
-    <% else %>
-      <p class="field field-full">___________</p>
-      <p class="field field-full">___________</p>
-      <p class="field field-full">___________</p>
-      <p class="field field-full">___________</p>
-    <% end %>
+      <p>free month of rent</p>
     
     <hr style="border: 1px solid #000; margin: 15px 0;">
     
@@ -425,13 +418,13 @@
     <div class="signature-section" style="margin-top: 20px;">
       <p>
         <strong>Landlord:</strong> 
-        <span class="signature-line">___________</span>
-        <span style="margin-left: 50px;"><strong>Date:</strong> <span class="date-line">___________</span></span>
+        <span class="signature-line">landlord test</span>
+        <span style="margin-left: 50px;"><strong>Date:</strong> <span class="date-line">December 01, 2025</span></span>
       </p>
       <p>
         <strong>Tenant:</strong> 
-        <span class="signature-line">___________</span>
-        <span style="margin-left: 50px;"><strong>Date:</strong> <span class="date-line">___________</span></span>
+        <span class="signature-line">/s/ tenant test</span>
+        <span style="margin-left: 50px;"><strong>Date:</strong> <span class="date-line">December 01, 2025</span></span>
       </p>
     </div>
 
@@ -439,3 +432,4 @@
 
 </body>
 </html>
+<!-- END app/views/documents/templates/pay_and_stay.html.erb -->
