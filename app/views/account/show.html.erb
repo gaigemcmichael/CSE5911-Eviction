@@ -45,8 +45,10 @@
             </div>
             <div class="info-value"><%= @user.TenantAddress.presence || "Not provided" %></div>
           </div>
+        <% end %>
         </div>
 
+        <% if @user.Role == "Tenant" %>
         <div class="form-section-card">
           <div class="info-label" style="margin-bottom: 1rem;">
             <i class="fa-solid fa-edit"></i> Update Address
@@ -56,8 +58,7 @@
             <%= f.submit "Update Address", class: "btn-primary" %>
           <% end %>
         </div>
-        <% else %>
-        </div>
+        <% end %>
       </div>
     </div>
 
@@ -126,7 +127,6 @@
         </div>
       </div>
     </div>
-    <% end %>
 
     <% if @user.Role == "Mediator" %>
       <!-- Mediator Availability Card -->

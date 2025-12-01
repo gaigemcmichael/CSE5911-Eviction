@@ -99,31 +99,217 @@
           </div>
         <% end %>
       </div>
-    </div>
-
-    <!-- Payment Schedule (Optional) -->
-    <div class="form-section payment-schedule-section" style="<%= (@default_resolution == 'Payment Plan' || @default_resolution == 'Pay Missed Rent' || @template == 'a') ? 'display: block;' : 'display: none;' %>">
-      <h3 class="section-title">Payment Schedule<%= @template == 'a' ? ' (Optional)' : '' %></h3>
-      <p class="form-hint"><%= @template == 'a' ? 'Add payment installments if there are outstanding balances' : 'Add payment installments for the payment plan' %></p>
       
-      <div id="payment-schedule">
-        <div class="payment-row">
-          <div class="form-group">
-            <%= label_tag :amount1, "Amount", class: "form-label" %>
-            <div class="input-with-prefix">
-              <span class="input-prefix">$</span>
-              <%= number_field_tag :amount1, nil, step: 0.01, class: "form-input with-prefix", placeholder: "0.00" %>
+      <% if @template == 'a' %>
+        <!-- Payment Schedule (Optional) -->
+        <div class="form-section">
+          <h3 class="section-title">Payment Schedule (Optional)</h3>
+          <p class="form-hint">Add up to 6 payment installments if there are outstanding balances to be paid</p>
+          
+          <div id="payment-schedule">
+            <div class="payment-row">
+              <div class="form-group">
+                <%= label_tag :amount1, "Amount", class: "form-label" %>
+                <div class="input-with-prefix">
+                  <span class="input-prefix">$</span>
+                  <%= number_field_tag :amount1, nil, step: 0.01, class: "form-input with-prefix", placeholder: "0.00" %>
+                </div>
+              </div>
+              <div class="form-group">
+                <%= label_tag :date1, "Due Date", class: "form-label" %>
+                <%= date_field_tag :date1, nil, class: "form-input" %>
+              </div>
             </div>
           </div>
+          
+          <button type="button" class="btn btn-secondary" onclick="addPaymentRow()">+ Add Payment</button>
+        </div>
+      <% end %>
+      
+      <% if @template == 'b' %>
+        <!-- Amount Breakdown -->
+        <div class="form-section">
+          <h3 class="section-title">Amount Breakdown</h3>
+          
           <div class="form-group">
-            <%= label_tag :date1, "Due Date", class: "form-label" %>
-            <%= date_field_tag :date1, nil, class: "form-input" %>
+            <%= label_tag :rent_owed, "Rent Owed", class: "form-label" %>
+            <div class="input-with-prefix">
+              <span class="input-prefix">$</span>
+              <%= number_field_tag :rent_owed, nil, step: 0.01, class: "form-input with-prefix", placeholder: "0.00" %>
+            </div>
+          </div>
+          
+          <div class="form-group">
+            <%= label_tag :late_fees, "Late Fees", class: "form-label" %>
+            <div class="input-with-prefix">
+              <span class="input-prefix">$</span>
+              <%= number_field_tag :late_fees, nil, step: 0.01, class: "form-input with-prefix", placeholder: "0.00" %>
+            </div>
+          </div>
+          
+          <div class="form-group">
+            <%= label_tag :utilities, "Utilities", class: "form-label" %>
+            <div class="input-with-prefix">
+              <span class="input-prefix">$</span>
+              <%= number_field_tag :utilities, nil, step: 0.01, class: "form-input with-prefix", placeholder: "0.00" %>
+            </div>
+          </div>
+          
+          <div class="form-group">
+            <%= label_tag :other_charges_description, "Other Charges Description", class: "form-label" %>
+            <%= text_field_tag :other_charges_description, nil, class: "form-input", placeholder: "e.g., Cleaning fees, repairs" %>
+          </div>
+          
+          <div class="form-group">
+            <%= label_tag :other_charges, "Other Charges Amount", class: "form-label" %>
+            <div class="input-with-prefix">
+              <span class="input-prefix">$</span>
+              <%= number_field_tag :other_charges, nil, step: 0.01, class: "form-input with-prefix", placeholder: "0.00" %>
+            </div>
+          </div>
+        </div>
+      <% end %>
+    </div>
+
+    <% if @template == 'b' %>
+      <!-- Payment Plan Options -->
+      <div class="form-section">
+        <h3 class="section-title">Payment Plan Options</h3>
+        
+        <div class="form-group">
+          <label class="form-label">Payment Type (Check all that apply)</label>
+          <div class="checkbox-group-intake">
+            <label class="checkbox-label">
+              <%= check_box_tag 'payment_lump_sum', '1', false %>
+              <span>Lump Sum Payment</span>
+            </label>
+            <div class="conditional-fields" id="lump-sum-fields" style="display: none; margin-left: 24px; margin-top: 8px;">
+              <div class="form-group">
+                <%= label_tag :lump_sum_amount, "Amount", class: "form-label" %>
+                <div class="input-with-prefix">
+                  <span class="input-prefix">$</span>
+                  <%= number_field_tag :lump_sum_amount, nil, step: 0.01, class: "form-input with-prefix", placeholder: "0.00" %>
+                </div>
+              </div>
+              <div class="form-group">
+                <%= label_tag :lump_sum_date, "Due Date", class: "form-label" %>
+                <%= date_field_tag :lump_sum_date, nil, class: "form-input" %>
+              </div>
+            </div>
+          </div>
+          
+          <div class="checkbox-group-intake">
+            <label class="checkbox-label">
+              <%= check_box_tag 'payment_monthly', '1', false %>
+              <span>Monthly Payments</span>
+            </label>
+            <div class="conditional-fields" id="monthly-fields" style="display: none; margin-left: 24px; margin-top: 8px;">
+              <div class="form-group">
+                <%= label_tag :monthly_payment_amount, "Amount per Month", class: "form-label" %>
+                <div class="input-with-prefix">
+                  <span class="input-prefix">$</span>
+                  <%= number_field_tag :monthly_payment_amount, nil, step: 0.01, class: "form-input with-prefix", placeholder: "0.00" %>
+                </div>
+              </div>
+              <div class="form-group">
+                <%= label_tag :monthly_payment_months, "Number of Months", class: "form-label" %>
+                <%= number_field_tag :monthly_payment_months, nil, class: "form-input", placeholder: "e.g., 6" %>
+              </div>
+              <div class="form-group">
+                <%= label_tag :monthly_payment_day, "Day of Month Due", class: "form-label" %>
+                <%= number_field_tag :monthly_payment_day, nil, min: 1, max: 31, class: "form-input", placeholder: "e.g., 15" %>
+              </div>
+              <div class="form-group">
+                <%= label_tag :monthly_payment_start, "Starting Date", class: "form-label" %>
+                <%= date_field_tag :monthly_payment_start, nil, class: "form-input" %>
+              </div>
+            </div>
+          </div>
+          
+          <div class="checkbox-group-intake">
+            <label class="checkbox-label">
+              <%= check_box_tag 'payment_final', '1', false %>
+              <span>Final Payment</span>
+            </label>
+            <div class="conditional-fields" id="final-fields" style="display: none; margin-left: 24px; margin-top: 8px;">
+              <div class="form-group">
+                <%= label_tag :final_payment_amount, "Amount", class: "form-label" %>
+                <div class="input-with-prefix">
+                  <span class="input-prefix">$</span>
+                  <%= number_field_tag :final_payment_amount, nil, step: 0.01, class: "form-input with-prefix", placeholder: "0.00" %>
+                </div>
+              </div>
+              <div class="form-group">
+                <%= label_tag :final_payment_date, "Due Date", class: "form-label" %>
+                <%= date_field_tag :final_payment_date, nil, class: "form-input" %>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <div class="form-group">
+          <label class="form-label">Payment Method (Select one)</label>
+          <div class="checkbox-group-intake">
+            <label class="checkbox-label">
+              <%= radio_button_tag 'payment_method', 'online_portal', false %>
+              <span>Online portal</span>
+            </label>
+            <label class="checkbox-label">
+              <%= radio_button_tag 'payment_method', 'money_order', false %>
+              <span>Money order</span>
+            </label>
+            <label class="checkbox-label">
+              <%= radio_button_tag 'payment_method', 'cashiers_check', false %>
+              <span>Cashier's check</span>
+            </label>
+            <label class="checkbox-label">
+              <%= radio_button_tag 'payment_method', 'other', false %>
+              <span>Other</span>
+            </label>
+          </div>
+          <div class="conditional-fields" id="payment-method-other" style="display: none; margin-top: 8px;">
+            <%= text_field_tag :payment_method_other_description, nil, class: "form-input", placeholder: "Describe payment method" %>
           </div>
         </div>
       </div>
       
-      <button type="button" class="btn btn-secondary" onclick="addPaymentRow()">+ Add Payment</button>
-    </div>
+      <!-- Additional Terms -->
+      <div class="form-section">
+        <h3 class="section-title">Additional Terms (Optional)</h3>
+        
+        <div class="form-group">
+          <%= label_tag :additional_terms, "Any additional terms agreed to by both parties", class: "form-label" %>
+          <%= text_area_tag :additional_terms, nil, class: "form-input", rows: 4, placeholder: "Enter any additional terms or conditions..." %>
+          <small class="form-hint">These will appear in Section 8 of the agreement</small>
+        </div>
+      </div>
+    <% end %>
+
+    <% if @template == 'b' %>
+      <!-- Payment Schedule (Optional) -->
+      <div class="form-section payment-schedule-section" style="<%= (@default_resolution == 'Payment Plan' || @default_resolution == 'Pay Missed Rent') ? 'display: block;' : 'display: none;' %>">
+        <h3 class="section-title">Payment Schedule</h3>
+        <p class="form-hint">Add payment installments for the payment plan</p>
+        
+        <div id="payment-schedule">
+          <div class="payment-row">
+            <div class="form-group">
+              <%= label_tag :amount1, "Amount", class: "form-label" %>
+              <div class="input-with-prefix">
+                <span class="input-prefix">$</span>
+                <%= number_field_tag :amount1, nil, step: 0.01, class: "form-input with-prefix", placeholder: "0.00" %>
+              </div>
+            </div>
+            <div class="form-group">
+              <%= label_tag :date1, "Due Date", class: "form-label" %>
+              <%= date_field_tag :date1, nil, class: "form-input" %>
+            </div>
+          </div>
+        </div>
+        
+        <button type="button" class="btn btn-secondary" onclick="addPaymentRow()">+ Add Payment</button>
+      </div>
+    <% end %>
 
     <div class="form-actions">
       <%= link_to "← Back to Templates", generate_file_path, class: "btn btn-secondary" %>
@@ -161,7 +347,7 @@
   };
 
   // Show payment schedule section based on resolution type
-  document.addEventListener('DOMContentLoaded', function() {
+  function initializeFormHandlers() {
     const paymentSection = document.querySelector('.payment-schedule-section');
     const hiddenBestOption = document.querySelector('input[name="best_option"][type="hidden"]');
     
@@ -174,7 +360,55 @@
         paymentSection.style.display = 'none';
       }
     }
-  });
+    
+    // Handle conditional fields for Pay and Stay template
+    const lumpSumCheckbox = document.querySelector('input[name="payment_lump_sum"]');
+    const monthlyCheckbox = document.querySelector('input[name="payment_monthly"]');
+    const finalCheckbox = document.querySelector('input[name="payment_final"]');
+    const paymentMethodRadios = document.querySelectorAll('input[name="payment_method"]');
+    
+    if (lumpSumCheckbox) {
+      lumpSumCheckbox.addEventListener('change', function() {
+        const fieldsDiv = document.getElementById('lump-sum-fields');
+        if (fieldsDiv) {
+          fieldsDiv.style.display = this.checked ? 'block' : 'none';
+        }
+      });
+    }
+    
+    if (monthlyCheckbox) {
+      monthlyCheckbox.addEventListener('change', function() {
+        const fieldsDiv = document.getElementById('monthly-fields');
+        if (fieldsDiv) {
+          fieldsDiv.style.display = this.checked ? 'block' : 'none';
+        }
+      });
+    }
+    
+    if (finalCheckbox) {
+      finalCheckbox.addEventListener('change', function() {
+        const fieldsDiv = document.getElementById('final-fields');
+        if (fieldsDiv) {
+          fieldsDiv.style.display = this.checked ? 'block' : 'none';
+        }
+      });
+    }
+    
+    if (paymentMethodRadios.length > 0) {
+      paymentMethodRadios.forEach(function(radio) {
+        radio.addEventListener('change', function() {
+          const otherField = document.getElementById('payment-method-other');
+          if (otherField) {
+            otherField.style.display = (this.value === 'other' && this.checked) ? 'block' : 'none';
+          }
+        });
+      });
+    }
+  }
+
+  document.addEventListener('DOMContentLoaded', initializeFormHandlers);
+  document.addEventListener('turbo:load', initializeFormHandlers);
+  document.addEventListener('turbo:render', initializeFormHandlers);
 })();
 </script>
 
@@ -300,6 +534,38 @@
 
 .btn-remove:hover {
   background: #fecaca;
+}
+
+.checkbox-group-intake {
+  margin-bottom: 16px;
+}
+
+.checkbox-label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  padding: 8px;
+  border-radius: 6px;
+  transition: background 0.2s ease;
+}
+
+.checkbox-label:hover {
+  background: #f3f4f6;
+}
+
+.checkbox-label input[type="checkbox"],
+.checkbox-label input[type="radio"] {
+  width: 18px;
+  height: 18px;
+  cursor: pointer;
+}
+
+.conditional-fields {
+  background: #ffffff;
+  padding: 16px;
+  border-radius: 8px;
+  border: 1px solid #e7eefb;
 }
 
 .form-actions {

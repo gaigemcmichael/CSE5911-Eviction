@@ -42,6 +42,33 @@ class DocumentsController < ApplicationController
     end
   end
 
+  def template_preview
+    @template = params[:template]
+    
+    
+    @landlord = ""
+    @tenant = ""
+    @address = ""
+    @date = ""
+    @reason = ""
+    @money_owed = ""
+    @monthly_rent = ""
+    @best = ""
+    @vacate_date = ""
+    
+    
+    @schedule = []
+
+    template_file = case @template
+    when "a" then "documents/templates/agree_to_vacate"
+    when "b" then "documents/templates/pay_and_stay"
+    when "c" then "documents/templates/mediation_agreement"
+    else "documents/templates/agree_to_vacate"
+    end
+
+    render template: template_file, layout: false
+  end
+
   def generate_from_intake
     template = params[:template] || "a"
 
@@ -50,9 +77,9 @@ class DocumentsController < ApplicationController
     @tenant = params[:tenant_name].to_s
     @address = params[:address].to_s
     @date = begin
-      (params[:negotiation_date].presence || Date.today).to_date
+      (params[:negotiation_date].presence || Date.today).to_date.strftime("%B %d, %Y")
     rescue StandardError
-      Date.today
+      Date.today.strftime("%B %d, %Y")
     end
     @reason = params[:reason].to_s
     @money_owed = params[:money_owed].to_s
@@ -60,6 +87,36 @@ class DocumentsController < ApplicationController
     @conversation_id = params[:conversation_id]
     @vacate_date = params[:vacate_date] if template == "a"
 
+    # Pay and Stay specific fields
+    if template == "b"
+      @rent_owed = params[:rent_owed].to_s
+      @late_fees = params[:late_fees].to_s
+      @utilities = params[:utilities].to_s
+      @other_charges = params[:other_charges].to_s
+      @other_charges_description = params[:other_charges_description].to_s
+      
+      # Payment plan options
+      @payment_lump_sum = params[:payment_lump_sum] == "1"
+      @lump_sum_amount = params[:lump_sum_amount].to_s
+      @lump_sum_date = params[:lump_sum_date].to_s
+      
+      @payment_monthly = params[:payment_monthly] == "1"
+      @monthly_payment_amount = params[:monthly_payment_amount].to_s
+      @monthly_payment_months = params[:monthly_payment_months].to_s
+      @monthly_payment_day = params[:monthly_payment_day].to_s
+      @monthly_payment_start = params[:monthly_payment_start].to_s
+      
+      @payment_final = params[:payment_final] == "1"
+      @final_payment_amount = params[:final_payment_amount].to_s
+      @final_payment_date = params[:final_payment_date].to_s
+      
+      # Payment method
+      @payment_method = params[:payment_method].to_s
+      @payment_method_other_description = params[:payment_method_other_description].to_s
+      
+      # Additional terms
+      @additional_terms = params[:additional_terms].to_s
+    end
 
     conversation = PrimaryMessageGroup.find_by(ConversationID: @conversation_id) if @conversation_id.present?
 
@@ -268,11 +325,13 @@ class DocumentsController < ApplicationController
 
     sanitized_filename = File.basename(uploaded.original_filename)
     attrs = {
-
+      FileID:       file_id,
       FileName:     File.basename(sanitized_filename, ".*"),
       FileTypes:    ext.delete("."),
       FileURLPath:  "userFiles/#{file_id}#{ext}",
-      CreatorID:    @user[:UserID]
+      CreatorID:    @user[:UserID],
+      TenantSignature: true,
+      LandlordSignature: true
     }
     attrs[pk_name] = pk_value if pk_name && pk_value
 
@@ -644,27 +703,49 @@ class DocumentsController < ApplicationController
     signed_date = Time.current.strftime("%B %d, %Y")
 
     if is_landlord
-      # Find and replace the Landlord signature line
-      html_content.gsub!(
-        /<span class="sig-underline"><\/span>\s*<div class="sig-label">\s*<span>Landlord<\/span>/m,
-        "<span class=\"sig-underline\">/s/ #{signature_name}</span>\n      <div class=\"sig-label\">\n        <span>Landlord</span>"
-      )
-      # Add date
-      html_content.gsub!(
-        /(<span>Landlord<\/span>\s*<span style="float: right;">)Date(<\/span>)/m,
-        "\\1#{signed_date}\\2"
-      )
+      # Try new Pay and Stay format first
+      if html_content =~ /<strong>Landlord:<\/strong>\s*<span class="signature-line">/
+        html_content.gsub!(
+          /(<strong>Landlord:<\/strong>\s*<span class="signature-line">)___________(<\/span>)/m,
+          "\\1/s/ #{signature_name}\\2"
+        )
+        html_content.gsub!(
+          /(<strong>Landlord:<\/strong>\s*<span class="signature-line">.*?<\/span>\s*<span style="margin-left: 50px;"><strong>Date:<\/strong> <span class="date-line">)___________(<\/span>)/m,
+          "\\1#{signed_date}\\2"
+        )
+      else
+        # Fall back to old format
+        html_content.gsub!(
+          /<span class="sig-underline"><\/span>\s*<div class="sig-label">\s*<span>Landlord<\/span>/m,
+          "<span class=\"sig-underline\">/s/ #{signature_name}</span>\n      <div class=\"sig-label\">\n        <span>Landlord</span>"
+        )
+        html_content.gsub!(
+          /(<span>Landlord<\/span>\s*<span style="float: right;">)Date(<\/span>)/m,
+          "\\1#{signed_date}\\2"
+        )
+      end
     else
-      # Find and replace the Tenant signature line
-      html_content.gsub!(
-        /<span class="sig-underline"><\/span>\s*<div class="sig-label">\s*<span>Tenant<\/span>/m,
-        "<span class=\"sig-underline\">/s/ #{signature_name}</span>\n      <div class=\"sig-label\">\n        <span>Tenant</span>"
-      )
-      # Add date
-      html_content.gsub!(
-        /(<span>Tenant<\/span>\s*<span style="float: right;">)Date(<\/span>)/m,
-        "\\1#{signed_date}\\2"
-      )
+      # Try new Pay and Stay format first
+      if html_content =~ /<strong>Tenant:<\/strong>\s*<span class="signature-line">/
+        html_content.gsub!(
+          /(<strong>Tenant:<\/strong>\s*<span class="signature-line">)___________(<\/span>)/m,
+          "\\1/s/ #{signature_name}\\2"
+        )
+        html_content.gsub!(
+          /(<strong>Tenant:<\/strong>\s*<span class="signature-line">.*?<\/span>\s*<span style="margin-left: 50px;"><strong>Date:<\/strong> <span class="date-line">)___________(<\/span>)/m,
+          "\\1#{signed_date}\\2"
+        )
+      else
+        # Fall back to old format
+        html_content.gsub!(
+          /<span class="sig-underline"><\/span>\s*<div class="sig-label">\s*<span>Tenant<\/span>/m,
+          "<span class=\"sig-underline\">/s/ #{signature_name}</span>\n      <div class=\"sig-label\">\n        <span>Tenant</span>"
+        )
+        html_content.gsub!(
+          /(<span>Tenant<\/span>\s*<span style="float: right;">)Date(<\/span>)/m,
+          "\\1#{signed_date}\\2"
+        )
+      end
     end
 
     File.write(file_path, html_content)

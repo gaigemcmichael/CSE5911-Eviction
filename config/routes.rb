@@ -57,6 +57,7 @@ Rails.application.routes.draw do
 
   get "documents/template/:template/intake", to: "documents#template_intake", as: "template_intake"
   post "documents/template/:template/generate", to: "documents#generate_from_intake", as: "generate_from_intake"
+  get "documents/template/:template/preview", to: "documents#template_preview", as: "template_preview"
 
   get "intake_questions/new", to: "intake_questions#new", as: "new_intake_question"
   post "intake_questions", to: "intake_questions#create", as: "intake_questions"
