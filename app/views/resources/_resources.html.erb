@@ -302,9 +302,8 @@
             <%= link_to "I want to negotiate with my landlord",
                         messages_path,
                         class: "resx-btn resx-btn-primary" %>
-            <a href="#panel-tenant-eviction" class="resx-btn resx-btn-ghost">
-              I want to learn more about the eviction process
-            </a>
+            <button type="button" class="resx-btn resx-btn-ghost" onclick="if(window.activateResxPanel){window.activateResxPanel('tenant-eviction');document.getElementById('panel-tenant-eviction')?.scrollIntoView({behavior:'smooth',block:'start'});}">              I want to learn more about the eviction process
+            </button>
           </div>
 
           <p style="margin-top:14px;"><strong>No.</strong> If you think you may fall behind soon, you can still use the
@@ -313,9 +312,8 @@
             <%= link_to "I want to talk with my landlord",
                         messages_path,
                         class: "resx-btn resx-btn-primary" %>
-            <a href="#panel-tenant-eviction" class="resx-btn resx-btn-ghost">
-              I want to learn more about the eviction process
-            </a>
+            <button type="button" class="resx-btn resx-btn-ghost" onclick="if(window.activateResxPanel){window.activateResxPanel('tenant-eviction');document.getElementById('panel-tenant-eviction')?.scrollIntoView({behavior:'smooth',block:'start'});}">              I want to learn more about the eviction process
+            </button>
           </div>
 
           <%= link_to "Return to Eviction Mediation homepage",
@@ -570,6 +568,9 @@
           panel.classList.toggle("is-active", panel.id === "panel-" + panelKey);
         });
       }
+
+      // Make activate function globally accessible
+      window.activateResxPanel = activate;
 
       // default: activate first card
       const firstKey = cards[0].dataset.panel;
