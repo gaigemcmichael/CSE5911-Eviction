@@ -1,0 +1,178 @@
+<%# Use the same intake-page styling for consistent look %>
+<% content_for :body_class, 'intake-page' %>
+
+<div class="signup-container">
+  <div class="signup-card intake-card" style="max-width: 900px;">
+    <h1>Post-Mediation Survey</h1>
+    <h2>Please take a moment to provide feedback about your mediation experience.</h2>
+
+    <%= form_with model: @survey, url: mediation_survey_path(@mediation.ConversationID), method: :post, local: true do |f| %>
+      
+      <!-- Question 1: Ease of Use -->
+      <div class="form-section">
+        <%= f.label :ease_of_use, "How easy was it to use the platform to communicate with the other party?", class: "required-label" %>
+        <label style="display: block; margin-top: 10px; cursor: pointer; font-weight: normal;">
+          <%= f.radio_button :ease_of_use, "very_easy", required: true, id: "ease_very_easy", style: "margin-right: 8px; vertical-align: middle;" %>
+          <span style="vertical-align: middle;">Very Easy</span>
+        </label>
+        <label style="display: block; margin-top: 8px; cursor: pointer; font-weight: normal;">
+          <%= f.radio_button :ease_of_use, "easy", id: "ease_easy", style: "margin-right: 8px; vertical-align: middle;" %>
+          <span style="vertical-align: middle;">Easy</span>
+        </label>
+        <label style="display: block; margin-top: 8px; cursor: pointer; font-weight: normal;">
+          <%= f.radio_button :ease_of_use, "difficult", id: "ease_difficult", style: "margin-right: 8px; vertical-align: middle;" %>
+          <span style="vertical-align: middle;">Difficult</span>
+        </label>
+        <label style="display: block; margin-top: 8px; cursor: pointer; font-weight: normal;">
+          <%= f.radio_button :ease_of_use, "very_difficult", id: "ease_very_difficult", style: "margin-right: 8px; vertical-align: middle;" %>
+          <span style="vertical-align: middle;">Very Difficult</span>
+        </label>
+      </div>
+
+      <!-- Question 2: Helpfulness -->
+      <div class="form-section">
+        <%= f.label :helpfulness, "How helpful were the platform’s resources and information?", class: "required-label" %>
+        <label style="display: block; margin-top: 10px; cursor: pointer; font-weight: normal;">
+          <%= f.radio_button :helpfulness, "very_helpful", required: true, id: "help_very_helpful", style: "margin-right: 8px; vertical-align: middle;" %>
+          <span style="vertical-align: middle;">Very Helpful</span>
+        </label>
+        <label style="display: block; margin-top: 8px; cursor: pointer; font-weight: normal;">
+          <%= f.radio_button :helpfulness, "helpful", id: "help_helpful", style: "margin-right: 8px; vertical-align: middle;" %>
+          <span style="vertical-align: middle;">Helpful</span>
+        </label>
+        <label style="display: block; margin-top: 8px; cursor: pointer; font-weight: normal;">
+          <%= f.radio_button :helpfulness, "not_very_helpful", id: "help_not_very", style: "margin-right: 8px; vertical-align: middle;" %>
+          <span style="vertical-align: middle;">Not Very Helpful</span>
+        </label>
+        <label style="display: block; margin-top: 8px; cursor: pointer; font-weight: normal;">
+          <%= f.radio_button :helpfulness, "not_helpful", id: "help_not", style: "margin-right: 8px; vertical-align: middle;" %>
+          <span style="vertical-align: middle;">Not Helpful at All</span>
+        </label>
+      </div>
+
+      <!-- Question 3: Helped Reach Solution -->
+      <div class="form-section">
+        <%= f.label :helped_solution, "The tool helped you work toward a solution.", class: "required-label" %>
+        <label style="display: block; margin-top: 10px; cursor: pointer; font-weight: normal;">
+          <%= f.radio_button :helped_solution, "strongly_agree", required: true, id: "solution_strongly_agree", style: "margin-right: 8px; vertical-align: middle;" %>
+          <span style="vertical-align: middle;">Strongly Agree</span>
+        </label>
+        <label style="display: block; margin-top: 8px; cursor: pointer; font-weight: normal;">
+          <%= f.radio_button :helped_solution, "agree", id: "solution_agree", style: "margin-right: 8px; vertical-align: middle;" %>
+          <span style="vertical-align: middle;">Agree</span>
+        </label>
+        <label style="display: block; margin-top: 8px; cursor: pointer; font-weight: normal;">
+          <%= f.radio_button :helped_solution, "disagree", id: "solution_disagree", style: "margin-right: 8px; vertical-align: middle;" %>
+          <span style="vertical-align: middle;">Disagree</span>
+        </label>
+        <label style="display: block; margin-top: 8px; cursor: pointer; font-weight: normal;">
+          <%= f.radio_button :helped_solution, "strongly_disagree", id: "solution_strongly_disagree", style: "margin-right: 8px; vertical-align: middle;" %>
+          <span style="vertical-align: middle;">Strongly Disagree</span>
+        </label>
+      </div>
+
+      <!-- Question 4: Mediator Neutrality (if mediation had a mediator) -->
+      <% if @mediation.MediatorID.present? %>
+        <div class="form-section">
+          <%= f.label :mediator_neutral, "If a mediator joined, they stayed neutral and made the process easier.", class: "required-label" %>
+          <label style="display: block; margin-top: 10px; cursor: pointer; font-weight: normal;">
+            <%= f.radio_button :mediator_neutral, "strongly_agree", id: "neutral_strongly_agree", style: "margin-right: 8px; vertical-align: middle;" %>
+            <span style="vertical-align: middle;">Strongly Agree</span>
+          </label>
+          <label style="display: block; margin-top: 8px; cursor: pointer; font-weight: normal;">
+            <%= f.radio_button :mediator_neutral, "agree", id: "neutral_agree", style: "margin-right: 8px; vertical-align: middle;" %>
+            <span style="vertical-align: middle;">Agree</span>
+          </label>
+          <label style="display: block; margin-top: 8px; cursor: pointer; font-weight: normal;">
+            <%= f.radio_button :mediator_neutral, "disagree", id: "neutral_disagree", style: "margin-right: 8px; vertical-align: middle;" %>
+            <span style="vertical-align: middle;">Disagree</span>
+          </label>
+          <label style="display: block; margin-top: 8px; cursor: pointer; font-weight: normal;">
+            <%= f.radio_button :mediator_neutral, "strongly_disagree", id: "neutral_strongly_disagree", style: "margin-right: 8px; vertical-align: middle;" %>
+            <span style="vertical-align: middle;">Strongly Disagree</span>
+          </label>
+        </div>
+      <% end %>
+
+      <!-- Question 5: Reached Agreement -->
+      <div class="form-section">
+        <%= f.label :reached_agreement, "Did you reach an agreement with the other party?", class: "required-label" %>
+        <label style="display: block; margin-top: 10px; cursor: pointer; font-weight: normal;">
+          <%= f.radio_button :reached_agreement, "yes", required: true, id: "agreement_yes", style: "margin-right: 8px; vertical-align: middle;" %>
+          <span style="vertical-align: middle;">Yes</span>
+        </label>
+        <label style="display: block; margin-top: 8px; cursor: pointer; font-weight: normal;">
+          <%= f.radio_button :reached_agreement, "no", id: "agreement_no", style: "margin-right: 8px; vertical-align: middle;" %>
+          <span style="vertical-align: middle;">No</span>
+        </label>
+      </div>
+
+      <!-- Question 6: Confidence in Agreement -->
+      <div class="form-section">
+        <%= f.label :confidence, "How confident do you feel about your next steps after using the platform?", class: "required-label" %>
+        <label style="display: block; margin-top: 10px; cursor: pointer; font-weight: normal;">
+          <%= f.radio_button :confidence, "confident", required: true, id: "confidence_confident", style: "margin-right: 8px; vertical-align: middle;" %>
+          <span style="vertical-align: middle;">Confident</span>
+        </label>
+        <label style="display: block; margin-top: 8px; cursor: pointer; font-weight: normal;">
+          <%= f.radio_button :confidence, "somewhat_confident", id: "confidence_somewhat", style: "margin-right: 8px; vertical-align: middle;" %>
+          <span style="vertical-align: middle;">Somewhat Confident</span>
+        </label>
+        <label style="display: block; margin-top: 8px; cursor: pointer; font-weight: normal;">
+          <%= f.radio_button :confidence, "not_confident", id: "confidence_not", style: "margin-right: 8px; vertical-align: middle;" %>
+          <span style="vertical-align: middle;">Not Confident</span>
+        </label>
+      </div>
+
+      <!-- Question 7: Would Recommend -->
+      <div class="form-section">
+        <%= f.label :would_recommend, "Would you recommend this mediation tool to others?", class: "required-label" %>
+        <label style="display: block; margin-top: 10px; cursor: pointer; font-weight: normal;">
+          <%= f.radio_button :would_recommend, "yes", required: true, id: "recommend_yes", style: "margin-right: 8px; vertical-align: middle;" %>
+          <span style="vertical-align: middle;">Yes</span>
+        </label>
+        <label style="display: block; margin-top: 8px; cursor: pointer; font-weight: normal;">
+          <%= f.radio_button :would_recommend, "maybe", id: "recommend_maybe", style: "margin-right: 8px; vertical-align: middle;" %>
+          <span style="vertical-align: middle;">Maybe</span>
+        </label>
+        <label style="display: block; margin-top: 8px; cursor: pointer; font-weight: normal;">
+          <%= f.radio_button :would_recommend, "no", id: "recommend_no", style: "margin-right: 8px; vertical-align: middle;" %>
+          <span style="vertical-align: middle;">No</span>
+        </label>
+      </div>
+
+      <!-- Optional: Additional Feedback -->
+      <div class="form-section">
+        <%= f.label :feedback, "What was most helpful or could be improved? (Optional)" %>
+        <%= f.text_area :feedback, rows: 5, style: "width: 100%; padding: 10px; margin-top: 10px;" %>
+      </div>
+
+      <div class="form-footer">
+        <%= f.submit "Submit Survey", class: 'signup-btn' %>
+      </div>
+    <% end %>
+  </div>
+</div>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    const form = document.querySelector("form[action*='survey']");
+    
+    if (form) {
+      form.addEventListener("submit", function (event) {
+        // Check all required fields
+        const easeOfUse = document.querySelector('input[name="survey_response[ease_of_use]"]:checked');
+        const helpfulness = document.querySelector('input[name="survey_response[helpfulness]"]:checked');
+        const helpedSolution = document.querySelector('input[name="survey_response[helped_solution]"]:checked');
+        const reachedAgreement = document.querySelector('input[name="survey_response[reached_agreement]"]:checked');
+        const confidence = document.querySelector('input[name="survey_response[confidence]"]:checked');
+        const wouldRecommend = document.querySelector('input[name="survey_response[would_recommend]"]:checked');
+
+        if (!easeOfUse || !helpfulness || !helpedSolution || !reachedAgreement || !confidence || !wouldRecommend) {
+          alert("Please answer all required questions before submitting.");
+          event.preventDefault();
+        }
+      });
+    }
+  });
+</script>

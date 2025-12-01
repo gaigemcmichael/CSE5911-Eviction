@@ -1,4 +1,14 @@
-# production:
+development:
+  check_unread_messages:
+    class: UnreadMessageNotificationJob
+    queue: default
+    schedule: every 2 hours
+
+production:
+  check_unread_messages:
+    class: UnreadMessageNotificationJob
+    queue: default
+    schedule: every 2 hours
 #   periodic_cleanup:
 #     class: CleanSoftDeletedRecordsJob
 #     queue: background

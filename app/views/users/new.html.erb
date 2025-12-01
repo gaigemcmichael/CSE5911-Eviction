@@ -122,13 +122,16 @@
       </div>
 
       <!-- Disclaimer -->
+      <p style="color: #102a4d; font-weight: 600; margin-bottom: 12px; font-size: 15px;">
+        <i class="fa-solid fa-info-circle"></i> Please click "Legal Disclaimer" below to read the full terms before continuing.
+      </p>
       <div class="disclaimer">
           <label class="custom-checkbox">
               <%= f.check_box :ProfileDisclaimer, { required: true }, 'yes', 'no' %>
               <span class="checkmark"></span>
               <span class="disclaimer-text">
                   I have read and agree to the 
-                  <label for="toggleModal" class="disclaimer-link">Terms and Conditions</label>
+                  <label for="toggleModal" class="disclaimer-link">Legal Disclaimer</label>
               </span>
           </label>
 
@@ -136,8 +139,12 @@
           <% if @user.errors[:ProfileDisclaimer].any? %>
               <div class="error-text"><%= @user.errors[:ProfileDisclaimer].first %></div>
           <% end %>
+          <div id="terms-error" class="error-text" style="display: none;">You must open and read the Legal Disclaimer before signing up</div>
       </div>
 
+      <!-- Hidden inputs for tracking -->
+      <input type="hidden" id="termsOpened" value="false">
+      
       <!-- Hidden Checkbox to Toggle Modal -->
       <input type="checkbox" id="toggleModal" class="toggle-checkbox">
 
@@ -146,30 +153,29 @@
         <div class="popup-content">
           <!-- Clicking this label will uncheck the checkbox, closing the modal -->
           <label for="toggleModal" class="close-popup">&times;</label>
-          <h4>Terms and Conditions</h4>
-          <p>Welcome to the Franklin County Municipal Court Self Help Center and Dispute Resolution Program&apos;s online mediation platform. 
-              Before creating a profile on this platform, please review the following statements. 
-              By clicking “I Agree” at the bottom, you acknowledge that you have read, understood, and accept the terms of this disclaimer.</p>
-          <p><strong>1. No Legal Advice or Attorney-Client Relationship</strong></p>
-          <p>This platform provides general information and mediation tools to help landlords and tenants communicate and resolve their issues. 
-              <strong>It does not give legal advice or representation.</strong> The information available on this platform does not replace advice from a qualified attorney.
-              Use of this platform does <strong>not</strong> create an attorney-client relationship between you and any other person connected with this platform. 
-              If you need legal advice, you should speak with a licensed attorney.</p>
-          <p><strong><a href="https://municipalcourt.franklincountyohio.gov/Departments-Services/Self-Help/Court-Basics#Lawyers-and-Legal-Help" target="_blank">CLICK HERE</a></strong> 
-              for resources to help find an attorney, if needed. </p>
-          <p><strong>2. User Responsibility and Reliance on Information</strong></p>
-          <p>You are responsible for providing accurate information when using this platform. 
-              The platform is provided “as is” without warranties of any kind. 
-              Users assume full responsibility for their participation.</p>
-          <p><strong>3. Confidentiality</strong></p>
-          <p>Communications between users through this platform are <strong>not confidential</strong> unless a mediator formally joins the dispute. 
-              Mediators involved in cases are legally bound to confidentiality, but communications outside the mediation process are not protected. </p>
-          <p><strong>4. No Guaranteed Outcome</strong></p>
-          <p>This platform is intended to help with communication and provide an opportunity for mediation, but 
-              <strong>it does not guarantee any specific result</strong> in a dispute. 
-              Landlords and tenants using this system are responsible for voluntary participation and may resolve the dispute with an agreement that is acceptable to both parties. 
-              The platform provides electronic signature functionality, and electronically signed agreements are legally binding under Ohio law. 
-              If mediation does not resolve the dispute, a legal proceeding may still be used to resolve the issue.</p>
+          <h4>Legal Disclaimer</h4>
+          <p style="text-align: center;">Please read this information before using this platform.</p>
+          <p style="text-align: center;">This platform is designed to help landlords and tenants participate in the existing process, learn about mediation, and communicate with each other. It also allows both sides to negotiate with support from a trained mediator if they opt for that option. <strong>The information provided is for mediation and negotiation purposes only.</strong></p>
+          <p><strong>1. Not Legal Advice.</strong></p>
+          <p>This platform does not give legal advice to any user. Nothing you read or discuss here should be taken as legal advice about your specific situation. <strong>Using this platform does not create a lawyer-client relationship.</strong> If you need legal advice, you should speak with an attorney or a legal aid organization.</p>
+          <p><strong>2. No Guarantees of Results.</strong></p>
+          <p>This <strong>platform cannot guarantee any specific outcome</strong>. We cannot promise that mediation will be successful or that your negotiation will reach an agreement. Results depend on your situation and the actions of each party.</p>
+          <p><strong>3. Role of the Mediator.</strong></p>
+          <p>Any mediator using this platform is here to <strong>help support communication</strong>, but they do not represent either party and cannot provide legal advice. Mediators do not make decisions for you and do not have the power to force an agreement.</p>
+          <p><strong>4. Confidentiality.</strong></p>
+          <p>Communications between users through this platform are <strong>not confidential</strong> unless a mediator formally joins the dispute. Mediators involved in cases are legally bound to confidentiality, but communications outside the mediation process are not protected.</p>
+          <p><strong>5. Enforceability of Agreements.</strong></p>
+          <p>Any agreement reached through this platform is <strong>not legally enforceable</strong> unless the final written agreement is signed by all parties. Talking through the platform or expressing agreement in the chat does not create a binding contract. A signed written document is required.</p>
+          <p><strong>6. Links to Outside Services.</strong></p>
+          <p>This platform may share links to outside community services such as rental help, mental health referrals, or other support programs. These organizations are <strong>not run by this platform or the court</strong>. We do not control them, and we are <strong>not responsible</strong> for their actions, information, or decisions.</p>
+          <p><strong>7. Information May Change.</strong></p>
+          <p>Laws, court rules, and procedures can change. We work to keep information accurate, but we <strong>cannot promise</strong> that everything is always current or applies to every situation.</p>
+          <p><strong>8. User Responsibility.</strong></p>
+          <p>You are responsible for your own choices, messages, and court deadlines. The platform and its mediators are here to support communication, but <strong>cannot act on your behalf</strong> or make decisions for you.</p>
+          <p><strong>By using this platform, you acknowledge that you have read, understood, and accept the terms of this disclaimer.</strong></p>
+          <div style="text-align: center; margin-top: 20px;">
+            <button type="button" id="agreeButton" class="btn-primary" style="padding: 12px 40px; font-size: 16px;">I Agree</button>
+          </div>
         </div>
       </div>
 
@@ -233,6 +239,53 @@
     }
   }
 
+  function setupTermsTracking() {
+    const toggleModal = document.getElementById("toggleModal");
+    const termsOpened = document.getElementById("termsOpened");
+    const signupForm = document.querySelector(".signup-form");
+    const termsError = document.getElementById("terms-error");
+    const agreeButton = document.getElementById("agreeButton");
+    const disclaimerCheckbox = document.getElementById("user_ProfileDisclaimer");
+
+    // Track when modal is opened
+    if (toggleModal) {
+      toggleModal.addEventListener("change", function() {
+        if (this.checked && termsOpened) {
+          termsOpened.value = "true";
+          if (termsError) termsError.style.display = "none";
+        }
+      });
+    }
+
+    // Handle I Agree button click
+    if (agreeButton) {
+      agreeButton.addEventListener("click", function() {
+        // Mark terms as opened
+        if (termsOpened) termsOpened.value = "true";
+        // Check the disclaimer checkbox
+        if (disclaimerCheckbox) disclaimerCheckbox.checked = true;
+        // Close the modal
+        if (toggleModal) toggleModal.checked = false;
+        // Hide error if visible
+        if (termsError) termsError.style.display = "none";
+      });
+    }
+
+    // Validate before form submission
+    if (signupForm) {
+      signupForm.addEventListener("submit", function(e) {
+        if (termsOpened && termsOpened.value !== "true") {
+          e.preventDefault();
+          if (termsError) {
+            termsError.style.display = "block";
+            termsError.scrollIntoView({ behavior: "smooth", block: "center" });
+          }
+          return false;
+        }
+      });
+    }
+  }
+
   function setupToggleHandlers() {
     const tenantRadio = document.getElementById("role_tenant");
     const landlordRadio = document.getElementById("role_landlord");
@@ -241,6 +294,7 @@
     if (landlordRadio) landlordRadio.addEventListener("change", toggleFields);
 
     toggleFields(); // initial setup
+    setupTermsTracking(); // setup terms validation
   }
 
   document.addEventListener("DOMContentLoaded", setupToggleHandlers);

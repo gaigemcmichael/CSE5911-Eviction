@@ -166,26 +166,31 @@ const initializeMediatorChat = () => {
   setupTextareaAutoExpand();
   setupMediatorForms();
 
-  // Show disclaimer modal on mobile/tablet with slight delay (only once for landlords)
+  // Show disclaimer modal with slight delay (tenants always, landlords once)
   const disclaimerModal = document.querySelector('[data-disclaimer-modal]');
-  if (disclaimerModal && window.innerWidth <= 1024) {
+  if (disclaimerModal) {
     const userRole = disclaimerModal.dataset.userRole;
     const disclaimerKey = `chatDisclaimerSeen_${userRole}`;
+    
+    let shouldShowModal = true;
     
     // For landlords, check if they've seen it before
     if (userRole === 'Landlord') {
       const hasSeenDisclaimer = localStorage.getItem(disclaimerKey);
       if (hasSeenDisclaimer) {
-        return; // Don't show modal again
+        shouldShowModal = false; // Don't show modal again for landlords
       }
     }
+    // Tenants always see it (shouldShowModal stays true)
     
-    setTimeout(() => {
-      disclaimerModal.hidden = false;
-      requestAnimationFrame(() => {
-        disclaimerModal.classList.add('is-open');
-      });
-    }, 300);
+    if (shouldShowModal) {
+      setTimeout(() => {
+        disclaimerModal.hidden = false;
+        requestAnimationFrame(() => {
+          disclaimerModal.classList.add('is-open');
+        });
+      }, 300);
+    }
   }
 
   // Disclaimer modal close handler

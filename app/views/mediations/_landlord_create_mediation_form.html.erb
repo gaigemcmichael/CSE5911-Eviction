@@ -1,0 +1,14 @@
+<div class="mediation-card">
+    <h2>Request Negotiation</h2>
+
+    <%= form_with url: mediations_path, method: :post, local: true do |form| %>
+      <div class="input-group">
+        <%= form.label :tenant_email, "Enter Tenant's Email:" %>
+        <%= form.text_field :tenant_email, required: true, placeholder: "Enter tenant's email", id: "tenant-email" %>
+        <small class="form-text" style="display: block; margin-top: 0.5rem; color: #64748b;">Enter the email address of the tenant you wish to negotiate with.</small>
+      </div>
+
+      <%= hidden_field_tag :format, "html" %>
+      <%= form.submit "Request Negotiation", class: "mediation-btn" %>
+  <% end %>
+</div>

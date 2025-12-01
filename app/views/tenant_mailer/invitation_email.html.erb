@@ -6,9 +6,9 @@
         Eviction Mediation
       </div>
       <div style="padding:25px;">
-        <h2 style="color:#333;">You've Been Invited to Join the Platform</h2>
+        <h2 style="color:#333;">You've Been Invited to Start a Mediation</h2>
         <p style="font-size:16px;color:#555;">
-          <strong><%= @invited_by.FName %> <%= @invited_by.LName %></strong> has invited you to join <strong>Eviction Mediation</strong> as a landlord.
+          <strong><%= @landlord.FName %> <%= @landlord.LName %></strong><% if @landlord.CompanyName.present? %> from <strong><%= @landlord.CompanyName %></strong><% end %> has invited you to start a mediation on <strong>Eviction Mediation</strong>.
         </p>
         
         <p style="font-size:16px;color:#555;">
@@ -16,14 +16,15 @@
         </p>
 
         <div style="margin:30px 0;text-align:center;">
-          <a href="<%= @signup_url %>" style="background:#1f6feb;color:white;text-decoration:none;padding:12px 20px;border-radius:6px;font-weight:bold;">Join Now</a>
+          <a href="<%= messages_url %>" style="background:#1f6feb;color:white;text-decoration:none;padding:12px 20px;border-radius:6px;font-weight:bold;">View Mediation Request</a>
         </div>
 
         <p style="font-size:14px;color:#777;">
-          If the button doesn't work, copy and paste this link into your browser:
+          Log in to your account and check your Messages page to accept or decline the mediation request.
         </p>
+
         <p style="font-size:14px;color:#777;">
-          <%= @signup_url %>
+          If you don't have an account yet, you can sign up at <%= link_to "Eviction Mediation", root_url, style: "color:#1f6feb;" %>.
         </p>
 
         <p style="font-size:14px;color:#777;">

@@ -55,7 +55,7 @@ const buildAttachmentHtml = (attachment, currentUserRole) => {
 
   const fileId = escapeAttribute(attachment.file_id);
   const fileName = escapeHtml(attachment.file_name || "Untitled document");
-  const previewUrl = escapeAttribute(attachment.preview_url || attachment.view_url || attachment.download_url || "#");
+  const previewUrl = escapeAttribute((attachment.preview_url || attachment.view_url || attachment.download_url || "#") + (attachment.preview_url || attachment.view_url ? "?view_mode=simple" : ""));
   const downloadUrl = escapeAttribute(attachment.download_url || attachment.view_url || "#");
   const extension = escapeAttribute(attachment.extension || "");
   const signUrl = escapeAttribute(attachment.sign_url || "");
@@ -66,7 +66,7 @@ const buildAttachmentHtml = (attachment, currentUserRole) => {
   const showLandlordCTA = currentUserRole === "Landlord" && needsLandlordSignature && signUrl;
 
   const actions = [
-    `<button type="button" class="attachment-link" data-document-preview-trigger data-preview-url="${previewUrl}" data-file-name="${fileName}">View</button>`,
+    `<a href="${previewUrl}" class="attachment-link">View</a>`,
     `<span aria-hidden="true" class="attachment-dot">·</span>`,
     `<a href="${downloadUrl}" class="attachment-link">Download</a>`
   ];

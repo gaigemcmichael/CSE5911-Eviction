@@ -64,7 +64,7 @@
         <div class="form-group">
           <%= label_tag :money_owed, "Amount Owed", class: "form-label required-label" %>
           <div class="input-with-prefix">
-            <span class="input-prefix">$</span>
+            <span class="input-prefix" style="padding-right: 10px;">$</span>
             <%= number_field_tag :money_owed, nil, step: 0.01, class: "form-input with-prefix", required: true, placeholder: "0.00" %>
           </div>
           <small class="form-hint">Enter the total amount currently owed</small>
@@ -134,45 +134,48 @@
 </div>
 
 <script>
-let paymentCount = 1;
+// Use IIFE to avoid global variable conflicts with Turbo
+(function() {
+  let paymentCount = 1;
 
-function addPaymentRow() {
-  paymentCount++;
-  const container = document.getElementById('payment-schedule');
-  const newRow = document.createElement('div');
-  newRow.className = 'payment-row';
-  newRow.innerHTML = `
-    <div class="form-group">
-      <label for="amount${paymentCount}" class="form-label">Amount</label>
-      <div class="input-with-prefix">
-        <span class="input-prefix">$</span>
-        <input type="number" name="amount${paymentCount}" id="amount${paymentCount}" step="0.01" class="form-input with-prefix" placeholder="0.00">
+  window.addPaymentRow = function() {
+    paymentCount++;
+    const container = document.getElementById('payment-schedule');
+    const newRow = document.createElement('div');
+    newRow.className = 'payment-row';
+    newRow.innerHTML = `
+      <div class="form-group">
+        <label for="amount${paymentCount}" class="form-label">Amount</label>
+        <div class="input-with-prefix">
+          <span class="input-prefix">$</span>
+          <input type="number" name="amount${paymentCount}" id="amount${paymentCount}" step="0.01" class="form-input with-prefix" placeholder="0.00">
+        </div>
       </div>
-    </div>
-    <div class="form-group">
-      <label for="date${paymentCount}" class="form-label">Due Date</label>
-      <input type="date" name="date${paymentCount}" id="date${paymentCount}" class="form-input">
-    </div>
-    <button type="button" class="btn-remove" onclick="this.parentElement.remove()">×</button>
-  `;
-  container.appendChild(newRow);
-}
+      <div class="form-group">
+        <label for="date${paymentCount}" class="form-label">Due Date</label>
+        <input type="date" name="date${paymentCount}" id="date${paymentCount}" class="form-input">
+      </div>
+      <button type="button" class="btn-remove" onclick="this.parentElement.remove()">×</button>
+    `;
+    container.appendChild(newRow);
+  };
 
-// Show payment schedule section based on resolution type
-document.addEventListener('DOMContentLoaded', function() {
-  const paymentSection = document.querySelector('.payment-schedule-section');
-  const hiddenBestOption = document.querySelector('input[name="best_option"][type="hidden"]');
-  
-  // Check the hidden field value to determine if we should show payment schedule
-  if (hiddenBestOption && paymentSection) {
-    const resolutionType = hiddenBestOption.value;
-    if (resolutionType === 'Payment Plan' || resolutionType === 'Pay Missed Rent') {
-      paymentSection.style.display = 'block';
-    } else {
-      paymentSection.style.display = 'none';
+  // Show payment schedule section based on resolution type
+  document.addEventListener('DOMContentLoaded', function() {
+    const paymentSection = document.querySelector('.payment-schedule-section');
+    const hiddenBestOption = document.querySelector('input[name="best_option"][type="hidden"]');
+    
+    // Check the hidden field value to determine if we should show payment schedule
+    if (hiddenBestOption && paymentSection) {
+      const resolutionType = hiddenBestOption.value;
+      if (resolutionType === 'Payment Plan' || resolutionType === 'Pay Missed Rent') {
+        paymentSection.style.display = 'block';
+      } else {
+        paymentSection.style.display = 'none';
+      }
     }
-  }
-});
+  });
+})();
 </script>
 
 <style>
@@ -247,10 +250,11 @@ document.addEventListener('DOMContentLoaded', function() {
   font-weight: 600;
   color: #6b7280;
   pointer-events: none;
+  z-index: 1;
 }
 
 .form-input.with-prefix {
-  padding-left: 32px;
+  padding-left: 30px !important;
 }
 
 .form-hint {

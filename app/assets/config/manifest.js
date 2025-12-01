@@ -10,6 +10,7 @@
 // Individual stylesheet links
 //= link base.css
 //= link navbar.css 
+//= link flash.css
 //= link dashboard.css
 //= link login.css
 //= link signup.css
