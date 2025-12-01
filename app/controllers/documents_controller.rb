@@ -265,16 +265,14 @@ class DocumentsController < ApplicationController
     dest = dir.join("#{file_id}#{ext}")
     File.open(dest, "wb") { |f| f.write(uploaded.read) }
     pk_name, pk_value = next_filedraft_pk_value
-    
+
     sanitized_filename = File.basename(uploaded.original_filename)
     attrs = {
 
       FileName:     File.basename(sanitized_filename, ".*"),
       FileTypes:    ext.delete("."),
       FileURLPath:  "userFiles/#{file_id}#{ext}",
-      CreatorID:    @user[:UserID],
-      TenantSignature: false,
-      LandlordSignature: false
+      CreatorID:    @user[:UserID]
     }
     attrs[pk_name] = pk_value if pk_name && pk_value
 
@@ -428,7 +426,6 @@ class DocumentsController < ApplicationController
 
   # download of the stored file
   def download_or_view
-    
     file = find_file_for_user(params[:id])
     return render plain: "File not found (record)", status: :not_found unless file
 
@@ -439,7 +436,7 @@ class DocumentsController < ApplicationController
     size = File.exist?(path) ? File.size(path) : -1
     Rails.logger.info "[DL] path=#{path} exists=#{File.exist?(path)} size=#{size}"
 
-    
+
     unless path.to_s.start_with?(base_path.to_s) && File.exist?(path)
       return render plain: "File not found (#{path})", status: :not_found
     end
@@ -452,8 +449,8 @@ class DocumentsController < ApplicationController
     rescue StandardError
       nil
     end
-    
-    
+
+
     disposition = "attachment"
 
     send_file path,
@@ -462,9 +459,8 @@ class DocumentsController < ApplicationController
               disposition: disposition
   end
 
-  
+
   def view_inline
-   
     file = find_file_for_user(params[:id])
     return render plain: "File not found (record)", status: :not_found unless file
 
@@ -475,7 +471,7 @@ class DocumentsController < ApplicationController
     size = File.exist?(path) ? File.size(path) : -1
     Rails.logger.info "[VIEW] path=#{path} exists=#{File.exist?(path)} size=#{size}"
 
-    
+
     unless path.to_s.start_with?(base_path.to_s) && File.exist?(path)
       return render plain: "File not found (#{path})", status: :not_found
     end
@@ -488,8 +484,8 @@ class DocumentsController < ApplicationController
     rescue StandardError
       nil
     end
-    
-    
+
+
     disposition = "inline"
 
     send_file path,
@@ -611,11 +607,33 @@ class DocumentsController < ApplicationController
     message_ids = attachments.select(:MessageID)
     messages = Message.where(MessageID: message_ids)
 
+    # Check if user is a direct participant (sender or recipient)
     message_table = Message.arel_table
     participant_condition = message_table[:SenderID].eq(@user[:UserID])
                              .or(message_table[:recipientID].eq(@user[:UserID]))
 
-    messages.where(participant_condition).exists? ? file : nil
+    return file if messages.where(participant_condition).exists?
+
+    # Check if user is a mediator or other party in the conversation
+    conversation_ids = messages.pluck(:ConversationID).uniq
+    conversation_ids.each do |conv_id|
+      # Check PrimaryMessageGroup (landlord, tenant, mediator)
+      pmg = PrimaryMessageGroup.find_by(ConversationID: conv_id)
+      if pmg
+        return file if pmg.LandlordID == @user[:UserID]
+        return file if pmg.TenantID == @user[:UserID]
+        return file if pmg.MediatorID == @user[:UserID]
+      end
+
+      # Check SideMessageGroup (mediator side conversations)
+      smg = SideMessageGroup.find_by(ConversationID: conv_id)
+      if smg
+        return file if smg.UserID == @user[:UserID]
+        return file if smg.MediatorID == @user[:UserID]
+      end
+    end
+
+    nil
   end
 
   def update_document_with_signature(file, is_landlord, signature_name)

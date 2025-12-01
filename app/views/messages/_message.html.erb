@@ -42,22 +42,18 @@
             <div class="attachment-body">
               <div class="attachment-name"><%= file.FileName.presence || "Untitled document" %></div>
               <div class="attachment-actions">
-                <button type="button"
-                        class="attachment-link"
-                        data-document-preview-trigger
-      data-preview-url="<%= view_file_path(file.FileID) %>"
-                        data-file-name="<%= file.FileName %>">
-                  View
-                </button>
+                <%= link_to "View", view_file_path(file.FileID, view_mode: 'simple'), class: "attachment-link" %>
                 <span aria-hidden="true" class="attachment-dot">·</span>
                 <%= link_to "Download", download_file_path(file.FileID), class: "attachment-link" %>
 
-                <% if current_user.Role == "Tenant" && file.TenantSignature == false %>
-                  <span aria-hidden="true" class="attachment-dot">·</span>
-                  <%= link_to "Sign Document", view_file_path(file.FileID), class: "attachment-link attachment-link--primary" %>
-                <% elsif current_user.Role == "Landlord" && file.LandlordSignature == false %>
-                  <span aria-hidden="true" class="attachment-dot">·</span>
-                  <%= link_to "Sign Document", view_file_path(file.FileID), class: "attachment-link attachment-link--primary" %>
+                <% if file.FileTypes == "html" %>
+                  <% if current_user.Role == "Tenant" && file.TenantSignature == false %>
+                    <span aria-hidden="true" class="attachment-dot">·</span>
+                    <%= link_to "Sign Document", view_file_path(file.FileID), class: "attachment-link attachment-link--primary" %>
+                  <% elsif current_user.Role == "Landlord" && file.LandlordSignature == false %>
+                    <span aria-hidden="true" class="attachment-dot">·</span>
+                    <%= link_to "Sign Document", view_file_path(file.FileID), class: "attachment-link attachment-link--primary" %>
+                  <% end %>
                 <% end %>
               </div>
             </div>

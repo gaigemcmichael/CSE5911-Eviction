@@ -1,13 +1,33 @@
 <div class="document-view-container">
-  <% back_path = case @user.Role
-    when "Mediator"
-      third_party_mediations_path
+  <% 
+    # Determine back path based on context
+    back_path = if @conversation
+      # If document is part of a conversation, go back to messages
+      case @user.Role
+      when "Mediator"
+        mediator_case_path(@conversation.ConversationID)
+      when "Landlord"
+        messages_path
+      when "Tenant"
+        messages_path
+      else
+        documents_path
+      end
     else
-      documents_path
-  end %>
+      # Otherwise go back to documents
+      case @user.Role
+      when "Mediator"
+        third_party_mediations_path
+      else
+        documents_path
+      end
+    end
+    
+    back_text = @conversation ? "Back to Messages" : "Back to Documents"
+  %>
 
   <%= link_to back_path, class: "back-link" do %>
-    <i class="fa-solid fa-arrow-left"></i> Back to Documents
+    <i class="fa-solid fa-arrow-left"></i> <%= back_text %>
   <% end %>
 
   <div class="document-header-card">
@@ -21,7 +41,7 @@
     </div>
   </div>
 
-  <% if @conversation && @landlord && @tenant %>
+  <% if @conversation && @landlord && @tenant && @file.FileTypes == "html" && params[:view_mode] != 'simple' %>
     <!-- Signature Status Card -->
     <div class="signature-status-card">
       <h3>Signature Status</h3>
@@ -113,6 +133,12 @@
 <% if @conversation %>
 <script>
   (function() {
+    // Check if ActionCable is available
+    if (typeof ActionCable === 'undefined') {
+      console.warn('ActionCable not loaded, signature updates will not be real-time');
+      return;
+    }
+    
     const fileId = <%= @file.FileID %>;
     const cable = ActionCable.createConsumer();
     

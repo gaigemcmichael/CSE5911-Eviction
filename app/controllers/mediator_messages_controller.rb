@@ -51,6 +51,7 @@ class MediatorMessagesController < ApplicationController
           next unless file
 
           extension = File.extname(file.FileURLPath.to_s).delete(".")
+          is_html = file.FileTypes == "html" || extension == "html"
           {
             file_id: file.FileID,
             file_name: file.FileName,
@@ -58,8 +59,8 @@ class MediatorMessagesController < ApplicationController
             download_url: download_file_path(file.FileID),
             view_url: view_file_path(file.FileID),
             sign_url: view_file_path(file.FileID),
-            tenant_signature_required: file.respond_to?(:TenantSignature) ? !file.TenantSignature : false,
-            landlord_signature_required: file.respond_to?(:LandlordSignature) ? !file.LandlordSignature : false,
+            tenant_signature_required: is_html && file.respond_to?(:TenantSignature) ? !file.TenantSignature : false,
+            landlord_signature_required: is_html && file.respond_to?(:LandlordSignature) ? !file.LandlordSignature : false,
             extension: extension.presence || file.FileTypes
           }
         end
