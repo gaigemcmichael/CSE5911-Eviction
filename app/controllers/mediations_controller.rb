@@ -120,11 +120,13 @@ class MediationsController < ApplicationController
 
     if role == "Tenant"
       @mediation.update!(EndOfConversationGoodFaithLandlord: good_faith)
+      # Redirect tenant to survey
+      redirect_to mediation_survey_path(@mediation.ConversationID)
     elsif role == "Landlord"
       @mediation.update!(EndOfConversationGoodFaithTenant: good_faith)
+      # Redirect landlord directly to messages (no survey)
+      redirect_to messages_path, notice: "Thank you for your feedback."
     end
-
-    redirect_to messages_path
   end
 
   def good_faith_form
@@ -135,6 +137,67 @@ class MediationsController < ApplicationController
     end
 
     render "mediations/good_faith_feedback"
+  end
+
+  # Survey form for post-mediation feedback
+  def survey_form
+    @mediation = PrimaryMessageGroup.find_by(ConversationID: params[:id])
+
+    if @mediation.nil? || @mediation.deleted_at.nil?
+      redirect_to messages_path, alert: "Mediation not found or still ongoing."
+      return
+    end
+
+    # Check if user already submitted survey
+    existing_survey = SurveyResponse.find_by(conversation_id: @mediation.ConversationID, user_id: @user.UserID)
+    if existing_survey
+      redirect_to messages_path, notice: "You have already submitted a survey for this mediation."
+      return
+    end
+
+    @survey = SurveyResponse.new
+
+    # Only tenants can access the survey
+    unless @user.Role == "Tenant" && @mediation.TenantID == @user.UserID
+      redirect_to messages_path, alert: "This survey is only available to tenants."
+      return
+    end
+
+    render "mediations/survey_form"
+  end
+
+  # Submit survey responses
+  def submit_survey
+    @mediation = PrimaryMessageGroup.find_by(ConversationID: params[:id])
+
+    if @mediation.nil? || @mediation.deleted_at.nil?
+      redirect_to messages_path, alert: "Mediation not found or still ongoing."
+      return
+    end
+
+    # Only tenants can submit the survey
+    unless @user.Role == "Tenant" && @mediation.TenantID == @user.UserID
+      redirect_to messages_path, alert: "This survey is only available to tenants."
+      return
+    end
+
+    # Check if user already submitted survey
+    existing_survey = SurveyResponse.find_by(conversation_id: @mediation.ConversationID, user_id: @user.UserID)
+    if existing_survey
+      redirect_to messages_path, notice: "You have already submitted a survey for this mediation."
+      return
+    end
+
+    @survey = SurveyResponse.new(survey_params.merge(
+      conversation_id: @mediation.ConversationID,
+      user_id: @user.UserID
+    ))
+
+    if @survey.save
+      redirect_to messages_path, notice: "Thank you for completing the survey!"
+    else
+      render "mediations/survey_form", alert: "Please complete all required fields."
+    end
   end
 
   # Good Faith Screening prompt for edge case error handling
@@ -258,5 +321,18 @@ class MediationsController < ApplicationController
       flash[:alert] = "You are not authorized to access this page."
       redirect_to root_path
     end
+  end
+
+  def survey_params
+    params.require(:survey_response).permit(
+      :ease_of_use,
+      :helpfulness,
+      :helped_solution,
+      :mediator_neutral,
+      :reached_agreement,
+      :confidence,
+      :would_recommend,
+      :feedback
+    )
   end
 end

@@ -343,7 +343,9 @@ class MessagesController < ApplicationController
       )
       .where(TenantSignature: true, LandlordSignature: true)
       .distinct
-      .select("FileDrafts.*, Messages.ConversationID as ConversationID")
+
+    # Fetch Survey Responses
+    @survey_responses = SurveyResponse.where(conversation_id: @mediation.ConversationID).includes(:user)
 
     render "messages/summary"
   end

@@ -107,6 +107,9 @@ end
   patch "/good_faith_response/:id", to: "mediations#update_good_faith"
   get "/mediation_ended_prompt/:id", to: "mediations#prompt_screen", as: "mediation_ended_prompt"
 
+  # Post-mediation survey
+  get "/survey/:id", to: "mediations#survey_form", as: "mediation_survey"
+  post "/survey/:id", to: "mediations#submit_survey"
 
   # Allow third party mediator to view cases
   resources :third_party_mediations, only: [ :index ]
