@@ -70,5 +70,90 @@
     <% end %>
     
     <%= yield %>
+
+    <% if current_user && (current_user.Role == "Tenant" || current_user.Role == "Landlord") %>
+      <!-- Terms of Use Modal -->
+      <div id="termsOfUseModal" class="conversation-modal" hidden>
+        <div class="conversation-modal__content" style="max-width: 600px; max-height: 85vh; display: flex; flex-direction: column; overflow: hidden;">
+          <div class="conversation-modal__header">
+            <h3>Terms of Use</h3>
+          </div>
+          <div class="conversation-modal__body" style="line-height: 1.6; overflow-y: auto; flex: 1; padding-right: 0.5rem;">
+            <h4 style="margin-top: 0.5rem; margin-bottom: 0.5rem; font-size: 1rem; color: #102a4d;">Purpose</h4>
+            <p style="margin-bottom: 1rem;">Welcome to the Franklin County Municipal Court Self-Help Center's online eviction mediation tool! This tool is designed to promote communication between tenants and landlords before an eviction is filed.</p>
+
+            <h4 style="margin-top: 1rem; margin-bottom: 0.5rem; font-size: 1rem; color: #102a4d;">Respectful Use Only</h4>
+            <p style="margin-bottom: 0.5rem;">You may not use this tool to harass, threaten, or intimidate your landlord or tenant.</p>
+            <p style="margin-bottom: 0.5rem;">If at any time the communications become abusive or no progress is made, you can end the mediation.</p>
+            <p style="margin-bottom: 1rem;">All communication must be in good faith.</p>
+            
+            <p style="margin-bottom: 0.5rem;">A landlord will be considered to have made a good faith attempt when the following conditions are met:</p>
+            <ol style="margin-left: 1.5rem; margin-bottom: 1rem;">
+              <li style="margin-bottom: 0.25rem;">The landlord initiates a mediation request OR responds to a mediation request from a tenant within three business days of the tenant's request.</li>
+              <li style="margin-bottom: 0.25rem;">The landlord provides accurate and complete contact information for the tenant.</li>
+              <li style="margin-bottom: 0.25rem;">The landlord responds to mediator outreach within three business days.</li>
+            </ol>
+            
+            <p style="margin-bottom: 1rem;">A mediation provider will issue a Certificate of Mediation Attempt once these steps are completed. A settlement is not required.</p>
+
+            <h4 style="margin-top: 1rem; margin-bottom: 0.5rem; font-size: 1rem; color: #102a4d;">Handling Tenant Nonresponse</h4>
+            <p style="margin-bottom: 0.5rem;">A landlord will receive a Certification of Mediation Attempt even when the tenant does not respond, as long as the landlord participated as required.</p>
+            <p style="margin-bottom: 0.5rem;">A landlord will receive a Certificate of Mediation Attempt even if the mediation is terminated due to the tenant violating the respectful use policy, as long as the landlord had participated as required.</p>
+            
+            <p style="margin-bottom: 0.5rem;">A certificate will be issued when:</p>
+            <ul style="margin-left: 1.5rem; margin-bottom: 1rem;">
+              <li style="margin-bottom: 0.25rem;">The mediation request was submitted.</li>
+              <li style="margin-bottom: 0.25rem;">Five business days have passed with no tenant communication.</li>
+              <li style="margin-bottom: 0.25rem;">The landlord responded to any mediator questions.</li>
+            </ul>
+            
+            <p style="margin-bottom: 1rem;">If a tenant fails to respond, the landlords are not penalized for factors outside their control.</p>
+
+            <h4 style="margin-top: 1rem; margin-bottom: 0.5rem; font-size: 1rem; color: #102a4d;">Legal Disclaimer</h4>
+            <p style="margin-bottom: 0.5rem;">This mediation tool is for communication only.</p>
+            <p style="margin-bottom: 0.5rem;">This tool does not provide legal advice. It only offers information and a space to communicate.</p>
+            
+            <p style="margin-top: 1.5rem; margin-bottom: 0.5rem; font-weight: 600;">By clicking "OK", you understand and agree to these terms.</p>
+          </div>
+          <div class="conversation-modal__actions">
+            <button id="acceptTermsBtn" class="conversation-cta" style="background: #102a4d; color: white; border: none; padding: 0.75rem 2rem; border-radius: 999px; font-weight: 600; cursor: pointer; font-size: 0.95rem;">OK</button>
+          </div>
+        </div>
+      </div>
+
+      <script>
+        (function() {
+          const modal = document.getElementById('termsOfUseModal');
+          const acceptBtn = document.getElementById('acceptTermsBtn');
+          const storageKey = 'evictionMediationTermsAccepted';
+          
+          function showTermsModal() {
+            // Check if user has already accepted terms
+            const hasAccepted = localStorage.getItem(storageKey);
+            
+            if (!hasAccepted && modal) {
+              modal.removeAttribute('hidden');
+              document.body.classList.add('has-modal-open');
+            }
+          }
+          
+          function hideTermsModal() {
+            if (modal) {
+              modal.setAttribute('hidden', '');
+              document.body.classList.remove('has-modal-open');
+              localStorage.setItem(storageKey, 'true');
+            }
+          }
+          
+          if (acceptBtn) {
+            acceptBtn.addEventListener('click', hideTermsModal);
+          }
+          
+          // Show modal on page load
+          document.addEventListener('DOMContentLoaded', showTermsModal);
+          document.addEventListener('turbo:load', showTermsModal);
+        })();
+      </script>
+    <% end %>
   </body>
 </html>
