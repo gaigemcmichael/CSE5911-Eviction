@@ -1,0 +1,20 @@
+Unread Message Reminder
+=======================
+
+Hello <%= @recipient.FName %>,
+
+You have an unread message in your ongoing eviction mediation that has been waiting for your response for more than 4 hours.
+
+<%= @sender.FName %> <%= @sender.LName %> is waiting to hear from you.
+
+Please log in to your account to view and respond to the message. Timely communication is important for a successful mediation process.
+
+View your messages here: <%= @messages_url %>
+
+If you have any questions or need assistance, please don't hesitate to reach out to your mediator.
+
+Best regards,
+The Eviction Mediation Team
+
+---
+This is an automated reminder. Please do not reply directly to this email.

@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta content='text/html; charset=UTF-8' http-equiv='Content-Type' />
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        line-height: 1.6;
+        color: #333333;
+        margin: 0;
+        padding: 0;
+        background-color: #f4f4f4;
+      }
+      .container {
+        max-width: 600px;
+        margin: 20px auto;
+        background-color: #ffffff;
+        border-radius: 8px;
+        overflow: hidden;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+      }
+      .header {
+        background-color: #0b2b4b;
+        color: #ffffff;
+        padding: 30px;
+        text-align: center;
+      }
+      .header h1 {
+        margin: 0;
+        font-size: 24px;
+      }
+      .content {
+        padding: 30px;
+      }
+      .content p {
+        margin: 0 0 15px 0;
+      }
+      .button {
+        display: inline-block;
+        padding: 12px 30px;
+        background-color: #1f6feb;
+        color: #ffffff !important;
+        text-decoration: none;
+        border-radius: 6px;
+        margin: 20px 0;
+        font-weight: bold;
+      }
+      .button:hover {
+        background-color: #1557c0;
+      }
+      .footer {
+        background-color: #f4f4f4;
+        padding: 20px;
+        text-align: center;
+        font-size: 12px;
+        color: #666666;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div class="header">
+        <h1>Unread Message Reminder</h1>
+      </div>
+      <div class="content">
+        <p>Hello <%= @recipient.FName %>,</p>
+        
+        <p>You have an unread message in your ongoing eviction mediation that has been waiting for your response for more than 4 hours.</p>
+        
+        <p><strong><%= @sender.FName %> <%= @sender.LName %></strong> is waiting to hear from you.</p>
+        
+        <p>Please log in to your account to view and respond to the message. Timely communication is important for a successful mediation process.</p>
+        
+        <p style="text-align: center;">
+          <a href="<%= @messages_url %>" class="button">View Messages</a>
+        </p>
+        
+        <p>If you have any questions or need assistance, please don't hesitate to reach out to your mediator.</p>
+        
+        <p>Best regards,<br/>
+        The Eviction Mediation Team</p>
+      </div>
+      <div class="footer">
+        <p>This is an automated reminder. Please do not reply directly to this email.</p>
+      </div>
+    </div>
+  </body>
+</html>
