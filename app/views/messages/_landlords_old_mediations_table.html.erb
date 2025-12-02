@@ -23,7 +23,7 @@
             </td>
             <td data-label="Feedback">
               <% if needs_good_faith_response?(mediation, @user) %>
-                <%= link_to "Complete Feedback", good_faith_response_path(mediation.ConversationID), class: "complete-link" %>
+                <%= link_to "Complete Feedback", mediation_survey_path(mediation.ConversationID), class: "complete-link" %>
               <% else %>
                 <span>Submitted</span>
               <% end %>

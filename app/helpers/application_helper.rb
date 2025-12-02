@@ -2,13 +2,8 @@ module ApplicationHelper
   def needs_good_faith_response?(mediation, user)
     return false if mediation.deleted_at.nil?
 
-    if user.Role == "Tenant"
-      mediation.EndOfConversationGoodFaithLandlord.nil?
-    elsif user.Role == "Landlord"
-      mediation.EndOfConversationGoodFaithTenant.nil?
-    else
-      false
-    end
+    # Check if user has already submitted a survey
+    SurveyResponse.where(conversation_id: mediation.ConversationID, user_id: user.UserID).none?
   end
 
   # Return "active" when the current request path starts with the given
