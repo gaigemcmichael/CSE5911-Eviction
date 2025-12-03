@@ -3,23 +3,27 @@
 one:
   conversation_id: 1
   user_id: 1
-  ease_of_use: MyString
-  helpfulness: MyString
-  helped_solution: MyString
-  mediator_neutral: MyString
-  reached_agreement: MyString
-  confidence: MyString
-  would_recommend: MyString
-  feedback: MyText
+  user_role: Tenant
+  tool_ease: easy
+  info_clear: yes
+  understood_mediation: yes
+  other_participated: yes
+  good_faith: yes
+  helped_communicate: yes
+  would_recommend: yes
+  liked_most: MyText
+  device_used: computer
 
 two:
   conversation_id: 1
   user_id: 1
-  ease_of_use: MyString
-  helpfulness: MyString
-  helped_solution: MyString
-  mediator_neutral: MyString
-  reached_agreement: MyString
-  confidence: MyString
-  would_recommend: MyString
-  feedback: MyText
+  user_role: Landlord
+  tool_ease: neutral
+  info_clear: somewhat
+  understood_mediation: somewhat
+  other_participated: no
+  good_faith: somewhat
+  helped_communicate: somewhat
+  would_recommend: maybe
+  liked_most: MyText
+  device_used: phone

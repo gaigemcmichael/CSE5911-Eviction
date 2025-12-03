@@ -44,14 +44,16 @@
               <% if @user.Role == "Landlord" || @user.Role == "Mediator" || @user.Role == "Admin" %>
                 <div class="screening-item full-width">
                   <span class="q-label">Tenant acted in good faith (per landlord)</span>
-                  <span class="q-value"><%= good_faith_label(@mediation.EndOfConversationGoodFaithTenant) %></span>
+                  <% landlord_survey = @survey_responses.find { |r| r.user&.Role == "Landlord" } %>
+                  <span class="q-value"><%= landlord_survey&.good_faith ? landlord_survey.good_faith.titleize : "Pending" %></span>
                 </div>
               <% end %>
               
               <% if @user.Role == "Tenant" || @user.Role == "Mediator" || @user.Role == "Admin" %>
                 <div class="screening-item full-width">
                   <span class="q-label">Landlord acted in good faith (per tenant)</span>
-                  <span class="q-value"><%= good_faith_label(@mediation.EndOfConversationGoodFaithLandlord) %></span>
+                  <% tenant_survey = @survey_responses.find { |r| r.user&.Role == "Tenant" } %>
+                  <span class="q-value"><%= tenant_survey&.good_faith ? tenant_survey.good_faith.titleize : "Pending" %></span>
                 </div>
               <% end %>
             </div>
@@ -218,59 +220,73 @@
             <h2><i class="fa-solid fa-chart-bar"></i> Survey Responses</h2>
           </div>
           <div class="card-body">
-            <% tenant_response = @survey_responses.find { |r| r.user&.Role == "Tenant" } %>
-            
-            <!-- Tenant Response -->
-            <% if tenant_response %>
-              <% respondent = tenant_response.user %>
-              <div class="survey-response-section">
+            <% @survey_responses.each_with_index do |response, index| %>
+              <% respondent = response.user %>
+              <div class="survey-response-section" style="<%= 'margin-top: 2rem; padding-top: 2rem; border-top: 1px solid #e2e8f0;' if index > 0 %>">
                 <h3 style="font-size: 0.9rem; text-transform: uppercase; color: #64748b; margin-bottom: 1rem;">
-                  Response from <%= respondent ? "#{respondent.FName} #{respondent.LName}" : "Unknown" %>
+                  Response from <%= respondent ? "#{respondent.FName} #{respondent.LName}#{" (#{response.user_role})" if response.user_role.present?}" : "Unknown" %>
                 </h3>
                 
                 <div class="survey-answers" style="display: grid; gap: 1rem;">
                   <div class="survey-item">
-                    <span class="q-label" style="display: block; font-size: 0.875rem; color: #64748b; margin-bottom: 0.25rem;">How easy was it to communicate on the platform?</span>
-                    <span class="q-value" style="display: block; font-weight: 500; color: #0f172a;"><%= tenant_response.ease_of_use&.titleize %></span>
+                    <span class="q-label" style="display: block; font-size: 0.875rem; color: #64748b; margin-bottom: 0.25rem;">User Role:</span>
+                    <span class="q-value" style="display: block; font-weight: 500; color: #0f172a;"><%= response.user_role %></span>
+                  </div>
+
+                  <div class="survey-item">
+                    <span class="q-label" style="display: block; font-size: 0.875rem; color: #64748b; margin-bottom: 0.25rem;">How easy was the tool to use?</span>
+                    <span class="q-value" style="display: block; font-weight: 500; color: #0f172a;"><%= response.tool_ease&.humanize %></span>
                   </div>
                   
                   <div class="survey-item">
-                    <span class="q-label" style="display: block; font-size: 0.875rem; color: #64748b; margin-bottom: 0.25rem;">How helpful were the platform's resources and information?</span>
-                    <span class="q-value" style="display: block; font-weight: 500; color: #0f172a;"><%= tenant_response.helpfulness&.titleize %></span>
+                    <span class="q-label" style="display: block; font-size: 0.875rem; color: #64748b; margin-bottom: 0.25rem;">Was the information clear and easy to understand?</span>
+                    <span class="q-value" style="display: block; font-weight: 500; color: #0f172a;"><%= response.info_clear&.titleize %></span>
                   </div>
                   
                   <div class="survey-item">
-                    <span class="q-label" style="display: block; font-size: 0.875rem; color: #64748b; margin-bottom: 0.25rem;">The tool helped you work toward a solution.</span>
-                    <span class="q-value" style="display: block; font-weight: 500; color: #0f172a;"><%= tenant_response.helped_solution&.titleize %></span>
+                    <span class="q-label" style="display: block; font-size: 0.875rem; color: #64748b; margin-bottom: 0.25rem;">Did you understand what mediation is after using this tool?</span>
+                    <span class="q-value" style="display: block; font-weight: 500; color: #0f172a;"><%= response.understood_mediation&.titleize %></span>
                   </div>
                   
-                  <% if @mediator && tenant_response.mediator_neutral.present? %>
-                    <div class="survey-item">
-                      <span class="q-label" style="display: block; font-size: 0.875rem; color: #64748b; margin-bottom: 0.25rem;">The mediator was neutral.</span>
-                      <span class="q-value" style="display: block; font-weight: 500; color: #0f172a;"><%= tenant_response.mediator_neutral&.titleize %></span>
+                  <div class="survey-item">
+                    <span class="q-label" style="display: block; font-size: 0.875rem; color: #64748b; margin-bottom: 0.25rem;">Did the other party participate in the conversation?</span>
+                    <span class="q-value" style="display: block; font-weight: 500; color: #0f172a;"><%= response.other_participated&.humanize %></span>
+                  </div>
+                  
+                  <div class="survey-item">
+                    <span class="q-label" style="display: block; font-size: 0.875rem; color: #64748b; margin-bottom: 0.25rem;">Did you feel the other party acted in good faith?</span>
+                    <span class="q-value" style="display: block; font-weight: 500; color: #0f172a;"><%= response.good_faith&.titleize %></span>
+                  </div>
+                  
+                  <div class="survey-item">
+                    <span class="q-label" style="display: block; font-size: 0.875rem; color: #64748b; margin-bottom: 0.25rem;">Did the platform help you communicate your side of the issue?</span>
+                    <span class="q-value" style="display: block; font-weight: 500; color: #0f172a;"><%= response.helped_communicate&.titleize %></span>
+                  </div>
+                  
+                  <div class="survey-item">
+                    <span class="q-label" style="display: block; font-size: 0.875rem; color: #64748b; margin-bottom: 0.25rem;">Would you recommend this tool to someone in your situation?</span>
+                    <span class="q-value" style="display: block; font-weight: 500; color: #0f172a;"><%= response.would_recommend&.titleize %></span>
+                  </div>
+
+                  <div class="survey-item">
+                    <span class="q-label" style="display: block; font-size: 0.875rem; color: #64748b; margin-bottom: 0.25rem;">What device did you use today?</span>
+                    <span class="q-value" style="display: block; font-weight: 500; color: #0f172a;"><%= response.device_used&.titleize %></span>
+                  </div>
+                  
+                  <% if response.liked_most.present? %>
+                    <div class="survey-item" style="margin-top: 0.5rem;">
+                      <span class="q-label" style="display: block; font-size: 0.875rem; color: #64748b; margin-bottom: 0.5rem;">What did you like most about the platform?</span>
+                      <div style="background: #f8fafc; padding: 0.75rem; border-radius: 6px; border: 1px solid #e2e8f0;">
+                        <%= simple_format(response.liked_most, {}, wrapper_tag: "div", style: "color: #475569; font-size: 0.875rem; line-height: 1.5;") %>
+                      </div>
                     </div>
                   <% end %>
-                  
-                  <div class="survey-item">
-                    <span class="q-label" style="display: block; font-size: 0.875rem; color: #64748b; margin-bottom: 0.25rem;">Did you reach an agreement?</span>
-                    <span class="q-value" style="display: block; font-weight: 500; color: #0f172a;"><%= tenant_response.reached_agreement %></span>
-                  </div>
-                  
-                  <div class="survey-item">
-                    <span class="q-label" style="display: block; font-size: 0.875rem; color: #64748b; margin-bottom: 0.25rem;">How confident are you about next steps?</span>
-                    <span class="q-value" style="display: block; font-weight: 500; color: #0f172a;"><%= tenant_response.confidence&.titleize %></span>
-                  </div>
-                  
-                  <div class="survey-item">
-                    <span class="q-label" style="display: block; font-size: 0.875rem; color: #64748b; margin-bottom: 0.25rem;">Would you recommend this tool?</span>
-                    <span class="q-value" style="display: block; font-weight: 500; color: #0f172a;"><%= tenant_response.would_recommend&.titleize %></span>
-                  </div>
-                  
-                  <% if tenant_response.feedback.present? %>
+
+                  <% if response.should_improve.present? %>
                     <div class="survey-item" style="margin-top: 0.5rem;">
-                      <span class="q-label" style="display: block; font-size: 0.875rem; color: #64748b; margin-bottom: 0.5rem;">Additional Feedback:</span>
+                      <span class="q-label" style="display: block; font-size: 0.875rem; color: #64748b; margin-bottom: 0.5rem;">What should we improve?</span>
                       <div style="background: #f8fafc; padding: 0.75rem; border-radius: 6px; border: 1px solid #e2e8f0;">
-                        <%= simple_format(tenant_response.feedback, {}, wrapper_tag: "div", style: "color: #475569; font-size: 0.875rem; line-height: 1.5;") %>
+                        <%= simple_format(response.should_improve, {}, wrapper_tag: "div", style: "color: #475569; font-size: 0.875rem; line-height: 1.5;") %>
                       </div>
                     </div>
                   <% end %>

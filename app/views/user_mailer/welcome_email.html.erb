@@ -6,15 +6,14 @@
         Eviction Mediation
       </div>
       <div style="padding:25px;">
-        <h2 style="color:#333;">Welcome, <%= (@user.try(:FName) || @user.try(:first_name)).presence || "there" %>!</h2>
+        <h2 style="color:#333;">Hi, <%= (@user.try(:FName) || @user.try(:first_name)).presence || "there" %>!</h2>
         <p style="font-size:16px;color:#555;">
-          We're glad to have you on <strong><%= @app_name %></strong>.
-          Your account is all set — you can log in anytime to manage mediation requests and messages.
+          Welcome to the <strong><%= @app_name %></strong>! Your account is now active and ready to use. You can log in at any time to review messages, manage mediation requests, and access helpful information.
         </p>
         <div style="margin:30px 0;text-align:center;">
           <a href="<%= @dashboard_url %>" style="background:#1f6feb;color:white;text-decoration:none;padding:12px 20px;border-radius:6px;font-weight:bold;">Go to Dashboard</a>
         </div>
-        <p style="font-size:14px;color:#777;">If you have any questions, just reply to this email.</p>
+        <p style="font-size:14px;color:#777;">If you need support or have any questions as you get started, our team is here to help — just reply to this email.</p>
         <p style="font-size:14px;color:#777;">— The Eviction Mediation Team</p>
       </div>
       <div style="background:#f1f4f8;color:#888;padding:12px;text-align:center;font-size:12px;">

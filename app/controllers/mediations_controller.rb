@@ -108,7 +108,7 @@ class MediationsController < ApplicationController
     if @user.Role == "Mediator"
       redirect_to third_party_mediations_path, notice: "Mediation terminated."
     else
-      redirect_to good_faith_response_path(@mediation.ConversationID)
+      redirect_to mediation_survey_path(@mediation.ConversationID)
     end
   end
 
@@ -124,8 +124,8 @@ class MediationsController < ApplicationController
       redirect_to mediation_survey_path(@mediation.ConversationID)
     elsif role == "Landlord"
       @mediation.update!(EndOfConversationGoodFaithTenant: good_faith)
-      # Redirect landlord directly to messages (no survey)
-      redirect_to messages_path, notice: "Thank you for your feedback."
+      # Redirect landlord to survey (same as tenant)
+      redirect_to mediation_survey_path(@mediation.ConversationID)
     end
   end
 
@@ -155,13 +155,16 @@ class MediationsController < ApplicationController
       return
     end
 
-    @survey = SurveyResponse.new
+    # Both tenants and landlords can access the survey
+    is_tenant = @user.Role == "Tenant" && @mediation.TenantID == @user.UserID
+    is_landlord = @user.Role == "Landlord" && @mediation.LandlordID == @user.UserID
 
-    # Only tenants can access the survey
-    unless @user.Role == "Tenant" && @mediation.TenantID == @user.UserID
-      redirect_to messages_path, alert: "This survey is only available to tenants."
+    unless is_tenant || is_landlord
+      redirect_to messages_path, alert: "You are not authorized to access this survey."
       return
     end
+
+    @survey = SurveyResponse.new
 
     render "mediations/survey_form"
   end
@@ -175,9 +178,12 @@ class MediationsController < ApplicationController
       return
     end
 
-    # Only tenants can submit the survey
-    unless @user.Role == "Tenant" && @mediation.TenantID == @user.UserID
-      redirect_to messages_path, alert: "This survey is only available to tenants."
+    # Both tenants and landlords can submit the survey
+    is_tenant = @user.Role == "Tenant" && @mediation.TenantID == @user.UserID
+    is_landlord = @user.Role == "Landlord" && @mediation.LandlordID == @user.UserID
+
+    unless is_tenant || is_landlord
+      redirect_to messages_path, alert: "You are not authorized to submit this survey."
       return
     end
 
@@ -190,7 +196,8 @@ class MediationsController < ApplicationController
 
     @survey = SurveyResponse.new(survey_params.merge(
       conversation_id: @mediation.ConversationID,
-      user_id: @user.UserID
+      user_id: @user.UserID,
+      user_role: @user.Role
     ))
 
     if @survey.save
@@ -325,14 +332,16 @@ class MediationsController < ApplicationController
 
   def survey_params
     params.require(:survey_response).permit(
-      :ease_of_use,
-      :helpfulness,
-      :helped_solution,
-      :mediator_neutral,
-      :reached_agreement,
-      :confidence,
+      :tool_ease,
+      :info_clear,
+      :understood_mediation,
+      :other_participated,
+      :good_faith,
+      :helped_communicate,
       :would_recommend,
-      :feedback
+      :liked_most,
+      :should_improve,
+      :device_used
     )
   end
 end
