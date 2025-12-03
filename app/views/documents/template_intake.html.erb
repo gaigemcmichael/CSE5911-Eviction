@@ -285,32 +285,6 @@
       </div>
     <% end %>
 
-    <% if @template == 'b' %>
-      <!-- Payment Schedule (Optional) -->
-      <div class="form-section payment-schedule-section" style="<%= (@default_resolution == 'Payment Plan' || @default_resolution == 'Pay Missed Rent') ? 'display: block;' : 'display: none;' %>">
-        <h3 class="section-title">Payment Schedule</h3>
-        <p class="form-hint">Add payment installments for the payment plan</p>
-        
-        <div id="payment-schedule">
-          <div class="payment-row">
-            <div class="form-group">
-              <%= label_tag :amount1, "Amount", class: "form-label" %>
-              <div class="input-with-prefix">
-                <span class="input-prefix">$</span>
-                <%= number_field_tag :amount1, nil, step: 0.01, class: "form-input with-prefix", placeholder: "0.00" %>
-              </div>
-            </div>
-            <div class="form-group">
-              <%= label_tag :date1, "Due Date", class: "form-label" %>
-              <%= date_field_tag :date1, nil, class: "form-input" %>
-            </div>
-          </div>
-        </div>
-        
-        <button type="button" class="btn btn-secondary" onclick="addPaymentRow()">+ Add Payment</button>
-      </div>
-    <% end %>
-
     <div class="form-actions">
       <%= link_to "← Back to Templates", generate_file_path, class: "btn btn-secondary" %>
       <%= submit_tag "Generate Document", class: "btn btn-primary" %>
