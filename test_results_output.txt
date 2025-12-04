@@ -1,0 +1,47 @@
+Run options: --verbose --seed 26897
+
+# Running:
+
+MessagesControllerTest#test_tenant_should_see_tenant_index_if_mediation_exists = 0.74 s = .
+MessagesControllerTest#test_should_redirect_active_mediation_summary = 0.01 s = .
+MessagesControllerTest#test_tenant_without_mediation_should_see_landlords_list = 0.04 s = .
+MessagesControllerTest#test_landlord_should_see_landlord_index_if_mediation_exists = 0.04 s = .
+MessagesControllerTest#test_should_get_summary_for_ended_mediation = 0.08 s = .
+MessagesControllerTest#test_unauthorized_users_should_get_forbidden_response = 0.02 s = .
+MessagesControllerTest#test_should_redirect_to_login_if_not_logged_in = 0.01 s = .
+UsersControllerTest#test_renders_the_signup_form = 0.02 s = .
+UsersControllerTest#test_creates_a_user_with_valid_data = 0.03 s = .
+UsersControllerTest#test_re-renders_the_form_when_data_is_invalid = 0.01 s = .
+LandlordMailerTest#test_invitation_email = 0.01 s = .
+DashboardControllerTest#test_should_get_index_for_tenant = 0.01 s = .
+DashboardControllerTest#test_should_get_index_for_landlord = 0.01 s = .
+DashboardControllerTest#test_should_log_out_and_redirect_to_root = 0.01 s = .
+DashboardControllerTest#test_should_deny_access_for_invalid_user_role = 0.01 s = .
+DashboardControllerTest#test_should_get_index_for_admin = 0.03 s = .
+DashboardControllerTest#test_should_redirect_to_login_if_not_logged_in = 0.00 s = .
+DashboardControllerTest#test_should_get_index_for_mediator = 0.02 s = .
+MediationsControllerTest#test_require_login_to_access_mediations = 0.01 s = .
+MediationsControllerTest#test_non-tenant/non-landlord_cannot_create_mediation = 0.01 s = .
+MediationsControllerTest#test_tenant_can_create_mediation = 0.03 s = .
+MediationsControllerTest#test_landlord_can_accept_mediation = 0.02 s = .
+MediationsControllerTest#test_landlord_can_create_mediation = 0.02 s = .
+MediationsControllerTest#test_unauthorized_landlord_cannot_accept_mediation = 0.01 s = .
+MediationsControllerTest#test_require_login_to_accept_mediation = 0.00 s = .
+ScreeningsControllerTest#test_tenant_can_view_screening_form = 0.02 s = .
+ScreeningsControllerTest#test_requires_login_to_access_screening_form = 0.00 s = .
+ScreeningsControllerTest#test_tenant_can_submit_screening_responses = 0.02 s = .
+MediatorCasesControllerTest#test_should_get_show = 0.03 s = .
+SessionsControllerTest#test_rejects_invalid_credentials = 0.01 s = .
+SessionsControllerTest#test_creates_a_session_with_valid_credentials = 0.01 s = .
+SessionsControllerTest#test_logs_out_and_clears_the_session = 0.01 s = .
+SessionsControllerTest#test_renders_the_login_page = 0.00 s = .
+Admin::FlaggedMediationsControllerTest#test_lists_unassigned_and_completed_mediations_for_admins = 0.04 s = .
+Admin::FlaggedMediationsControllerTest#test_shows_a_specific_mediation = 0.03 s = .
+ThirdPartyMediationsControllerTest#test_should_get_index = 0.02 s = .
+Admin::AccountsControllerTest#test_admin_can_view_mediator_accounts = 0.03 s = .
+Admin::AccountsControllerTest#test_admin_can_create_mediator_account = 0.03 s = .
+Admin::AccountsControllerTest#test_admin_can_update_mediator_account = 0.02 s = .
+Admin::AccountsControllerTest#test_requires_login_for_index = 0.00 s = .
+
+Finished in 1.513839s, 26.4229 runs/s, 112.9579 assertions/s.
+40 runs, 171 assertions, 0 failures, 0 errors, 0 skips

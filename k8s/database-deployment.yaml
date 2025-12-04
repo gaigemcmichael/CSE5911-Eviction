@@ -8,7 +8,7 @@ spec:
     - ReadWriteOnce
   resources:
     requests:
-      storage: 5Gi
+      storage: 10Gi
 ---
 apiVersion: v1
 kind: Secret
@@ -54,6 +54,10 @@ spec:
             secretKeyRef:
               name: sqlserver-secret
               key: SA_PASSWORD
+        - name: MSSQL_COLLATION
+          value: "SQL_Latin1_General_CP1_CI_AS"
+        - name: MSSQL_MEMORY_LIMIT_MB
+          value: "2048"
         volumeMounts:
         - name: sqlserver-data
           mountPath: /var/opt/mssql

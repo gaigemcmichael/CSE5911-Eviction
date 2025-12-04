@@ -1,12 +1,75 @@
 ---
 layout: post
 title:  "Developer Manual"
-date:   2025-11-20 17:59:43 -0500
+date:   2025-12-04
 categories: documentation
 ---
 ## Introduction
 
-This Developer Manual provides future developers with essential documentation to understand, modify, and maintain the Eviction Mediation Platform. This document outlines the system architecture, installation procedures, key source files, best practices for testing and debugging, and anticipated improvements for future iterations. By using this guide, developers can efficiently contribute to the project’s success.
+This Developer Manual provides future developers with essential documentation to understand, modify, and maintain the Eviction Mediation Platform. This document outlines the system architecture, installation procedures, key source files, best practices for testing and debugging, and anticipated improvements for future iterations. By using this guide, developers can efficiently contribute to the project's success.
+
+## Recent Features & Functionality (Fall 2024 - Autumn 2025)
+
+### Two-Factor Authentication (2FA)
+
+Implemented SMS-based two-factor authentication using Twilio for enhanced account security:
+
+* **Implementation:** All users are automatically enrolled in 2FA upon account creation
+* **Flow:** After login, users receive a verification code via SMS to their registered phone number
+* **Configuration:** Twilio credentials must be configured in environment variables (see Credentials Setup section)
+* **User Control:** Users can disable 2FA in their account settings
+* **Files:** `app/controllers/sms_two_factor_controller.rb`, related views in `app/views/sms_two_factor/`
+
+### Bidirectional Mediation Requests
+
+Expanded mediation initiation to support both tenant and landlord as initiators:
+
+* **Previous:** Only tenants could initiate mediation requests
+* **Current:** Both tenants and landlords can request negotiations
+* **Benefits:** More flexible dispute resolution process, better reflects real-world scenarios
+* **Implementation:** Modified `mediations_controller.rb` and `messages_controller.rb` to handle requests from either party
+* **Landlord Invitation:** System automatically sends email invitations to landlords not yet registered
+
+### Email Notifications
+
+Comprehensive email notification system for key platform events:
+
+* **Account Creation:** Welcome emails with getting started information
+* **Mediation Requests:** Notifications when negotiations are requested
+* **Message Notifications:** Email alerts for new messages in active mediations
+* **Configuration:** Uses ActionMailer with SMTP (currently Gmail, see Credentials Setup)
+* **Files:** `app/mailers/`, email templates in `app/views/` mailer folders
+
+### Resources Page
+
+Educational resources hub for tenants and landlords:
+
+* **FAQ System:** Common questions about eviction and mediation process
+* **Educational Content:** Information about tenant rights, landlord responsibilities
+* **Guided Resource Locator:** Question-based tool to help users find relevant resources
+* **Role-Specific Content:** Tailored resources for tenants vs landlords
+* **Files:** `app/controllers/resources_controller.rb`, `app/views/resources/`, FAQ content in `db/faq_general.txt` and `db/faq_privacy.txt`
+
+### User Survey System
+
+Post-mediation survey for collecting user feedback and analytics:
+
+* **Trigger:** Automatically presented when mediations/negotiations end
+* **Questions:** Cover ease of use, information clarity, communication effectiveness, device used
+* **Data Collection:** Stores responses in `survey_responses` table
+* **Future Use:** Data intended for admin analytics dashboard (see Future Work)
+* **Files:** Survey model, controller logic in `mediations_controller.rb` for survey presentation
+
+### Enhanced Document Management
+
+Improved document generation and e-signature workflow:
+
+* **PDF Generation:** Automated generation of payment plans and agreements
+* **E-Signature Support:** Built-in document signing capabilities
+* **Document Preview:** Preview documents before signing
+* **Real-Time Updates:** ActionCable integration for live document status updates
+* **File Attachments:** Support for uploading and sharing documents within conversations
+* **Files:** `app/controllers/documents_controller.rb`, `app/channels/document_signature_channel.rb`
 
 ## Environment Set Up
 
@@ -458,6 +521,213 @@ In **config/environments/development.rb** (for development) and **config/environ
 
 > **Note:** You can change the `ENV[]` values in your `.env` file (for example, Gmail username and password).
 
+### Twilio Configuration (SMS Two-Factor Authentication)
+
+To enable SMS-based two-factor authentication, you must configure Twilio credentials:
+
+**Required Environment Variables:**
+
+```ruby
+TWILIO_ACCOUNT_SID=your_account_sid_here
+TWILIO_AUTH_TOKEN=your_auth_token_here
+TWILIO_PHONE_NUMBER=+1234567890
+```
+
+**Setup Steps:**
+
+1. Create a Twilio account at [https://www.twilio.com](https://www.twilio.com)
+2. Navigate to the Console Dashboard to find your Account SID and Auth Token
+3. Purchase or configure a Twilio phone number capable of sending SMS
+4. Add the credentials to your `.env` file (development) or environment variables (production)
+5. Ensure the Twilio gem is installed: `bundle install`
+
+**Testing in Development:**
+
+* Twilio provides test credentials that don't send real SMS messages
+* Test credentials can be found in Twilio Console under "Development" section
+* Use test phone numbers provided by Twilio for validation
+
+**Production Considerations:**
+
+* Verify your Twilio account to remove limitations
+* Monitor SMS usage to stay within budget
+* Consider setting up usage alerts in Twilio Console
+* Implement rate limiting to prevent abuse
+
+## Credentials Setup for Future Teams
+
+### Overview
+
+This application requires external service credentials for full functionality. Future development teams will need to obtain and configure their own credentials for:
+
+1. **SMTP Email Service** (currently using Gmail)
+2. **Twilio SMS Service** (for two-factor authentication)
+3. **Database Credentials** (SQL Server)
+
+### SMTP Credentials (Email Notifications)
+
+**Current Implementation:** Gmail SMTP (Development)
+
+**Production Implementation:** Franklin County Municipal Court will provide their own SMTP server credentials for production use.
+
+**Development Setup (Gmail):**
+
+**Required Information:**
+
+* Email address (username)
+* App-specific password (not regular Gmail password)
+
+**Gmail Setup Steps:**
+
+1. Enable 2FA on the Gmail account that will send emails
+2. Generate an app-specific password:
+   * Go to Google Account settings → Security → 2-Step Verification → App passwords
+   * Select "Mail" and "Other" (enter "Eviction Mediation App")
+   * Copy the generated 16-character password
+3. Add to `.env` file:
+
+   ```bash
+   GMAIL_USERNAME=your-email@gmail.com
+   GMAIL_PASSWORD=your-16-char-app-password
+   ```
+
+**Production Setup (Franklin County Court SMTP):**
+
+Contact Franklin County Municipal Court IT department to obtain:
+
+* SMTP server address
+* SMTP port (typically 587 for TLS or 465 for SSL)
+* Authentication credentials (username/password)
+* Sender email address to use
+* Any domain or IP whitelist requirements
+
+
+For production deployment with Franklin County Court SMTP, modify `config/environments/production.rb`:
+
+```ruby
+config.action_mailer.smtp_settings = {
+  address: ENV['SMTP_ADDRESS'],        # Provided by Franklin County Court
+  port: ENV['SMTP_PORT'],              # Typically 587 or 465
+  domain: ENV['SMTP_DOMAIN'],          # e.g., 'franklincountymunicourt.org'
+  authentication: 'plain',
+  user_name: ENV['SMTP_USERNAME'],     # Provided by Franklin County Court
+  password: ENV['SMTP_PASSWORD'],      # Provided by Franklin County Court
+  enable_starttls_auto: true
+}
+```
+
+### Twilio Credentials (SMS Two-Factor Authentication)
+
+**Required Information:**
+* Account SID
+* Auth Token
+* Twilio Phone Number
+
+**Setup Steps:**
+
+1. Create a Twilio account: [https://www.twilio.com/try-twilio](https://www.twilio.com/try-twilio)
+2. Complete account verification
+3. Obtain credentials from Console Dashboard:
+   * Account SID: Found on main dashboard
+   * Auth Token: Click "Show" next to Auth Token on dashboard
+4. Get a phone number:
+   * Navigate to Phone Numbers → Buy a Number
+   * Select a number with SMS capabilities
+   * Note: Trial accounts have limitations on destination numbers
+5. Add to `.env` file:
+   ```
+   TWILIO_ACCOUNT_SID=ACxxxxxxxxxxxxxxxxxxxxx
+   TWILIO_AUTH_TOKEN=your_auth_token_here
+   TWILIO_PHONE_NUMBER=+15551234567
+   ```
+
+**Cost Considerations:**
+* SMS costs approximately $0.0075 per message (US)
+* Budget accordingly based on expected user volume
+* Set up billing alerts in Twilio Console
+
+### Database Credentials
+
+**Required Information:**
+* Host/IP address
+* Port (default: 1433)
+* Database name
+* Username (default: sa)
+* Password
+
+**Current Development Setup:**
+```
+DB_HOST=127.0.0.1
+DB_PORT=1433
+DB_NAME=EVICTION_TEST
+DB_USERNAME=sa
+DB_PASSWORD=StrongPassword1
+```
+
+### Environment Variable Management
+
+**Development (.env file):**
+
+Create a `.env` file in the project root (this file is gitignored):
+
+```bash
+# Database
+DB_HOST=127.0.0.1
+DB_PORT=1433
+DB_NAME=EVICTION_TEST
+DB_USERNAME=sa
+DB_PASSWORD=StrongPassword1
+
+# Email - Development (Gmail)
+GMAIL_USERNAME=your-email@gmail.com
+GMAIL_PASSWORD=your-app-specific-password
+
+# Email - Production (Franklin County Court SMTP)
+# Contact Franklin County IT for these credentials
+SMTP_ADDRESS=smtp.franklincountymunicourt.org
+SMTP_PORT=587
+SMTP_DOMAIN=franklincountymunicourt.org
+SMTP_USERNAME=your-court-email@franklincountymunicourt.org
+SMTP_PASSWORD=your-court-smtp-password
+
+# Twilio (SMS/2FA)
+TWILIO_ACCOUNT_SID=ACxxxxxxxxxxxxxxxxxxxxx
+TWILIO_AUTH_TOKEN=your_auth_token_here
+TWILIO_PHONE_NUMBER=+15551234567
+
+# Rails
+RAILS_MASTER_KEY=your_master_key_from_credentials
+```
+
+**Production (Environment Variables):**
+
+For production deployments (Kubernetes, Heroku, etc.), set environment variables through:
+
+* Kubernetes Secrets: `kubectl create secret generic app-secrets --from-literal=KEY=VALUE`
+* Docker: Pass via `-e` flag or `docker-compose.yml` environment section
+
+
+### Testing Credentials Setup
+
+After configuring credentials, verify functionality:
+
+**Test Email:**
+```ruby
+# In Rails console (rails c)
+TestMailer.test_email('recipient@example.com').deliver_now
+```
+
+**Test SMS/2FA:**
+1. Sign up for a new account
+2. Verify you receive the SMS verification code
+3. Check Twilio console logs for delivery status
+
+**Test Database:**
+```ruby
+# In Rails console (rails c)
+ActiveRecord::Base.connection.execute("SELECT 1")
+```
+
 ## Source File Locations & Overview
 
 ### 1\. Directory Structure
@@ -683,6 +953,120 @@ One member’s Windows 11 device is still unable to connect to a local instance 
 3. Continue expanding accessibility and localization coverage.
 
 4. Introduce advanced security controls as compliance standards evolve.
+
+## Project Status & Milestone Review
+
+### Completed Milestones (Fall 2024 - Autumn 2025)
+
+* **Core Mediation Functionality**
+
+* Tenant-landlord messaging system with real-time updates (ActionCable)
+* Three-way mediation with neutral third-party mediators
+* Negotiation request/accept workflow for both parties
+* Mediation termination and good faith feedback forms
+
+* **Authentication & Security**
+
+* User registration and login for tenants, landlords, mediators, and admins
+* Two-factor authentication (SMS via Twilio)
+* Password reset functionality
+* Session management and role-based access control
+* Soft-delete support for conversations and messages
+
+* **Document Management**
+
+* PDF generation for payment plans and agreements
+* E-signature workflow with real-time updates
+* Document preview, download, and sharing capabilities
+* Integration with chat for document-related discussions
+
+* **Notification System**
+
+* Email notifications for account creation, mediation reqeusts, and unread message reminders
+* SMS two-factor authentication codes
+* Configurable notification preferences
+
+* **Admin & Mediator Tools**
+
+* Admin dashboard for mediator management
+* Mediation assignment system
+* Screening questionnaire viewing
+* Mediator availability management
+* Account management for creating and modifying mediator accounts
+
+* **User Experience Features**
+
+* Resources page with FAQ and educational content
+* Intake questionnaire for gathering case information
+* Post-mediation survey for user feedback
+* Role-specific dashboards and navigation
+
+* **Testing & Quality Assurance**
+
+* Comprehensive test suite (40 tests, 171 assertions passing)
+* Controller tests for all major functionality
+* Fixture data for consistent testing
+* Continuous Integration pipeline (GitHub Actions)
+* Automated code quality checks (Brakeman security scanning, RuboCop linting)
+
+* **Deployment Infrastructure**
+
+* Docker containerization (multi-stage builds)
+* Kubernetes deployment configurations
+* Environment variable management for credentials
+* Database initialization and migration scripts
+
+### Known Issues & Limitations
+
+**Minor Issues:**
+
+* SQL Server setup can be challenging on Windows 11 (documented workarounds available)
+* Multi-platform Docker builds may be slow or require buildx
+* Database connection timeouts possible if SQL Server is slow to start
+
+**Limitations:**
+
+* SMS/Email notifications not implemented for all mediation events
+* No automated data deletion after 1 year (manual process required)
+* No chat escalation suggestions (users must manually request mediator)
+* Mobile app not yet developed (responsive web only)
+* No premade message suggestions in chat
+* Admin analytics dashboard not yet built (survey data collected but not visualized)
+
+**Bugs:**
+
+1. When a landlord and tenant have the same chat mediation open and one requests a mediator, the request mediator button isn't automatically greyed out.
+
+### What's Left to Be Done
+
+**Production Readiness:**
+
+1. Complete Spring 2026 user testing for pain point discovery/improvement ideas
+2. Performance testing and optimization for production scale
+3. Comprehensive review of legal terms of use.disclaimers by court
+4. Production database backup and recovery procedures
+
+**Enhanced Functionality:**
+
+1. Admin analytics dashboard for survey data visualization
+2. Data retention policy implementation (automated 1-year deletion)
+3. SMS notifications for mediation events (currently email-only)
+4. Chat escalation suggestions
+5. Premade message templates for common scenarios
+6. Enhanced accessibility features (screen reader optimization, text-to-speech)
+7. Multi-language support beyond English
+8. Side conversation support (tenant-mediator and landlord-mediator)
+
+### Future Feature Ideas (From Stakeholder Feedback)
+
+These features were identified as valuable but not yet prioritized:
+
+1. **SMS Notifications** - Extend email notification system to SMS for users who prefer text messages
+2. **Automated Data Deletion** - Delete saved mediation information after 1 year for privacy compliance
+3. **Chat Escalation Suggestions** - AI-powered prompts to bring in a mediator when conversation becomes adversarial
+4. **Mobile Applications** - Native iOS and Android apps for better mobile experience
+5. **Message Suggestions** - Offer premade messages to help users communicate more effectively
+6. **Data Analytics for Admin** - Dashboard visualizing survey data and platform usage metrics
 
 ## Appendices
 

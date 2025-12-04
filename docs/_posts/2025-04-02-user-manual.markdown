@@ -1,7 +1,7 @@
 ---
 layout: post
 title:  "User Manual"
-date:   2025-11-20 17:59:43 -0500
+date:   2025-12-04
 categories: documentation
 ---
 ## Introduction
@@ -54,53 +54,157 @@ d. Administrators
 ### Creating an Account
 
 1. To create an account, click the **Sign Up** option.
-2. Next, fill out the form displayed. Then read and accept the Terms and Conditions and click the **Sign Up** button.
-3. You will be sent a confirmation code through either email or SMS which you will be required to enter to verify your account. Once the code is entered you have gained access to the site.
-4. Congrats! You have successfully created an account!
+2. Next, fill out the form displayed, including your email address and phone number.
+3. Read and accept the Terms and Conditions and click the **Sign Up** button.
+4. You will be sent a verification code via SMS to your phone number to verify your account.
+5. Enter the verification code when prompted.
+6. Congrats! You have successfully created an account with two-factor authentication enabled for enhanced security!
 
 ### Logging In and Out
 
-1. After creating your account, enter your email/phone number and password and select the **Log In** button.
-2. All accounts have two factor authentication automatically enabled so you will be prompted to enter the verification code sent to your sign up email/phone number(this can be disabled in account settings).
-3. To log out simply select the **Log Out** button in the navigation bar.
+**Logging In:**
 
-### Revamped Resources Page
+1. Enter your email address and password, then click the **Log In** button.
+2. You will receive a verification code via SMS to your registered phone number (two-factor authentication).
+3. Enter the verification code when prompted to complete login.
+4. Two-factor authentication is enabled by default for all accounts for your security. You can disable it in your Account settings if preferred.
 
-* The work of the second group of the SP25 semester with their education platform will be used to create an informative Resources page.
-* Tenants will be able to watch videos about the eviction/mediation process and how to mediate effectively. Also, tenants will be able to use a question-based, guided resource locator that helps them find resources that best help them with their situation.
-* Landlords will also have educational resources which will guide them on how to mediate effectively and also help unfamiliar landlords/property managers understand the eviction/mediation process.
+**Logging Out:**
+
+* To log out, simply click the **Log Out** button in the navigation bar.
+
+**Email Notifications:**
+
+* You will receive email notifications for important events such as:
+  * Welcome email
+  * New mediation requests
+  * Unread message reminders (after 4 hours)
+
+## Features & Enhancements
+
+### Two-Factor Authentication (2FA)
+
+All accounts now include SMS-based two-factor authentication for enhanced security:
+
+* Automatically enabled when you create your account
+* Verification codes sent via SMS to your registered phone number
+* Provides an extra layer of protection for your account
+* Can be disabled in Account settings if you prefer (though we recommend keeping it enabled)
+
+### Bidirectional Mediation Requests
+
+Both tenants and landlords can now initiate mediation:
+
+* **Tenants** can request negotiations with their landlords
+* **Landlords** can also request negotiations with their tenants
+* If the other party doesn't have an account, they will automatically receive an email invitation to join the platform
+* This flexibility allows either party to take the first step toward resolving disputes
+
+### Resources Page
+
+Comprehensive educational resources to help you through the mediation process:
+
+* **FAQ Section:** Answers to common questions about eviction and mediation
+* **Tenant Resources:**
+  * Information about tenant rights and responsibilities
+  * Guided resource locator to find help specific to your situation
+  * Tips for preparing for mediation
+  * Financial assistance resources
+* **Landlord Resources:**
+  * Guide to effective mediation techniques
+  * Overview of the eviction and mediation process
+  * Information for property managers new to mediation
+  * Legal requirements and best practices
+
+### Post-Mediation Survey
+
+After completing a mediation or negotiation:
+
+* You'll be asked to complete a brief survey about your experience
+* Questions cover ease of use, communication effectiveness, and device compatibility
+* Your feedback helps improve the platform for future users
+* Survey responses are confidential and used for platform improvement only
 
 ### Landlord Navigation
 
-* How to Navigate:
-  * Get an overview of the site and how to use it on the **Home** tab
-  * Check the **Messages** tab for updates on negotiations
-  * View and manage your documents on the **Documents** tab
-  * Learn about mediation and access useful resources on the **Resources** tab
-  * Update your profile & settings from the **Account** tab
-* Accepting/Requesting Negotiation with Your Tenant:
-  * Go to the **Messages** tab.
-  * Accept/Request the negotiation from your tenant.
-* If you want to start a Mediation:
-  * Request a mediator in the **Messages** tab.
-* If you want to stop a Negotiation/Mediation:
-  * Go to the **Messages** tab and access your negotiation/mediation and select the end negotiation button to end it.
+**How to Navigate:**
+
+* **Home Tab:** Overview of the site and quick access to key features
+* **Messages Tab:** View and manage all negotiations and mediations
+* **Documents Tab:** Generate, view, download, and sign documents
+* **Resources Tab:** Access educational content and mediation guides
+* **Account Tab:** Update your profile, password, and notification settings
+
+**Starting or Accepting a Negotiation:**
+
+1. Go to the **Messages** tab
+2. To **request negotiation** with your tenant:
+   * Click the option to request negotiation
+   * If your tenant doesn't have an account, they'll automatically receive an email invitation
+   * Enter the tenant's contact information and property address
+3. To **accept a negotiation request** from your tenant:
+   * You'll see pending requests in the Messages tab
+   * Review the request details and click Accept
+
+**Requesting a Mediator:**
+
+* Once negotiations have begun, either party can request a neutral third-party mediator
+* Go to the **Messages** tab, open the active negotiation, and click "Request Mediator"
+* You'll need to complete a brief screening questionnaire
+* An admin will assign a mediator to your case
+
+**Ending a Negotiation/Mediation:**
+
+* Go to the **Messages** tab
+* Open the active negotiation/mediation
+* Click the "End Negotiation" button
+* You'll be asked to provide feedback about the other party's good faith participation
+* After ending, you'll have the option to complete a brief survey about your experience
 
 ### Tenant Navigation
 
-* How to Navigate:
-  * Get an overview of the site and how to use it on the **Home** tab
-  * Check the **Messages** tab for updates on negotiations
-  * Need more information? Visit the **Resources** tab to learn about the mediation process and get guided to resources that benefit you most
-  * View and manage your documents on the **Documents** tab
-  * Update your profile & settings from the **Account** tab
-* Accepting/Requesting Negotiation with Your Landlord:
-  * Go to the **Messages** tab.
-  * Accept/Request the negotiation from your landlord.
-* If you want to start a Mediation:
-  * Request a mediator in the **Messages** tab.
-* If you want to stop a Negotiation/Mediation:
-  * Go to the **Messages** tab and access your negotiation/mediation and select the end negotiation button to end it.
+**How to Navigate:**
+
+* **Home Tab:** Overview of the site and quick access to key features
+* **Messages Tab:** View and manage all negotiations and mediations
+* **Resources Tab:** Educational videos, FAQ, and guided resource locator
+* **Documents Tab:** Generate payment plans, view, download, and sign documents
+* **Account Tab:** Update your profile, address, password, and notification settings
+
+**Starting or Accepting a Negotiation:**
+
+1. Go to the **Messages** tab
+2. To **request negotiation** with your landlord:
+   * Click the option to request negotiation
+   * Fill out the intake questionnaire with information about your situation
+   * Provide your landlord's contact information
+   * If your landlord doesn't have an account, they'll receive an email invitation
+3. To **accept a negotiation request** from your landlord:
+   * You'll see pending requests in the Messages tab
+   * Review the request details and click Accept
+   * Fill out the intake questionnaire
+
+**Using the Financial Calculator:**
+
+* Available in the **Documents** tab
+* Helps you create a payment plan proposal
+* Enter your income, expenses, and proposed payment amounts
+* Generates a professional document you can share with your landlord
+
+**Requesting a Mediator:**
+
+* Once negotiations have begun, either party can request a neutral third-party mediator
+* Go to the **Messages** tab, open the active negotiation, and click \"Request Mediator\"
+* You'll need to complete a brief screening questionnaire
+* An admin will assign a mediator to your case
+
+**Ending a Negotiation/Mediation:**
+
+* Go to the **Messages** tab
+* Open the active negotiation/mediation
+* Click the \"End Negotiation\" button
+* You'll be asked to provide feedback about the other party's good faith participation
+* After ending, you'll have the option to complete a brief survey about your experience
 
 ### Mediator Navigation
 
@@ -156,12 +260,43 @@ P
 
 R
 
-* Role - A system attribute defining a user’s level of access and permissions (Admin, Mediator, Tenant, or Landlord).
+* Role - A system attribute defining a user's level of access and permissions (Admin, Mediator, Tenant, or Landlord).
 
 T
 
 * Tenant - A primary end user of the system, who can request mediation with their landlord and access financial planning tools.
+* Two-Factor Authentication (2FA) - A security feature that requires users to verify their identity with a code sent via SMS in addition to their password.
+
+## Platform Status
+
+### Current Capabilities (As of December 2025)
+
+The Eviction Mediation Platform currently provides:
+
+* **Core Features:**
+
+* Two-factor authentication for all users
+* Bidirectional mediation requests (tenant or landlord can initiate)
+* Real-time messaging between parties
+* Three-way mediation with neutral mediators
+* Document generation and e-signatures
+* Email notifications for major events
+* Educational resources page with FAQ and videos
+* Post-mediation surveys for feedback
+
+### Your Feedback Matters
+
+After completing a mediation, you'll be asked to complete a brief survey. Your feedback helps the development team:
+
+* Identify areas for improvement
+* Prioritize new features
+* Enhance user experience
+* Measure platform effectiveness
+
+Thank you for helping us improve the platform for all users!
 
 ### References & Additional Resources
 
-1. [Self Help Center](https://franklincountymunicourt.org/Departments-Services/Self-Help/External-Resources/Legal-Help)
+1. [Franklin County Municipal Court Self Help Center](https://franklincountymunicourt.org/Departments-Services/Self-Help/External-Resources/Legal-Help)
+2. [Ohio Legal Help - Eviction Resources](https://www.ohiolegalhelp.org/)
+3. [Legal Aid Society of Columbus](https://www.columbuslegalaid.org/)
