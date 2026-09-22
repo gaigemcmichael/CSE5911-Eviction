@@ -68,24 +68,17 @@ class ResourcesTest < ApplicationSystemTestCase
     assert_text "Tenant Resources"
   end
 
-  test "landlord navbar dropdown links to main resources tab" do
+  test "landlord navbar links to the resources page" do
     sign_in_as(@landlord)
     visit dashboard_path
     dismiss_terms_modal_if_present
 
-    open_nav_dropdown
-    click_link "Main Resources"
-    assert_current_path resources_path(tab: "guide")
+    click_link "Resources"
+    assert_current_path resources_path
     assert_text "Landlord Resources"
   end
 
   private
-
-  # The landlord navbar reveals its Resources submenu on hover, which Selenium
-  # cannot hold reliably, so force it open instead.
-  def open_nav_dropdown
-    page.execute_script("document.querySelector('.nav-dropdown-menu').style.display = 'block'")
-  end
 
   def sign_in_as(user)
     visit login_path
