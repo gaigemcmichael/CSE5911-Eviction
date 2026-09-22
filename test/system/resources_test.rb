@@ -15,18 +15,29 @@ class ResourcesTest < ApplicationSystemTestCase
     assert_text "Learn the eviction process"
   end
 
-  test "tenant can switch to faq and negotiation tabs" do
+  test "tenant can switch FAQ categories on the resources page" do
     sign_in_as(@tenant)
     visit resources_path(tab: "guide")
     dismiss_terms_modal_if_present
 
-    click_link "FAQs"
-    assert_current_path resources_path(tab: "faqs")
+    # The FAQ section opens on the first category, "General".
     assert_text "Frequently Asked Questions"
+    assert_text "What is Mediation?"
 
-    click_link "Negotiation & Mediation"
-    assert_current_path resources_path(tab: "negotiation")
-    assert_text "Negotiation & Mediation: What They Are and How They Can Help"
+    click_link "Data Privacy"
+    assert_current_path resources_path(tab: "guide", category: "data-privacy")
+    assert_text "Who operates this platform?"
+  end
+
+  test "tenant can open a resource card to reveal its panel" do
+    sign_in_as(@tenant)
+    visit resources_path(tab: "guide")
+    dismiss_terms_modal_if_present
+
+    # The "Other housing issues" panel is hidden until its card is clicked.
+    assert_no_text "Security deposits"
+    find(".resx-card", text: "Other housing issues").click
+    assert_text "Security deposits"
   end
 
   test "landlord can view landlord resources guide tab" do
@@ -38,52 +49,40 @@ class ResourcesTest < ApplicationSystemTestCase
     assert_text "Learn the process and how early communication can save time, fees, and turnover."
   end
 
-  test "landlord can switch to faq and negotiation tabs" do
+  test "landlord sees the FAQ section on the resources page" do
     sign_in_as(@landlord)
     visit resources_path(tab: "guide")
     dismiss_terms_modal_if_present
 
-    click_link "FAQs"
-    assert_current_path resources_path(tab: "faqs")
     assert_text "Frequently Asked Questions"
-
-    click_link "Negotiation & Mediation"
-    assert_current_path resources_path(tab: "negotiation")
-    assert_text "Negotiation & Mediation: What They Are and How They Can Help"
+    assert_text "What is Mediation?"
   end
 
-  test "tenant navbar dropdown links to main resources tab" do
+  test "tenant navbar links to the resources page" do
     sign_in_as(@tenant)
+    visit dashboard_path
+    dismiss_terms_modal_if_present
+
+    click_link "Resources"
+    assert_current_path resources_path
+    assert_text "Tenant Resources"
+  end
+
+  test "landlord navbar dropdown links to main resources tab" do
+    sign_in_as(@landlord)
     visit dashboard_path
     dismiss_terms_modal_if_present
 
     open_nav_dropdown
     click_link "Main Resources"
     assert_current_path resources_path(tab: "guide")
-  end
-
-  test "tenant navbar dropdown links to faqs tab" do
-    sign_in_as(@tenant)
-    visit dashboard_path
-    dismiss_terms_modal_if_present
-
-    open_nav_dropdown
-    click_link "FAQs", match: :first
-    assert_current_path resources_path(tab: "faqs")
-  end
-
-  test "tenant navbar dropdown links to negotiation and mediation tab" do
-    sign_in_as(@tenant)
-    visit dashboard_path
-    dismiss_terms_modal_if_present
-
-    open_nav_dropdown
-    click_link "Negotiation and Mediation"
-    assert_current_path resources_path(tab: "negotiation")
+    assert_text "Landlord Resources"
   end
 
   private
 
+  # The landlord navbar reveals its Resources submenu on hover, which Selenium
+  # cannot hold reliably, so force it open instead.
   def open_nav_dropdown
     page.execute_script("document.querySelector('.nav-dropdown-menu').style.display = 'block'")
   end
